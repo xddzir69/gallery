@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Gallery</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=3"></script>
+<script src="config.js?v=4"></script>
 <style>
   :root {
     --bg: var(--tg-theme-bg-color, #111);
@@ -15,120 +14,353 @@
     --btn: var(--tg-theme-button-color, #2ea6ff);
     --btn-text: var(--tg-theme-button-text-color, #fff);
     --card: var(--tg-theme-secondary-bg-color, #1c1c1e);
+    --gold: #f5b301;
   }
   * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); }
-  header { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px; }
-  h1 { font-size: 18px; margin-bottom: 10px; }
-  .tabs { display: flex; gap: 8px; }
-  .tab { padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--hint); border: 0; font-size: 14px; }
-  .tab.active { background: var(--btn); color: var(--btn-text); }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 10px 12px 6px; }
+  h1 { font-size: 18px; margin-bottom: 8px; }
+  input[type=search] { width: 100%; padding: 10px 12px; border-radius: 10px; border: 0; background: var(--card); color: var(--text); font-size: 15px; outline: none; }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0 4px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--hint); border: 0; font-size: 13px; }
+  .chip.active { background: var(--btn); color: var(--btn-text); }
+
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
   @media (min-width: 700px) { .grid { grid-template-columns: repeat(5, 1fr); } }
   .item { position: relative; aspect-ratio: 1; background: var(--card); overflow: hidden; cursor: pointer; }
   .item img, .item video { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .badge { position: absolute; right: 6px; bottom: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 6px; }
+  .tag { position: absolute; font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,.65); color: #fff; }
+  .tag.serial { left: 5px; top: 5px; }
+  .tag.type { right: 5px; top: 5px; }
+  .tag.views { right: 5px; bottom: 5px; }
+  .tag.prem { left: 5px; bottom: 5px; background: var(--gold); color: #000; font-weight: 600; }
+  .tag.priv { left: 5px; bottom: 5px; background: #8b5cf6; color: #fff; font-weight: 600; }
+  .lock { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #222, #3a3a3a); font-size: 26px; }
+  .lock small { font-size: 11px; color: #ddd; padding: 0 6px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+
   .msg { text-align: center; color: var(--hint); padding: 40px 16px; }
-  #more { display: block; margin: 16px auto; padding: 10px 24px; border: 0; border-radius: 10px; background: var(--btn); color: var(--btn-text); font-size: 15px; }
-  #viewer { position: fixed; inset: 0; background: #000; display: none; z-index: 10; align-items: center; justify-content: center; flex-direction: column; }
+  .pager { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 14px 8px; }
+  .pager button { min-width: 36px; height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: var(--card); color: var(--text); font-size: 14px; }
+  .pager button.active { background: var(--btn); color: var(--btn-text); }
+  .pager button:disabled { opacity: .35; }
+
+  .cats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; }
+  .catcard { background: var(--card); border-radius: 14px; padding: 22px 12px; text-align: center; font-size: 15px; cursor: pointer; }
+
+  .profile { padding: 18px 14px; }
+  .avatar { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; background: var(--btn); color: var(--btn-text); display: flex; align-items: center; justify-content: center; font-size: 34px; margin: 0 auto 10px; overflow: hidden; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .pname { text-align: center; font-size: 20px; font-weight: 600; }
+  .psub { text-align: center; color: var(--hint); font-size: 13px; margin-top: 2px; }
+  .box { background: var(--card); border-radius: 14px; padding: 14px; margin-top: 14px; }
+  .box h3 { font-size: 14px; color: var(--hint); font-weight: 500; margin-bottom: 8px; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 14px; }
+  .pill { padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .pill.gold { background: var(--gold); color: #000; }
+  .pill.grey { background: #444; color: #ddd; }
+  .pill.purple { background: #8b5cf6; color: #fff; }
+  .reflink { word-break: break-all; font-size: 12px; background: var(--bg); padding: 10px; border-radius: 8px; color: var(--hint); }
+  .btns { display: flex; gap: 8px; margin-top: 10px; }
+  .btn { flex: 1; padding: 11px; border: 0; border-radius: 10px; background: var(--btn); color: var(--btn-text); font-size: 14px; }
+  .btn.alt { background: var(--bg); color: var(--text); border: 1px solid #444; }
+
+  nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 8; display: flex; background: var(--card); padding-bottom: env(safe-area-inset-bottom); border-top: 1px solid rgba(255,255,255,.06); }
+  nav button { flex: 1; padding: 9px 0 8px; background: none; border: 0; color: var(--hint); font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  nav button span { font-size: 20px; }
+  nav button.active { color: var(--btn); }
+
+  #viewer { position: fixed; inset: 0; background: #000; display: none; z-index: 20; align-items: center; justify-content: center; flex-direction: column; }
   #viewer.open { display: flex; }
-  #viewer img, #viewer video { max-width: 100%; max-height: 85vh; }
-  #viewer .cap { color: #ddd; padding: 10px; font-size: 14px; }
+  #viewer img, #viewer video { max-width: 100%; max-height: 82vh; }
+  #viewer .cap { color: #ddd; padding: 10px 14px; font-size: 14px; text-align: center; }
   #close { position: absolute; top: calc(12px + env(safe-area-inset-top)); right: 14px; background: rgba(255,255,255,.15); color: #fff; border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 20px; }
+
+  #modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: flex-end; z-index: 30; }
+  #modal.open { display: flex; }
+  #sheet { width: 100%; background: var(--card); border-radius: 18px 18px 0 0; padding: 22px 18px calc(22px + env(safe-area-inset-bottom)); text-align: center; }
+  #sheet h2 { font-size: 18px; margin: 6px 0; }
+  #sheet p { color: var(--hint); font-size: 14px; line-height: 1.5; }
+  #toast { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); background: #000c; color: #fff; padding: 8px 16px; border-radius: 999px; font-size: 13px; z-index: 40; display: none; }
 </style>
 </head>
 <body>
-<header>
-  <h1 id="title">Gallery</h1>
-  <div class="tabs">
-    <button class="tab active" data-f="all">All</button>
-    <button class="tab" data-f="image">Photos</button>
-    <button class="tab" data-f="video">Videos</button>
-  </div>
-</header>
-<div id="grid" class="grid"></div>
-<div id="status" class="msg">Loading...</div>
-<button id="more" hidden>Aro dekhao</button>
 
-<div id="viewer">
-  <button id="close">✕</button>
-  <div id="stage"></div>
-  <div class="cap" id="cap"></div>
-</div>
+<header id="hdr">
+  <h1 id="title">Gallery</h1>
+  <div id="searchWrap"><input id="search" type="search" placeholder="Search..."></div>
+  <div id="chips" class="chips"></div>
+</header>
+
+<main>
+  <section id="v-list">
+    <div id="grid" class="grid"></div>
+    <div id="status" class="msg">Loading...</div>
+    <div id="pager" class="pager"></div>
+  </section>
+  <section id="v-cats" hidden><div id="catGrid" class="cats"></div></section>
+  <section id="v-profile" hidden></section>
+</main>
+
+<nav>
+  <button data-v="home" class="active"><span>🏠</span>Home</button>
+  <button data-v="popular"><span>🔥</span>Popular</button>
+  <button data-v="cats"><span>🗂️</span>Categories</button>
+  <button data-v="profile"><span>👤</span>Profile</button>
+</nav>
+
+<div id="viewer"><button id="close">✕</button><div id="stage"></div><div class="cap" id="cap"></div></div>
+<div id="modal"><div id="sheet"></div></div>
+<div id="toast"></div>
 
 <script>
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
-
 const C = window.APP_CONFIG;
-document.getElementById("title").textContent = C.APP_TITLE;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+$("title").textContent = C.APP_TITLE;
 document.title = C.APP_TITLE;
-const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
 
-const PAGE = 24;
-let filter = "all", page = 0, loading = false;
-const grid = document.getElementById("grid");
-const statusEl = document.getElementById("status");
-const moreBtn = document.getElementById("more");
-
-async function load(reset = false) {
-  if (loading) return;
-  loading = true;
-  if (reset) { page = 0; grid.innerHTML = ""; }
-  statusEl.hidden = false; statusEl.textContent = "Loading...";
-  moreBtn.hidden = true;
-
-  let q = sb.from("media").select("*").order("created_at", { ascending: false })
-    .range(page * PAGE, page * PAGE + PAGE - 1);
-  if (filter !== "all") q = q.eq("type", filter);
-  const { data, error } = await q;
-  loading = false;
-
-  if (error) { statusEl.textContent = "Error: " + error.message; return; }
-  data.forEach(render);
-  if (!grid.children.length) { statusEl.textContent = "Kichu nai ekhono."; return; }
-  statusEl.hidden = true;
-  moreBtn.hidden = data.length < PAGE;
-  page++;
+async function api(action, data = {}) {
+  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/api`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ initData: tg?.initData || "", action, ...data }),
+  });
+  const j = await r.json().catch(() => ({ error: "Server response bujha jachhe na" }));
+  if (!r.ok) throw new Error(j.error || ("Error " + r.status));
+  return j;
 }
 
-function render(m) {
+function toast(t) {
+  const el = $("toast"); el.textContent = t; el.style.display = "block";
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.style.display = "none", 1800);
+}
+
+const PAGE = 12;
+let me = null, cats = [];
+const st = { view: "home", cat: null, q: "", sort: "serial", page: 1, pages: 1 };
+
+/* ---------- Navigation ---------- */
+function show(view) {
+  st.view = view;
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("active", b.dataset.v === view));
+  const isList = view === "home" || view === "popular";
+  $("v-list").hidden = !isList;
+  $("v-cats").hidden = view !== "cats";
+  $("v-profile").hidden = view !== "profile";
+  $("searchWrap").hidden = !isList;
+  $("chips").hidden = !isList;
+  if (isList) {
+    st.sort = view === "popular" ? "popular" : "serial";
+    st.page = 1;
+    renderChips();
+    loadList();
+  } else if (view === "cats") renderCats();
+  else renderProfile();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  if (b.dataset.v === "home" || b.dataset.v === "popular") { st.cat = null; st.q = ""; $("search").value = ""; }
+  show(b.dataset.v);
+});
+
+/* ---------- Category chips / page ---------- */
+function renderChips() {
+  const box = $("chips"); box.innerHTML = "";
+  const mk = (label, id) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (st.cat === id ? " active" : "");
+    b.textContent = label;
+    b.onclick = () => { st.cat = id; st.page = 1; renderChips(); loadList(); };
+    box.appendChild(b);
+  };
+  mk("All", null);
+  cats.forEach(c => mk(c.name, c.id));
+}
+function renderCats() {
+  const g = $("catGrid"); g.innerHTML = "";
+  if (!cats.length) { g.innerHTML = '<div class="msg" style="grid-column:1/-1">Kono category nai</div>'; return; }
+  cats.forEach(c => {
+    const d = document.createElement("div");
+    d.className = "catcard"; d.textContent = c.name;
+    d.onclick = () => { st.cat = c.id; st.q = ""; $("search").value = ""; show("home"); };
+    g.appendChild(d);
+  });
+}
+
+/* ---------- List / search / pagination ---------- */
+let searchTimer;
+$("search").addEventListener("input", e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => { st.q = e.target.value.trim(); st.page = 1; loadList(); }, 400);
+});
+
+let reqId = 0;
+async function loadList() {
+  const my = ++reqId;
+  $("grid").innerHTML = ""; $("pager").innerHTML = "";
+  $("status").hidden = false; $("status").textContent = "Loading...";
+  try {
+    const r = await api("list", { category_id: st.cat, q: st.q, sort: st.sort, page: st.page, size: PAGE });
+    if (my !== reqId) return;
+    st.pages = Math.max(1, Math.ceil(r.total / PAGE));
+    if (!r.items.length) { $("status").textContent = st.q ? "Kichu pawa jayni." : "Kichu nai ekhono."; return; }
+    $("status").hidden = true;
+    r.items.forEach(renderItem);
+    renderPager();
+  } catch (e) {
+    if (my === reqId) $("status").textContent = "Error: " + e.message;
+  }
+}
+
+function renderItem(m) {
   const d = document.createElement("div");
   d.className = "item";
-  if (m.type === "image") {
-    d.innerHTML = `<img loading="lazy" src="${m.url}" alt="">`;
+  let h = "";
+  if (m.locked) {
+    h += `<div class="lock">🔒<small>${esc(m.title || (m.access === "premium" ? "Premium" : "Private"))}</small></div>`;
+  } else if (m.type === "image") {
+    h += `<img loading="lazy" src="${esc(m.url)}" alt="">`;
   } else {
-    d.innerHTML = `<video muted preload="metadata" src="${m.url}#t=0.5"></video><span class="badge">▶ Video</span>`;
+    h += `<video muted preload="metadata" src="${esc(m.url)}#t=0.5"></video>`;
   }
-  d.onclick = () => openViewer(m);
-  grid.appendChild(d);
+  h += `<span class="tag serial">#${m.serial_no}</span>`;
+  if (!m.locked) h += `<span class="tag type">${m.type === "video" ? "▶" : "🖼"}</span>`;
+  if (m.access === "premium") h += `<span class="tag prem">PREMIUM</span>`;
+  else if (m.access === "private") h += `<span class="tag priv">PRIVATE</span>`;
+  if (!m.locked) h += `<span class="tag views">👁 ${m.views}</span>`;
+  d.innerHTML = h;
+  d.onclick = () => m.locked ? lockedSheet(m) : openViewer(m);
+  $("grid").appendChild(d);
 }
 
-const viewer = document.getElementById("viewer");
-const stage = document.getElementById("stage");
+function renderPager() {
+  const p = $("pager"); p.innerHTML = "";
+  if (st.pages <= 1) return;
+  const mk = (label, pg, dis, act) => {
+    const b = document.createElement("button");
+    b.textContent = label; b.disabled = !!dis;
+    if (act) b.classList.add("active");
+    b.onclick = () => { st.page = pg; loadList(); window.scrollTo(0, 0); };
+    p.appendChild(b);
+  };
+  mk("‹", st.page - 1, st.page === 1);
+  let s = Math.max(1, st.page - 2), e = Math.min(st.pages, s + 4);
+  s = Math.max(1, e - 4);
+  if (s > 1) { mk("1", 1); if (s > 2) { const x = document.createElement("span"); x.textContent = "…"; x.style.alignSelf = "center"; p.appendChild(x); } }
+  for (let i = s; i <= e; i++) mk(String(i), i, false, i === st.page);
+  if (e < st.pages) { if (e < st.pages - 1) { const x = document.createElement("span"); x.textContent = "…"; x.style.alignSelf = "center"; p.appendChild(x); } mk(String(st.pages), st.pages); }
+  mk("›", st.page + 1, st.page === st.pages);
+}
+
+/* ---------- Viewer ---------- */
 function openViewer(m) {
-  stage.innerHTML = m.type === "image"
-    ? `<img src="${m.url}" alt="">`
-    : `<video src="${m.url}" controls autoplay playsinline></video>`;
-  document.getElementById("cap").textContent = m.title || "";
-  viewer.classList.add("open");
+  $("stage").innerHTML = m.type === "image"
+    ? `<img src="${esc(m.url)}" alt="">`
+    : `<video src="${esc(m.url)}" controls autoplay playsinline></video>`;
+  $("cap").textContent = (m.title || "") + (m.views != null ? `  ·  👁 ${m.views}` : "");
+  $("viewer").classList.add("open");
   if (tg) { tg.BackButton.show(); tg.BackButton.onClick(closeViewer); }
+  api("view", { media_id: m.id }).catch(() => {});
 }
 function closeViewer() {
-  viewer.classList.remove("open");
-  stage.innerHTML = "";
+  $("viewer").classList.remove("open"); $("stage").innerHTML = "";
   if (tg) tg.BackButton.hide();
 }
-document.getElementById("close").onclick = closeViewer;
+$("close").onclick = closeViewer;
 
-document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
-  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-  b.classList.add("active");
-  filter = b.dataset.f;
-  load(true);
-});
-moreBtn.onclick = () => load();
-load(true);
+/* ---------- Locked sheet ---------- */
+function lockedSheet(m) {
+  const prem = m.access === "premium";
+  $("sheet").innerHTML = `
+    <div style="font-size:42px">${prem ? "⭐" : "🔒"}</div>
+    <h2>${prem ? "Premium content" : "Private area"}</h2>
+    <p>${prem
+      ? `Eta dekhte Premium lagbe. Bondhuder invite korle proti jon er jonno <b>${me.reward_days} din</b> free Premium pabe, othoba admin er sathe jogajog koro.`
+      : "Eta shudhu admin approved member der jonno. Access chaile admin er sathe jogajog koro."}</p>
+    <div class="btns">
+      ${prem ? '<button class="btn" id="goInvite">Invite kore Premium nao</button>' : ""}
+      <button class="btn alt" id="mclose">Close</button>
+    </div>`;
+  $("modal").classList.add("open");
+  $("mclose").onclick = () => $("modal").classList.remove("open");
+  const gi = $("goInvite");
+  if (gi) gi.onclick = () => { $("modal").classList.remove("open"); show("profile"); };
+}
+$("modal").onclick = e => { if (e.target.id === "modal") $("modal").classList.remove("open"); };
+
+/* ---------- Profile / Referral ---------- */
+function refLink() { return `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}?startapp=ref_${me.tg_id}`; }
+function fmtDate(s) { return new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }); }
+
+function renderProfile() {
+  const name = [me.first_name, me.last_name].filter(Boolean).join(" ") || "User";
+  const av = me.photo_url ? `<img src="${esc(me.photo_url)}" alt="">` : esc(name[0].toUpperCase());
+  const daysLeft = me.premium ? Math.ceil((new Date(me.premium_until) - Date.now()) / 86400000) : 0;
+  $("v-profile").innerHTML = `
+  <div class="profile">
+    <div class="avatar">${av}</div>
+    <div class="pname">${esc(name)}</div>
+    <div class="psub">${me.username ? "@" + esc(me.username) + " · " : ""}ID ${me.tg_id}</div>
+
+    <div class="box">
+      <h3>Membership</h3>
+      <div class="row"><span>Premium</span>${me.premium
+        ? `<span class="pill gold">Active · ${daysLeft} din baki</span>` : '<span class="pill grey">Free</span>'}</div>
+      ${me.premium ? `<div class="row"><span>Shesh hobe</span><span>${fmtDate(me.premium_until)}</span></div>` : ""}
+      <div class="row"><span>Private area</span>${me.private_access
+        ? '<span class="pill purple">Access ache</span>' : '<span class="pill grey">Nai</span>'}</div>
+      <div class="row"><span>Join korechho</span><span>${fmtDate(me.created_at)}</span></div>
+    </div>
+
+    <div class="box">
+      <h3>Invite &amp; Earn</h3>
+      <div class="row"><span>Tumi invite korechho</span><b>${me.ref_count} jon</b></div>
+      <p style="font-size:13px;color:var(--hint);margin:6px 0 10px">Proti notun bondhu tomar link diye dhukle tumi <b>${me.reward_days} din</b> free Premium pabe.</p>
+      <div class="reflink" id="rl">${esc(refLink())}</div>
+      <div class="btns">
+        <button class="btn" id="shareBtn">Share</button>
+        <button class="btn alt" id="copyBtn">Copy link</button>
+      </div>
+    </div>
+  </div>`;
+  $("copyBtn").onclick = copyLink;
+  $("shareBtn").onclick = shareLink;
+}
+function copyLink() {
+  const t = refLink();
+  const done = () => toast("Link copy hoyeche ✅");
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(t).then(done).catch(fallback);
+  else fallback();
+  function fallback() {
+    const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand("copy"); done(); } catch { toast("Copy hoyni, manually copy koro"); }
+    ta.remove();
+  }
+}
+function shareLink() {
+  const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Ei gallery ta dekho 👇")}`;
+  if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, "_blank");
+}
+
+/* ---------- Start ---------- */
+(async function init() {
+  if (!tg || !tg.initData) {
+    $("searchWrap").hidden = true; $("chips").hidden = true;
+    $("status").textContent = "Eta Telegram er mini app. Telegram bot theke kholo.";
+    return;
+  }
+  try {
+    const r = await api("init");
+    me = r.me; cats = r.categories;
+    show("home");
+  } catch (e) {
+    $("searchWrap").hidden = true; $("chips").hidden = true;
+    $("status").textContent = "Error: " + e.message;
+  }
+})();
 </script>
 </body>
 </html>

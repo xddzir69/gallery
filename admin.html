@@ -6,25 +6,36 @@
 <meta name="robots" content="noindex">
 <title>Admin Panel</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=3"></script>
+<script src="config.js?v=4"></script>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-family: system-ui, sans-serif; background: #f4f5f7; color: #222; }
-  .wrap { max-width: 900px; margin: 0 auto; padding: 16px; }
-  .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  input[type=email], input[type=password], input[type=text] { width: 100%; padding: 10px; margin: 6px 0 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
-  button { padding: 10px 18px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 15px; cursor: pointer; }
-  button.danger { background: #dc2626; padding: 6px 10px; font-size: 13px; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 14px; }
+  .card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  input[type=email], input[type=password], input[type=text], input[type=number], input[type=search], select { width: 100%; padding: 9px; margin: 4px 0 8px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; }
+  label { font-size: 12px; color: #555; }
+  button { padding: 9px 14px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 14px; cursor: pointer; }
+  button.danger { background: #dc2626; }
   button.ghost { background: #e5e7eb; color: #222; }
+  button.sm { padding: 5px 9px; font-size: 12px; }
   button:disabled { opacity: .5; }
-  .row { display: flex; justify-content: space-between; align-items: center; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-  .it { background: #fafafa; border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
-  .it img, .it video { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #000; }
-  .it .meta { padding: 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; gap: 6px; }
-  .it .meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tabs button { background: #e5e7eb; color: #222; }
+  .tabs button.active { background: #2563eb; color: #fff; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
   #log { font-size: 13px; color: #555; margin-top: 10px; white-space: pre-line; }
-  .drop { border: 2px dashed #9ca3af; border-radius: 10px; padding: 24px; text-align: center; color: #666; }
+  .m { display: grid; grid-template-columns: 90px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
+  .m .pv { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; background: #000; }
+  .m .f { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
+  .u { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+  .u .meta { color: #666; font-size: 12px; margin: 2px 0 6px; }
+  .u .acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .u .acts input[type=number] { width: 70px; margin: 0; padding: 5px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; background: #eee; margin-left: 4px; }
+  .badge.gold { background: #fde68a; } .badge.pur { background: #ddd6fe; } .badge.red { background: #fecaca; }
+  .hint { font-size: 12px; color: #666; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -40,24 +51,75 @@
 
   <div id="panel" hidden>
     <div class="card row">
-      <h2 style="margin:0">Admin Panel</h2>
+      <div class="tabs" id="tabs">
+        <button data-t="upload" class="active">⬆️ Upload</button>
+        <button data-t="media">🖼 Media</button>
+        <button data-t="cats">🗂 Categories</button>
+        <button data-t="users">👥 Users</button>
+        <button data-t="settings">⚙️ Settings</button>
+      </div>
       <button class="ghost" id="logoutBtn">Logout</button>
     </div>
 
-    <div class="card">
-      <h3>Upload</h3>
-      <div class="drop">
-        <input type="file" id="files" accept="image/*,video/*" multiple>
-        <p style="margin:8px 0 0">Ekshathe onek pic/video select kora jabe (max 50MB/file, free plan)</p>
+    <!-- UPLOAD -->
+    <div class="card" id="t-upload">
+      <h3 style="margin-top:0">Upload</h3>
+      <input type="file" id="files" accept="image/*,video/*" multiple>
+      <div class="cols" style="margin-top:10px">
+        <div><label>Title (khali rakhle file er naam)</label><input type="text" id="titleIn" placeholder="Title"></div>
+        <div><label>Category</label><select id="upCat"></select></div>
+        <div><label>Access</label>
+          <select id="upAccess">
+            <option value="public">Public (sobai)</option>
+            <option value="premium">Premium</option>
+            <option value="private">Private (approved member)</option>
+          </select></div>
       </div>
-      <input type="text" id="titleIn" placeholder="Title / caption (optional, sob file e boshbe)" style="margin-top:12px">
+      <p class="hint">Notun post gulo auto serial pabe, shobar upore dekhabe. Ek file max 50MB (free plan).</p>
       <button id="uploadBtn">Upload</button>
       <div id="log"></div>
     </div>
 
-    <div class="card">
-      <h3>Uploaded Media (<span id="count">0</span>)</h3>
-      <div class="grid" id="list"></div>
+    <!-- MEDIA -->
+    <div class="card" id="t-media" hidden>
+      <h3 style="margin-top:0">Media (<span id="mCount">0</span>)</h3>
+      <div class="cols">
+        <input type="search" id="mSearch" placeholder="Title search...">
+        <select id="mCat"></select>
+        <button id="mGo">Filter</button>
+      </div>
+      <div id="mlist"></div>
+      <button class="ghost" id="mMore" hidden style="margin-top:10px">Aro dekhao</button>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div class="card" id="t-cats" hidden>
+      <h3 style="margin-top:0">Categories</h3>
+      <div class="row">
+        <input type="text" id="newCat" placeholder="Notun category naam" style="flex:1">
+        <button id="addCat">Add</button>
+      </div>
+      <div id="catList"></div>
+      <p class="hint">Order number choto hole age dekhabe.</p>
+    </div>
+
+    <!-- USERS -->
+    <div class="card" id="t-users" hidden>
+      <h3 style="margin-top:0">Users</h3>
+      <div class="row">
+        <input type="search" id="uSearch" placeholder="Naam / @username / Telegram ID" style="flex:1">
+        <button id="uGo">Search</button>
+      </div>
+      <div id="ulist"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="card" id="t-settings" hidden>
+      <h3 style="margin-top:0">Settings</h3>
+      <label>Referral reward: proti notun invite e koto din Premium?</label>
+      <input type="number" id="refDays" min="0" step="1" style="max-width:160px">
+      <button id="saveSet">Save</button>
+      <span id="setMsg" class="hint"></span>
     </div>
   </div>
 </div>
@@ -66,70 +128,227 @@
 const C = window.APP_CONFIG;
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+let cats = [];
 
+/* ---------- Auth ---------- */
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session;
   $("panel").hidden = !session;
-  if (session) loadList();
+  if (session) { await loadCats(); loadMedia(true); }
 }
-
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
   const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
-  if (error) $("loginErr").textContent = error.message;
-  else refreshUI();
+  if (error) $("loginErr").textContent = error.message; else refreshUI();
 };
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
-async function loadList() {
-  const { data, error } = await sb.from("media").select("*").order("created_at", { ascending: false });
-  if (error) { alert(error.message); return; }
-  $("count").textContent = data.length;
-  $("list").innerHTML = "";
-  data.forEach(m => {
-    const d = document.createElement("div");
-    d.className = "it";
-    const media = m.type === "image"
-      ? `<img loading="lazy" src="${m.url}">`
-      : `<video muted preload="metadata" src="${m.url}#t=0.5"></video>`;
-    d.innerHTML = `${media}<div class="meta"><span>${(m.title || m.type).replace(/</g, "&lt;")}</span><button class="danger">Delete</button></div>`;
-    d.querySelector("button").onclick = () => del(m);
-    $("list").appendChild(d);
+/* ---------- Tabs ---------- */
+document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("active", x === b));
+  ["upload", "media", "cats", "users", "settings"].forEach(t => $("t-" + t).hidden = t !== b.dataset.t);
+  if (b.dataset.t === "media") loadMedia(true);
+  if (b.dataset.t === "users") loadUsers();
+  if (b.dataset.t === "settings") loadSettings();
+});
+
+/* ---------- Categories ---------- */
+function catOptions(sel, mode) {
+  let h = mode === "filter" ? '<option value="">Shob category</option><option value="none">(Category chhara)</option>' : '<option value="">(Category nai)</option>';
+  cats.forEach(c => h += `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`);
+  return h;
+}
+async function loadCats() {
+  const { data, error } = await sb.from("categories").select("*").order("sort_order").order("name");
+  if (error) return alert(error.message);
+  cats = data || [];
+  $("upCat").innerHTML = catOptions("");
+  const cur = $("mCat").value;
+  $("mCat").innerHTML = catOptions("", "filter"); $("mCat").value = cur;
+  $("catList").innerHTML = cats.map(c => `
+    <div class="row" style="padding:8px 0;border-bottom:1px solid #eee" data-id="${c.id}">
+      <input type="text" value="${esc(c.name)}" class="cn" style="flex:1;min-width:140px;margin:0">
+      <input type="number" value="${c.sort_order}" class="co" style="width:80px;margin:0" title="Order">
+      <button class="sm cs">Save</button>
+      <button class="sm danger cd">Delete</button>
+    </div>`).join("") || '<p class="hint">Kono category nai.</p>';
+  document.querySelectorAll("#catList [data-id]").forEach(r => {
+    const id = r.dataset.id;
+    r.querySelector(".cs").onclick = async () => {
+      const { error } = await sb.from("categories").update({ name: r.querySelector(".cn").value.trim(), sort_order: Number(r.querySelector(".co").value) || 0 }).eq("id", id);
+      if (error) alert(error.message); else loadCats();
+    };
+    r.querySelector(".cd").onclick = async () => {
+      if (!confirm("Category delete korbe? (Post gulo thakbe, shudhu category chhara hoye jabe)")) return;
+      const { error } = await sb.from("categories").delete().eq("id", id);
+      if (error) alert(error.message); else loadCats();
+    };
   });
 }
+$("addCat").onclick = async () => {
+  const name = $("newCat").value.trim(); if (!name) return;
+  const { error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 });
+  if (error) alert(error.message); else { $("newCat").value = ""; loadCats(); }
+};
 
-async function del(m) {
-  if (!confirm("Delete korbe?")) return;
-  await sb.storage.from(C.BUCKET).remove([m.path]);
-  const { error } = await sb.from("media").delete().eq("id", m.id);
-  if (error) alert(error.message);
-  loadList();
-}
-
+/* ---------- Upload ---------- */
 $("uploadBtn").onclick = async () => {
   const files = [...$("files").files];
   if (!files.length) return alert("Age file select koro");
   const title = $("titleIn").value.trim();
-  $("uploadBtn").disabled = true;
-  $("log").textContent = "";
+  const category_id = $("upCat").value || null;
+  const access = $("upAccess").value;
+  $("uploadBtn").disabled = true; $("log").textContent = "";
+
+  const { data: top } = await sb.from("media").select("serial_no").order("serial_no", { ascending: false }).limit(1);
+  let serial = (top?.[0]?.serial_no || 0);
   let ok = 0;
   for (const [i, f] of files.entries()) {
     const type = f.type.startsWith("video") ? "video" : "image";
-    const ext = f.name.split(".").pop().toLowerCase();
+    const ext = (f.name.split(".").pop() || "bin").toLowerCase();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     $("log").textContent += `(${i + 1}/${files.length}) ${f.name} uploading...\n`;
-    const { error: upErr } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "31536000" });
+    const { error: upErr } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
     if (upErr) { $("log").textContent += `  ❌ ${upErr.message}\n`; continue; }
-    const { data: pub } = sb.storage.from(C.BUCKET).getPublicUrl(path);
-    const { error: dbErr } = await sb.from("media").insert({ title: title || null, type, url: pub.publicUrl, path });
-    if (dbErr) { $("log").textContent += `  ❌ ${dbErr.message}\n`; continue; }
+    serial++;
+    const { error: dbErr } = await sb.from("media").insert({
+      title: title || f.name.replace(/\.[^.]+$/, ""), type, path, category_id, access, serial_no: serial,
+    });
+    if (dbErr) { $("log").textContent += `  ❌ ${dbErr.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
     ok++;
   }
   $("log").textContent += `\nDone: ${ok}/${files.length} uploaded ✅`;
-  $("files").value = "";
-  $("uploadBtn").disabled = false;
-  loadList();
+  $("files").value = ""; $("uploadBtn").disabled = false;
+};
+
+/* ---------- Media ---------- */
+let mPage = 0; const MP = 30;
+$("mGo").onclick = () => loadMedia(true);
+$("mMore").onclick = () => loadMedia(false);
+async function loadMedia(reset) {
+  if (reset) { mPage = 0; $("mlist").innerHTML = ""; }
+  let q = sb.from("media").select("*", { count: "exact" })
+    .order("serial_no", { ascending: false }).order("created_at", { ascending: false })
+    .range(mPage * MP, mPage * MP + MP - 1);
+  const f = $("mCat").value;
+  if (f === "none") q = q.is("category_id", null); else if (f) q = q.eq("category_id", f);
+  const s = $("mSearch").value.trim().replace(/[%\\]/g, "");
+  if (s) q = q.ilike("title", `%${s}%`);
+  const { data, count, error } = await q;
+  if (error) return alert(error.message);
+  $("mCount").textContent = count ?? 0;
+
+  const urls = {};
+  if (data.length) {
+    const { data: signed } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 3600);
+    (signed || []).forEach(x => { if (x.signedUrl) urls[x.path] = x.signedUrl; });
+  }
+  data.forEach(m => {
+    const d = document.createElement("div"); d.className = "m";
+    const pv = m.type === "image"
+      ? `<img class="pv" loading="lazy" src="${esc(urls[m.path])}">`
+      : `<video class="pv" muted preload="metadata" src="${esc(urls[m.path])}#t=0.5"></video>`;
+    d.innerHTML = `${pv}
+      <div>
+        <div class="f">
+          <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div>
+          <div><label>Category</label><select class="c">${catOptions(m.category_id)}</select></div>
+          <div><label>Access</label><select class="a">
+            <option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
+          <div><label>Serial (boro = upore)</label><input type="number" class="s" value="${m.serial_no}"></div>
+        </div>
+        <div class="row" style="margin-top:4px"><span class="hint">👁 ${m.views} views</span>
+          <span><button class="sm sv">Save</button> <button class="sm danger dl">Delete</button></span></div>
+      </div>`;
+    d.querySelector(".a").value = m.access;
+    d.querySelector(".sv").onclick = async () => {
+      const { error } = await sb.from("media").update({
+        title: d.querySelector(".t").value.trim() || null,
+        category_id: d.querySelector(".c").value || null,
+        access: d.querySelector(".a").value,
+        serial_no: Number(d.querySelector(".s").value) || 0,
+      }).eq("id", m.id);
+      if (error) alert(error.message); else d.querySelector(".sv").textContent = "Saved ✓";
+    };
+    d.querySelector(".dl").onclick = async () => {
+      if (!confirm("Delete korbe?")) return;
+      await sb.storage.from(C.BUCKET).remove([m.path]);
+      const { error } = await sb.from("media").delete().eq("id", m.id);
+      if (error) alert(error.message); else d.remove();
+    };
+    $("mlist").appendChild(d);
+  });
+  mPage++;
+  $("mMore").hidden = mPage * MP >= (count ?? 0);
+}
+
+/* ---------- Users ---------- */
+$("uGo").onclick = loadUsers;
+const fdate = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+async function loadUsers() {
+  let q = sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(50);
+  const s = $("uSearch").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
+  if (s) {
+    if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s));
+    else q = q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%`);
+  }
+  const { data, error } = await q;
+  if (error) return alert(error.message);
+  const box = $("ulist"); box.innerHTML = "";
+  if (!data.length) { box.innerHTML = '<p class="hint">Kono user nai.</p>'; return; }
+  data.forEach(u => {
+    const prem = u.premium_until && new Date(u.premium_until) > new Date();
+    const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || "User";
+    const d = document.createElement("div"); d.className = "u";
+    d.innerHTML = `<b>${esc(name)}</b> ${u.username ? "@" + esc(u.username) : ""}
+      ${prem ? `<span class="badge gold">Premium → ${fdate(u.premium_until)}</span>` : ""}
+      ${u.private_access ? '<span class="badge pur">Private</span>' : ""}
+      ${u.is_banned ? '<span class="badge red">Banned</span>' : ""}
+      <div class="meta">ID ${u.tg_id} · Invite: ${u.ref_count} · Join: ${fdate(u.created_at)}</div>
+      <div class="acts">
+        <button class="sm d1">+1d</button><button class="sm d7">+7d</button><button class="sm d30">+30d</button>
+        <input type="number" class="cd" placeholder="din"><button class="sm dc">Add</button>
+        <button class="sm ghost dr">Premium remove</button>
+        <label><input type="checkbox" class="pa" ${u.private_access ? "checked" : ""}> Private access</label>
+        <label><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label>
+      </div>`;
+    const addDays = async days => {
+      if (!days) return;
+      const base = Math.max(Date.now(), u.premium_until ? new Date(u.premium_until).getTime() : 0);
+      const { error } = await sb.from("profiles").update({ premium_until: new Date(base + days * 86400000).toISOString() }).eq("tg_id", u.tg_id);
+      if (error) alert(error.message); else loadUsers();
+    };
+    d.querySelector(".d1").onclick = () => addDays(1);
+    d.querySelector(".d7").onclick = () => addDays(7);
+    d.querySelector(".d30").onclick = () => addDays(30);
+    d.querySelector(".dc").onclick = () => addDays(Number(d.querySelector(".cd").value));
+    d.querySelector(".dr").onclick = async () => {
+      const { error } = await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id);
+      if (error) alert(error.message); else loadUsers();
+    };
+    d.querySelector(".pa").onchange = async e => {
+      const { error } = await sb.from("profiles").update({ private_access: e.target.checked }).eq("tg_id", u.tg_id);
+      if (error) alert(error.message); else loadUsers();
+    };
+    d.querySelector(".bn").onchange = async e => {
+      const { error } = await sb.from("profiles").update({ is_banned: e.target.checked }).eq("tg_id", u.tg_id);
+      if (error) alert(error.message); else loadUsers();
+    };
+    box.appendChild(d);
+  });
+}
+
+/* ---------- Settings ---------- */
+async function loadSettings() {
+  const { data } = await sb.from("settings").select("value").eq("key", "ref_reward_days").maybeSingle();
+  $("refDays").value = data?.value ?? "1";
+}
+$("saveSet").onclick = async () => {
+  const v = String(Math.max(0, Math.floor(Number($("refDays").value) || 0)));
+  const { error } = await sb.from("settings").upsert({ key: "ref_reward_days", value: v });
+  $("setMsg").textContent = error ? error.message : "Saved ✅";
 };
 
 refreshUI();
