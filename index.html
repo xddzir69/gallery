@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gallery</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+  :root {
+    --bg: var(--tg-theme-bg-color, #111);
+    --text: var(--tg-theme-text-color, #fff);
+    --hint: var(--tg-theme-hint-color, #999);
+    --btn: var(--tg-theme-button-color, #2ea6ff);
+    --btn-text: var(--tg-theme-button-text-color, #fff);
+    --card: var(--tg-theme-secondary-bg-color, #1c1c1e);
+  }
+  * { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; padding-bottom: env(safe-area-inset-bottom); }
+  header { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 12px; }
+  h1 { font-size: 18px; margin-bottom: 10px; }
+  .tabs { display: flex; gap: 8px; }
+  .tab { padding: 6px 14px; border-radius: 999px; background: var(--card); color: var(--hint); border: 0; font-size: 14px; }
+  .tab.active { background: var(--btn); color: var(--btn-text); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  @media (min-width: 700px) { .grid { grid-template-columns: repeat(5, 1fr); } }
+  .item { position: relative; aspect-ratio: 1; background: var(--card); overflow: hidden; cursor: pointer; }
+  .item img, .item video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .badge { position: absolute; right: 6px; bottom: 6px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; padding: 2px 6px; border-radius: 6px; }
+  .msg { text-align: center; color: var(--hint); padding: 40px 16px; }
+  #more { display: block; margin: 16px auto; padding: 10px 24px; border: 0; border-radius: 10px; background: var(--btn); color: var(--btn-text); font-size: 15px; }
+  #viewer { position: fixed; inset: 0; background: #000; display: none; z-index: 10; align-items: center; justify-content: center; flex-direction: column; }
+  #viewer.open { display: flex; }
+  #viewer img, #viewer video { max-width: 100%; max-height: 85vh; }
+  #viewer .cap { color: #ddd; padding: 10px; font-size: 14px; }
+  #close { position: absolute; top: calc(12px + env(safe-area-inset-top)); right: 14px; background: rgba(255,255,255,.15); color: #fff; border: 0; width: 38px; height: 38px; border-radius: 50%; font-size: 20px; }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Gallery</h1>
+  <div class="tabs">
+    <button class="tab active" data-f="all">All</button>
+    <button class="tab" data-f="image">Photos</button>
+    <button class="tab" data-f="video">Videos</button>
+  </div>
+</header>
+<div id="grid" class="grid"></div>
+<div id="status" class="msg">Loading...</div>
+<button id="more" hidden>Aro dekhao</button>
+
+<div id="viewer">
+  <button id="close">✕</button>
+  <div id="stage"></div>
+  <div class="cap" id="cap"></div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+const C = window.APP_CONFIG;
+document.getElementById("title").textContent = C.APP_TITLE;
+document.title = C.APP_TITLE;
+const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
+
+const PAGE = 24;
+let filter = "all", page = 0, loading = false;
+const grid = document.getElementById("grid");
+const statusEl = document.getElementById("status");
+const moreBtn = document.getElementById("more");
+
+async function load(reset = false) {
+  if (loading) return;
+  loading = true;
+  if (reset) { page = 0; grid.innerHTML = ""; }
+  statusEl.hidden = false; statusEl.textContent = "Loading...";
+  moreBtn.hidden = true;
+
+  let q = sb.from("media").select("*").order("created_at", { ascending: false })
+    .range(page * PAGE, page * PAGE + PAGE - 1);
+  if (filter !== "all") q = q.eq("type", filter);
+  const { data, error } = await q;
+  loading = false;
+
+  if (error) { statusEl.textContent = "Error: " + error.message; return; }
+  data.forEach(render);
+  if (!grid.children.length) { statusEl.textContent = "Kichu nai ekhono."; return; }
+  statusEl.hidden = true;
+  moreBtn.hidden = data.length < PAGE;
+  page++;
+}
+
+function render(m) {
+  const d = document.createElement("div");
+  d.className = "item";
+  if (m.type === "image") {
+    d.innerHTML = `<img loading="lazy" src="${m.url}" alt="">`;
+  } else {
+    d.innerHTML = `<video muted preload="metadata" src="${m.url}#t=0.5"></video><span class="badge">▶ Video</span>`;
+  }
+  d.onclick = () => openViewer(m);
+  grid.appendChild(d);
+}
+
+const viewer = document.getElementById("viewer");
+const stage = document.getElementById("stage");
+function openViewer(m) {
+  stage.innerHTML = m.type === "image"
+    ? `<img src="${m.url}" alt="">`
+    : `<video src="${m.url}" controls autoplay playsinline></video>`;
+  document.getElementById("cap").textContent = m.title || "";
+  viewer.classList.add("open");
+  if (tg) { tg.BackButton.show(); tg.BackButton.onClick(closeViewer); }
+}
+function closeViewer() {
+  viewer.classList.remove("open");
+  stage.innerHTML = "";
+  if (tg) tg.BackButton.hide();
+}
+document.getElementById("close").onclick = closeViewer;
+
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  b.classList.add("active");
+  filter = b.dataset.f;
+  load(true);
+});
+moreBtn.onclick = () => load();
+load(true);
+</script>
+</body>
+</html>
