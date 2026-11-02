@@ -5,6 +5,6 @@ window.APP_CONFIG = {
   APP_TITLE: "My Gallery",
 
   // Referral link er jonno: tomar bot er username (@ chhara) ar /newapp e deya short name
-  BOT_USERNAME: "YOUR_BOT_USERNAME",
+  BOT_USERNAME: "VPV69BOT",
   APP_SHORT_NAME: "gallery",
 };
