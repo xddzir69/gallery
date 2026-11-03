@@ -4,352 +4,551 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Admin Panel</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js?v=4"></script>
+<title>Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
+<script src="config.js?v=6"></script>
 <style>
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, sans-serif; background: #f4f5f7; color: #222; }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 14px; }
-  .card { background: #fff; border-radius: 12px; padding: 14px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
-  input[type=email], input[type=password], input[type=text], input[type=number], input[type=search], select { width: 100%; padding: 9px; margin: 4px 0 8px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; }
-  label { font-size: 12px; color: #555; }
-  button { padding: 9px 14px; border: 0; border-radius: 8px; background: #2563eb; color: #fff; font-size: 14px; cursor: pointer; }
-  button.danger { background: #dc2626; }
-  button.ghost { background: #e5e7eb; color: #222; }
-  button.sm { padding: 5px 9px; font-size: 12px; }
-  button:disabled { opacity: .5; }
-  .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
-  .tabs button { background: #e5e7eb; color: #222; }
-  .tabs button.active { background: #2563eb; color: #fff; }
-  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
-  #log { font-size: 13px; color: #555; margin-top: 10px; white-space: pre-line; }
-  .m { display: grid; grid-template-columns: 90px 1fr; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; }
-  .m .pv { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; background: #000; }
-  .m .f { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 6px; }
-  .u { padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-  .u .meta { color: #666; font-size: 12px; margin: 2px 0 6px; }
-  .u .acts { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-  .u .acts input[type=number] { width: 70px; margin: 0; padding: 5px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; background: #eee; margin-left: 4px; }
-  .badge.gold { background: #fde68a; } .badge.pur { background: #ddd6fe; } .badge.red { background: #fecaca; }
-  .hint { font-size: 12px; color: #666; }
+  :root { --disp: "Bodoni Moda", "Didot", Georgia, serif; --body: "Hanken Grotesk", system-ui, sans-serif; --hi: #F0DDA6; --mid: #CDAA5E; --lo: #9C7A33; --metal: linear-gradient(135deg, var(--hi), var(--mid) 55%, var(--lo)); --onmetal: #1A1405; }
+  :root[data-mode="dark"] { --bg:#080C0A; --bg2:#0D1410; --card:#111A15; --card2:#17231C; --line:rgba(232,226,206,.11); --text:#EAE6D8; --mute:#8E9A92; --gold:#CDAA5E; --danger:#E5726B; color-scheme: dark; }
+  :root[data-mode="light"] { --bg:#EEF1ED; --bg2:#E5E9E4; --card:#FFFFFF; --card2:#F4F6F3; --line:rgba(14,26,20,.11); --text:#0E1A14; --mute:#5C6A62; --gold:#8F6B1C; --danger:#C0392B; color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); font-size: 14.5px; line-height: 1.45; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
   [hidden] { display: none !important; }
+  h2, h3 { font-family: var(--disp); font-weight: 500; letter-spacing: -.01em; }
+  h2 { font-size: 28px; margin-bottom: 4px; } h3 { font-size: 20px; margin-bottom: 12px; }
+  .mute { color: var(--mute); } .sm { font-size: 12.5px; }
+  .i { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 16px; border-radius: 12px; background: var(--metal); color: var(--onmetal); font-weight: 700; font-size: 13.5px; box-shadow: inset 0 1px 0 rgba(255,255,255,.35); }
+  .btn:active { filter: brightness(.94); } .btn:disabled { opacity: .5; cursor: default; }
+  .btn.gh { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+  .btn.dg { background: transparent; color: var(--danger); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 45%, transparent); }
+  .btn.xs { padding: 5px 10px; font-size: 12px; border-radius: 9px; }
+  input[type=text], input[type=email], input[type=password], input[type=number], input[type=search], input[type=date], select, textarea { width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg2); color: var(--text); font: inherit; outline: none; }
+  input:focus, select:focus, textarea:focus { border-color: var(--gold); }
+  textarea { min-height: 90px; resize: vertical; }
+  input[type=file] { font: inherit; color: var(--mute); }
+  label.f { display: block; margin-bottom: 12px; } label.f > span { display: block; font-size: 12.5px; color: var(--mute); margin-bottom: 5px; }
+  label.ck { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  input[type=checkbox] { accent-color: var(--mid); width: 16px; height: 16px; }
+
+  .shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  aside { position: sticky; top: 0; height: 100vh; padding: 22px 14px; border-right: 1px solid var(--line); background: var(--bg2); display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 18px; font-family: var(--disp); font-size: 22px; }
+  .brand svg { width: 32px; height: 32px; }
+  aside nav { display: grid; gap: 2px; }
+  .tab { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px; color: var(--mute); font-weight: 600; text-align: left; width: 100%; }
+  .tab:hover { color: var(--text); }
+  .tab.on { background: var(--card2); color: var(--text); box-shadow: inset 0 0 0 1px var(--line); }
+  .tab.on .i { color: var(--gold); }
+  .tab .bd { margin-left: auto; min-width: 20px; padding: 1px 6px; border-radius: 10px; background: var(--metal); color: var(--onmetal); font-size: 11px; font-weight: 700; text-align: center; }
+  .sp { flex: 1; }
+  .side-foot { display: grid; gap: 8px; padding-top: 14px; }
+  main { padding: 28px 30px 70px; max-width: 1000px; width: 100%; }
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    aside { align-self: start; }
+    aside { position: static; height: auto; flex-direction: row; align-items: center; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; gap: 6px; }
+    .brand, .sp { display: none; }
+    aside nav { display: flex; gap: 4px; } .tab { width: auto; white-space: nowrap; padding: 8px 12px; } .tab span.lb { display: inline; }
+    .side-foot { display: flex; padding: 0; margin-left: 6px; }
+    main { padding: 20px 14px 70px; }
+  }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 18px; margin-bottom: 16px; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .between { justify-content: space-between; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+  .stat b { display: block; font-family: var(--disp); font-weight: 500; font-size: 32px; line-height: 1.1; }
+  .stat span { color: var(--mute); font-size: 12.5px; }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); }
+  .pill.g { background: var(--metal); color: var(--onmetal); box-shadow: none; } .pill.v { color: #B79CFF; } .pill.r { color: var(--danger); }
+  .item { display: grid; grid-template-columns: 86px 1fr; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .item:last-child { border: 0; }
+  .item .pv { width: 86px; height: 86px; border-radius: 12px; object-fit: cover; background: var(--bg2); }
+  .item .fs { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; }
+  .item .fs label { font-size: 11.5px; color: var(--mute); display: block; }
+  .line { padding: 13px 0; border-bottom: 1px solid var(--line); } .line:last-child { border: 0; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .chips button { padding: 7px 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); font-weight: 600; font-size: 13px; color: var(--mute); }
+  .chips button.on { background: var(--metal); color: var(--onmetal); box-shadow: none; }
+  .bub { max-width: 82%; padding: 10px 13px; border-radius: 16px; margin-bottom: 8px; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); white-space: pre-wrap; word-break: break-word; }
+  .bub.me { margin-left: auto; background: var(--metal); color: var(--onmetal); box-shadow: none; }
+  .bub small { display: block; opacity: .6; font-size: 11px; margin-top: 3px; }
+  #log { margin-top: 12px; white-space: pre-line; font-size: 13px; color: var(--mute); }
+  .login { max-width: 400px; margin: 12vh auto; padding: 0 16px; }
+  .login .card { padding: 26px; }
+  #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 13.5px; z-index: 99; display: none; max-width: 90vw; }
+  code.cd { font-family: ui-monospace, Menlo, monospace; font-size: 13px; letter-spacing: .04em; }
+  .prog { height: 6px; background: var(--card2); border-radius: 6px; overflow: hidden; margin-top: 8px; } .prog i { display: block; height: 100%; width: 0; background: var(--metal); transition: width .3s; }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="card" id="loginBox">
-    <h2>Admin Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="pass" placeholder="Password">
-    <button id="loginBtn">Login</button>
-    <div id="loginErr" style="color:#dc2626;margin-top:8px"></div>
-  </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0DDA6"/><stop offset=".55" stop-color="#CDAA5E"/><stop offset="1" stop-color="#9C7A33"/></linearGradient></defs>
+  <symbol id="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#0B120E"/><rect x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".6"/><path d="M19 47V30a13 13 0 0 1 26 0v17" fill="none" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="33" r="3.4" fill="url(#mg)"/><path d="M14 47h36" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></symbol>
+  <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></symbol>
+  <symbol id="i-notice" viewBox="0 0 24 24"><path d="M4 10v4h3l7 4V6L7 10zM17.5 9a4 4 0 0 1 0 6"/></symbol>
+  <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2.4"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+</svg>
 
-  <div id="panel" hidden>
-    <div class="card row">
-      <div class="tabs" id="tabs">
-        <button data-t="upload" class="active">⬆️ Upload</button>
-        <button data-t="media">🖼 Media</button>
-        <button data-t="cats">🗂 Categories</button>
-        <button data-t="users">👥 Users</button>
-        <button data-t="settings">⚙️ Settings</button>
-      </div>
-      <button class="ghost" id="logoutBtn">Logout</button>
-    </div>
-
-    <!-- UPLOAD -->
-    <div class="card" id="t-upload">
-      <h3 style="margin-top:0">Upload</h3>
-      <input type="file" id="files" accept="image/*,video/*" multiple>
-      <div class="cols" style="margin-top:10px">
-        <div><label>Title (khali rakhle file er naam)</label><input type="text" id="titleIn" placeholder="Title"></div>
-        <div><label>Category</label><select id="upCat"></select></div>
-        <div><label>Access</label>
-          <select id="upAccess">
-            <option value="public">Public (sobai)</option>
-            <option value="premium">Premium</option>
-            <option value="private">Private (approved member)</option>
-          </select></div>
-      </div>
-      <p class="hint">Notun post gulo auto serial pabe, shobar upore dekhabe. Ek file max 50MB (free plan).</p>
-      <button id="uploadBtn">Upload</button>
-      <div id="log"></div>
-    </div>
-
-    <!-- MEDIA -->
-    <div class="card" id="t-media" hidden>
-      <h3 style="margin-top:0">Media (<span id="mCount">0</span>)</h3>
-      <div class="cols">
-        <input type="search" id="mSearch" placeholder="Title search...">
-        <select id="mCat"></select>
-        <button id="mGo">Filter</button>
-      </div>
-      <div id="mlist"></div>
-      <button class="ghost" id="mMore" hidden style="margin-top:10px">Aro dekhao</button>
-    </div>
-
-    <!-- CATEGORIES -->
-    <div class="card" id="t-cats" hidden>
-      <h3 style="margin-top:0">Categories</h3>
-      <div class="row">
-        <input type="text" id="newCat" placeholder="Notun category naam" style="flex:1">
-        <button id="addCat">Add</button>
-      </div>
-      <div id="catList"></div>
-      <p class="hint">Order number choto hole age dekhabe.</p>
-    </div>
-
-    <!-- USERS -->
-    <div class="card" id="t-users" hidden>
-      <h3 style="margin-top:0">Users</h3>
-      <div class="row">
-        <input type="search" id="uSearch" placeholder="Naam / @username / Telegram ID" style="flex:1">
-        <button id="uGo">Search</button>
-      </div>
-      <div id="ulist"></div>
-    </div>
-
-    <!-- SETTINGS -->
-    <div class="card" id="t-settings" hidden>
-      <h3 style="margin-top:0">Settings</h3>
-      <label>Referral reward: proti notun invite e koto din Premium?</label>
-      <input type="number" id="refDays" min="0" step="1" style="max-width:160px">
-      <button id="saveSet">Save</button>
-      <span id="setMsg" class="hint"></span>
-    </div>
+<div class="login" id="loginBox">
+  <div class="card">
+    <div class="row" style="margin-bottom:18px"><svg class="i" style="width:38px;height:38px"><use href="#logo"/></svg><h2 style="margin:0">Admin</h2></div>
+    <label class="f"><span>Email</span><input type="email" id="email" autocomplete="username"></label>
+    <label class="f"><span>Password</span><input type="password" id="pass" autocomplete="current-password"></label>
+    <button class="btn" id="loginBtn" style="width:100%">Login</button>
+    <div id="loginErr" style="color:var(--danger);margin-top:10px"></div>
   </div>
 </div>
+
+<div class="shell" id="panel" hidden>
+  <aside>
+    <div class="brand"><svg><use href="#logo"/></svg><span id="bt">Admin</span></div>
+    <nav id="tabs"></nav>
+    <div class="sp"></div>
+    <div class="side-foot">
+      <button class="btn gh xs" id="themeBtn">Theme</button>
+      <button class="btn gh xs" id="logoutBtn">Logout</button>
+    </div>
+  </aside>
+  <main>
+    <!-- UPLOAD -->
+    <section id="t-upload">
+      <h2>Upload</h2><p class="mute" style="margin-bottom:18px">Photo ba video, ekshathe onek.</p>
+      <div class="card">
+        <label class="f"><span>Files</span><input type="file" id="files" accept="image/*,video/*" multiple></label>
+        <div class="cols">
+          <label class="f"><span>Title (khali rakhle file er naam)</span><input type="text" id="upTitle"></label>
+          <label class="f"><span>Category</span><select id="upCat"></select></label>
+          <label class="f"><span>Access</span><select id="upAccess"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></label>
+        </div>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="upNotif" checked> Users der notification pathao</label><label class="ck"><input type="checkbox" id="upPush"> Telegram e push o pathao</label></div>
+        <button class="btn" id="upBtn">Upload</button>
+        <div class="prog"><i id="upProg"></i></div>
+        <div id="log"></div>
+      </div>
+    </section>
+
+    <!-- MEDIA -->
+    <section id="t-media" hidden>
+      <h2>Media</h2><p class="mute" style="margin-bottom:18px"><span id="mCount">0</span> ta post</p>
+      <div class="card">
+        <div class="cols">
+          <input type="search" id="mQ" placeholder="Title khujo"><select id="mCat"></select>
+          <select id="mAcc"><option value="">Shob access</option><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select>
+          <select id="mType"><option value="">Photo + video</option><option value="image">Photo</option><option value="video">Video</option></select>
+        </div>
+        <div class="row" style="margin-top:12px"><button class="btn" id="mGo">Filter</button><button class="btn gh" id="mFix">Fix previews</button><span class="mute sm" id="mFixMsg"></span></div>
+      </div>
+      <div class="card" style="padding-top:4px"><div id="mList"></div><button class="btn gh" id="mMore" hidden style="margin-top:12px">Aro dekhao</button></div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="t-cats" hidden>
+      <h2>Categories</h2><p class="mute" style="margin-bottom:18px">Choto number age dekhabe.</p>
+      <div class="card"><div class="row"><input type="text" id="newCat" placeholder="Notun category" style="flex:1"><button class="btn" id="addCat">Add</button></div><div id="catList" style="margin-top:8px"></div></div>
+    </section>
+
+    <!-- USERS -->
+    <section id="t-users" hidden>
+      <h2>Users</h2><p class="mute" style="margin-bottom:18px">Premium din, private access, ban.</p>
+      <div class="card"><div class="row"><input type="search" id="uQ" placeholder="Naam, @username ba Telegram ID" style="flex:1"><button class="btn" id="uGo">Search</button></div><div id="uList" style="margin-top:6px"></div></div>
+    </section>
+
+    <!-- PREMIUM -->
+    <section id="t-premium" hidden>
+      <h2>Premium</h2><p class="mute" style="margin-bottom:18px">Plan, code ar premium page er lekha.</p>
+      <div class="stats" id="pStats"></div>
+      <div class="card"><h3>Plans</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">Notun plan</button></div>
+      <div class="card"><h3>Unlock codes</h3>
+        <div class="cols">
+          <label class="f"><span>Koyta code</span><input type="number" id="cgN" value="5" min="1" max="100"></label>
+          <label class="f"><span>Koto din Premium</span><input type="number" id="cgD" value="30" min="1"></label>
+          <label class="f"><span>Proti code koybar use</span><input type="number" id="cgU" value="1" min="1"></label>
+          <label class="f"><span>Meyad (optional)</span><input type="date" id="cgE"></label>
+          <label class="f"><span>Note (kar jonno)</span><input type="text" id="cgNote"></label>
+        </div>
+        <button class="btn" id="cgGo">Code banao</button>
+        <div class="chips" style="margin:16px 0 8px" id="cFilter"><button data-v="unused" class="on">Unused</button><button data-v="used">Used</button><button data-v="all">All</button></div>
+        <button class="btn gh xs" id="cCopy" style="margin-bottom:6px">Unused gulo copy koro</button>
+        <div id="cList"></div>
+      </div>
+      <div class="card"><h3>Premium page text</h3>
+        <label class="f"><span>Intro (premium page er upore)</span><input type="text" id="sIntro"></label>
+        <label class="f"><span>Kibhabe kinbe (proti line e ekta step)</span><textarea id="sHow"></textarea></label>
+        <label class="f"><span>Contact link (e.g. https://t.me/yourusername)</span><input type="text" id="sContact"></label>
+        <button class="btn" id="sSave">Save</button>
+      </div>
+    </section>
+
+    <!-- NOTIFY -->
+    <section id="t-notify" hidden>
+      <h2>Notify</h2><p class="mute" style="margin-bottom:18px">App er popup ar Telegram message.</p>
+      <div class="card">
+        <div class="chips" id="nTpl"><button data-t="offer">Premium offer</button><button data-t="drop">New collection</button><button data-t="maint">Maintenance</button></div>
+        <div class="cols">
+          <label class="f"><span>Dhoron</span><select id="nKind"><option value="custom">Update</option><option value="premium">Premium</option><option value="notice">Notice</option></select></label>
+          <label class="f"><span>Specific user (Telegram ID, khali = sobai)</span><input type="text" id="nTg"></label>
+        </div>
+        <label class="f"><span>Title</span><input type="text" id="nTitle" maxlength="120"></label>
+        <label class="f"><span>Message</span><textarea id="nBody" maxlength="500"></textarea></label>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="nPop" checked> App e popup dekhao</label><label class="ck"><input type="checkbox" id="nPush"> Telegram e push pathao</label></div>
+        <button class="btn" id="nSend">Pathao</button><span class="mute sm" id="nMsg" style="margin-left:10px"></span>
+      </div>
+      <div class="card"><h3>Ager notification</h3><div id="nList"></div></div>
+    </section>
+
+    <!-- NOTICES -->
+    <section id="t-notices" hidden>
+      <h2>Notice board</h2><p class="mute" style="margin-bottom:18px">Pinned notice Home er upore dekhabe.</p>
+      <div class="card">
+        <label class="f"><span>Title</span><input type="text" id="ntTitle"></label>
+        <label class="f"><span>Details</span><textarea id="ntBody"></textarea></label>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="ntPin"> Pin koro</label><label class="ck"><input type="checkbox" id="ntNotif"> Notification o pathao</label></div>
+        <button class="btn" id="ntAdd">Publish</button>
+      </div>
+      <div class="card"><div id="ntList"></div></div>
+    </section>
+
+    <!-- TICKETS -->
+    <section id="t-tickets" hidden>
+      <h2>Tickets</h2><p class="mute" style="margin-bottom:18px">User der shahajjo.</p>
+      <div id="tkListWrap"><div class="chips" id="tkF"><button data-v="active" class="on">Open</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><div class="card" style="padding-top:6px"><div id="tkList"></div></div></div>
+      <div id="tkThread" hidden></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="t-settings" hidden>
+      <h2>Settings</h2><p class="mute" style="margin-bottom:18px">General setup.</p>
+      <div class="card"><label class="f"><span>Referral reward: proti notun invite e koto din Premium</span><input type="number" id="refDays" min="0" style="max-width:160px"></label><button class="btn" id="refSave">Save</button></div>
+      <div class="card"><h3>Setup check</h3><p class="sm mute" id="chkInfo" style="margin-bottom:10px"></p><button class="btn gh" id="chkBtn">Test notify function</button><span class="sm mute" id="chkMsg" style="margin-left:10px"></span></div>
+    </section>
+  </main>
+</div>
+<div id="toast"></div>
 
 <script>
 const C = window.APP_CONFIG;
 const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fdate = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+const ago = s => { const m = Math.floor((Date.now() - new Date(s)) / 60000); if (m < 1) return "now"; if (m < 60) return m + "m"; const h = Math.floor(m / 60); return h < 24 ? h + "h" : Math.floor(h / 24) + "d"; };
+let tt; function toast(t) { const e = $("toast"); e.textContent = t; e.style.display = "block"; clearTimeout(tt); tt = setTimeout(() => e.style.display = "none", 2400); }
+const ic = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
 let cats = [];
 
-/* ---------- Auth ---------- */
+/* theme */
+function setMode(m) { document.documentElement.dataset.mode = m; try { localStorage.setItem("adm_mode", m); } catch {} }
+let m0 = "dark"; try { m0 = localStorage.getItem("adm_mode") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"); } catch {}
+setMode(m0);
+$("themeBtn").onclick = () => setMode(document.documentElement.dataset.mode === "dark" ? "light" : "dark");
+$("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
+
+/* auth */
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
-  $("loginBox").hidden = !!session;
-  $("panel").hidden = !session;
-  if (session) { await loadCats(); loadMedia(true); }
+  $("loginBox").hidden = !!session; $("panel").hidden = !session;
+  if (session) { await loadCats(); show("upload"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
   const { error } = await sb.auth.signInWithPassword({ email: $("email").value.trim(), password: $("pass").value });
   if (error) $("loginErr").textContent = error.message; else refreshUI();
 };
+$("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn").click(); });
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
-/* ---------- Tabs ---------- */
-document.querySelectorAll("#tabs button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("#tabs button").forEach(x => x.classList.toggle("active", x === b));
-  ["upload", "media", "cats", "users", "settings"].forEach(t => $("t-" + t).hidden = t !== b.dataset.t);
-  if (b.dataset.t === "media") loadMedia(true);
-  if (b.dataset.t === "users") loadUsers();
-  if (b.dataset.t === "settings") loadSettings();
-});
-
-/* ---------- Categories ---------- */
-function catOptions(sel, mode) {
-  let h = mode === "filter" ? '<option value="">Shob category</option><option value="none">(Category chhara)</option>' : '<option value="">(Category nai)</option>';
-  cats.forEach(c => h += `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`);
-  return h;
+/* tabs */
+const TABS = [["upload", "up", "Upload"], ["media", "img", "Media"], ["cats", "grid", "Categories"], ["users", "user", "Users"], ["premium", "crown", "Premium"], ["notify", "bell", "Notify"], ["notices", "notice", "Notices"], ["tickets", "ticket", "Tickets"], ["settings", "sliders", "Settings"]];
+$("tabs").innerHTML = TABS.map(([k, i, l]) => `<button class="tab" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}</button>`).join("");
+let tkTimer;
+function show(t) {
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  TABS.forEach(([k]) => $("t-" + k).hidden = k !== t);
+  clearInterval(tkTimer);
+  ({ media: () => loadMedia(true), users: loadUsers, premium: loadPremium, notify: loadNotify, notices: loadNotices, tickets: () => { tkOpen = null; showList(); loadTickets(); tkTimer = setInterval(() => { if (!tkOpen) loadTickets(); }, 30000); }, settings: loadSettings }[t] || (() => {}))();
+  scrollTo(0, 0);
 }
+$("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
+async function badges() { const { count } = await sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"); const b = $("tkBd"); b.hidden = !count; b.textContent = count || ""; }
+
+/* preview helper: 40px blur-teaser jpeg */
+function makePreview(src, type) {
+  return new Promise(res => {
+    const fin = v => res(v);
+    const draw = el => { try { const c = document.createElement("canvas"); c.width = c.height = 40; const w = el.videoWidth || el.naturalWidth, h = el.videoHeight || el.naturalHeight, s = Math.min(w, h); c.getContext("2d").drawImage(el, (w - s) / 2, (h - s) / 2, s, s, 0, 0, 40, 40); fin(c.toDataURL("image/jpeg", .6)); } catch { fin(null); } };
+    if (type === "image") { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => draw(im); im.onerror = () => fin(null); im.src = src; }
+    else { const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.crossOrigin = "anonymous"; v.preload = "auto"; v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); }; v.onseeked = () => draw(v); v.onerror = () => fin(null); v.src = src; setTimeout(() => fin(null), 15000); }
+  });
+}
+async function pushTG(title, body, tg_id, dry) {
+  const { data: { session } } = await sb.auth.getSession();
+  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/notify`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY },
+    body: JSON.stringify({ title, body, tg_id: tg_id ? Number(tg_id) : undefined, open_url: `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`, dry_run: !!dry }) });
+  return r.json();
+}
+const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: v });
+const catOpts = (sel, all) => (all ? '<option value="">Shob category</option><option value="none">(Category chhara)</option>' : '<option value="">(Category nai)</option>') + cats.map(c => `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+
+/* categories */
 async function loadCats() {
   const { data, error } = await sb.from("categories").select("*").order("sort_order").order("name");
-  if (error) return alert(error.message);
+  if (error) return toast(error.message);
   cats = data || [];
-  $("upCat").innerHTML = catOptions("");
-  const cur = $("mCat").value;
-  $("mCat").innerHTML = catOptions("", "filter"); $("mCat").value = cur;
-  $("catList").innerHTML = cats.map(c => `
-    <div class="row" style="padding:8px 0;border-bottom:1px solid #eee" data-id="${c.id}">
-      <input type="text" value="${esc(c.name)}" class="cn" style="flex:1;min-width:140px;margin:0">
-      <input type="number" value="${c.sort_order}" class="co" style="width:80px;margin:0" title="Order">
-      <button class="sm cs">Save</button>
-      <button class="sm danger cd">Delete</button>
-    </div>`).join("") || '<p class="hint">Kono category nai.</p>';
+  $("upCat").innerHTML = catOpts(""); const cur = $("mCat").value; $("mCat").innerHTML = catOpts("", true); $("mCat").value = cur;
+  $("catList").innerHTML = cats.map(c => `<div class="row line" data-id="${c.id}"><input type="text" class="cn" value="${esc(c.name)}" style="flex:1;min-width:140px"><input type="number" class="co" value="${c.sort_order}" style="width:80px"><button class="btn xs cs">Save</button><button class="btn dg xs cd">Delete</button></div>`).join("") || '<p class="mute" style="padding:12px 0">Kono category nai.</p>';
   document.querySelectorAll("#catList [data-id]").forEach(r => {
-    const id = r.dataset.id;
-    r.querySelector(".cs").onclick = async () => {
-      const { error } = await sb.from("categories").update({ name: r.querySelector(".cn").value.trim(), sort_order: Number(r.querySelector(".co").value) || 0 }).eq("id", id);
-      if (error) alert(error.message); else loadCats();
-    };
-    r.querySelector(".cd").onclick = async () => {
-      if (!confirm("Category delete korbe? (Post gulo thakbe, shudhu category chhara hoye jabe)")) return;
-      const { error } = await sb.from("categories").delete().eq("id", id);
-      if (error) alert(error.message); else loadCats();
-    };
+    r.querySelector(".cs").onclick = async () => { const { error } = await sb.from("categories").update({ name: r.querySelector(".cn").value.trim(), sort_order: Number(r.querySelector(".co").value) || 0 }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadCats()); };
+    r.querySelector(".cd").onclick = async () => { if (!confirm("Category delete korbe? Post gulo thakbe.")) return; const { error } = await sb.from("categories").delete().eq("id", r.dataset.id); error ? toast(error.message) : loadCats(); };
   });
 }
-$("addCat").onclick = async () => {
-  const name = $("newCat").value.trim(); if (!name) return;
-  const { error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 });
-  if (error) alert(error.message); else { $("newCat").value = ""; loadCats(); }
-};
+$("addCat").onclick = async () => { const name = $("newCat").value.trim(); if (!name) return; const { error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 }); error ? toast(error.message) : ($("newCat").value = "", loadCats()); };
 
-/* ---------- Upload ---------- */
-$("uploadBtn").onclick = async () => {
-  const files = [...$("files").files];
-  if (!files.length) return alert("Age file select koro");
-  const title = $("titleIn").value.trim();
-  const category_id = $("upCat").value || null;
-  const access = $("upAccess").value;
-  $("uploadBtn").disabled = true; $("log").textContent = "";
-
+/* upload */
+$("upBtn").onclick = async () => {
+  const files = [...$("files").files]; if (!files.length) return toast("Age file select koro");
+  const title = $("upTitle").value.trim(), category_id = $("upCat").value || null, access = $("upAccess").value;
+  $("upBtn").disabled = true; $("log").textContent = ""; $("upProg").style.width = "0";
   const { data: top } = await sb.from("media").select("serial_no").order("serial_no", { ascending: false }).limit(1);
-  let serial = (top?.[0]?.serial_no || 0);
-  let ok = 0;
+  let serial = top?.[0]?.serial_no || 0, ok = 0, lastId = null;
   for (const [i, f] of files.entries()) {
-    const type = f.type.startsWith("video") ? "video" : "image";
-    const ext = (f.name.split(".").pop() || "bin").toLowerCase();
+    const type = f.type.startsWith("video") ? "video" : "image", ext = (f.name.split(".").pop() || "bin").toLowerCase();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-    $("log").textContent += `(${i + 1}/${files.length}) ${f.name} uploading...\n`;
-    const { error: upErr } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
-    if (upErr) { $("log").textContent += `  ❌ ${upErr.message}\n`; continue; }
+    $("log").textContent += `(${i + 1}/${files.length}) ${f.name}\n`;
+    const { error: ue } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
+    if (ue) { $("log").textContent += `  fail: ${ue.message}\n`; continue; }
+    const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
     serial++;
-    const { error: dbErr } = await sb.from("media").insert({
-      title: title || f.name.replace(/\.[^.]+$/, ""), type, path, category_id, access, serial_no: serial,
-    });
-    if (dbErr) { $("log").textContent += `  ❌ ${dbErr.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
-    ok++;
+    const { data: row, error: de } = await sb.from("media").insert({ title: title || f.name.replace(/\.[^.]+$/, ""), type, path, category_id, access, serial_no: serial, preview }).select("id").single();
+    if (de) { $("log").textContent += `  fail: ${de.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
+    ok++; lastId = row.id; $("upProg").style.width = Math.round(((i + 1) / files.length) * 100) + "%";
   }
-  $("log").textContent += `\nDone: ${ok}/${files.length} uploaded ✅`;
-  $("files").value = ""; $("uploadBtn").disabled = false;
+  $("log").textContent += `\nDone: ${ok}/${files.length}`;
+  if (ok && $("upNotif").checked) {
+    const body = title || `${ok} ta notun post`;
+    await sb.from("notifications").insert({ kind: "post", title: "New post added", body, media_id: lastId, popup: true });
+    if ($("upPush").checked) { try { const r = await pushTG("New post added", body); $("log").textContent += `\nTelegram push: ${r.sent ?? 0} pathano, ${r.failed ?? 0} fail${r.error ? " (" + r.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush fail: " + e.message; } }
+  }
+  $("files").value = ""; $("upBtn").disabled = false; if (ok) toast(`${ok} ta upload hoyeche`);
 };
 
-/* ---------- Media ---------- */
+/* media */
 let mPage = 0; const MP = 30;
-$("mGo").onclick = () => loadMedia(true);
-$("mMore").onclick = () => loadMedia(false);
+$("mGo").onclick = () => loadMedia(true); $("mMore").onclick = () => loadMedia(false);
 async function loadMedia(reset) {
-  if (reset) { mPage = 0; $("mlist").innerHTML = ""; }
-  let q = sb.from("media").select("*", { count: "exact" })
-    .order("serial_no", { ascending: false }).order("created_at", { ascending: false })
-    .range(mPage * MP, mPage * MP + MP - 1);
-  const f = $("mCat").value;
-  if (f === "none") q = q.is("category_id", null); else if (f) q = q.eq("category_id", f);
-  const s = $("mSearch").value.trim().replace(/[%\\]/g, "");
-  if (s) q = q.ilike("title", `%${s}%`);
-  const { data, count, error } = await q;
-  if (error) return alert(error.message);
+  if (reset) { mPage = 0; $("mList").innerHTML = ""; }
+  let q = sb.from("media").select("*", { count: "exact" }).order("serial_no", { ascending: false }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
+  const f = $("mCat").value; if (f === "none") q = q.is("category_id", null); else if (f) q = q.eq("category_id", f);
+  if ($("mAcc").value) q = q.eq("access", $("mAcc").value); if ($("mType").value) q = q.eq("type", $("mType").value);
+  const s = $("mQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = q.ilike("title", `%${s}%`);
+  const { data, count, error } = await q; if (error) return toast(error.message);
   $("mCount").textContent = count ?? 0;
-
-  const urls = {};
-  if (data.length) {
-    const { data: signed } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 3600);
-    (signed || []).forEach(x => { if (x.signedUrl) urls[x.path] = x.signedUrl; });
-  }
+  const urls = {}; if (data.length) { const { data: sg } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 3600); (sg || []).forEach(x => { if (x.signedUrl) urls[x.path] = x.signedUrl; }); }
   data.forEach(m => {
-    const d = document.createElement("div"); d.className = "m";
-    const pv = m.type === "image"
-      ? `<img class="pv" loading="lazy" src="${esc(urls[m.path])}">`
-      : `<video class="pv" muted preload="metadata" src="${esc(urls[m.path])}#t=0.5"></video>`;
-    d.innerHTML = `${pv}
-      <div>
-        <div class="f">
-          <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div>
-          <div><label>Category</label><select class="c">${catOptions(m.category_id)}</select></div>
-          <div><label>Access</label><select class="a">
-            <option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
-          <div><label>Serial (boro = upore)</label><input type="number" class="s" value="${m.serial_no}"></div>
-        </div>
-        <div class="row" style="margin-top:4px"><span class="hint">👁 ${m.views} views</span>
-          <span><button class="sm sv">Save</button> <button class="sm danger dl">Delete</button></span></div>
-      </div>`;
+    const d = document.createElement("div"); d.className = "item";
+    const pv = m.type === "image" ? `<img class="pv" loading="lazy" src="${esc(urls[m.path])}">` : `<video class="pv" muted preload="metadata" src="${esc(urls[m.path])}#t=0.5"></video>`;
+    d.innerHTML = `${pv}<div><div class="fs">
+      <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div>
+      <div><label>Category</label><select class="c">${catOpts(m.category_id)}</select></div>
+      <div><label>Access</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
+      <div><label>Serial</label><input type="number" class="s" value="${m.serial_no}"></div></div>
+      <div class="row between" style="margin-top:8px"><span class="mute sm">${m.views} views ${m.preview ? "" : '<span class="pill r">no preview</span>'}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div>`;
     d.querySelector(".a").value = m.access;
-    d.querySelector(".sv").onclick = async () => {
-      const { error } = await sb.from("media").update({
-        title: d.querySelector(".t").value.trim() || null,
-        category_id: d.querySelector(".c").value || null,
-        access: d.querySelector(".a").value,
-        serial_no: Number(d.querySelector(".s").value) || 0,
-      }).eq("id", m.id);
-      if (error) alert(error.message); else d.querySelector(".sv").textContent = "Saved ✓";
-    };
-    d.querySelector(".dl").onclick = async () => {
-      if (!confirm("Delete korbe?")) return;
-      await sb.storage.from(C.BUCKET).remove([m.path]);
-      const { error } = await sb.from("media").delete().eq("id", m.id);
-      if (error) alert(error.message); else d.remove();
-    };
-    $("mlist").appendChild(d);
+    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, serial_no: Number(d.querySelector(".s").value) || 0 }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete korbe?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
+    $("mList").appendChild(d);
   });
-  mPage++;
-  $("mMore").hidden = mPage * MP >= (count ?? 0);
+  mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
 }
+$("mFix").onclick = async () => {
+  $("mFix").disabled = true; let done = 0, fail = 0;
+  for (;;) {
+    const { data } = await sb.from("media").select("id,path,type").is("preview", null).limit(20); if (!data?.length) break;
+    const { data: sg } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 600);
+    let progress = 0;
+    for (const m of data) {
+      const url = (sg || []).find(x => x.path === m.path)?.signedUrl;
+      const p = url ? await makePreview(url, m.type) : null;
+      if (p) { await sb.from("media").update({ preview: p }).eq("id", m.id); done++; progress++; } else { await sb.from("media").update({ preview: "" }).eq("id", m.id); fail++; }
+      $("mFixMsg").textContent = `${done} thik, ${fail} fail`;
+    }
+    if (!progress && !data.length) break;
+  }
+  $("mFix").disabled = false; $("mFixMsg").textContent = `Shesh: ${done} thik, ${fail} fail`; loadMedia(true);
+};
 
-/* ---------- Users ---------- */
-$("uGo").onclick = loadUsers;
-const fdate = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+/* users */
+$("uGo").onclick = loadUsers; $("uQ").addEventListener("keydown", e => { if (e.key === "Enter") loadUsers(); });
 async function loadUsers() {
   let q = sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(50);
-  const s = $("uSearch").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
-  if (s) {
-    if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s));
-    else q = q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%`);
-  }
-  const { data, error } = await q;
-  if (error) return alert(error.message);
-  const box = $("ulist"); box.innerHTML = "";
-  if (!data.length) { box.innerHTML = '<p class="hint">Kono user nai.</p>'; return; }
+  const s = $("uQ").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
+  if (s) q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`);
+  const { data, error } = await q; if (error) return toast(error.message);
+  const box = $("uList"); box.innerHTML = data.length ? "" : '<p class="mute" style="padding:12px 0">Kono user nai.</p>';
   data.forEach(u => {
-    const prem = u.premium_until && new Date(u.premium_until) > new Date();
-    const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || "User";
-    const d = document.createElement("div"); d.className = "u";
-    d.innerHTML = `<b>${esc(name)}</b> ${u.username ? "@" + esc(u.username) : ""}
-      ${prem ? `<span class="badge gold">Premium → ${fdate(u.premium_until)}</span>` : ""}
-      ${u.private_access ? '<span class="badge pur">Private</span>' : ""}
-      ${u.is_banned ? '<span class="badge red">Banned</span>' : ""}
-      <div class="meta">ID ${u.tg_id} · Invite: ${u.ref_count} · Join: ${fdate(u.created_at)}</div>
-      <div class="acts">
-        <button class="sm d1">+1d</button><button class="sm d7">+7d</button><button class="sm d30">+30d</button>
-        <input type="number" class="cd" placeholder="din"><button class="sm dc">Add</button>
-        <button class="sm ghost dr">Premium remove</button>
-        <label><input type="checkbox" class="pa" ${u.private_access ? "checked" : ""}> Private access</label>
-        <label><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label>
-      </div>`;
-    const addDays = async days => {
-      if (!days) return;
-      const base = Math.max(Date.now(), u.premium_until ? new Date(u.premium_until).getTime() : 0);
-      const { error } = await sb.from("profiles").update({ premium_until: new Date(base + days * 86400000).toISOString() }).eq("tg_id", u.tg_id);
-      if (error) alert(error.message); else loadUsers();
-    };
-    d.querySelector(".d1").onclick = () => addDays(1);
-    d.querySelector(".d7").onclick = () => addDays(7);
-    d.querySelector(".d30").onclick = () => addDays(30);
-    d.querySelector(".dc").onclick = () => addDays(Number(d.querySelector(".cd").value));
-    d.querySelector(".dr").onclick = async () => {
-      const { error } = await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id);
-      if (error) alert(error.message); else loadUsers();
-    };
-    d.querySelector(".pa").onchange = async e => {
-      const { error } = await sb.from("profiles").update({ private_access: e.target.checked }).eq("tg_id", u.tg_id);
-      if (error) alert(error.message); else loadUsers();
-    };
-    d.querySelector(".bn").onchange = async e => {
-      const { error } = await sb.from("profiles").update({ is_banned: e.target.checked }).eq("tg_id", u.tg_id);
-      if (error) alert(error.message); else loadUsers();
-    };
+    const prem = u.premium_until && new Date(u.premium_until) > new Date(), name = u.display_name || [u.first_name, u.last_name].filter(Boolean).join(" ") || "User";
+    const d = document.createElement("div"); d.className = "line";
+    d.innerHTML = `<div class="row"><b>${esc(name)}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${prem ? `<span class="pill g">Premium till ${fdate(u.premium_until)}</span>` : ""}${u.private_access ? '<span class="pill v">Private</span>' : ""}${u.is_banned ? '<span class="pill r">Banned</span>' : ""}${u.notify === false ? '<span class="pill">Notif off</span>' : ""}</div>
+      <div class="mute sm" style="margin:3px 0 8px">ID ${u.tg_id}  ·  Invites ${u.ref_count}  ·  Joined ${fdate(u.created_at)}</div>
+      <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><input type="number" placeholder="din" class="cu" style="width:80px;padding:5px 8px"><button class="btn gh xs ca">Add</button><button class="btn gh xs rm">Premium remove</button>
+      <label class="ck"><input type="checkbox" class="pa" ${u.private_access ? "checked" : ""}> Private</label><label class="ck"><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label></div>`;
+    const add = async days => { if (!days) return; const base = Math.max(Date.now(), u.premium_until ? new Date(u.premium_until).getTime() : 0); const { error } = await sb.from("profiles").update({ premium_until: new Date(base + days * 86400000).toISOString() }).eq("tg_id", u.tg_id); error ? toast(error.message) : loadUsers(); };
+    d.querySelectorAll("[data-d]").forEach(b => b.onclick = () => add(+b.dataset.d));
+    d.querySelector(".ca").onclick = () => add(Number(d.querySelector(".cu").value));
+    d.querySelector(".rm").onclick = async () => { await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id); loadUsers(); };
+    d.querySelector(".pa").onchange = async e => { await sb.from("profiles").update({ private_access: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
+    d.querySelector(".bn").onchange = async e => { await sb.from("profiles").update({ is_banned: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
     box.appendChild(d);
   });
 }
 
-/* ---------- Settings ---------- */
-async function loadSettings() {
-  const { data } = await sb.from("settings").select("value").eq("key", "ref_reward_days").maybeSingle();
-  $("refDays").value = data?.value ?? "1";
+/* premium */
+async function loadPremium() {
+  const [pm, mem, cu, pl, st] = await Promise.all([
+    sb.from("media").select("id", { count: "exact", head: true }).eq("access", "premium"),
+    sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("premium_until", new Date().toISOString()),
+    sb.from("codes").select("used_count,max_uses"),
+    sb.from("plans").select("*").order("sort_order"),
+    sb.from("settings").select("key,value").in("key", ["premium_intro", "how_to_buy", "contact_link"]),
+  ]);
+  const codes = cu.data || [], used = codes.reduce((a, c) => a + c.used_count, 0);
+  $("pStats").innerHTML = [[pm.count ?? 0, "Premium post"], [mem.count ?? 0, "Active members"], [codes.length, "Code banano"], [used, "Code use hoyeche"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+  const sv = {}; (st.data || []).forEach(r => sv[r.key] = r.value);
+  $("sIntro").value = sv.premium_intro || ""; $("sHow").value = sv.how_to_buy || ""; $("sContact").value = sv.contact_link || "";
+  drawPlans(pl.data || []); loadCodes();
 }
-$("saveSet").onclick = async () => {
-  const v = String(Math.max(0, Math.floor(Number($("refDays").value) || 0)));
-  const { error } = await sb.from("settings").upsert({ key: "ref_reward_days", value: v });
-  $("setMsg").textContent = error ? error.message : "Saved ✅";
+function drawPlans(list) {
+  $("plList").innerHTML = list.map(p => `<div class="line" data-id="${p.id}"><div class="cols">
+    <label class="f"><span>Naam</span><input type="text" class="n" value="${esc(p.name)}"></label><label class="f"><span>Din</span><input type="number" class="d" value="${p.days}"></label>
+    <label class="f"><span>Daam</span><input type="text" class="p" value="${esc(p.price)}"></label><label class="f"><span>Purano daam</span><input type="text" class="op" value="${esc(p.old_price || "")}"></label>
+    <label class="f"><span>Badge</span><input type="text" class="b" value="${esc(p.badge || "")}"></label><label class="f"><span>Order</span><input type="number" class="o" value="${p.sort_order}"></label></div>
+    <label class="f"><span>Perks (proti line e ekta)</span><textarea class="pk" style="min-height:70px">${esc(p.perks || "")}</textarea></label>
+    <div class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></div></div>`).join("") || '<p class="mute">Kono plan nai.</p>';
+  $("plList").querySelectorAll("[data-id]").forEach(r => {
+    r.querySelector(".sv").onclick = async () => { const { error } = await sb.from("plans").update({ name: r.querySelector(".n").value.trim(), days: Number(r.querySelector(".d").value) || 1, price: r.querySelector(".p").value.trim(), old_price: r.querySelector(".op").value.trim() || null, badge: r.querySelector(".b").value.trim() || null, sort_order: Number(r.querySelector(".o").value) || 0, perks: r.querySelector(".pk").value, active: r.querySelector(".ac").checked }).eq("id", r.dataset.id); error ? toast(error.message) : toast("Saved"); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Plan delete korbe?")) return; await sb.from("plans").delete().eq("id", r.dataset.id); loadPremium(); };
+  });
+}
+$("plAdd").onclick = async () => { const { error } = await sb.from("plans").insert({ name: "New plan", days: 30, price: "", sort_order: 99 }); error ? toast(error.message) : loadPremium(); };
+$("sSave").onclick = async () => { const r = await Promise.all([setSetting("premium_intro", $("sIntro").value.trim()), setSetting("how_to_buy", $("sHow").value), setSetting("contact_link", $("sContact").value.trim())]); toast(r.some(x => x.error) ? "Error" : "Saved"); };
+
+const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+function genCode() { const b = crypto.getRandomValues(new Uint8Array(12)); const s = [...b].map(x => ALPHA[x % ALPHA.length]).join(""); return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`; }
+$("cgGo").onclick = async () => {
+  const n = Math.min(100, Math.max(1, Number($("cgN").value) || 1)), days = Number($("cgD").value), uses = Number($("cgU").value) || 1;
+  if (!days) return toast("Din dao");
+  const exp = $("cgE").value ? new Date($("cgE").value + "T23:59:59").toISOString() : null, note = $("cgNote").value.trim() || null;
+  const rows = Array.from({ length: n }, () => ({ code: genCode(), days, max_uses: uses, expires_at: exp, note }));
+  const { error } = await sb.from("codes").insert(rows); if (error) return toast(error.message);
+  toast(`${n} ta code toiri`); loadCodes(); loadPremium();
 };
+let cFilter = "unused", codeCache = [];
+$("cFilter").onclick = e => { const b = e.target.closest("button"); if (!b) return; cFilter = b.dataset.v; document.querySelectorAll("#cFilter button").forEach(x => x.classList.toggle("on", x === b)); drawCodes(); };
+async function loadCodes() { const { data } = await sb.from("codes").select("*").order("created_at", { ascending: false }).limit(300); codeCache = data || []; drawCodes(); }
+const unusedList = () => codeCache.filter(c => c.used_count < c.max_uses && !(c.expires_at && new Date(c.expires_at) < new Date()));
+function drawCodes() {
+  const list = cFilter === "all" ? codeCache : cFilter === "used" ? codeCache.filter(c => c.used_count > 0) : unusedList();
+  $("cList").innerHTML = list.map(c => `<div class="row between line" data-c="${c.code}"><div><code class="cd">${c.code}</code> <span class="pill">${c.days}d</span> <span class="pill ${c.used_count ? "g" : ""}">${c.used_count}/${c.max_uses}</span>${c.expires_at ? ` <span class="mute sm">till ${fdate(c.expires_at)}</span>` : ""}${c.note ? ` <span class="mute sm">${esc(c.note)}</span>` : ""}</div><span class="row"><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute" style="padding:10px 0">Kono code nai.</p>';
+  $("cList").querySelectorAll("[data-c]").forEach(r => {
+    r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied"));
+    r.querySelector(".dl").onclick = async () => { await sb.from("codes").delete().eq("code", r.dataset.c); loadCodes(); };
+  });
+}
+$("cCopy").onclick = () => { const t = unusedList().map(c => c.code).join("\n"); navigator.clipboard.writeText(t).then(() => toast(`${unusedList().length} ta code copy hoyeche`)); };
+
+/* notify */
+const TPL = { offer: ["premium", "Premium offer", "Aj Monthly plan e special daam. Details Profile > Premium e."], drop: ["custom", "New collection ashche", "Ei shoptaho e notun post ashche. Dekhte bhulo na."], maint: ["notice", "Maintenance", "Kichukkhon app dhire cholte pare. Dhonnobad."] };
+$("nTpl").onclick = e => { const b = e.target.closest("button"); if (!b) return; const [k, t, m] = TPL[b.dataset.t]; $("nKind").value = k; $("nTitle").value = t; $("nBody").value = m; };
+$("nSend").onclick = async () => {
+  const title = $("nTitle").value.trim(); if (!title) return toast("Title dao");
+  const tg = $("nTg").value.trim(), body = $("nBody").value.trim();
+  if (tg && !/^\d+$/.test(tg)) return toast("Telegram ID shudhu number");
+  $("nSend").disabled = true; $("nMsg").textContent = "";
+  const { error } = await sb.from("notifications").insert({ kind: $("nKind").value, title, body: body || null, tg_id: tg ? Number(tg) : null, popup: $("nPop").checked });
+  if (error) { toast(error.message); $("nSend").disabled = false; return; }
+  let msg = "App e gelo";
+  if ($("nPush").checked) { try { const r = await pushTG(title, body, tg); msg += r.error ? `. Push fail: ${r.error}` : `. Telegram: ${r.sent} pathano, ${r.failed} fail${r.stopped_early ? " (bhaag e pathano, abar chalao)" : ""}`; } catch (e) { msg += ". Push fail: " + e.message; } }
+  $("nMsg").textContent = msg; $("nSend").disabled = false; $("nTitle").value = ""; $("nBody").value = ""; loadNotify();
+};
+async function loadNotify() {
+  const { data } = await sb.from("notifications").select("*").order("created_at", { ascending: false }).limit(40);
+  $("nList").innerHTML = (data || []).map(n => `<div class="row between line" data-id="${n.id}"><div><b>${esc(n.title)}</b> <span class="pill">${n.kind}</span>${n.tg_id ? ` <span class="pill v">to ${n.tg_id}</span>` : ""}<div class="mute sm">${esc(n.body || "")}  ·  ${ago(n.created_at)}</div></div><button class="btn dg xs">Delete</button></div>`).join("") || '<p class="mute">Kichu nai.</p>';
+  $("nList").querySelectorAll("[data-id]").forEach(r => r.querySelector("button").onclick = async () => { await sb.from("notifications").delete().eq("id", r.dataset.id); loadNotify(); });
+}
+
+/* notices */
+$("ntAdd").onclick = async () => {
+  const title = $("ntTitle").value.trim(); if (!title) return toast("Title dao");
+  const body = $("ntBody").value.trim() || null;
+  const { error } = await sb.from("notices").insert({ title, body, pinned: $("ntPin").checked }); if (error) return toast(error.message);
+  if ($("ntNotif").checked) await sb.from("notifications").insert({ kind: "notice", title, body, popup: true });
+  $("ntTitle").value = ""; $("ntBody").value = ""; $("ntPin").checked = false; toast("Publish hoyeche"); loadNotices();
+};
+async function loadNotices() {
+  const { data } = await sb.from("notices").select("*").order("pinned", { ascending: false }).order("created_at", { ascending: false }).limit(60);
+  $("ntList").innerHTML = (data || []).map(n => `<div class="line" data-id="${n.id}"><div class="row between"><b>${esc(n.title)} ${n.pinned ? '<span class="pill g">Pinned</span>' : ""}</b><span class="row"><button class="btn gh xs pn">${n.pinned ? "Unpin" : "Pin"}</button><button class="btn dg xs dl">Delete</button></span></div><div class="mute sm" style="white-space:pre-wrap">${esc(n.body || "")}</div></div>`).join("") || '<p class="mute">Kono notice nai.</p>';
+  $("ntList").querySelectorAll("[data-id]").forEach(r => {
+    const n = data.find(x => x.id === r.dataset.id);
+    r.querySelector(".pn").onclick = async () => { await sb.from("notices").update({ pinned: !n.pinned }).eq("id", n.id); loadNotices(); };
+    r.querySelector(".dl").onclick = async () => { if (confirm("Delete korbe?")) { await sb.from("notices").delete().eq("id", n.id); loadNotices(); } };
+  });
+}
+
+/* tickets */
+let tkFilter = "active", tkOpen = null;
+$("tkF").onclick = e => { const b = e.target.closest("button"); if (!b) return; tkFilter = b.dataset.v; document.querySelectorAll("#tkF button").forEach(x => x.classList.toggle("on", x === b)); loadTickets(); };
+function showList() { $("tkListWrap").hidden = false; $("tkThread").hidden = true; }
+async function loadTickets() {
+  let q = sb.from("tickets").select("*, profiles(first_name,last_name,username,display_name)").order("updated_at", { ascending: false }).limit(60);
+  if (tkFilter === "active") q = q.in("status", ["open", "answered"]); else if (tkFilter === "closed") q = q.eq("status", "closed");
+  const { data, error } = await q; if (error) return toast(error.message);
+  $("tkList").innerHTML = (data || []).map(t => { const p = t.profiles || {}, nm = p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || t.tg_id; return `<div class="row between line" data-id="${t.id}" style="cursor:pointer"><div><b>${esc(t.subject)}</b><div class="mute sm">${esc(nm)}${p.username ? " @" + esc(p.username) : ""}  ·  ${t.category}  ·  ${ago(t.updated_at)}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>`; }).join("") || '<p class="mute" style="padding:10px 0">Kono ticket nai.</p>';
+  $("tkList").querySelectorAll("[data-id]").forEach(r => r.onclick = () => openTicket(data.find(t => t.id === r.dataset.id)));
+  badges();
+}
+async function openTicket(t) {
+  tkOpen = t; $("tkListWrap").hidden = true; $("tkThread").hidden = false;
+  const { data: msgs } = await sb.from("ticket_messages").select("*").eq("ticket_id", t.id).order("created_at");
+  const p = t.profiles || {}, nm = p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || t.tg_id;
+  $("tkThread").innerHTML = `<button class="btn gh xs" id="tkBack" style="margin-bottom:14px">Back</button><div class="card"><div class="row between"><div><h3 style="margin:0">${esc(t.subject)}</h3><div class="mute sm">${esc(nm)}${p.username ? " @" + esc(p.username) : ""}  ·  ID ${t.tg_id}  ·  ${t.category}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>
+    <div style="margin:18px 0">${(msgs || []).map(m => `<div class="bub ${m.from_admin ? "me" : ""}">${esc(m.body)}<small>${m.from_admin ? "Admin" : "User"}  ·  ${ago(m.created_at)}</small></div>`).join("")}</div>
+    ${t.status === "closed" ? "" : `<textarea id="tkR" placeholder="Reply likho"></textarea><div class="row" style="margin-top:10px"><button class="btn" id="tkSend">Reply pathao</button><button class="btn gh" id="tkClose">Close ticket</button></div>`}
+    ${t.status === "closed" ? `<button class="btn gh" id="tkRe">Reopen</button>` : ""}</div>`;
+  $("tkBack").onclick = () => { tkOpen = null; showList(); loadTickets(); };
+  const setStatus = async s => { await sb.from("tickets").update({ status: s, updated_at: new Date().toISOString() }).eq("id", t.id); t.status = s; openTicket(t); badges(); };
+  $("tkSend")?.addEventListener("click", async () => {
+    const body = $("tkR").value.trim(); if (!body) return;
+    const { error } = await sb.from("ticket_messages").insert({ ticket_id: t.id, from_admin: true, body }); if (error) return toast(error.message);
+    await sb.from("tickets").update({ status: "answered", updated_at: new Date().toISOString() }).eq("id", t.id);
+    await sb.from("notifications").insert({ kind: "ticket", title: "Ticket reply", body: t.subject, tg_id: t.tg_id, popup: true });
+    t.status = "answered"; toast("Reply gelo"); openTicket(t); badges();
+  });
+  $("tkClose")?.addEventListener("click", () => setStatus("closed")); $("tkRe")?.addEventListener("click", () => setStatus("open"));
+}
+
+/* settings */
+async function loadSettings() {
+  const { data } = await sb.from("settings").select("value").eq("key", "ref_reward_days").maybeSingle(); $("refDays").value = data?.value ?? "1";
+  $("chkInfo").textContent = `Bot: @${C.BOT_USERNAME}  ·  Mini app short name: ${C.APP_SHORT_NAME}  ·  Open link: https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`;
+}
+$("refSave").onclick = async () => { const { error } = await setSetting("ref_reward_days", String(Math.max(0, Math.floor(Number($("refDays").value) || 0)))); toast(error ? error.message : "Saved"); };
+$("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Fail: " + r.error : `OK. ${r.total} jon notify on, BOT_TOKEN ${r.token ? "set" : "NEI"}`; } catch (e) { $("chkMsg").textContent = "Function pawa jayni: " + e.message; } };
 
 refreshUI();
 </script>
