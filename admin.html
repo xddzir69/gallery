@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -86,6 +86,26 @@
   #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 20px; border-radius: 999px; font-weight: 600; font-size: 13.5px; z-index: 99; display: none; max-width: 90vw; }
   code.cd { font-family: ui-monospace, Menlo, monospace; font-size: 13px; letter-spacing: .04em; }
   .prog { height: 6px; background: var(--card2); border-radius: 6px; overflow: hidden; margin-top: 8px; } .prog i { display: block; height: 100%; width: 0; background: var(--metal); transition: width .3s; }
+  /* V4 additions */
+  .dz { border: 2px dashed var(--line); border-radius: 16px; padding: 22px; text-align: center; color: var(--mute); cursor: pointer; margin-bottom: 12px; }
+  .dz.on { border-color: var(--gold); color: var(--text); }
+  .tg { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .tg .t { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: var(--bg2); }
+  .tg .t img, .tg .t video { width: 100%; height: 100%; object-fit: cover; }
+  .tg .t button { position: absolute; right: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: rgba(0,0,0,.6); color: #fff; font-size: 12px; line-height: 20px; }
+  .tg .t i { position: absolute; left: 4px; bottom: 3px; font-style: normal; font-size: 10px; color: #fff; text-shadow: 0 1px 3px #000; }
+  .bars { display: flex; align-items: flex-end; gap: 5px; height: 110px; padding-top: 6px; }
+  .bars div { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; font-size: 10px; color: var(--mute); }
+  .bars i { display: block; width: 100%; border-radius: 5px 5px 2px 2px; background: var(--metal); min-height: 2px; }
+  .bars b { font-weight: 600; font-size: 10px; color: var(--text); }
+  .pvw { position: relative; } .pvw input[type=checkbox] { position: absolute; left: 5px; top: 5px; width: 20px; height: 20px; z-index: 2; }
+  .bulk { position: sticky; top: 0; z-index: 10; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding: 10px 12px; margin-bottom: 12px; border-radius: 14px; background: var(--card2); border: 1px solid var(--gold); }
+  .pill.ok { color: #5BC48C; } .pill.warn { color: var(--gold); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } @media (max-width: 700px) { .two { grid-template-columns: 1fr; } }
+  .cvr { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 8px; margin: 10px 0; }
+  .cvr .t { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; cursor: pointer; outline: 3px solid transparent; }
+  .cvr .t.on { outline-color: var(--gold); } .cvr img, .cvr video { width: 100%; height: 100%; object-fit: cover; }
+  a.lk { color: var(--gold); text-decoration: none; }
 </style>
 </head>
 <body>
@@ -104,6 +124,10 @@
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-banner" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M6 14l3-3 3 3 2-2 4 4"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.8-1.5-1.2-2.8-1.2-1.6 0-2.7.8-2.7 2 0 2.8 5.6 1.2 5.6 4 0 1.2-1.2 2-2.9 2-1.3 0-2.4-.5-3-1.4M12 6.5V8M12 16v1.5"/></symbol>
 </svg>
 
 <div class="login" id="loginBox">
@@ -111,7 +135,7 @@
     <div class="row" style="margin-bottom:18px"><svg class="i" style="width:38px;height:38px"><use href="#logo"/></svg><h2 style="margin:0">Admin</h2></div>
     <label class="f"><span>Email</span><input type="email" id="email" autocomplete="username"></label>
     <label class="f"><span>Password</span><input type="password" id="pass" autocomplete="current-password"></label>
-    <button class="btn" id="loginBtn" style="width:100%">Login</button>
+    <button class="btn" id="loginBtn" style="width:100%">Log in</button>
     <div id="loginErr" style="color:var(--danger);margin-top:10px"></div>
   </div>
 </div>
@@ -121,121 +145,135 @@
     <div class="brand"><svg><use href="#logo"/></svg><span id="bt">Admin</span></div>
     <nav id="tabs"></nav>
     <div class="sp"></div>
-    <div class="side-foot">
-      <button class="btn gh xs" id="themeBtn">Theme</button>
-      <button class="btn gh xs" id="logoutBtn">Logout</button>
-    </div>
+    <div class="side-foot"><button class="btn gh xs" id="themeBtn">Theme</button><button class="btn gh xs" id="logoutBtn">Log out</button></div>
   </aside>
   <main>
+    <!-- DASHBOARD -->
+    <section id="t-dash"><h2>Dashboard</h2><p class="mute" style="margin-bottom:18px">A quick look at how things are going.</p>
+      <div class="stats" id="dStats"></div>
+      <div class="two"><div class="card"><h3>New users, 14 days</h3><div class="bars" id="dUsers"></div></div><div class="card"><h3>Revenue, 14 days (USDT)</h3><div class="bars" id="dRev"></div><p class="sm mute" id="dRevNote" style="margin-top:6px"></p></div></div>
+      <div class="two"><div class="card"><h3>Most viewed</h3><div id="dTop"></div></div><div class="card"><h3>Latest payments</h3><div id="dPay"></div></div></div>
+    </section>
+
     <!-- UPLOAD -->
-    <section id="t-upload">
-      <h2>Upload</h2><p class="mute" style="margin-bottom:18px">Photo ba video, ekshathe onek.</p>
+    <section id="t-upload" hidden><h2>Upload</h2><p class="mute" style="margin-bottom:18px">Photos and videos. Two or more can be grouped into one album (folder).</p>
       <div class="card">
-        <label class="f"><span>Files</span><input type="file" id="files" accept="image/*,video/*" multiple></label>
+        <div class="dz" id="dz">Drop files here or click to choose<input type="file" id="files" accept="image/*,video/*" multiple hidden></div>
+        <div class="tg" id="upPrev"></div>
         <div class="cols">
-          <label class="f"><span>Title (khali rakhle file er naam)</span><input type="text" id="upTitle"></label>
           <label class="f"><span>Category</span><select id="upCat"></select></label>
           <label class="f"><span>Access</span><select id="upAccess"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></label>
+          <label class="f"><span id="upTitleLb">Title (blank = file name)</span><input type="text" id="upTitle"></label>
         </div>
-        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="upNotif" checked> Users der notification pathao</label><label class="ck"><input type="checkbox" id="upPush"> Telegram e push o pathao</label></div>
+        <div class="row" style="margin-bottom:10px"><label class="ck"><input type="checkbox" id="upAlbum" checked> Group into one album</label></div>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="upNotif" checked> Send an in-app notification</label><label class="ck"><input type="checkbox" id="upPush"> Also push to Telegram</label></div>
         <button class="btn" id="upBtn">Upload</button>
-        <div class="prog"><i id="upProg"></i></div>
-        <div id="log"></div>
+        <div class="prog"><i id="upProg"></i></div><div id="log"></div>
       </div>
     </section>
 
-    <!-- MEDIA -->
-    <section id="t-media" hidden>
-      <h2>Media</h2><p class="mute" style="margin-bottom:18px"><span id="mCount">0</span> ta post</p>
-      <div class="card">
-        <div class="cols">
-          <input type="search" id="mQ" placeholder="Title khujo"><select id="mCat"></select>
-          <select id="mAcc"><option value="">Shob access</option><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select>
-          <select id="mType"><option value="">Photo + video</option><option value="image">Photo</option><option value="video">Video</option></select>
-        </div>
-        <div class="row" style="margin-top:12px"><button class="btn" id="mGo">Filter</button><button class="btn gh" id="mFix">Fix previews</button><span class="mute sm" id="mFixMsg"></span></div>
-      </div>
-      <div class="card" style="padding-top:4px"><div id="mList"></div><button class="btn gh" id="mMore" hidden style="margin-top:12px">Aro dekhao</button></div>
+    <!-- LIBRARY -->
+    <section id="t-media" hidden><h2>Library</h2><p class="mute" style="margin-bottom:14px"><span id="mCount">0</span> items</p>
+      <div class="chips" id="mView"><button data-v="posts" class="on">Posts</button><button data-v="albums">Albums</button></div>
+      <div class="card" id="mFilters"><div class="cols"><input type="search" id="mQ" placeholder="Search title"><select id="mCat"></select>
+        <select id="mAcc"><option value="">All access</option><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select>
+        <select id="mType"><option value="">Photos + videos</option><option value="image">Photos</option><option value="video">Videos</option></select></div>
+        <div class="row" style="margin-top:12px"><button class="btn" id="mGo">Filter</button><button class="btn gh" id="mFix">Fix previews</button><span class="mute sm" id="mFixMsg"></span></div></div>
+      <div id="mBulk" class="bulk" hidden><b id="mSelN">0 selected</b><select id="bCat" style="width:auto"></select><button class="btn xs" id="bCatGo">Set category</button>
+        <select id="bAcc" style="width:auto"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select><button class="btn xs" id="bAccGo">Set access</button>
+        <button class="btn xs" id="bAlbum">Group into album</button><button class="btn dg xs" id="bDel">Delete</button><button class="btn gh xs" id="bClr">Clear</button></div>
+      <div class="card" style="padding-top:4px"><div id="mList"></div><button class="btn gh" id="mMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- CATEGORIES -->
-    <section id="t-cats" hidden>
-      <h2>Categories</h2><p class="mute" style="margin-bottom:18px">Choto number age dekhabe.</p>
-      <div class="card"><div class="row"><input type="text" id="newCat" placeholder="Notun category" style="flex:1"><button class="btn" id="addCat">Add</button></div><div id="catList" style="margin-top:8px"></div></div>
+    <section id="t-cats" hidden><h2>Categories</h2><p class="mute" style="margin-bottom:18px">Lower number shows first. Pick a category when you upload.</p>
+      <div class="card"><div class="row"><input type="text" id="newCat" placeholder="New category" style="flex:1"><button class="btn" id="addCat">Add</button></div><div id="catList" style="margin-top:8px"></div></div>
+    </section>
+
+    <!-- BANNERS -->
+    <section id="t-banners" hidden><h2>Covers and banners</h2><p class="mute" style="margin-bottom:18px">Big slides at the top of the Home page. Wide images work best (21:9).</p>
+      <div class="card"><div class="cols"><label class="f"><span>Image</span><input type="file" id="bnFile" accept="image/*"></label>
+        <label class="f"><span>Title</span><input type="text" id="bnTitle" maxlength="60"></label><label class="f"><span>Subtitle</span><input type="text" id="bnSub" maxlength="90"></label>
+        <label class="f"><span>Opens</span><select id="bnKind"><option value="none">Nothing</option><option value="plans">Premium plans</option><option value="category">A category</option><option value="album">An album</option></select></label>
+        <label class="f"><span>Target</span><select id="bnTarget"></select></label></div><button class="btn" id="bnAdd">Add banner</button></div>
+      <div class="card"><div id="bnList"></div></div>
     </section>
 
     <!-- USERS -->
-    <section id="t-users" hidden>
-      <h2>Users</h2><p class="mute" style="margin-bottom:18px">Premium din, private access, ban.</p>
-      <div class="card"><div class="row"><input type="search" id="uQ" placeholder="Naam, @username ba Telegram ID" style="flex:1"><button class="btn" id="uGo">Search</button></div><div id="uList" style="margin-top:6px"></div></div>
+    <section id="t-users" hidden><h2>Users</h2><p class="mute" style="margin-bottom:18px">Premium days, private access, bans and messages.</p>
+      <div class="card"><div class="row"><input type="search" id="uQ" placeholder="Name, @username or Telegram ID" style="flex:1;min-width:200px">
+        <select id="uF" style="width:auto"><option value="">Everyone</option><option value="premium">Premium</option><option value="private">Private access</option><option value="banned">Banned</option></select>
+        <button class="btn" id="uGo">Search</button><button class="btn gh" id="uCsv">Export CSV</button></div><div id="uList" style="margin-top:6px"></div></div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section id="t-payments" hidden><h2>Payments</h2><p class="mute" style="margin-bottom:18px">Every Stars and USDT payment, with its transaction reference.</p>
+      <div class="stats" id="pyStats"></div>
+      <div class="card"><div class="row"><select id="pyM" style="width:auto"><option value="">All methods</option><option value="stars">Stars</option><option value="usdt">USDT</option><option value="manual">Manual</option></select>
+        <select id="pyS" style="width:auto"><option value="">All status</option><option value="approved">Paid</option><option value="pending">Pending</option><option value="rejected">Rejected</option><option value="expired">Expired</option></select>
+        <input type="search" id="pyQ" placeholder="Telegram ID or tx" style="flex:1;min-width:160px"><button class="btn" id="pyGo">Filter</button><button class="btn gh" id="pyCsv">Export CSV</button></div><div id="pyList" style="margin-top:8px"></div><button class="btn gh" id="pyMore" hidden style="margin-top:10px">Load more</button></div>
+      <div class="card"><h3>Add a manual sale</h3><p class="sm mute" style="margin-bottom:10px">For cash or any payment outside the app. It records the sale and activates Premium right away.</p>
+        <div class="cols"><label class="f"><span>Telegram ID</span><input type="text" id="mpTg"></label><label class="f"><span>Plan</span><select id="mpPlan"></select></label><label class="f"><span>Amount (USD, optional)</span><input type="number" id="mpAmt" step="0.01"></label><label class="f"><span>Note</span><input type="text" id="mpNote"></label></div>
+        <button class="btn" id="mpGo">Record and activate</button></div>
     </section>
 
     <!-- PREMIUM -->
-    <section id="t-premium" hidden>
-      <h2>Premium</h2><p class="mute" style="margin-bottom:18px">Plan, code ar premium page er lekha.</p>
+    <section id="t-premium" hidden><h2>Premium</h2><p class="mute" style="margin-bottom:18px">Plans, promo codes, unlock codes and page text.</p>
       <div class="stats" id="pStats"></div>
-      <div class="card"><h3>Plans</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">Notun plan</button></div>
-      <div class="card"><h3>Unlock codes</h3>
-        <div class="cols">
-          <label class="f"><span>Koyta code</span><input type="number" id="cgN" value="5" min="1" max="100"></label>
-          <label class="f"><span>Koto din Premium</span><input type="number" id="cgD" value="30" min="1"></label>
-          <label class="f"><span>Proti code koybar use</span><input type="number" id="cgU" value="1" min="1"></label>
-          <label class="f"><span>Meyad (optional)</span><input type="date" id="cgE"></label>
-          <label class="f"><span>Note (kar jonno)</span><input type="text" id="cgNote"></label>
-        </div>
-        <button class="btn" id="cgGo">Code banao</button>
+      <div class="card"><h3>Plans</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">New plan</button></div>
+      <div class="card"><h3>Promo codes</h3><p class="sm mute" style="margin-bottom:10px">Customers enter these at checkout for a discount or bonus days.</p>
+        <div class="cols"><label class="f"><span>Code (blank = random)</span><input type="text" id="prCode" style="text-transform:uppercase"></label><label class="f"><span>Discount %</span><input type="number" id="prPct" min="0" max="100" value="20"></label>
+          <label class="f"><span>Bonus days</span><input type="number" id="prBonus" min="0" value="0"></label><label class="f"><span>Only for plan</span><select id="prPlan"></select></label>
+          <label class="f"><span>Max uses</span><input type="number" id="prMax" min="1" value="100"></label><label class="f"><span>Expires (optional)</span><input type="date" id="prExp"></label><label class="f"><span>Note</span><input type="text" id="prNote"></label></div>
+        <button class="btn" id="prGo">Create promo</button><div id="prList" style="margin-top:12px"></div></div>
+      <div class="card"><h3>Unlock codes</h3><p class="sm mute" style="margin-bottom:10px">Free Premium days you give out by hand (gifts, winners, partners).</p>
+        <div class="cols"><label class="f"><span>How many codes</span><input type="number" id="cgN" value="5" min="1" max="100"></label><label class="f"><span>Premium days</span><input type="number" id="cgD" value="30" min="1"></label>
+          <label class="f"><span>Uses per code</span><input type="number" id="cgU" value="1" min="1"></label><label class="f"><span>Expires (optional)</span><input type="date" id="cgE"></label><label class="f"><span>Note</span><input type="text" id="cgNote"></label></div>
+        <button class="btn" id="cgGo">Generate codes</button>
         <div class="chips" style="margin:16px 0 8px" id="cFilter"><button data-v="unused" class="on">Unused</button><button data-v="used">Used</button><button data-v="all">All</button></div>
-        <button class="btn gh xs" id="cCopy" style="margin-bottom:6px">Unused gulo copy koro</button>
-        <div id="cList"></div>
-      </div>
+        <button class="btn gh xs" id="cCopy" style="margin-bottom:6px">Copy all unused</button><div id="cList"></div></div>
       <div class="card"><h3>Premium page text</h3>
-        <label class="f"><span>Intro (premium page er upore)</span><input type="text" id="sIntro"></label>
-        <label class="f"><span>Kibhabe kinbe (proti line e ekta step)</span><textarea id="sHow"></textarea></label>
-        <label class="f"><span>Contact link (e.g. https://t.me/yourusername)</span><input type="text" id="sContact"></label>
-        <button class="btn" id="sSave">Save</button>
-      </div>
+        <label class="f"><span>Intro (top of the Premium page)</span><input type="text" id="sIntro"></label>
+        <label class="f"><span>How it works (one step per line)</span><textarea id="sHow"></textarea></label>
+        <label class="f"><span>Support contact link (e.g. https://t.me/yourusername)</span><input type="text" id="sContact"></label><button class="btn" id="sSave">Save</button></div>
     </section>
 
     <!-- NOTIFY -->
-    <section id="t-notify" hidden>
-      <h2>Notify</h2><p class="mute" style="margin-bottom:18px">App er popup ar Telegram message.</p>
-      <div class="card">
-        <div class="chips" id="nTpl"><button data-t="offer">Premium offer</button><button data-t="drop">New collection</button><button data-t="maint">Maintenance</button></div>
-        <div class="cols">
-          <label class="f"><span>Dhoron</span><select id="nKind"><option value="custom">Update</option><option value="premium">Premium</option><option value="notice">Notice</option></select></label>
-          <label class="f"><span>Specific user (Telegram ID, khali = sobai)</span><input type="text" id="nTg"></label>
-        </div>
-        <label class="f"><span>Title</span><input type="text" id="nTitle" maxlength="120"></label>
-        <label class="f"><span>Message</span><textarea id="nBody" maxlength="500"></textarea></label>
-        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="nPop" checked> App e popup dekhao</label><label class="ck"><input type="checkbox" id="nPush"> Telegram e push pathao</label></div>
-        <button class="btn" id="nSend">Pathao</button><span class="mute sm" id="nMsg" style="margin-left:10px"></span>
-      </div>
-      <div class="card"><h3>Ager notification</h3><div id="nList"></div></div>
-    </section>
-
-    <!-- NOTICES -->
-    <section id="t-notices" hidden>
-      <h2>Notice board</h2><p class="mute" style="margin-bottom:18px">Pinned notice Home er upore dekhabe.</p>
-      <div class="card">
-        <label class="f"><span>Title</span><input type="text" id="ntTitle"></label>
-        <label class="f"><span>Details</span><textarea id="ntBody"></textarea></label>
-        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="ntPin"> Pin koro</label><label class="ck"><input type="checkbox" id="ntNotif"> Notification o pathao</label></div>
-        <button class="btn" id="ntAdd">Publish</button>
-      </div>
-      <div class="card"><div id="ntList"></div></div>
+    <section id="t-notify" hidden><h2>Notify</h2><p class="mute" style="margin-bottom:18px">In-app popup and Telegram message.</p>
+      <div class="card"><div class="chips" id="nTpl"><button data-t="offer">Premium offer</button><button data-t="drop">New collection</button><button data-t="maint">Maintenance</button></div>
+        <div class="cols"><label class="f"><span>Type</span><select id="nKind"><option value="custom">Update</option><option value="premium">Premium</option><option value="notice">Notice</option></select></label><label class="f"><span>One user only (Telegram ID, blank = everyone)</span><input type="text" id="nTg"></label></div>
+        <label class="f"><span>Title</span><input type="text" id="nTitle" maxlength="120"></label><label class="f"><span>Message</span><textarea id="nBody" maxlength="500"></textarea></label>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="nPop" checked> Show popup in the app</label><label class="ck"><input type="checkbox" id="nPush"> Push to Telegram</label></div>
+        <button class="btn" id="nSend">Send</button><span class="mute sm" id="nMsg" style="margin-left:10px"></span></div>
+      <div class="card"><h3>Recent</h3><div id="nList"></div></div>
     </section>
 
     <!-- TICKETS -->
-    <section id="t-tickets" hidden>
-      <h2>Tickets</h2><p class="mute" style="margin-bottom:18px">User der shahajjo.</p>
-      <div id="tkListWrap"><div class="chips" id="tkF"><button data-v="active" class="on">Open</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><div class="card" style="padding-top:6px"><div id="tkList"></div></div></div>
-      <div id="tkThread" hidden></div>
+    <section id="t-tickets" hidden><h2>Tickets</h2><p class="mute" style="margin-bottom:18px">Help requests from users.</p>
+      <div id="tkListWrap"><div class="chips" id="tkF"><button data-v="active" class="on">Open</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><div class="card" style="padding-top:6px"><div id="tkList"></div></div></div><div id="tkThread" hidden></div>
+    </section>
+
+    <!-- USER UPLOADS -->
+    <section id="t-uploads" hidden><h2>User uploads</h2><p class="mute" style="margin-bottom:18px">Files users keep in their own space. Only they can see them; you can remove anything inappropriate.</p>
+      <div class="card"><div class="row"><input type="text" id="uuQ" placeholder="Filter by Telegram ID" style="flex:1"><select id="uuS" style="width:auto"><option value="">All files</option><option value="pending">Waiting for review</option><option value="approved">Shared in Community</option><option value="rejected">Rejected</option></select><button class="btn" id="uuGo">Filter</button></div><div class="mute sm" id="uuInfo" style="margin-top:8px"></div></div>
+      <div class="card" style="padding-top:4px"><div id="uuList"></div><button class="btn gh" id="uuMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- SETTINGS -->
-    <section id="t-settings" hidden>
-      <h2>Settings</h2><p class="mute" style="margin-bottom:18px">General setup.</p>
-      <div class="card"><label class="f"><span>Referral reward: proti notun invite e koto din Premium</span><input type="number" id="refDays" min="0" style="max-width:160px"></label><button class="btn" id="refSave">Save</button></div>
+    <section id="t-settings" hidden><h2>Settings</h2><p class="mute" style="margin-bottom:18px">Payments, uploads and general setup.</p>
+      <div class="card"><h3>Payments</h3>
+        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setStars"> Accept Telegram Stars</label><label class="ck"><input type="checkbox" id="setUsdt"> Accept USDT (BEP20)</label></div>
+        <label class="f"><span>Your USDT wallet address (BNB Smart Chain, starts with 0x)</span><input type="text" id="setAddr" placeholder="0x..."></label>
+        <div class="cols"><label class="f"><span>Confirmations needed</span><input type="number" id="setConf" min="1" max="30"></label><label class="f"><span>Custom RPC URL (optional)</span><input type="text" id="setRpc" placeholder="https://..."></label></div>
+        <div class="row"><button class="btn" id="setPaySave">Save</button><button class="btn gh" id="rpcTest">Test network</button><span class="sm mute" id="rpcMsg"></span></div></div>
+      <div class="card"><h3>Uploads and popups</h3>
+        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setUp"> Let users upload to their own space</label><label class="ck"><input type="checkbox" id="setComm"> Community page on</label><label class="ck"><input type="checkbox" id="setCommAuto"> Publish shared files without review</label></div>
+        <div class="cols"><label class="f"><span>Max MB per file</span><input type="number" id="setMb" min="1" max="50"></label><label class="f"><span>Max files per user</span><input type="number" id="setItems" min="1" max="500"></label><label class="f"><span>Popup seconds</span><input type="number" id="setPop" min="2" max="10"></label></div>
+        <button class="btn" id="setUpSave">Save</button></div>
+      <div class="card"><h3>General</h3>
+        <label class="f"><span>Referral reward: Premium days per new invite</span><input type="number" id="refDays" min="0" style="max-width:160px"></label>
+        <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
+        <button class="btn" id="refSave">Save</button></div>
       <div class="card"><h3>Setup check</h3><p class="sm mute" id="chkInfo" style="margin-bottom:10px"></p><button class="btn gh" id="chkBtn">Test notify function</button><span class="sm mute" id="chkMsg" style="margin-left:10px"></span></div>
     </section>
   </main>
@@ -248,10 +286,13 @@ const sb = supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY);
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fdate = s => new Date(s).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+const ftime = s => new Date(s).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 const ago = s => { const m = Math.floor((Date.now() - new Date(s)) / 60000); if (m < 1) return "now"; if (m < 60) return m + "m"; const h = Math.floor(m / 60); return h < 24 ? h + "h" : Math.floor(h / 24) + "d"; };
-let tt; function toast(t) { const e = $("toast"); e.textContent = t; e.style.display = "block"; clearTimeout(tt); tt = setTimeout(() => e.style.display = "none", 2400); }
+let tt; function toast(t) { const e = $("toast"); e.textContent = t; e.style.display = "block"; clearTimeout(tt); tt = setTimeout(() => e.style.display = "none", 2600); }
 const ic = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
-let cats = [];
+let cats = [], albumsCache = [], plansCache = [];
+const nm = p => p?.display_name || [p?.first_name, p?.last_name].filter(Boolean).join(" ") || "User";
+const num = v => Number(v) || 0;
 
 /* theme */
 function setMode(m) { document.documentElement.dataset.mode = m; try { localStorage.setItem("adm_mode", m); } catch {} }
@@ -264,7 +305,7 @@ $("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session; $("panel").hidden = !session;
-  if (session) { await loadCats(); show("upload"); badges(); }
+  if (session) { await Promise.all([loadCats(), loadPlansCache(), loadAlbumsCache()]); show("dash"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
@@ -275,20 +316,24 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["upload", "up", "Upload"], ["media", "img", "Media"], ["cats", "grid", "Categories"], ["users", "user", "Users"], ["premium", "crown", "Premium"], ["notify", "bell", "Notify"], ["notices", "notice", "Notices"], ["tickets", "ticket", "Tickets"], ["settings", "sliders", "Settings"]];
-$("tabs").innerHTML = TABS.map(([k, i, l]) => `<button class="tab" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}</button>`).join("");
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["media", "img", "Library"], ["cats", "grid", "Categories"], ["banners", "banner", "Covers"], ["users", "user", "Users"], ["payments", "coin", "Payments"], ["premium", "crown", "Premium"], ["notify", "bell", "Notify"], ["tickets", "ticket", "Tickets"], ["uploads", "folder", "User uploads"], ["settings", "sliders", "Settings"]];
+$("tabs").innerHTML = TABS.map(([k, i, l]) => `<button class="tab" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`).join("");
 let tkTimer;
 function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   TABS.forEach(([k]) => $("t-" + k).hidden = k !== t);
   clearInterval(tkTimer);
-  ({ media: () => loadMedia(true), users: loadUsers, premium: loadPremium, notify: loadNotify, notices: loadNotices, tickets: () => { tkOpen = null; showList(); loadTickets(); tkTimer = setInterval(() => { if (!tkOpen) loadTickets(); }, 30000); }, settings: loadSettings }[t] || (() => {}))();
+  ({ dash: loadDash, media: () => loadMedia(true), banners: loadBanners, cats: loadCats, users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { tkOpen = null; showList(); loadTickets(); tkTimer = setInterval(() => { if (!tkOpen) loadTickets(); }, 30000); }, uploads: () => loadUU(true), settings: loadSettings, upload: () => {} }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
-async function badges() { const { count } = await sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"); const b = $("tkBd"); b.hidden = !count; b.textContent = count || ""; }
+async function badges() {
+  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").eq("method", "usdt").gt("expires_at", new Date().toISOString()), sb.from("user_media").select("id", { count: "exact", head: true }).eq("share_status", "pending")]);
+  const uu = $("uuBd"); uu.hidden = !u.count; uu.textContent = u.count || "";
+  const b = $("tkBd"); b.hidden = !t.count; b.textContent = t.count || ""; const q = $("pyBd"); q.hidden = !p.count; q.textContent = p.count || "";
+}
 
-/* preview helper: 40px blur-teaser jpeg */
+/* helpers */
 function makePreview(src, type) {
   return new Promise(res => {
     const fin = v => res(v);
@@ -299,79 +344,180 @@ function makePreview(src, type) {
 }
 async function pushTG(title, body, tg_id, dry) {
   const { data: { session } } = await sb.auth.getSession();
-  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/notify`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY },
-    body: JSON.stringify({ title, body, tg_id: tg_id ? Number(tg_id) : undefined, open_url: `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`, dry_run: !!dry }) });
+  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/notify`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY }, body: JSON.stringify({ title, body, tg_id: tg_id ? Number(tg_id) : undefined, open_url: `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`, dry_run: !!dry }) });
   return r.json();
 }
-const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: v });
-const catOpts = (sel, all) => (all ? '<option value="">Shob category</option><option value="none">(Category chhara)</option>' : '<option value="">(Category nai)</option>') + cats.map(c => `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: String(v ?? "") });
+const getSettings = async keys => { const { data } = await sb.from("settings").select("key,value").in("key", keys); const m = {}; (data || []).forEach(r => m[r.key] = r.value); return m; };
+async function sign(paths, secs = 3600) { const m = {}; const l = [...new Set((paths || []).filter(Boolean))]; if (!l.length) return m; const { data } = await sb.storage.from(C.BUCKET).createSignedUrls(l, secs); (data || []).forEach(x => { if (x.signedUrl) m[x.path] = x.signedUrl; }); return m; }
+const catOpts = (sel, all) => (all ? '<option value="">All categories</option><option value="none">(No category)</option>' : '<option value="">(No category)</option>') + cats.map(c => `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("");
+const albOpts = sel => '<option value="">(None)</option>' + albumsCache.map(a => `<option value="${a.id}" ${a.id === sel ? "selected" : ""}>${esc(a.title)}</option>`).join("");
+const thumb = (u, type) => !u ? '<div class="pv"></div>' : type === "video" ? `<video class="pv" muted preload="metadata" src="${esc(u)}#t=0.5"></video>` : `<img class="pv" loading="lazy" src="${esc(u)}">`;
+function csv(name, rows) { const b = new Blob(["\ufeff" + rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); }
+const dayKey = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
+function bars(rows, fmt = v => v) { const mx = Math.max(1, ...rows.map(r => r.v)); return rows.map(r => `<div title="${r.l}: ${fmt(r.v)}"><b>${r.v ? fmt(r.v) : ""}</b><i style="height:${Math.round(r.v / mx * 78)}%"></i><span>${r.l.slice(8)}</span></div>`).join(""); }
+function lastDays(n) { return Array.from({ length: n }, (_, i) => { const d = new Date(); d.setDate(d.getDate() - (n - 1 - i)); return dayKey(d); }); }
 
-/* categories */
+/* ---------- dashboard ---------- */
+async function loadDash() {
+  const now = new Date(), d7 = new Date(now - 7 * 864e5).toISOString(), d14 = new Date(now - 14 * 864e5).toISOString(), iso = now.toISOString();
+  const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
+  const [users, prem, new7, media, albums, mine, tk, pend, users14, pays, top, recent] = await Promise.all([
+    cnt("profiles"), cnt("profiles", q => q.gt("premium_until", iso)), cnt("profiles", q => q.gt("created_at", d7)), cnt("media"), cnt("albums"), cnt("user_media"),
+    cnt("tickets", q => q.eq("status", "open")), cnt("payments", q => q.eq("status", "pending").gt("expires_at", iso)),
+    sb.from("profiles").select("created_at").gt("created_at", d14).limit(5000),
+    sb.from("payments").select("method,currency,amount,created_at").eq("status", "approved").gt("created_at", d14).limit(5000),
+    sb.from("media").select("title,views,type,album_id").order("views", { ascending: false }).limit(5),
+    sb.from("payments").select("plan_name,method,currency,amount,status,created_at,profiles(first_name,display_name,username)").order("created_at", { ascending: false }).limit(5),
+  ]);
+  $("dStats").innerHTML = [[users.count, "Users"], [prem.count, "Premium members"], [new7.count, "New this week"], [media.count, "Posts"], [albums.count, "Albums"], [mine.count, "User uploads"], [tk.count, "Open tickets"], [pend.count, "Pending payments"]].map(([n, l]) => `<div class="stat"><b>${n ?? 0}</b><span>${l}</span></div>`).join("");
+  const days = lastDays(14), uc = {}; (users14.data || []).forEach(u => { const k = dayKey(u.created_at); uc[k] = (uc[k] || 0) + 1; });
+  $("dUsers").innerHTML = bars(days.map(l => ({ l, v: uc[l] || 0 })));
+  const rc = {}; let stars = 0; (pays.data || []).forEach(p => { if (p.method === "usdt" || (p.method === "manual" && p.currency === "USD")) { const k = dayKey(p.created_at); rc[k] = (rc[k] || 0) + num(p.amount); } else if (p.method === "stars") stars += num(p.amount); });
+  $("dRev").innerHTML = bars(days.map(l => ({ l, v: Math.round((rc[l] || 0) * 100) / 100 })), v => v.toFixed(v % 1 ? 1 : 0));
+  $("dRevNote").textContent = `Stars in the same period: ★ ${stars}`;
+  $("dTop").innerHTML = (top.data || []).map(m => `<div class="row between line"><span>${esc(m.title || "Untitled")}</span><span class="pill">${m.views} views</span></div>`).join("") || '<p class="mute">No posts yet.</p>';
+  $("dPay").innerHTML = (recent.data || []).map(p => `<div class="row between line"><span>${esc(nm(p.profiles))} · ${esc(p.plan_name)}</span><span class="pill ${p.status === "approved" ? "ok" : "warn"}">${fmtAmt(p)}</span></div>`).join("") || '<p class="mute">No payments yet.</p>';
+}
+const fmtAmt = p => p.method === "stars" ? `★ ${num(p.amount)}` : p.method === "usdt" ? `${num(p.amount).toFixed(4)} USDT` : p.amount ? `$${num(p.amount).toFixed(2)}` : "Manual";
+
+/* ---------- categories ---------- */
 async function loadCats() {
-  const { data, error } = await sb.from("categories").select("*").order("sort_order").order("name");
+  const [{ data, error }, { data: usage }] = await Promise.all([sb.from("categories").select("*").order("sort_order").order("name"), sb.from("media").select("category_id").limit(5000)]);
   if (error) return toast(error.message);
-  cats = data || [];
-  $("upCat").innerHTML = catOpts(""); const cur = $("mCat").value; $("mCat").innerHTML = catOpts("", true); $("mCat").value = cur;
-  $("catList").innerHTML = cats.map(c => `<div class="row line" data-id="${c.id}"><input type="text" class="cn" value="${esc(c.name)}" style="flex:1;min-width:140px"><input type="number" class="co" value="${c.sort_order}" style="width:80px"><button class="btn xs cs">Save</button><button class="btn dg xs cd">Delete</button></div>`).join("") || '<p class="mute" style="padding:12px 0">Kono category nai.</p>';
+  cats = data || []; const use = {}; (usage || []).forEach(m => { if (m.category_id) use[m.category_id] = (use[m.category_id] || 0) + 1; });
+  $("upCat").innerHTML = catOpts(""); const cur = $("mCat").value; $("mCat").innerHTML = catOpts("", true); $("mCat").value = cur; $("bCat").innerHTML = catOpts("");
+  $("catList").innerHTML = cats.map(c => `<div class="row line" data-id="${c.id}"><input type="text" class="cn" value="${esc(c.name)}" style="flex:1;min-width:140px"><input type="number" class="co" value="${c.sort_order}" style="width:80px"><span class="pill">${use[c.id] || 0} posts</span><button class="btn xs cs">Save</button><button class="btn dg xs cd">Delete</button></div>`).join("") || '<p class="mute" style="padding:12px 0">No categories yet.</p>';
   document.querySelectorAll("#catList [data-id]").forEach(r => {
     r.querySelector(".cs").onclick = async () => { const { error } = await sb.from("categories").update({ name: r.querySelector(".cn").value.trim(), sort_order: Number(r.querySelector(".co").value) || 0 }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadCats()); };
-    r.querySelector(".cd").onclick = async () => { if (!confirm("Category delete korbe? Post gulo thakbe.")) return; const { error } = await sb.from("categories").delete().eq("id", r.dataset.id); error ? toast(error.message) : loadCats(); };
+    r.querySelector(".cd").onclick = async () => { if (!confirm("Delete this category? Its posts stay.")) return; const { error } = await sb.from("categories").delete().eq("id", r.dataset.id); error ? toast(error.message) : loadCats(); };
   });
 }
 $("addCat").onclick = async () => { const name = $("newCat").value.trim(); if (!name) return; const { error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 }); error ? toast(error.message) : ($("newCat").value = "", loadCats()); };
+async function loadPlansCache() { const { data } = await sb.from("plans").select("id,name,days,price_usdt,price_stars,grants_private").order("sort_order"); plansCache = data || []; }
+async function loadAlbumsCache() { const { data } = await sb.from("albums").select("id,title").order("created_at", { ascending: false }).limit(300); albumsCache = data || []; }
+function fillPlanSel(id, none) { $(id).innerHTML = (none ? '<option value="">All plans</option>' : "") + plansCache.map(p => `<option value="${p.id}">${esc(p.name)} (${p.days}d)</option>`).join(""); }
 
-/* upload */
+/* ---------- upload ---------- */
+let picked = [];
+const dz = $("dz"), fi = $("files");
+dz.onclick = e => { if (e.target !== fi) fi.click(); };
+dz.ondragover = e => { e.preventDefault(); dz.classList.add("on"); }; dz.ondragleave = () => dz.classList.remove("on");
+dz.ondrop = e => { e.preventDefault(); dz.classList.remove("on"); addPicked([...e.dataTransfer.files]); };
+fi.onchange = () => { addPicked([...fi.files]); fi.value = ""; };
+function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => picked.push(f)); drawPicked(); }
+function drawPicked() {
+  $("upPrev").innerHTML = picked.map((f, i) => `<div class="t">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button data-i="${i}">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div>`).join("");
+  $("upPrev").querySelectorAll("button").forEach(b => b.onclick = () => { picked.splice(+b.dataset.i, 1); drawPicked(); });
+  const multi = picked.length > 1; $("upAlbum").parentElement.hidden = !multi; $("upTitleLb").textContent = multi && $("upAlbum").checked ? "Album title" : "Title (blank = file name)";
+}
+$("upAlbum").onchange = drawPicked;
 $("upBtn").onclick = async () => {
-  const files = [...$("files").files]; if (!files.length) return toast("Age file select koro");
-  const title = $("upTitle").value.trim(), category_id = $("upCat").value || null, access = $("upAccess").value;
+  if (!picked.length) return toast("Choose files first");
+  const files = [...picked], title = $("upTitle").value.trim(), category_id = $("upCat").value || null, access = $("upAccess").value, asAlbum = files.length > 1 && $("upAlbum").checked;
   $("upBtn").disabled = true; $("log").textContent = ""; $("upProg").style.width = "0";
+  let album = null;
+  if (asAlbum) { const { data, error } = await sb.from("albums").insert({ title: title || files[0].name.replace(/\.[^.]+$/, ""), category_id, access }).select("id,title").single(); if (error) { $("upBtn").disabled = false; return toast(error.message); } album = data; }
   const { data: top } = await sb.from("media").select("serial_no").order("serial_no", { ascending: false }).limit(1);
-  let serial = top?.[0]?.serial_no || 0, ok = 0, lastId = null;
+  let serial = top?.[0]?.serial_no || 0, ok = 0, firstId = null;
   for (const [i, f] of files.entries()) {
     const type = f.type.startsWith("video") ? "video" : "image", ext = (f.name.split(".").pop() || "bin").toLowerCase();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     $("log").textContent += `(${i + 1}/${files.length}) ${f.name}\n`;
     const { error: ue } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
-    if (ue) { $("log").textContent += `  fail: ${ue.message}\n`; continue; }
+    if (ue) { $("log").textContent += `  failed: ${ue.message}\n`; continue; }
     const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
     serial++;
-    const { data: row, error: de } = await sb.from("media").insert({ title: title || f.name.replace(/\.[^.]+$/, ""), type, path, category_id, access, serial_no: serial, preview }).select("id").single();
-    if (de) { $("log").textContent += `  fail: ${de.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
-    ok++; lastId = row.id; $("upProg").style.width = Math.round(((i + 1) / files.length) * 100) + "%";
+    const { data: row, error: de } = await sb.from("media").insert({ title: asAlbum ? f.name.replace(/\.[^.]+$/, "") : (title || f.name.replace(/\.[^.]+$/, "")), type, path, category_id, access, serial_no: serial, preview, album_id: album?.id ?? null, album_order: i }).select("id").single();
+    if (de) { $("log").textContent += `  failed: ${de.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
+    ok++; firstId = firstId || row.id; $("upProg").style.width = Math.round(((i + 1) / files.length) * 100) + "%";
   }
-  $("log").textContent += `\nDone: ${ok}/${files.length}`;
+  if (album) { if (firstId) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id); else await sb.from("albums").delete().eq("id", album.id); }
+  $("log").textContent += `\nDone: ${ok}/${files.length}${album ? " (saved as one album)" : ""}`;
   if (ok && $("upNotif").checked) {
-    const body = title || `${ok} ta notun post`;
-    await sb.from("notifications").insert({ kind: "post", title: "New post added", body, media_id: lastId, popup: true });
-    if ($("upPush").checked) { try { const r = await pushTG("New post added", body); $("log").textContent += `\nTelegram push: ${r.sent ?? 0} pathano, ${r.failed ?? 0} fail${r.error ? " (" + r.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush fail: " + e.message; } }
+    const body = album ? `${album.title} (${ok} items)` : (title || `${ok} new post${ok > 1 ? "s" : ""}`);
+    await sb.from("notifications").insert({ kind: "post", title: "New post added", body, media_id: firstId, popup: true });
+    if ($("upPush").checked) { try { const r = await pushTG("New post added", body); $("log").textContent += `\nTelegram push: ${r.sent ?? 0} sent, ${r.failed ?? 0} failed${r.error ? " (" + r.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
   }
-  $("files").value = ""; $("upBtn").disabled = false; if (ok) toast(`${ok} ta upload hoyeche`);
+  picked = []; drawPicked(); $("upBtn").disabled = false; loadAlbumsCache(); if (ok) toast(`${ok} uploaded`);
 };
 
-/* media */
-let mPage = 0; const MP = 30;
+/* ---------- library ---------- */
+let mPage = 0, mView = "posts"; const MP = 30; const sel = new Set();
+$("mView").onclick = e => { const b = e.target.closest("button"); if (!b) return; mView = b.dataset.v; document.querySelectorAll("#mView button").forEach(x => x.classList.toggle("on", x === b)); $("mFilters").hidden = mView === "albums"; clrSel(); loadMedia(true); };
 $("mGo").onclick = () => loadMedia(true); $("mMore").onclick = () => loadMedia(false);
+function drawSel() { $("mBulk").hidden = !sel.size; $("mSelN").textContent = sel.size + " selected"; }
+function clrSel() { sel.clear(); document.querySelectorAll("#mList .pvw input").forEach(c => c.checked = false); drawSel(); }
+$("bClr").onclick = clrSel;
+$("bCatGo").onclick = async () => { const { error } = await sb.from("media").update({ category_id: $("bCat").value || null }).in("id", [...sel]); error ? toast(error.message) : (toast("Category updated"), clrSel(), loadMedia(true)); };
+$("bAccGo").onclick = async () => { const { error } = await sb.from("media").update({ access: $("bAcc").value }).in("id", [...sel]); error ? toast(error.message) : (toast("Access updated"), clrSel(), loadMedia(true)); };
+$("bDel").onclick = async () => {
+  if (!confirm(`Delete ${sel.size} item(s) permanently?`)) return;
+  const ids = [...sel], { data } = await sb.from("media").select("id,path").in("id", ids);
+  if (data?.length) await sb.storage.from(C.BUCKET).remove(data.map(x => x.path));
+  const { error } = await sb.from("media").delete().in("id", ids); error ? toast(error.message) : (toast("Deleted"), clrSel(), loadMedia(true));
+};
+$("bAlbum").onclick = async () => {
+  const title = prompt("Album title?"); if (!title) return;
+  const ids = [...sel], { data: rows } = await sb.from("media").select("id,access,category_id").in("id", ids); if (!rows?.length) return;
+  const { data: a, error } = await sb.from("albums").insert({ title, access: rows[0].access, category_id: rows[0].category_id, cover_media_id: rows[0].id }).select("id").single(); if (error) return toast(error.message);
+  const r = await sb.from("media").update({ album_id: a.id, access: rows[0].access, category_id: rows[0].category_id }).in("id", ids);
+  r.error ? toast(r.error.message) : (toast("Album created"), clrSel(), loadAlbumsCache(), loadMedia(true));
+};
 async function loadMedia(reset) {
   if (reset) { mPage = 0; $("mList").innerHTML = ""; }
-  let q = sb.from("media").select("*", { count: "exact" }).order("serial_no", { ascending: false }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
+  return mView === "albums" ? loadAlbums() : loadPosts();
+}
+async function loadPosts() {
+  let q = sb.from("media").select("*", { count: "exact" }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
   const f = $("mCat").value; if (f === "none") q = q.is("category_id", null); else if (f) q = q.eq("category_id", f);
   if ($("mAcc").value) q = q.eq("access", $("mAcc").value); if ($("mType").value) q = q.eq("type", $("mType").value);
   const s = $("mQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = q.ilike("title", `%${s}%`);
   const { data, count, error } = await q; if (error) return toast(error.message);
-  $("mCount").textContent = count ?? 0;
-  const urls = {}; if (data.length) { const { data: sg } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 3600); (sg || []).forEach(x => { if (x.signedUrl) urls[x.path] = x.signedUrl; }); }
+  $("mCount").textContent = count ?? 0; const urls = await sign(data.map(m => m.path));
   data.forEach(m => {
     const d = document.createElement("div"); d.className = "item";
-    const pv = m.type === "image" ? `<img class="pv" loading="lazy" src="${esc(urls[m.path])}">` : `<video class="pv" muted preload="metadata" src="${esc(urls[m.path])}#t=0.5"></video>`;
-    d.innerHTML = `${pv}<div><div class="fs">
-      <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div>
-      <div><label>Category</label><select class="c">${catOpts(m.category_id)}</select></div>
+    d.innerHTML = `<div class="pvw"><input type="checkbox" ${sel.has(m.id) ? "checked" : ""}>${thumb(urls[m.path], m.type)}</div><div><div class="fs">
+      <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div><div><label>Category</label><select class="c">${catOpts(m.category_id)}</select></div>
       <div><label>Access</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
-      <div><label>Serial</label><input type="number" class="s" value="${m.serial_no}"></div></div>
-      <div class="row between" style="margin-top:8px"><span class="mute sm">${m.views} views ${m.preview ? "" : '<span class="pill r">no preview</span>'}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div>`;
+      <div><label>Album</label><select class="al">${albOpts(m.album_id)}</select></div></div>
+      <div class="row between" style="margin-top:8px"><span class="mute sm">${m.views} views · ${fdate(m.created_at)} ${m.preview ? "" : '<span class="pill r">no preview</span>'}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div>`;
     d.querySelector(".a").value = m.access;
-    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, serial_no: Number(d.querySelector(".s").value) || 0 }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
-    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete korbe?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
+    d.querySelector(".pvw input").onchange = e => { e.target.checked ? sel.add(m.id) : sel.delete(m.id); drawSel(); };
+    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, album_id: d.querySelector(".al").value || null }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
+    $("mList").appendChild(d);
+  });
+  mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
+}
+async function loadAlbums() {
+  const { data: al, count, error } = await sb.from("albums").select("*", { count: "exact" }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1); if (error) return toast(error.message);
+  $("mCount").textContent = count ?? 0;
+  const ids = al.map(a => a.id), { data: ms } = ids.length ? await sb.from("media").select("id,path,type,album_id,title").in("album_id", ids).order("album_order") : { data: [] };
+  const urls = await sign((ms || []).map(m => m.path));
+  al.forEach(a => {
+    const items = (ms || []).filter(m => m.album_id === a.id), cover = items.find(m => m.id === a.cover_media_id) || items[0];
+    const d = document.createElement("div"); d.className = "item";
+    d.innerHTML = `${thumb(cover && urls[cover.path], cover?.type)}<div><div class="fs"><div><label>Album title</label><input type="text" class="t" value="${esc(a.title)}"></div><div><label>Category</label><select class="c">${catOpts(a.category_id)}</select></div>
+      <div><label>Access (applies to all items)</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div></div>
+      <div class="row between" style="margin-top:8px"><span class="mute sm">${items.length} items · ${fdate(a.created_at)}</span><span class="row"><button class="btn gh xs ed">Cover and items</button><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div><div class="ex" hidden></div></div>`;
+    d.querySelector(".a").value = a.access;
+    d.querySelector(".sv").onclick = async () => {
+      const patch = { title: d.querySelector(".t").value.trim() || "Untitled", category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value };
+      const { error } = await sb.from("albums").update(patch).eq("id", a.id); if (error) return toast(error.message);
+      await sb.from("media").update({ access: patch.access, category_id: patch.category_id }).eq("album_id", a.id); toast("Saved"); loadAlbumsCache();
+    };
+    d.querySelector(".dl").onclick = async () => {
+      const files = confirm(`Delete album "${a.title}"?\n\nOK = delete the album AND its ${items.length} files\nCancel = keep the files as separate posts (next step)`);
+      if (!files && !confirm("Delete only the album and keep its files as separate posts?")) return;
+      if (files) { await sb.storage.from(C.BUCKET).remove(items.map(m => (ms.find(x => x.id === m.id) || {}).path).filter(Boolean)); await sb.from("media").delete().eq("album_id", a.id); }
+      const { error } = await sb.from("albums").delete().eq("id", a.id); error ? toast(error.message) : (toast("Album deleted"), loadAlbumsCache(), loadMedia(true));
+    };
+    d.querySelector(".ed").onclick = () => {
+      const ex = d.querySelector(".ex"); ex.hidden = !ex.hidden; if (ex.hidden) return;
+      ex.innerHTML = `<p class="sm mute" style="margin-top:12px">Tap a picture to make it the cover.</p><div class="cvr">${items.map(m => `<div class="t ${m.id === (cover && cover.id) ? "on" : ""}" data-id="${m.id}">${thumb(urls[m.path], m.type).replace('class="pv"', "")}</div>`).join("")}</div>`;
+      ex.querySelectorAll(".t").forEach(t => t.onclick = async () => { const { error } = await sb.from("albums").update({ cover_media_id: t.dataset.id }).eq("id", a.id); if (error) return toast(error.message); ex.querySelectorAll(".t").forEach(x => x.classList.toggle("on", x === t)); toast("Cover updated"); });
+    };
     $("mList").appendChild(d);
   });
   mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
@@ -380,69 +526,137 @@ $("mFix").onclick = async () => {
   $("mFix").disabled = true; let done = 0, fail = 0;
   for (;;) {
     const { data } = await sb.from("media").select("id,path,type").is("preview", null).limit(20); if (!data?.length) break;
-    const { data: sg } = await sb.storage.from(C.BUCKET).createSignedUrls(data.map(m => m.path), 600);
-    let progress = 0;
-    for (const m of data) {
-      const url = (sg || []).find(x => x.path === m.path)?.signedUrl;
-      const p = url ? await makePreview(url, m.type) : null;
-      if (p) { await sb.from("media").update({ preview: p }).eq("id", m.id); done++; progress++; } else { await sb.from("media").update({ preview: "" }).eq("id", m.id); fail++; }
-      $("mFixMsg").textContent = `${done} thik, ${fail} fail`;
-    }
-    if (!progress && !data.length) break;
+    const urls = await sign(data.map(m => m.path), 600);
+    for (const m of data) { const p = urls[m.path] ? await makePreview(urls[m.path], m.type) : null; if (p) { await sb.from("media").update({ preview: p }).eq("id", m.id); done++; } else { await sb.from("media").update({ preview: "" }).eq("id", m.id); fail++; } $("mFixMsg").textContent = `${done} ok, ${fail} failed`; }
   }
-  $("mFix").disabled = false; $("mFixMsg").textContent = `Shesh: ${done} thik, ${fail} fail`; loadMedia(true);
+  $("mFix").disabled = false; $("mFixMsg").textContent = `Done: ${done} ok, ${fail} failed`; loadMedia(true);
 };
 
-/* users */
-$("uGo").onclick = loadUsers; $("uQ").addEventListener("keydown", e => { if (e.key === "Enter") loadUsers(); });
-async function loadUsers() {
-  let q = sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(50);
+/* ---------- banners ---------- */
+function bnTargets() {
+  const k = $("bnKind").value, t = $("bnTarget");
+  t.disabled = k === "none" || k === "plans";
+  t.innerHTML = k === "category" ? cats.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("") : k === "album" ? albumsCache.map(a => `<option value="${a.id}">${esc(a.title)}</option>`).join("") : '<option value="">-</option>';
+}
+$("bnKind").onchange = bnTargets;
+$("bnAdd").onclick = async () => {
+  const f = $("bnFile").files[0]; if (!f) return toast("Choose an image");
+  const ext = (f.name.split(".").pop() || "jpg").toLowerCase(), path = `banners/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
+  $("bnAdd").disabled = true;
+  const { error: ue } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
+  if (ue) { $("bnAdd").disabled = false; return toast(ue.message); }
+  const kind = $("bnKind").value, { error } = await sb.from("banners").insert({ path, title: $("bnTitle").value.trim() || null, subtitle: $("bnSub").value.trim() || null, link_kind: kind, link_id: ["category", "album"].includes(kind) ? $("bnTarget").value : null, sort_order: 99 });
+  $("bnAdd").disabled = false; if (error) return toast(error.message);
+  $("bnFile").value = ""; $("bnTitle").value = ""; $("bnSub").value = ""; toast("Banner added"); loadBanners();
+};
+async function loadBanners() {
+  bnTargets(); const { data, error } = await sb.from("banners").select("*").order("sort_order").order("created_at", { ascending: false }); if (error) return toast(error.message);
+  const urls = await sign((data || []).map(b => b.path));
+  $("bnList").innerHTML = (data || []).map(b => `<div class="item" data-id="${b.id}"><img class="pv" style="width:120px;height:60px" src="${esc(urls[b.path] || "")}"><div><div class="fs"><div><label>Title</label><input type="text" class="t" value="${esc(b.title || "")}"></div><div><label>Subtitle</label><input type="text" class="s" value="${esc(b.subtitle || "")}"></div><div><label>Order</label><input type="number" class="o" value="${b.sort_order}"></div></div>
+    <div class="row between" style="margin-top:8px"><label class="ck"><input type="checkbox" class="ac" ${b.active ? "checked" : ""}> Active</label><span class="mute sm">opens: ${b.link_kind}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div></div>`).join("") || '<p class="mute">No banners yet.</p>';
+  $("bnList").querySelectorAll("[data-id]").forEach(r => {
+    const b = data.find(x => x.id === r.dataset.id);
+    r.querySelector(".sv").onclick = async () => { const { error } = await sb.from("banners").update({ title: r.querySelector(".t").value.trim() || null, subtitle: r.querySelector(".s").value.trim() || null, sort_order: num(r.querySelector(".o").value), active: r.querySelector(".ac").checked }).eq("id", b.id); error ? toast(error.message) : toast("Saved"); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this banner?")) return; await sb.storage.from(C.BUCKET).remove([b.path]); await sb.from("banners").delete().eq("id", b.id); loadBanners(); };
+  });
+}
+
+/* ---------- users ---------- */
+$("uGo").onclick = loadUsers; $("uF").onchange = loadUsers; $("uQ").addEventListener("keydown", e => { if (e.key === "Enter") loadUsers(); });
+function userQuery(limit) {
+  let q = sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit);
   const s = $("uQ").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
   if (s) q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`);
-  const { data, error } = await q; if (error) return toast(error.message);
-  const box = $("uList"); box.innerHTML = data.length ? "" : '<p class="mute" style="padding:12px 0">Kono user nai.</p>';
+  const f = $("uF").value; if (f === "premium") q = q.gt("premium_until", new Date().toISOString()); else if (f === "private") q = q.eq("private_access", true); else if (f === "banned") q = q.eq("is_banned", true);
+  return q;
+}
+$("uCsv").onclick = async () => { const { data, error } = await userQuery(5000); if (error) return toast(error.message); csv("users.csv", [["tg_id", "name", "username", "premium_until", "private", "banned", "invites", "joined"], ...data.map(u => [u.tg_id, nm(u), u.username, u.premium_until, u.private_access, u.is_banned, u.ref_count, u.created_at])]); };
+async function loadUsers() {
+  const { data, error } = await userQuery(50); if (error) return toast(error.message);
+  const box = $("uList"); box.innerHTML = data.length ? "" : '<p class="mute" style="padding:12px 0">No users found.</p>';
   data.forEach(u => {
-    const prem = u.premium_until && new Date(u.premium_until) > new Date(), name = u.display_name || [u.first_name, u.last_name].filter(Boolean).join(" ") || "User";
+    const prem = u.premium_until && new Date(u.premium_until) > new Date();
     const d = document.createElement("div"); d.className = "line";
-    d.innerHTML = `<div class="row"><b>${esc(name)}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${prem ? `<span class="pill g">Premium till ${fdate(u.premium_until)}</span>` : ""}${u.private_access ? '<span class="pill v">Private</span>' : ""}${u.is_banned ? '<span class="pill r">Banned</span>' : ""}${u.notify === false ? '<span class="pill">Notif off</span>' : ""}</div>
-      <div class="mute sm" style="margin:3px 0 8px">ID ${u.tg_id}  ·  Invites ${u.ref_count}  ·  Joined ${fdate(u.created_at)}</div>
-      <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><input type="number" placeholder="din" class="cu" style="width:80px;padding:5px 8px"><button class="btn gh xs ca">Add</button><button class="btn gh xs rm">Premium remove</button>
+    d.innerHTML = `<div class="row"><b>${esc(nm(u))}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${prem ? `<span class="pill g">Premium till ${fdate(u.premium_until)}</span>` : ""}${u.private_access ? '<span class="pill v">Private</span>' : ""}${u.is_banned ? '<span class="pill r">Banned</span>' : ""}${u.notify === false ? '<span class="pill">Notifications off</span>' : ""}</div>
+      <div class="mute sm" style="margin:3px 0 8px">ID ${u.tg_id}  ·  Invites ${u.ref_count}  ·  Joined ${fdate(u.created_at)}  ·  Seen ${u.last_seen ? ago(u.last_seen) : "-"}</div>
+      <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><input type="number" placeholder="days" class="cu" style="width:80px;padding:5px 8px"><button class="btn gh xs ca">Add</button><button class="btn gh xs rm">Remove Premium</button><button class="btn gh xs ms">Message</button>
       <label class="ck"><input type="checkbox" class="pa" ${u.private_access ? "checked" : ""}> Private</label><label class="ck"><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label></div>`;
     const add = async days => { if (!days) return; const base = Math.max(Date.now(), u.premium_until ? new Date(u.premium_until).getTime() : 0); const { error } = await sb.from("profiles").update({ premium_until: new Date(base + days * 86400000).toISOString() }).eq("tg_id", u.tg_id); error ? toast(error.message) : loadUsers(); };
-    d.querySelectorAll("[data-d]").forEach(b => b.onclick = () => add(+b.dataset.d));
-    d.querySelector(".ca").onclick = () => add(Number(d.querySelector(".cu").value));
-    d.querySelector(".rm").onclick = async () => { await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id); loadUsers(); };
+    d.querySelectorAll("[data-d]").forEach(b => b.onclick = () => add(+b.dataset.d)); d.querySelector(".ca").onclick = () => add(num(d.querySelector(".cu").value));
+    d.querySelector(".rm").onclick = async () => { if (!confirm("Remove Premium from this user?")) return; await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id); loadUsers(); };
     d.querySelector(".pa").onchange = async e => { await sb.from("profiles").update({ private_access: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
     d.querySelector(".bn").onchange = async e => { await sb.from("profiles").update({ is_banned: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
+    d.querySelector(".ms").onclick = async () => { const t = prompt("Message to " + nm(u) + ":"); if (!t) return; const { error } = await sb.from("notifications").insert({ kind: "custom", title: "Message from admin", body: t, tg_id: u.tg_id, popup: true }); error ? toast(error.message) : toast("Sent"); };
     box.appendChild(d);
   });
 }
 
-/* premium */
+/* ---------- payments ---------- */
+let pyPage = 0; const PP = 30;
+async function loadPayStats() {
+  const { data } = await sb.from("payments").select("method,currency,amount,status,created_at").eq("status", "approved").limit(10000);
+  const t0 = dayKey(new Date()), a = { usdt: 0, stars: 0, today: 0, n: 0 };
+  (data || []).forEach(p => { a.n++; if (p.method === "usdt") a.usdt += num(p.amount); if (p.method === "stars") a.stars += num(p.amount); if (dayKey(p.created_at) === t0 && p.method === "usdt") a.today += num(p.amount); });
+  const { count } = await sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").gt("expires_at", new Date().toISOString());
+  $("pyStats").innerHTML = [[a.usdt.toFixed(2), "USDT received"], ["★ " + a.stars, "Stars received"], [a.today.toFixed(2), "USDT today"], [a.n, "Paid orders"], [count ?? 0, "Waiting now"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+}
+function payQuery() {
+  let q = sb.from("payments").select("*, profiles(first_name,last_name,display_name,username)", { count: "exact" }).order("created_at", { ascending: false });
+  if ($("pyM").value) q = q.eq("method", $("pyM").value); if ($("pyS").value) q = q.eq("status", $("pyS").value);
+  const s = $("pyQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.ilike("tx_ref", `%${s}%`);
+  return q;
+}
+$("pyGo").onclick = () => loadPays(true); $("pyMore").onclick = () => loadPays(false);
+$("pyCsv").onclick = async () => { const { data, error } = await payQuery().limit(5000); if (error) return toast(error.message); csv("payments.csv", [["date", "tg_id", "name", "plan", "days", "bonus_days", "method", "currency", "amount", "promo", "status", "tx_ref"], ...data.map(p => [p.created_at, p.tg_id, nm(p.profiles), p.plan_name, p.days, p.bonus_days, p.method, p.currency, p.amount, p.promo_code, p.status, p.tx_ref])]); };
+async function loadPays(reset) {
+  if (reset) { pyPage = 0; $("pyList").innerHTML = ""; }
+  const { data, count, error } = await payQuery().range(pyPage * PP, pyPage * PP + PP - 1); if (error) return toast(error.message);
+  const ST = { approved: ["Paid", "ok"], pending: ["Pending", "warn"], rejected: ["Rejected", "r"], expired: ["Expired", ""] };
+  (data || []).forEach(p => {
+    const d = document.createElement("div"); d.className = "line";
+    const tx = p.tx_ref ? (p.method === "usdt" ? `<a class="lk" target="_blank" rel="noopener" href="https://bscscan.com/tx/${esc(p.tx_ref)}">${esc(p.tx_ref.slice(0, 10))}…</a>` : esc(p.tx_ref.slice(0, 18))) : "";
+    d.innerHTML = `<div class="row between"><div><b>${esc(nm(p.profiles))}</b> <span class="mute sm">${p.profiles?.username ? "@" + esc(p.profiles.username) + " · " : ""}ID ${p.tg_id}</span><div class="sm">${esc(p.plan_name)} · ${p.days}${p.bonus_days ? "+" + p.bonus_days : ""}d · <b>${fmtAmt(p)}</b>${p.promo_code ? ` · promo ${esc(p.promo_code)}` : ""}</div><div class="mute sm">${ftime(p.created_at)} · ${p.method}${tx ? " · " + tx : ""}${p.note ? " · " + esc(p.note) : ""}</div></div>
+      <span class="row"><span class="pill ${ST[p.status][1]}">${ST[p.status][0]}</span>${p.status === "pending" || p.status === "expired" ? '<button class="btn xs ap">Approve</button>' : ""}${p.status === "pending" ? '<button class="btn dg xs rj">Reject</button>' : ""}</span></div>`;
+    d.querySelector(".ap")?.addEventListener("click", async () => { if (!confirm(`Activate Premium for ID ${p.tg_id}? Only do this after checking the payment yourself.`)) return; const { data: r, error } = await sb.rpc("admin_approve_payment", { p_id: p.id, p_note: "Approved by admin" }); error || !r?.ok ? toast(error?.message || "Failed") : (toast("Approved"), loadPays(true), loadPayStats(), badges()); });
+    d.querySelector(".rj")?.addEventListener("click", async () => { await sb.from("payments").update({ status: "rejected", reviewed_at: new Date().toISOString() }).eq("id", p.id); loadPays(true); badges(); });
+    $("pyList").appendChild(d);
+  });
+  if (!$("pyList").children.length) $("pyList").innerHTML = '<p class="mute" style="padding:10px 0">No payments yet.</p>';
+  pyPage++; $("pyMore").hidden = pyPage * PP >= (count ?? 0);
+}
+$("mpGo").onclick = async () => {
+  const tg = $("mpTg").value.trim(), plan = plansCache.find(p => p.id === $("mpPlan").value); if (!/^\d+$/.test(tg) || !plan) return toast("Enter a Telegram ID and choose a plan");
+  const { data: pr } = await sb.from("profiles").select("tg_id").eq("tg_id", Number(tg)).maybeSingle(); if (!pr) return toast("That user hasn't opened the app yet");
+  const { data: row, error } = await sb.from("payments").insert({ tg_id: Number(tg), plan_id: plan.id, plan_name: plan.name, days: plan.days, grants_private: !!plan.grants_private, method: "manual", currency: "USD", amount: num($("mpAmt").value), base_amount: num($("mpAmt").value), note: $("mpNote").value.trim() || "Manual sale" }).select("id").single();
+  if (error) return toast(error.message);
+  const { data: r, error: e2 } = await sb.rpc("admin_approve_payment", { p_id: row.id, p_note: null }); if (e2 || !r?.ok) return toast(e2?.message || "Failed");
+  toast("Recorded. Premium activated."); $("mpTg").value = ""; $("mpAmt").value = ""; $("mpNote").value = ""; loadPays(true); loadPayStats();
+};
+
+/* ---------- premium: plans, promos, codes ---------- */
 async function loadPremium() {
-  const [pm, mem, cu, pl, st] = await Promise.all([
+  const [pm, mem, cu, pl, st, pc] = await Promise.all([
     sb.from("media").select("id", { count: "exact", head: true }).eq("access", "premium"),
     sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("premium_until", new Date().toISOString()),
-    sb.from("codes").select("used_count,max_uses"),
-    sb.from("plans").select("*").order("sort_order"),
-    sb.from("settings").select("key,value").in("key", ["premium_intro", "how_to_buy", "contact_link"]),
+    sb.from("codes").select("used_count,max_uses"), sb.from("plans").select("*").order("sort_order"),
+    getSettings(["premium_intro", "how_to_buy", "contact_link"]), sb.from("promos").select("*").order("created_at", { ascending: false }).limit(100),
   ]);
   const codes = cu.data || [], used = codes.reduce((a, c) => a + c.used_count, 0);
-  $("pStats").innerHTML = [[pm.count ?? 0, "Premium post"], [mem.count ?? 0, "Active members"], [codes.length, "Code banano"], [used, "Code use hoyeche"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
-  const sv = {}; (st.data || []).forEach(r => sv[r.key] = r.value);
-  $("sIntro").value = sv.premium_intro || ""; $("sHow").value = sv.how_to_buy || ""; $("sContact").value = sv.contact_link || "";
-  drawPlans(pl.data || []); loadCodes();
+  $("pStats").innerHTML = [[pm.count ?? 0, "Premium posts"], [mem.count ?? 0, "Active members"], [codes.length, "Codes made"], [used, "Codes used"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+  $("sIntro").value = st.premium_intro || ""; $("sHow").value = st.how_to_buy || ""; $("sContact").value = st.contact_link || "";
+  plansCache = pl.data || []; drawPlans(plansCache); fillPlanSel("prPlan", true); drawPromos(pc.data || []); loadCodes();
 }
 function drawPlans(list) {
   $("plList").innerHTML = list.map(p => `<div class="line" data-id="${p.id}"><div class="cols">
-    <label class="f"><span>Naam</span><input type="text" class="n" value="${esc(p.name)}"></label><label class="f"><span>Din</span><input type="number" class="d" value="${p.days}"></label>
-    <label class="f"><span>Daam</span><input type="text" class="p" value="${esc(p.price)}"></label><label class="f"><span>Purano daam</span><input type="text" class="op" value="${esc(p.old_price || "")}"></label>
-    <label class="f"><span>Badge</span><input type="text" class="b" value="${esc(p.badge || "")}"></label><label class="f"><span>Order</span><input type="number" class="o" value="${p.sort_order}"></label></div>
-    <label class="f"><span>Perks (proti line e ekta)</span><textarea class="pk" style="min-height:70px">${esc(p.perks || "")}</textarea></label>
-    <div class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></div></div>`).join("") || '<p class="mute">Kono plan nai.</p>';
+    <label class="f"><span>Name</span><input type="text" class="n" value="${esc(p.name)}"></label><label class="f"><span>Days</span><input type="number" class="d" value="${p.days}"></label>
+    <label class="f"><span>Price (USDT)</span><input type="number" step="0.01" class="pu" value="${p.price_usdt ?? ""}"></label><label class="f"><span>Price (Stars)</span><input type="number" class="ps" value="${p.price_stars ?? ""}"></label>
+    <label class="f"><span>Old price label</span><input type="text" class="op" value="${esc(p.old_price || "")}"></label><label class="f"><span>Badge</span><input type="text" class="b" value="${esc(p.badge || "")}"></label>
+    <label class="f"><span>Order</span><input type="number" class="o" value="${p.sort_order}"></label></div>
+    <label class="f"><span>Perks (one per line)</span><textarea class="pk" style="min-height:70px">${esc(p.perks || "")}</textarea></label>
+    <div class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><label class="ck"><input type="checkbox" class="gp" ${p.grants_private ? "checked" : ""}> Also grants Private access</label><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></div></div>`).join("") || '<p class="mute">No plans yet.</p>';
   $("plList").querySelectorAll("[data-id]").forEach(r => {
-    r.querySelector(".sv").onclick = async () => { const { error } = await sb.from("plans").update({ name: r.querySelector(".n").value.trim(), days: Number(r.querySelector(".d").value) || 1, price: r.querySelector(".p").value.trim(), old_price: r.querySelector(".op").value.trim() || null, badge: r.querySelector(".b").value.trim() || null, sort_order: Number(r.querySelector(".o").value) || 0, perks: r.querySelector(".pk").value, active: r.querySelector(".ac").checked }).eq("id", r.dataset.id); error ? toast(error.message) : toast("Saved"); };
-    r.querySelector(".dl").onclick = async () => { if (!confirm("Plan delete korbe?")) return; await sb.from("plans").delete().eq("id", r.dataset.id); loadPremium(); };
+    r.querySelector(".sv").onclick = async () => { const pu = r.querySelector(".pu").value, ps = r.querySelector(".ps").value; const { error } = await sb.from("plans").update({ name: r.querySelector(".n").value.trim(), days: Math.max(1, num(r.querySelector(".d").value)), price_usdt: pu === "" ? null : num(pu), price_stars: ps === "" ? null : Math.max(1, Math.round(num(ps))), old_price: r.querySelector(".op").value.trim() || null, badge: r.querySelector(".b").value.trim() || null, sort_order: num(r.querySelector(".o").value), perks: r.querySelector(".pk").value, active: r.querySelector(".ac").checked, grants_private: r.querySelector(".gp").checked }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadPlansCache()); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this plan? Past payments keep their record.")) return; await sb.from("plans").delete().eq("id", r.dataset.id); loadPremium(); };
   });
 }
 $("plAdd").onclick = async () => { const { error } = await sb.from("plans").insert({ name: "New plan", days: 30, price: "", sort_order: 99 }); error ? toast(error.message) : loadPremium(); };
@@ -450,13 +664,29 @@ $("sSave").onclick = async () => { const r = await Promise.all([setSetting("prem
 
 const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 function genCode() { const b = crypto.getRandomValues(new Uint8Array(12)); const s = [...b].map(x => ALPHA[x % ALPHA.length]).join(""); return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`; }
+function genPromo() { const b = crypto.getRandomValues(new Uint8Array(6)); return [...b].map(x => ALPHA[x % ALPHA.length]).join(""); }
+$("prGo").onclick = async () => {
+  const pct = Math.min(100, Math.max(0, Math.round(num($("prPct").value)))), bonus = Math.max(0, Math.round(num($("prBonus").value)));
+  if (!pct && !bonus) return toast("Add a discount % or bonus days");
+  const code = ($("prCode").value.trim() || genPromo()).toUpperCase().replace(/\s+/g, "");
+  const { error } = await sb.from("promos").insert({ code, percent: pct, bonus_days: bonus, plan_id: $("prPlan").value || null, max_uses: Math.max(1, num($("prMax").value) || 100), expires_at: $("prExp").value ? new Date($("prExp").value + "T23:59:59").toISOString() : null, note: $("prNote").value.trim() || null });
+  if (error) return toast(error.message.includes("duplicate") ? "That code already exists" : error.message);
+  $("prCode").value = ""; toast("Promo " + code + " created"); loadPremium();
+};
+function drawPromos(list) {
+  $("prList").innerHTML = list.map(p => `<div class="row between line" data-c="${p.code}"><div><code class="cd">${esc(p.code)}</code> ${p.percent ? `<span class="pill g">${p.percent}% off</span>` : ""} ${p.bonus_days ? `<span class="pill g">+${p.bonus_days}d</span>` : ""} <span class="pill">${p.used_count}/${p.max_uses}</span>${p.plan_id ? ` <span class="mute sm">${esc(plansCache.find(x => x.id === p.plan_id)?.name || "one plan")}</span>` : ""}${p.expires_at ? ` <span class="mute sm">till ${fdate(p.expires_at)}</span>` : ""}${p.note ? ` <span class="mute sm">${esc(p.note)}</span>` : ""}</div>
+    <span class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute">No promo codes yet.</p>';
+  $("prList").querySelectorAll("[data-c]").forEach(r => {
+    r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied"));
+    r.querySelector(".ac").onchange = async e => { await sb.from("promos").update({ active: e.target.checked }).eq("code", r.dataset.c); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this promo?")) return; await sb.from("promos").delete().eq("code", r.dataset.c); loadPremium(); };
+  });
+}
 $("cgGo").onclick = async () => {
-  const n = Math.min(100, Math.max(1, Number($("cgN").value) || 1)), days = Number($("cgD").value), uses = Number($("cgU").value) || 1;
-  if (!days) return toast("Din dao");
+  const n = Math.min(100, Math.max(1, num($("cgN").value) || 1)), days = num($("cgD").value), uses = num($("cgU").value) || 1; if (!days) return toast("Enter the days");
   const exp = $("cgE").value ? new Date($("cgE").value + "T23:59:59").toISOString() : null, note = $("cgNote").value.trim() || null;
-  const rows = Array.from({ length: n }, () => ({ code: genCode(), days, max_uses: uses, expires_at: exp, note }));
-  const { error } = await sb.from("codes").insert(rows); if (error) return toast(error.message);
-  toast(`${n} ta code toiri`); loadCodes(); loadPremium();
+  const { error } = await sb.from("codes").insert(Array.from({ length: n }, () => ({ code: genCode(), days, max_uses: uses, expires_at: exp, note }))); if (error) return toast(error.message);
+  toast(`${n} codes created`); loadCodes(); loadPremium();
 };
 let cFilter = "unused", codeCache = [];
 $("cFilter").onclick = e => { const b = e.target.closest("button"); if (!b) return; cFilter = b.dataset.v; document.querySelectorAll("#cFilter button").forEach(x => x.classList.toggle("on", x === b)); drawCodes(); };
@@ -464,53 +694,31 @@ async function loadCodes() { const { data } = await sb.from("codes").select("*")
 const unusedList = () => codeCache.filter(c => c.used_count < c.max_uses && !(c.expires_at && new Date(c.expires_at) < new Date()));
 function drawCodes() {
   const list = cFilter === "all" ? codeCache : cFilter === "used" ? codeCache.filter(c => c.used_count > 0) : unusedList();
-  $("cList").innerHTML = list.map(c => `<div class="row between line" data-c="${c.code}"><div><code class="cd">${c.code}</code> <span class="pill">${c.days}d</span> <span class="pill ${c.used_count ? "g" : ""}">${c.used_count}/${c.max_uses}</span>${c.expires_at ? ` <span class="mute sm">till ${fdate(c.expires_at)}</span>` : ""}${c.note ? ` <span class="mute sm">${esc(c.note)}</span>` : ""}</div><span class="row"><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute" style="padding:10px 0">Kono code nai.</p>';
-  $("cList").querySelectorAll("[data-c]").forEach(r => {
-    r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied"));
-    r.querySelector(".dl").onclick = async () => { await sb.from("codes").delete().eq("code", r.dataset.c); loadCodes(); };
-  });
+  $("cList").innerHTML = list.map(c => `<div class="row between line" data-c="${c.code}"><div><code class="cd">${c.code}</code> <span class="pill">${c.days}d</span> <span class="pill ${c.used_count ? "g" : ""}">${c.used_count}/${c.max_uses}</span>${c.expires_at ? ` <span class="mute sm">till ${fdate(c.expires_at)}</span>` : ""}${c.note ? ` <span class="mute sm">${esc(c.note)}</span>` : ""}</div><span class="row"><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute" style="padding:10px 0">No codes.</p>';
+  $("cList").querySelectorAll("[data-c]").forEach(r => { r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied")); r.querySelector(".dl").onclick = async () => { await sb.from("codes").delete().eq("code", r.dataset.c); loadCodes(); }; });
 }
-$("cCopy").onclick = () => { const t = unusedList().map(c => c.code).join("\n"); navigator.clipboard.writeText(t).then(() => toast(`${unusedList().length} ta code copy hoyeche`)); };
+$("cCopy").onclick = () => { const t = unusedList().map(c => c.code).join("\n"); navigator.clipboard.writeText(t).then(() => toast(`${unusedList().length} codes copied`)); };
 
-/* notify */
-const TPL = { offer: ["premium", "Premium offer", "Aj Monthly plan e special daam. Details Profile > Premium e."], drop: ["custom", "New collection ashche", "Ei shoptaho e notun post ashche. Dekhte bhulo na."], maint: ["notice", "Maintenance", "Kichukkhon app dhire cholte pare. Dhonnobad."] };
+/* ---------- notify ---------- */
+const TPL = { offer: ["premium", "Premium offer", "Special price on the Monthly plan today. Tap to see the plans."], drop: ["custom", "New collection", "New posts just landed. Come take a look."], maint: ["notice", "Maintenance", "The app may be a little slow for a while. Thanks for your patience."] };
 $("nTpl").onclick = e => { const b = e.target.closest("button"); if (!b) return; const [k, t, m] = TPL[b.dataset.t]; $("nKind").value = k; $("nTitle").value = t; $("nBody").value = m; };
 $("nSend").onclick = async () => {
-  const title = $("nTitle").value.trim(); if (!title) return toast("Title dao");
-  const tg = $("nTg").value.trim(), body = $("nBody").value.trim();
-  if (tg && !/^\d+$/.test(tg)) return toast("Telegram ID shudhu number");
+  const title = $("nTitle").value.trim(); if (!title) return toast("Add a title");
+  const tg = $("nTg").value.trim(), body = $("nBody").value.trim(); if (tg && !/^\d+$/.test(tg)) return toast("Telegram ID must be a number");
   $("nSend").disabled = true; $("nMsg").textContent = "";
   const { error } = await sb.from("notifications").insert({ kind: $("nKind").value, title, body: body || null, tg_id: tg ? Number(tg) : null, popup: $("nPop").checked });
   if (error) { toast(error.message); $("nSend").disabled = false; return; }
-  let msg = "App e gelo";
-  if ($("nPush").checked) { try { const r = await pushTG(title, body, tg); msg += r.error ? `. Push fail: ${r.error}` : `. Telegram: ${r.sent} pathano, ${r.failed} fail${r.stopped_early ? " (bhaag e pathano, abar chalao)" : ""}`; } catch (e) { msg += ". Push fail: " + e.message; } }
+  let msg = "Sent in-app";
+  if ($("nPush").checked) { try { const r = await pushTG(title, body, tg); msg += r.error ? `. Push failed: ${r.error}` : `. Telegram: ${r.sent} sent, ${r.failed} failed${r.stopped_early ? " (partial, run again to reach the rest)" : ""}`; } catch (e) { msg += ". Push failed: " + e.message; } }
   $("nMsg").textContent = msg; $("nSend").disabled = false; $("nTitle").value = ""; $("nBody").value = ""; loadNotify();
 };
 async function loadNotify() {
   const { data } = await sb.from("notifications").select("*").order("created_at", { ascending: false }).limit(40);
-  $("nList").innerHTML = (data || []).map(n => `<div class="row between line" data-id="${n.id}"><div><b>${esc(n.title)}</b> <span class="pill">${n.kind}</span>${n.tg_id ? ` <span class="pill v">to ${n.tg_id}</span>` : ""}<div class="mute sm">${esc(n.body || "")}  ·  ${ago(n.created_at)}</div></div><button class="btn dg xs">Delete</button></div>`).join("") || '<p class="mute">Kichu nai.</p>';
+  $("nList").innerHTML = (data || []).map(n => `<div class="row between line" data-id="${n.id}"><div><b>${esc(n.title)}</b> <span class="pill">${n.kind}</span>${n.tg_id ? ` <span class="pill v">to ${n.tg_id}</span>` : ""}<div class="mute sm">${esc(n.body || "")}  ·  ${ago(n.created_at)}</div></div><button class="btn dg xs">Delete</button></div>`).join("") || '<p class="mute">Nothing yet.</p>';
   $("nList").querySelectorAll("[data-id]").forEach(r => r.querySelector("button").onclick = async () => { await sb.from("notifications").delete().eq("id", r.dataset.id); loadNotify(); });
 }
 
-/* notices */
-$("ntAdd").onclick = async () => {
-  const title = $("ntTitle").value.trim(); if (!title) return toast("Title dao");
-  const body = $("ntBody").value.trim() || null;
-  const { error } = await sb.from("notices").insert({ title, body, pinned: $("ntPin").checked }); if (error) return toast(error.message);
-  if ($("ntNotif").checked) await sb.from("notifications").insert({ kind: "notice", title, body, popup: true });
-  $("ntTitle").value = ""; $("ntBody").value = ""; $("ntPin").checked = false; toast("Publish hoyeche"); loadNotices();
-};
-async function loadNotices() {
-  const { data } = await sb.from("notices").select("*").order("pinned", { ascending: false }).order("created_at", { ascending: false }).limit(60);
-  $("ntList").innerHTML = (data || []).map(n => `<div class="line" data-id="${n.id}"><div class="row between"><b>${esc(n.title)} ${n.pinned ? '<span class="pill g">Pinned</span>' : ""}</b><span class="row"><button class="btn gh xs pn">${n.pinned ? "Unpin" : "Pin"}</button><button class="btn dg xs dl">Delete</button></span></div><div class="mute sm" style="white-space:pre-wrap">${esc(n.body || "")}</div></div>`).join("") || '<p class="mute">Kono notice nai.</p>';
-  $("ntList").querySelectorAll("[data-id]").forEach(r => {
-    const n = data.find(x => x.id === r.dataset.id);
-    r.querySelector(".pn").onclick = async () => { await sb.from("notices").update({ pinned: !n.pinned }).eq("id", n.id); loadNotices(); };
-    r.querySelector(".dl").onclick = async () => { if (confirm("Delete korbe?")) { await sb.from("notices").delete().eq("id", n.id); loadNotices(); } };
-  });
-}
-
-/* tickets */
+/* ---------- tickets ---------- */
 let tkFilter = "active", tkOpen = null;
 $("tkF").onclick = e => { const b = e.target.closest("button"); if (!b) return; tkFilter = b.dataset.v; document.querySelectorAll("#tkF button").forEach(x => x.classList.toggle("on", x === b)); loadTickets(); };
 function showList() { $("tkListWrap").hidden = false; $("tkThread").hidden = true; }
@@ -518,18 +726,16 @@ async function loadTickets() {
   let q = sb.from("tickets").select("*, profiles(first_name,last_name,username,display_name)").order("updated_at", { ascending: false }).limit(60);
   if (tkFilter === "active") q = q.in("status", ["open", "answered"]); else if (tkFilter === "closed") q = q.eq("status", "closed");
   const { data, error } = await q; if (error) return toast(error.message);
-  $("tkList").innerHTML = (data || []).map(t => { const p = t.profiles || {}, nm = p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || t.tg_id; return `<div class="row between line" data-id="${t.id}" style="cursor:pointer"><div><b>${esc(t.subject)}</b><div class="mute sm">${esc(nm)}${p.username ? " @" + esc(p.username) : ""}  ·  ${t.category}  ·  ${ago(t.updated_at)}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>`; }).join("") || '<p class="mute" style="padding:10px 0">Kono ticket nai.</p>';
+  $("tkList").innerHTML = (data || []).map(t => { const p = t.profiles || {}; return `<div class="row between line" data-id="${t.id}" style="cursor:pointer"><div><b>${esc(t.subject)}</b><div class="mute sm">${esc(nm(p))}${p.username ? " @" + esc(p.username) : ""}  ·  ${t.category}  ·  ${ago(t.updated_at)}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>`; }).join("") || '<p class="mute" style="padding:10px 0">No tickets.</p>';
   $("tkList").querySelectorAll("[data-id]").forEach(r => r.onclick = () => openTicket(data.find(t => t.id === r.dataset.id)));
   badges();
 }
 async function openTicket(t) {
   tkOpen = t; $("tkListWrap").hidden = true; $("tkThread").hidden = false;
-  const { data: msgs } = await sb.from("ticket_messages").select("*").eq("ticket_id", t.id).order("created_at");
-  const p = t.profiles || {}, nm = p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || t.tg_id;
-  $("tkThread").innerHTML = `<button class="btn gh xs" id="tkBack" style="margin-bottom:14px">Back</button><div class="card"><div class="row between"><div><h3 style="margin:0">${esc(t.subject)}</h3><div class="mute sm">${esc(nm)}${p.username ? " @" + esc(p.username) : ""}  ·  ID ${t.tg_id}  ·  ${t.category}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>
+  const { data: msgs } = await sb.from("ticket_messages").select("*").eq("ticket_id", t.id).order("created_at"); const p = t.profiles || {};
+  $("tkThread").innerHTML = `<button class="btn gh xs" id="tkBack" style="margin-bottom:14px">Back</button><div class="card"><div class="row between"><div><h3 style="margin:0">${esc(t.subject)}</h3><div class="mute sm">${esc(nm(p))}${p.username ? " @" + esc(p.username) : ""}  ·  ID ${t.tg_id}  ·  ${t.category}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>
     <div style="margin:18px 0">${(msgs || []).map(m => `<div class="bub ${m.from_admin ? "me" : ""}">${esc(m.body)}<small>${m.from_admin ? "Admin" : "User"}  ·  ${ago(m.created_at)}</small></div>`).join("")}</div>
-    ${t.status === "closed" ? "" : `<textarea id="tkR" placeholder="Reply likho"></textarea><div class="row" style="margin-top:10px"><button class="btn" id="tkSend">Reply pathao</button><button class="btn gh" id="tkClose">Close ticket</button></div>`}
-    ${t.status === "closed" ? `<button class="btn gh" id="tkRe">Reopen</button>` : ""}</div>`;
+    ${t.status === "closed" ? '<button class="btn gh" id="tkRe">Reopen</button>' : `<textarea id="tkR" placeholder="Write a reply"></textarea><div class="row" style="margin-top:10px"><button class="btn" id="tkSend">Send reply</button><button class="btn gh" id="tkClose">Close ticket</button></div>`}</div>`;
   $("tkBack").onclick = () => { tkOpen = null; showList(); loadTickets(); };
   const setStatus = async s => { await sb.from("tickets").update({ status: s, updated_at: new Date().toISOString() }).eq("id", t.id); t.status = s; openTicket(t); badges(); };
   $("tkSend")?.addEventListener("click", async () => {
@@ -537,18 +743,53 @@ async function openTicket(t) {
     const { error } = await sb.from("ticket_messages").insert({ ticket_id: t.id, from_admin: true, body }); if (error) return toast(error.message);
     await sb.from("tickets").update({ status: "answered", updated_at: new Date().toISOString() }).eq("id", t.id);
     await sb.from("notifications").insert({ kind: "ticket", title: "Ticket reply", body: t.subject, tg_id: t.tg_id, popup: true });
-    t.status = "answered"; toast("Reply gelo"); openTicket(t); badges();
+    t.status = "answered"; toast("Reply sent"); openTicket(t); badges();
   });
   $("tkClose")?.addEventListener("click", () => setStatus("closed")); $("tkRe")?.addEventListener("click", () => setStatus("open"));
 }
 
-/* settings */
+/* ---------- user uploads ---------- */
+let uuPage = 0; const UP = 30;
+$("uuGo").onclick = () => loadUU(true); $("uuMore").onclick = () => loadUU(false);
+async function loadUU(reset) {
+  if (reset) { uuPage = 0; $("uuList").innerHTML = ""; }
+  let q = sb.from("user_media").select("*, profiles(first_name,last_name,display_name,username)", { count: "exact" }).order("created_at", { ascending: false }).range(uuPage * UP, uuPage * UP + UP - 1);
+  const s = $("uuQ").value.trim(); if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); if ($("uuS").value) q = q.eq("share_status", $("uuS").value);
+  const { data, count, error } = await q; if (error) return toast(error.message);
+  $("uuInfo").textContent = `${count ?? 0} files`; const urls = await sign((data || []).map(m => m.path));
+  (data || []).forEach(m => {
+    const d = document.createElement("div"); d.className = "item";
+    d.innerHTML = `${thumb(urls[m.path], m.type)}<div><b>${esc(m.title || "Untitled")}</b><div class="mute sm">${esc(nm(m.profiles))} · ID ${m.tg_id} · ${(m.size_bytes / 1048576).toFixed(1)} MB · ${fdate(m.created_at)}</div><div class="row" style="margin-top:8px">${m.share_status !== "none" ? `<span class="pill ${m.share_status === "approved" ? "ok" : m.share_status === "pending" ? "warn" : "r"}">${{ pending: "Waiting", approved: "In Community", rejected: "Rejected" }[m.share_status]}</span>` : ""}${m.share_status !== "approved" && m.share_status !== "none" ? '<button class="btn xs ap">Approve</button>' : ""}${m.share_status === "approved" || m.share_status === "pending" ? '<button class="btn gh xs rj">' + (m.share_status === "approved" ? "Remove from Community" : "Reject") + "</button>" : ""}<button class="btn dg xs dl">Delete</button></div></div>`;
+    d.querySelector(".ap")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "approved", shared_at: new Date().toISOString() }).eq("id", m.id); loadUU(true); badges(); });
+    d.querySelector(".rj")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "rejected" }).eq("id", m.id); loadUU(true); badges(); });
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this file?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); await sb.from("user_media").delete().eq("id", m.id); d.remove(); };
+    $("uuList").appendChild(d);
+  });
+  uuPage++; $("uuMore").hidden = uuPage * UP >= (count ?? 0);
+  if (!$("uuList").children.length) $("uuList").innerHTML = '<p class="mute" style="padding:10px 0">Nothing uploaded yet.</p>';
+}
+
+/* ---------- settings ---------- */
 async function loadSettings() {
-  const { data } = await sb.from("settings").select("value").eq("key", "ref_reward_days").maybeSingle(); $("refDays").value = data?.value ?? "1";
+  const s = await getSettings(["ref_reward_days", "maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_upload_max_mb", "user_upload_max_items", "popup_seconds", "community_on", "community_auto"]);
+  $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
+  $("refDays").value = s.ref_reward_days ?? "1"; $("setMaint").value = s.maintenance || "";
+  $("setUsdt").checked = s.pay_usdt_on !== "0"; $("setStars").checked = s.pay_stars_on !== "0"; $("setAddr").value = s.usdt_address || ""; $("setConf").value = s.usdt_min_conf || "3"; $("setRpc").value = s.bsc_rpc || "";
+  $("setUp").checked = s.user_upload_on !== "0"; $("setMb").value = s.user_upload_max_mb || "20"; $("setItems").value = s.user_upload_max_items || "60"; $("setPop").value = s.popup_seconds || "3";
   $("chkInfo").textContent = `Bot: @${C.BOT_USERNAME}  ·  Mini app short name: ${C.APP_SHORT_NAME}  ·  Open link: https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`;
 }
-$("refSave").onclick = async () => { const { error } = await setSetting("ref_reward_days", String(Math.max(0, Math.floor(Number($("refDays").value) || 0)))); toast(error ? error.message : "Saved"); };
-$("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Fail: " + r.error : `OK. ${r.total} jon notify on, BOT_TOKEN ${r.token ? "set" : "NEI"}`; } catch (e) { $("chkMsg").textContent = "Function pawa jayni: " + e.message; } };
+$("setPaySave").onclick = async () => {
+  const a = $("setAddr").value.trim(); if (a && !/^0x[a-fA-F0-9]{40}$/.test(a)) return toast("That doesn't look like a valid wallet address");
+  const r = await Promise.all([setSetting("pay_usdt_on", $("setUsdt").checked ? "1" : "0"), setSetting("pay_stars_on", $("setStars").checked ? "1" : "0"), setSetting("usdt_address", a), setSetting("usdt_min_conf", Math.min(30, Math.max(1, num($("setConf").value) || 3))), setSetting("bsc_rpc", $("setRpc").value.trim())]);
+  toast(r.some(x => x.error) ? "Error saving" : "Saved");
+};
+$("rpcTest").onclick = async () => {
+  $("rpcMsg").textContent = "Checking..."; const url = $("setRpc").value.trim() || "https://bsc-dataseed.binance.org";
+  try { const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }) }); const j = await r.json(); $("rpcMsg").textContent = j.result ? `OK. Latest block ${parseInt(j.result, 16)}` : "Network answered with an error"; } catch (e) { $("rpcMsg").textContent = "Could not reach it from the browser (the server may still reach it): " + e.message; }
+};
+$("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_max_mb", Math.min(50, Math.max(1, num($("setMb").value) || 20))), setSetting("user_upload_max_items", Math.min(500, Math.max(1, num($("setItems").value) || 60))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 3)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("refSave").onclick = async () => { const r = await Promise.all([setSetting("ref_reward_days", Math.max(0, Math.floor(num($("refDays").value)))), setSetting("maintenance", $("setMaint").value.trim())]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
 refreshUI();
 </script>

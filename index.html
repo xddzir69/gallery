@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="config.js?v=6"></script>
 <style>
   :root { --disp: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif; --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif; --onmetal: #1A1405; }
@@ -323,6 +324,143 @@
   .pop .btns { margin-top: 22px; }
   #toast { position: fixed; z-index: 300; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 20px; border-radius: 999px; font-size: 13.5px; font-weight: 600; display: none; max-width: calc(100% - 40px); text-align: center; }
   @media (prefers-reduced-motion: reduce) { *, *::before { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+  /* =================== V4 additions =================== */
+  :root { --danger: #E5726B; }
+  .btn.dg { background: var(--danger); color: #fff; box-shadow: none; }
+  .btn.gh.dgt { color: var(--danger); }
+  .grid.g3 { gap: 12px 6px; } .grid.list { gap: 12px; }
+
+  /* no serial numbers: small title under every tile */
+  .th .no { display: none !important; }
+  .cap, .g2 .cap, .list .cap { display: block; padding: 6px 2px 0; }
+  .cap b { font-size: 12.5px; font-weight: 600; }
+  .cap span { font-size: 11.5px; }
+  .g3 .cap span { display: none; } .g3 .cap b { font-size: 11.5px; }
+  .list .cap b { font-size: 14px; } .list .cap span { font-size: 12.5px; }
+  .fc .meta b { font-family: var(--disp); font-style: normal; font-size: 24px; line-height: 1.1; white-space: normal; }
+  .fc .meta span { font-size: 12.5px; }
+
+  /* date headers (photos timeline) */
+  .dh { position: sticky; top: 63px; z-index: 6; margin: 8px -16px 10px; padding: 10px 16px 6px; font-family: var(--disp); font-size: 19px; font-weight: 500; background: linear-gradient(var(--bg) 70%, transparent); }
+  .feedbox .dh:first-child { margin-top: 0; }
+
+  /* album = stacked folder */
+  .it.alb .th { box-shadow: inset 0 0 0 1px var(--line), 0 -4px 0 -2px rgba(150,150,150,.34), 0 -8px 0 -4px rgba(150,150,150,.18); }
+  .abg { position: absolute; z-index: 2; right: 7px; bottom: 7px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,9,7,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F4F0E4; font-size: 11.5px; font-weight: 700; }
+  .abg .i { width: 13px; height: 13px; stroke-width: 2; }
+  .ahd { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
+  .ahd .hb2 { position: static; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); display: flex; align-items: center; justify-content: center; flex: none; }
+  .ahd .hb2.on { color: #FF7C9C; } .ahd .hb2.on .i { fill: currentColor; }
+
+  /* select mode */
+  .sck { position: absolute; left: 8px; top: 8px; z-index: 4; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.28); display: none; align-items: center; justify-content: center; color: var(--onmetal); }
+  .sck .i { width: 14px; height: 14px; stroke-width: 3; opacity: 0; }
+  body.selmode .sck { display: flex; } body.selmode .pl, body.selmode .hb { display: none; }
+  .it.sel .sck { background: var(--metal); border-color: transparent; } .it.sel .sck .i { opacity: 1; }
+  .it.sel .th { outline: 3px solid var(--mid); outline-offset: -3px; }
+  #selbar { position: fixed; z-index: 70; left: 50%; transform: translate(-50%, 30px); bottom: calc(82px + env(safe-area-inset-bottom)); width: min(460px, calc(100% - 20px)); display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 22px; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--mid); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .22s; }
+  #selbar.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+  #selbar #selcount { flex: 1; font-weight: 700; font-size: 14px; } #selacts { display: flex; gap: 8px; }
+  #selbar .btn .i { width: 16px; height: 16px; }
+  .more { height: 40px; } .feedbox:empty { min-height: 0; }
+
+  /* banners / covers */
+  .ban { position: relative; border-radius: 26px; overflow: hidden; aspect-ratio: 21/9; background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); margin-bottom: 22px; }
+  .ban .sl { position: absolute; inset: 0; width: 100%; opacity: 0; pointer-events: none; transition: opacity .8s ease; background: center/cover; display: flex; align-items: flex-end; text-align: left; }
+  .ban .sl.on { opacity: 1; pointer-events: auto; z-index: 1; }
+  .ban .sl::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(6,9,7,.78), rgba(6,9,7,0) 62%); }
+  .ban .tx { position: relative; z-index: 2; padding: 16px 20px; color: #F4F0E4; max-width: 80%; }
+  .ban .tx b { display: block; font-family: var(--disp); font-weight: 500; font-size: 26px; line-height: 1.08; letter-spacing: -.02em; }
+  .ban .tx span { display: block; margin-top: 4px; font-size: 13px; opacity: .86; }
+  .ban .dots { position: absolute; z-index: 3; right: 16px; bottom: 14px; display: flex; gap: 5px; }
+  .ban .dots i { width: 6px; height: 6px; border-radius: 6px; background: rgba(255,255,255,.5); transition: .3s; } .ban .dots i.on { width: 18px; background: var(--hi); }
+
+  /* profile cover + avatar */
+  .pcv { position: relative; height: 158px; margin: -18px -16px 0; background: var(--card2) center/cover; }
+  .pcv.empty { background: linear-gradient(135deg, var(--card2), var(--bg2)); }
+  .pcv::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 45%, var(--bg)); }
+  .pcard { margin-top: -54px; position: relative; z-index: 2; }
+  .cam { position: absolute; z-index: 3; width: 36px; height: 36px; border-radius: 50%; background: var(--metal); color: var(--onmetal); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(0,0,0,.4); border: 2px solid var(--bg); }
+  .cam .i { width: 17px; height: 17px; }
+  .pcv .cam { right: 14px; bottom: 26px; } .ring .cam { right: -4px; bottom: -2px; }
+  .edav { display: block; position: relative; width: 104px; margin: -54px auto 14px; z-index: 2; }
+  .edav .ring { margin: 0; }
+  .vip { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* premium: segmented + vault */
+  .segw { display: flex; justify-content: center; margin: 4px 0 18px; }
+  .segw .seg { width: 100%; } .segw .seg button { flex: 1; padding: 11px 0; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+  .segw .seg .i { width: 16px; height: 16px; }
+  .vault { text-align: center; border-color: var(--mid); background: linear-gradient(160deg, var(--card2), var(--card)); }
+  .vault .big2 { width: 54px; height: 54px; margin: 0 auto 10px; border-radius: 50%; background: var(--metal); color: var(--onmetal); display: flex; align-items: center; justify-content: center; } .vault .big2 .i { width: 24px; height: 24px; }
+  .vault p { color: var(--mute); font-size: 14px; margin: 6px 0 4px; }
+
+  /* plans + checkout */
+  .pp { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 2px; }
+  .pp span { padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 13.5px; box-shadow: inset 0 0 0 1px var(--line); background: var(--card2); }
+  .pp span.st { color: var(--gold); } .pp span.us { color: #5BC48C; }
+  .pm { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .pm button { padding: 14px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); text-align: left; }
+  .pm button.on { border-color: var(--mid); box-shadow: 0 0 0 1px var(--mid); }
+  .pm b { display: block; font-size: 15px; } .pm span { font-size: 12.5px; color: var(--mute); }
+  .pm button:disabled { opacity: .4; }
+  .tot { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 0 4px; }
+  .tot b { font-family: var(--disp); font-weight: 500; font-size: 34px; letter-spacing: -.02em; }
+  .ord { text-align: center; }
+  .ord .amt { font-family: var(--disp); font-size: 46px; font-weight: 500; letter-spacing: -.03em; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1.1; }
+  .addr { margin: 10px 0 4px; padding: 13px 14px; border-radius: 14px; background: var(--bg2); border: 1px dashed var(--line); font: 600 12.5px ui-monospace, Menlo, monospace; word-break: break-all; user-select: text; -webkit-user-select: text; }
+  .warn { margin-top: 14px; padding: 12px 14px; border-radius: 14px; font-size: 13px; color: var(--gold); box-shadow: inset 0 0 0 1px var(--mid); text-align: left; }
+  .stat2 { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 14px 0 4px; font-size: 13.5px; color: var(--mute); }
+  .spin { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--line); border-top-color: var(--mid); animation: spn 1s linear infinite; } @keyframes spn { to { transform: rotate(360deg); } }
+  .tag { display: inline-block; padding: 3px 10px; border-radius: 999px; background: var(--metal); color: var(--onmetal); font-size: 12px; font-weight: 700; margin-left: 8px; }
+
+  /* my space */
+  .sp3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .sp3 div { padding: 14px 6px; text-align: center; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+  .sp3 b { display: block; font-family: var(--disp); font-weight: 500; font-size: 26px; line-height: 1.1; } .sp3 span { font-size: 12px; color: var(--mute); }
+
+  /* cropper */
+  #crop { position: fixed; inset: 0; z-index: 180; background: #050806; display: none; flex-direction: column; }
+  #crop.open { display: flex; }
+  #cstage { position: relative; flex: 1; overflow: hidden; touch-action: none; }
+  #cimg { position: absolute; left: 0; top: 0; transform-origin: 0 0; max-width: none; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+  #cframe { position: absolute; border: 2px solid var(--hi); box-shadow: 0 0 0 999px rgba(5,8,6,.66); pointer-events: none; }
+  #cbar { padding: 14px 18px calc(18px + env(safe-area-inset-bottom)); display: grid; gap: 14px; background: #0A0F0C; color: #EAE6D8; }
+  #cbar input[type=range] { width: 100%; accent-color: var(--mid); }
+  #cbar .btns { margin-top: 0; }
+
+  /* viewer v4 */
+  #stage { touch-action: none; }
+  #stage img { max-width: 100vw; max-height: 100vh; transform-origin: center; will-change: transform; }
+  #viewer.bare .vtop, #viewer.bare .vcap, #viewer.bare .vnav { opacity: 0; pointer-events: none; }
+  .vtop, .vcap, .vnav { transition: opacity .25s; }
+  .vtop .cnt { font-style: normal; font-family: var(--body); font-size: 14px; font-weight: 600; opacity: .85; }
+  #viewer.mine #vheart { display: none; }
+  #vsheet { position: absolute; z-index: 8; left: 0; right: 0; bottom: 0; padding: 22px 22px calc(26px + env(safe-area-inset-bottom)); border-radius: 26px 26px 0 0; background: var(--bg2); color: var(--text); border-top: 1px solid var(--line); transform: translateY(105%); transition: transform .3s cubic-bezier(.2,.9,.3,1); }
+  #vsheet.on { transform: none; }
+  #vsheet h3 { font-family: var(--disp); font-weight: 500; font-size: 24px; margin-bottom: 12px; }
+  #vsheet .ir { display: flex; justify-content: space-between; gap: 14px; padding: 11px 0; border-top: 1px solid var(--line); font-size: 14px; } #vsheet .ir span:first-child { color: var(--mute); }
+
+  /* landscape premium popup (auto closes) */
+  #popup { position: fixed; inset: auto; left: 50%; top: calc(68px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 150; width: min(580px, calc(100% - 24px)); padding: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; display: none; pointer-events: none; }
+  #popup.open { display: block; }
+  .pop { pointer-events: auto; position: relative; display: flex; align-items: stretch; width: 100%; text-align: left; min-height: 92px; border-radius: 22px; overflow: hidden; cursor: pointer; background: linear-gradient(135deg, var(--card2), var(--card)); border: 1px solid var(--mid); box-shadow: 0 0 0 1px rgba(205,170,94,.16), 0 20px 56px rgba(0,0,0,.55); animation: drop .55s cubic-bezier(.2,1.15,.3,1); }
+  @keyframes drop { from { transform: translateY(-26px) scale(.95); opacity: 0; } }
+  .pop .pi2 { width: 104px; flex: none; position: relative; background: var(--metal) center/cover; display: flex; align-items: center; justify-content: center; color: var(--onmetal); }
+  .pop .pi2 .i { width: 34px; height: 34px; stroke-width: 1.6; }
+  .pop .pi2.img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 55%, var(--card2)); }
+  .pop .pb2 { flex: 1; min-width: 0; padding: 13px 44px 17px 16px; }
+  .pop .kd { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
+  .pop .kd .i { width: 12px; height: 12px; fill: currentColor; stroke: none; }
+  .pop h3 { font-family: var(--disp); font-weight: 500; font-size: 19px; line-height: 1.15; letter-spacing: -.01em; margin: 4px 0 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop p { margin: 0; font-size: 13px; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop .x { position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--mute); background: rgba(128,128,128,.14); }
+  .pop .x .i { width: 14px; height: 14px; }
+  .pop .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--metal); transform-origin: left; animation: drain var(--dur, 3s) linear forwards; }
+  @keyframes drain { to { transform: scaleX(0); } }
+  #sheet .btns .btn.dg { color: #fff; }
+  #sheet input { width: 100%; margin-top: 14px; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; outline: none; text-align: left; }
 </style>
 </head>
 <body>
@@ -368,6 +506,13 @@
   <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 14l6-6 6 6"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5zM12 17v-6M9.5 13.5L12 11l2.5 2.5"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2.4h6.8L17 8h3v11H4z"/><circle cx="12" cy="13.2" r="3.4"/></symbol>
+  <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.8-1.5-1.2-2.8-1.2-1.6 0-2.7.8-2.7 2 0 2.8 5.6 1.2 5.6 4 0 1.2-1.2 2-2.9 2-1.3 0-2.4-.5-3-1.4M12 6.5V8M12 16v1.5"/></symbol>
 </svg>
 
 <div id="splash">
@@ -387,15 +532,14 @@
 </header>
 
 <main id="app"></main>
-
 <button class="fab" id="fab" aria-label="Top"><svg class="i"><use href="#i-up"/></svg></button>
-
 <nav id="nav" hidden></nav>
 
 <div id="viewer">
   <div class="vtop">
     <span class="cnt" id="vcnt"></span>
     <div class="acts">
+      <button class="vb" id="vinfo" aria-label="Info"><svg class="i"><use href="#i-info"/></svg></button>
       <button class="vb" id="vheart" aria-label="Save"><svg class="i"><use href="#i-heart"/></svg></button>
       <button class="vb" id="vclose" aria-label="Close"><svg class="i"><use href="#i-close"/></svg></button>
     </div>
@@ -405,9 +549,13 @@
   <div id="stage"></div>
   <div id="wm"></div>
   <div class="vcap"><b id="vt"></b><span id="vm"></span></div>
+  <div id="vsheet"></div>
 </div>
 <div id="modal"><div id="sheet"></div></div>
-<div id="popup"><div class="pop" id="popbox"></div></div>
+<div id="popup"><div class="pop" id="popbox" data-act="popgo"></div></div>
+<div id="crop"><div id="cstage"><img id="cimg" alt=""><div id="cframe"></div></div>
+  <div id="cbar"><div id="ctitle" style="text-align:center;font-weight:600"></div><input type="range" id="czoom" min="100" max="500" value="100"><div class="btns"><button class="btn gh" id="ccancel">Cancel</button><button class="btn" id="cok">Save</button></div></div></div>
+<div id="selbar"><span id="selcount"></span><div id="selacts"></div><button class="btn gh sm" data-act="selcancel">Cancel</button></div>
 <div id="toast"></div>
 
 <script>
@@ -469,7 +617,7 @@ async function api(action, data = {}) {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ initData: tg?.initData || "", webAuth, start: refParam ? "ref_" + refParam : "", action, ...data }),
   });
-  const j = await r.json().catch(() => ({ error: "Server er response bujha jachhe na" }));
+  const j = await r.json().catch(() => ({ error: "Could not read the server response" }));
   if (r.status === 401 && !inTg) { LS.del("gv_web"); webAuth = null; }
   if (!r.ok) throw new Error(j.error || ("Error " + r.status));
   return j;
@@ -478,24 +626,25 @@ let toastT;
 function toast(t) { const el = $("toast"); el.textContent = t; el.style.display = "block"; clearTimeout(toastT); toastT = setTimeout(() => el.style.display = "none", 2200); }
 
 /* ---------- state ---------- */
-let me = null, cats = [], plans = [], settings = {}, unread = 0;
-let saved = new Set(LS.get("gv_saved", []));
-const SRC = { list: [], feat: [] };
-const hs = { cat: "", q: "", sort: "serial", type: "" };
+let me = null, cats = [], plans = [], settings = {}, banners = [], unread = 0;
+let favs = new Set();
+const SRC = {};
+const hs = { cat: "", sort: "latest", type: "" };
 const stack = [{ r: "home", p: {} }];
-const TABS = ["home", "cats", "premium", "notices", "profile"];
-const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium", referral: "Invite and earn", tickets: "Support", ticket: "Ticket", ticketnew: "New ticket", settings: "Settings", notifs: "Notifications" };
+const TABS = ["home", "explore", "premium", "library", "profile"];
+const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Ticket", ticketnew: "New ticket", settings: "Settings", notifs: "Notifications", album: "Album", space: "My space", community: "Community", pay: "Checkout", payments: "Payments" };
 let timers = [];
+const usdtOn = () => settings.pay_usdt_on !== "0" && !!settings.usdt_address;
+const starsOn = () => settings.pay_stars_on !== "0";
+const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || "User";
+const daysLeft = () => me.premium ? Math.max(0, Math.ceil((new Date(me.premium_until) - Date.now()) / 86400000)) : 0;
+const fmtMB = b => b >= 1048576 ? (b / 1048576).toFixed(b >= 10485760 ? 0 : 1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB";
 
 /* ---------- router ---------- */
-function nav(r, p = {}) {
-  haptic("light");
-  if (TABS.includes(r)) stack.length = 0;
-  stack.push({ r, p }); render();
-}
+function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
 function back() { if (stack.length > 1) { stack.pop(); render(); } }
 function render() {
-  timers.forEach(clearInterval); timers = [];
+  timers.forEach(clearInterval); timers = []; selEnd();
   const { r, p } = stack[stack.length - 1];
   const sub = !TABS.includes(r);
   $("top").hidden = false; $("nav").hidden = false;
@@ -508,330 +657,617 @@ function render() {
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.r === navTab));
   window.scrollTo(0, 0);
   const fn = PAGES[r];
-  Promise.resolve(fn ? fn(p) : PAGES.home()).catch(e => { $("app").innerHTML = `<div class="msg"><b>Load hoyni</b>${esc(e.message)}<br><button class="btn" data-act="reload">Abar try koro</button></div>`; });
+  Promise.resolve(fn ? fn(p) : PAGES.home()).catch(e => { $("app").innerHTML = `<div class="msg"><b>Couldn't load</b>${esc(e.message)}<br><button class="btn" data-act="reload">Try again</button></div>`; });
   syncBack();
 }
 function drawBell() { $("bellBtn").innerHTML = ic("bell") + (unread > 0 ? `<span class="dot">${unread > 9 ? "9+" : unread}</span>` : ""); }
 function syncBack() {
   if (!tg?.BackButton) return;
-  const need = stack.length > 1 || $("viewer").classList.contains("open") || $("modal").classList.contains("open") || $("popup").classList.contains("open");
+  const need = stack.length > 1 || ["viewer", "modal", "popup", "crop"].some(i => $(i).classList.contains("open"));
   need ? tg.BackButton.show() : tg.BackButton.hide();
 }
 tg?.BackButton?.onClick(() => {
-  if ($("popup").classList.contains("open")) return closePopup();
+  if ($("crop").classList.contains("open")) return closeCrop();
   if ($("modal").classList.contains("open")) return closeSheet();
   if ($("viewer").classList.contains("open")) return closeViewer();
+  if ($("popup").classList.contains("open")) return closePopup();
+  if (SEL.on) return selEnd();
   back();
 });
-
-$("nav").innerHTML = [["home", "home", "Home"], ["cats", "grid", "Explore"], ["premium", "crown", "Premium"], ["notices", "notice", "Notices"], ["profile", "user", "Profile"]]
+$("nav").innerHTML = [["home", "home", "Home"], ["explore", "search", "Explore"], ["premium", "crown", "Premium"], ["library", "folder", "Library"], ["profile", "user", "Profile"]]
   .map(([r, i, l]) => `<button data-r="${r}" data-act="tab">${ic(i)}${l}</button>`).join("");
 
+/* ---------- confirm / input sheets ---------- */
+let sheetCancel = null;
+function closeSheet() { $("modal").classList.remove("open"); syncBack(); const f = sheetCancel; sheetCancel = null; f && f(); }
+function confirmBox(title, text, ok = "Delete", danger = true) {
+  return new Promise(res => {
+    $("sheet").innerHTML = `<div class="big">${ic(danger ? "trash" : "check")}</div><h2>${esc(title)}</h2><p>${esc(text)}</p><div class="btns"><button class="btn gh" id="cb0">Cancel</button><button class="btn ${danger ? "dg" : ""}" id="cb1">${esc(ok)}</button></div>`;
+    $("modal").classList.add("open"); syncBack(); sheetCancel = () => res(false);
+    $("cb0").onclick = closeSheet; $("cb1").onclick = () => { sheetCancel = null; closeSheet(); res(true); };
+  });
+}
+function inputBox(title, value = "", ok = "Save") {
+  return new Promise(res => {
+    $("sheet").innerHTML = `<h2>${esc(title)}</h2><input id="ib" maxlength="80" value="${esc(value)}" autocomplete="off"><div class="btns"><button class="btn gh" id="cb0">Cancel</button><button class="btn" id="cb1">${esc(ok)}</button></div>`;
+    $("modal").classList.add("open"); syncBack(); sheetCancel = () => res(null);
+    $("cb0").onclick = closeSheet; $("cb1").onclick = () => { const v = $("ib").value; sheetCancel = null; closeSheet(); res(v); };
+    setTimeout(() => $("ib")?.focus(), 200);
+  });
+}
+
 /* ---------- click delegation ---------- */
+let lpFired = false;
+const ACT = {
+  tab(d) { if (d.r === "home") Object.assign(hs, { cat: "", sort: "latest", type: "" }); nav(d.r); },
+  go(d) { nav(d.r, d.p ? JSON.parse(d.p) : {}); },
+  back() { back(); }, reload() { render(); },
+  open(d) { if (lpFired) { lpFired = false; return; } if (SEL.on) return selToggle(d.src, +d.i); openFrom(d.src, +d.i); },
+  heart(d) { toggleFav(d.id, d.kind || "media"); },
+  cat(d) { hs.cat = d.v; PAGES.home(); haptic("light"); },
+  sort(d) { hs.sort = d.v; PAGES.home(); haptic("light"); },
+  type(d) { hs.type = d.v; PAGES.home(); haptic("light"); },
+  copy(d) { copyText(d.t || refLink()); },
+  share() { shareRef(); },
+  buy(d) { buyPlan(+d.i); },
+  redeem() { redeem(); },
+  saveprofile() { saveProfile(); },
+  setmode(d) { prefs.mode = d.v; savePrefs(); applyTheme(); PAGES.settings(); },
+  setacc(d) { prefs.accent = d.v; savePrefs(); applyTheme(); PAGES.settings(); },
+  setlay(d) { prefs.layout = d.v; savePrefs(); PAGES.settings(); },
+  haptics() { prefs.haptics = !prefs.haptics; savePrefs(); haptic("light"); PAGES.settings(); },
+  notify() { toggleNotify(); },
+  logout() { LS.del("gv_web"); location.reload(); },
+  tkfilter(d) { tkFilter = d.v; PAGES.tickets(); },
+  tkcat(d, el) { document.querySelectorAll("[data-act=tkcat]").forEach(b => b.classList.toggle("on", b === el)); tkCat = d.v; },
+  tkcreate() { createTicket(); }, tkreply() { replyTicket(); },
+  nfopen(d) { nfOpen(d.id); }, popgo() { popGo(); }, popclose(e) { closePopup(); },
+  ptab(d) { pTab = d.v; PAGES.premium(); haptic("light"); },
+  ban(d) { bannerGo(+d.i); },
+  pickimg(d) { pickImage(d.k); }, rmimg(d) { clearImage(d.k); },
+  selcancel() { selEnd(); }, selrun(d) { selRun(+d.k); },
+  upload() { pickUploads(); },
+  clearfav() { clearFavs(); },
+  method(d) { CK.method = d.v; drawCheckout(); },
+  applypromo() { applyPromo(); }, paygo() { payGo(); },
+  paycheck() { payCheck(true); }, paynew() { CK.order = null; drawCheckout(); },
+  checkpay(d) { checkOld(d.id); },
+  vault() { nav("ticketnew", { category: "other", subject: "Private access request", body: "Hi, I'd like access to the Private section. My ID: " + me.tg_id }); },
+};
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]"); if (!el) return;
-  const d = el.dataset, a = d.act;
-  if (a === "tab") { if (d.r === "home") Object.assign(hs, { cat: "", q: "", sort: "serial", type: "" }); nav(d.r); }
-  else if (a === "go") nav(d.r, d.p ? JSON.parse(d.p) : {});
-  else if (a === "back") back();
-  else if (a === "reload") render();
-  else if (a === "open") openFrom(d.src, +d.i);
-  else if (a === "heart") toggleSave(d.id);
-  else if (a === "cat") { hs.cat = d.v; PAGES.home(); haptic("light"); }
-  else if (a === "sort") { hs.sort = d.v; PAGES.home(); haptic("light"); }
-  else if (a === "type") { hs.type = d.v; PAGES.home(); haptic("light"); }
-  else if (a === "copy") copyRef();
-  else if (a === "share") shareRef();
-  else if (a === "buy") buyPlan(+d.i);
-  else if (a === "redeem") redeem();
-  else if (a === "saveprofile") saveProfile();
-  else if (a === "setmode") { prefs.mode = d.v; savePrefs(); applyTheme(); PAGES.settings(); }
-  else if (a === "setacc") { prefs.accent = d.v; savePrefs(); applyTheme(); PAGES.settings(); }
-  else if (a === "setlay") { prefs.layout = d.v; savePrefs(); PAGES.settings(); }
-  else if (a === "haptics") { prefs.haptics = !prefs.haptics; savePrefs(); haptic("light"); PAGES.settings(); }
-  else if (a === "notify") toggleNotify();
-  else if (a === "logout") { LS.del("gv_web"); location.reload(); }
-  else if (a === "clearsaved") { saved = new Set(); LS.set("gv_saved", []); toast("Saved list khali holo"); }
-  else if (a === "tkfilter") { tkFilter = d.v; PAGES.tickets(); }
-  else if (a === "tkcat") { document.querySelectorAll("[data-act=tkcat]").forEach(b => b.classList.toggle("on", b === el)); tkCat = d.v; }
-  else if (a === "tkcreate") createTicket();
-  else if (a === "tkreply") replyTicket();
-  else if (a === "nfopen") nfOpen(d.id);
-  else if (a === "popgo") popGo();
-  else if (a === "popclose") closePopup();
-  else if (a === "sheetclose") closeSheet();
-  else if (a === "ntopen") { el.querySelector("p")?.classList.toggle("clamp"); }
+  ACT[el.dataset.act]?.(el.dataset, el, e);
 });
-$("themeBtn").onclick = () => { haptic("light"); prefs.mode = resolvedMode() === "dark" ? "light" : "dark"; savePrefs(); applyTheme(); const r = stack[stack.length - 1].r; if (r === "settings") PAGES.settings(); };
+$("themeBtn").onclick = () => { haptic("light"); prefs.mode = resolvedMode() === "dark" ? "light" : "dark"; savePrefs(); applyTheme(); if (stack[stack.length - 1].r === "settings") PAGES.settings(); };
 $("bellBtn").onclick = () => nav("notifs");
 $("modal").onclick = e => { if (e.target.id === "modal") closeSheet(); };
-$("popup").onclick = e => { if (e.target.id === "popup") closePopup(); };
-window.addEventListener("scroll", () => $("fab").classList.toggle("show", scrollY > 600), { passive: true });
+window.addEventListener("scroll", () => $("fab").classList.toggle("show", scrollY > 700), { passive: true });
 $("fab").onclick = () => scrollTo({ top: 0, behavior: "smooth" });
-document.addEventListener("contextmenu", e => { if (e.target.closest("#viewer, .th, .fc, .pop")) e.preventDefault(); });
+document.addEventListener("contextmenu", e => { if (e.target.closest("#viewer, .th, .fc, .pop, .ban")) e.preventDefault(); });
 document.addEventListener("dragstart", e => e.preventDefault());
+function copyText(t) {
+  const ok = () => { toast("Copied"); haptic("medium"); };
+  const fb = () => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); ok(); } catch { toast("Copy failed"); } ta.remove(); };
+  navigator.clipboard?.writeText ? navigator.clipboard.writeText(t).then(ok).catch(fb) : fb();
+}
 
-/* ---------- gallery list ---------- */
+/* ---------- selection (long press) ---------- */
+const SEL = { on: false, ids: new Set(), list: null, cfg: null, src: "" };
+function selStart(list, cfg, src, idx) { SEL.on = true; SEL.list = list; SEL.cfg = cfg; SEL.src = src; SEL.ids.clear(); document.body.classList.add("selmode"); selToggle(src, idx); haptic("medium"); }
+function selToggle(src, idx) {
+  const m = SRC[src]?.[idx]; if (!m) return;
+  SEL.ids.has(m.id) ? SEL.ids.delete(m.id) : SEL.ids.add(m.id);
+  document.querySelectorAll(`.it[data-src="${src}"][data-i="${idx}"]`).forEach(el => el.classList.toggle("sel", SEL.ids.has(m.id)));
+  if (!SEL.ids.size) return selEnd();
+  $("selbar").classList.add("on"); $("selcount").textContent = SEL.ids.size + " selected";
+  $("selacts").innerHTML = SEL.cfg.map((a, k) => (!a.one || SEL.ids.size === 1) ? `<button class="btn sm ${a.danger ? "dg" : ""}" data-act="selrun" data-k="${k}">${ic(a.icon)}${a.label}</button>` : "").join("");
+  haptic("light");
+}
+function selEnd() { SEL.on = false; SEL.ids.clear(); document.body.classList.remove("selmode"); document.querySelectorAll(".it.sel").forEach(e => e.classList.remove("sel")); $("selbar")?.classList.remove("on"); }
+async function selRun(k) {
+  const a = SEL.cfg[k], items = SRC[SEL.src].filter(m => SEL.ids.has(m.id)), list = SEL.list;
+  if (a.confirm) { const [t, x] = a.confirm(items.length); if (!await confirmBox(t, x, a.label, !!a.danger)) return; }
+  try { if (await a.run(items) === false) return; } catch (e) { return toast(e.message); }
+  selEnd(); list?.reload();
+}
+const SELCFG = {
+  feed: [{ label: "Save", icon: "heart", run: async items => { for (const m of items.filter(x => !x.locked && !favs.has(x.id))) { await api("fav_toggle", { id: m.id, kind: m.kind === "album" ? "album" : "media" }); favs.add(m.id); } toast("Saved"); } }],
+  saved: [{ label: "Remove", icon: "trash", danger: true, confirm: n => [`Remove ${n} item${n > 1 ? "s" : ""} from Saved?`, "The originals stay in the gallery."], run: async items => { await api("fav_remove", { ids: items.map(x => x.id) }); items.forEach(x => favs.delete(x.id)); toast("Removed from Saved"); } }],
+  mine: [
+    { label: "Rename", icon: "edit", one: true, run: async ([m]) => { const v = await inputBox("Rename", m.title || ""); if (v === null) return false; await api("my_rename", { id: m.id, title: v }); toast("Renamed"); } },
+    { label: "Share", icon: "cloud", run: async items => { if (settings.community_on === "0") throw new Error("Community sharing is off right now"); const r = await api("my_share", { ids: items.map(x => x.id), on: true }); toast(r.status === "approved" ? "Shared to Community" : "Sent for review. It appears once approved."); } },
+    { label: "Unshare", icon: "close", run: async items => { await api("my_share", { ids: items.map(x => x.id), on: false }); toast("Removed from Community"); } },
+    { label: "Delete", icon: "trash", danger: true, confirm: n => [`Delete ${n} file${n > 1 ? "s" : ""}?`, "This permanently removes them from your space."], run: async items => { await api("my_delete", { ids: items.map(x => x.id) }); toast("Deleted"); } },
+  ],
+};
+
+/* ---------- gallery list (infinite scroll, date groups, stacked albums) ---------- */
+const SHS = { pending: "Pending review", approved: "Shared", rejected: "Not approved" };
+const meta = m => m.kind === "comm" ? "by " + m.by : m.kind === "mine" && SHS[m.share] ? SHS[m.share] : m.kind === "album" ? `${m.count} item${m.count === 1 ? "" : "s"}` : m.kind === "mine" ? (m.type === "video" ? "Video" : "Photo") : m.locked ? (m.access === "premium" ? "Premium" : "Private") : short(m.views) + " views";
 function thumbHTML(m) {
   const bg = m.preview ? `style="background-image:url('${esc(m.preview)}')"` : "";
-  if (m.locked) {
-    return `<div class="th lockd" ${bg}><div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div><span class="no">No. ${pad(m.serial_no)}</span></div>`;
-  }
-  const media = m.type === "image"
+  let inner;
+  if (m.locked) inner = `<div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div>`;
+  else inner = m.type === "image"
     ? `<img draggable="false" loading="lazy" src="${esc(m.url)}" alt="" onload="this.classList.add('ok')">`
     : `<video muted playsinline preload="metadata" disablepictureinpicture controlslist="nodownload" src="${esc(m.url)}#t=0.5" onloadeddata="this.classList.add('ok')"></video><span class="pl">${ic("play")}</span>`;
-  return `<div class="th" ${bg}>${media}<button class="hb ${saved.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" aria-label="Save">${ic("heart")}</button><span class="no">No. ${pad(m.serial_no)}</span></div>`;
+  const heart = (m.locked || m.kind === "mine" || m.kind === "comm") ? "" : `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="${m.kind === "album" ? "album" : "media"}" aria-label="Save">${ic("heart")}</button>`;
+  return `<div class="th ${m.locked ? "lockd" : ""}" ${bg}>${inner}${heart}${m.kind === "album" ? `<span class="abg">${ic("folder")}${m.count}</span>` : ""}<span class="sck">${ic("check")}</span></div>`;
 }
-const itemHTML = (m, i, src) => `<div class="it" data-act="open" data-src="${src}" data-i="${i}">${thumbHTML(m)}<div class="cap"><b>${esc(m.title || "Untitled")}</b><span>${m.locked ? (m.access === "premium" ? "Premium" : "Private") : short(m.views) + " views"}</span></div></div>`;
-
+const itemHTML = (m, i, src) => `<div class="it ${m.kind === "album" ? "alb" : ""}" data-act="open" data-src="${src}" data-i="${i}">${thumbHTML(m)}<div class="cap"><b>${esc(m.title || "Untitled")}</b><span>${meta(m)}</span></div></div>`;
+function dateLabel(d) {
+  const x = new Date(d), t = new Date(), day = v => new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  const n = Math.round((day(t) - day(x)) / 864e5);
+  if (n <= 0) return "Today"; if (n === 1) return "Yesterday"; if (n < 7) return x.toLocaleDateString("en-US", { weekday: "long" });
+  return x.toLocaleDateString("en-US", x.getFullYear() === t.getFullYear() ? { day: "numeric", month: "long" } : { month: "long", year: "numeric" });
+}
 function mountList(el, o) {
-  const S = { page: 1, pages: 1, t: 0 };
-  el.innerHTML = `<div class="grid ${prefs.layout}"></div><div class="msg" hidden></div><div class="pager"></div>`;
-  const g = el.firstElementChild, msg = g.nextElementSibling, pg = msg.nextElementSibling;
+  const S = { page: 0, busy: false, done: false, last: "", grid: null, t: 0 }, layout = o.layout || prefs.layout;
+  el.innerHTML = `<div class="feedbox"></div><div class="msg" hidden></div><div class="more"></div>`;
+  const [box, msg, more] = el.children; SRC[o.src] = [];
+  const io = new IntersectionObserver(en => { if (en[0].isIntersecting) load(); }, { rootMargin: "700px" });
+  function add(items) {
+    items.forEach(m => {
+      const idx = SRC[o.src].push(m) - 1;
+      if (o.group) { const L = dateLabel(m.created_at); if (L !== S.last) { S.last = L; box.insertAdjacentHTML("beforeend", `<div class="dh">${L}</div><div class="grid ${layout}"></div>`); S.grid = box.lastElementChild; } }
+      else if (!S.grid) { box.innerHTML = `<div class="grid ${layout}"></div>`; S.grid = box.firstElementChild; }
+      S.grid.insertAdjacentHTML("beforeend", itemHTML(m, idx, o.src));
+    });
+  }
   async function load() {
-    const t = ++S.t; msg.hidden = true; pg.innerHTML = "";
-    g.innerHTML = Array.from({ length: prefs.layout === "g3" ? 12 : 6 }, () => '<div class="skel"></div>').join("");
+    if (S.busy || S.done) return; S.busy = true; const t = S.t;
+    if (!S.page) box.innerHTML = `<div class="grid ${layout}">${Array.from({ length: layout === "g3" ? 12 : 6 }, () => '<div class="skel"></div>').join("")}</div>`;
     try {
-      let r;
-      if (o.saved) { const ids = [...saved]; r = ids.length ? await api("byids", { ids }) : { items: [], total: 0 }; }
-      else r = await api("list", { ...o.params(), page: S.page, size: 12 });
-      if (t !== S.t) return;
-      SRC[o.src] = r.items; S.pages = o.saved ? 1 : Math.max(1, Math.ceil(r.total / 12));
-      g.innerHTML = r.items.map((m, i) => itemHTML(m, i, o.src)).join("");
-      if (!r.items.length) { msg.hidden = false; msg.innerHTML = o.empty || "<b>Kichu nai</b>Ekhono kono post nai."; }
-      drawPager();
-    } catch (e) { if (t !== S.t) return; g.innerHTML = ""; msg.hidden = false; msg.innerHTML = `<b>Load hoyni</b>${esc(e.message)}`; }
+      const r = await o.fetch(S.page + 1, 24); if (t !== S.t) return;
+      if (!S.page) { box.innerHTML = ""; S.grid = null; }
+      S.page++; o.onData?.(r); add(r.items);
+      S.done = !r.items.length || SRC[o.src].length >= r.total;
+      if (!SRC[o.src].length) { msg.hidden = false; msg.innerHTML = o.empty || "<b>Nothing here yet</b>New posts will appear here."; }
+    } catch (e) { if (t !== S.t) return; box.innerHTML = ""; msg.hidden = false; msg.innerHTML = `<b>Couldn't load</b>${esc(e.message)}`; S.done = true; }
+    S.busy = false;
   }
-  function drawPager() {
-    pg.innerHTML = ""; if (S.pages <= 1) return;
-    const mk = (l, n, dis, on) => { const b = document.createElement("button"); b.textContent = l; b.disabled = !!dis; if (on) b.className = "on"; b.onclick = () => { haptic("light"); S.page = n; load(); scrollTo(0, Math.max(0, el.offsetTop - 140)); }; pg.appendChild(b); };
-    const dots = () => { const x = document.createElement("span"); x.textContent = "…"; x.className = "mute"; pg.appendChild(x); };
-    mk("‹", S.page - 1, S.page === 1);
-    let e = Math.min(S.pages, Math.max(1, S.page - 2) + 4), s = Math.max(1, e - 4);
-    if (s > 1) { mk("1", 1); if (s > 2) dots(); }
-    for (let i = s; i <= e; i++) mk(String(i), i, false, i === S.page);
-    if (e < S.pages) { if (e < S.pages - 1) dots(); mk(String(S.pages), S.pages); }
-    mk("›", S.page + 1, S.page === S.pages);
+  const api2 = { reload() { S.t++; S.page = 0; S.done = false; S.busy = false; S.last = ""; S.grid = null; SRC[o.src] = []; msg.hidden = true; box.innerHTML = ""; load(); } };
+  if (o.select) {
+    let lp = 0;
+    el.addEventListener("pointerdown", e => { const it = e.target.closest(".it"); if (!it || e.target.closest(".hb")) return; lp = setTimeout(() => { lpFired = true; if (!SEL.on) selStart(api2, o.select, it.dataset.src, +it.dataset.i); else selToggle(it.dataset.src, +it.dataset.i); }, 460); });
+    ["pointerup", "pointercancel", "pointermove", "scroll"].forEach(ev => el.addEventListener(ev, () => clearTimeout(lp), { passive: true }));
   }
-  load();
-  return { reload() { S.page = 1; load(); } };
+  io.observe(more); load();
+  return api2;
 }
 function openFrom(src, i) {
-  const m = SRC[src][i]; if (!m) return;
-  haptic("light");
+  const m = SRC[src]?.[i]; if (!m) return; haptic("light");
+  if (m.kind === "album") return m.locked ? lockedSheet(m) : nav("album", { id: m.id });
   m.locked ? lockedSheet(m) : openViewer(SRC[src], i);
 }
-function toggleSave(id) {
-  if (saved.has(id)) { saved.delete(id); toast("Saved theke soriyechi"); } else { saved.add(id); toast("Saved"); }
-  LS.set("gv_saved", [...saved]); haptic("medium");
-  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.classList.toggle("on", saved.has(id)));
-  if (V.list[V.i]) $("vheart").classList.toggle("on", saved.has(V.list[V.i].id));
+async function toggleFav(id, kind) {
+  const was = favs.has(id); was ? favs.delete(id) : favs.add(id); syncHearts(id); haptic("medium");
+  try { const r = await api("fav_toggle", { id, kind }); r.on ? favs.add(id) : favs.delete(id); toast(r.on ? "Saved" : "Removed from Saved"); }
+  catch (e) { was ? favs.add(id) : favs.delete(id); toast(e.message); }
+  syncHearts(id);
+}
+function syncHearts(id) {
+  const on = favs.has(id);
+  document.querySelectorAll(`.hb[data-id="${id}"], .hb2[data-id="${id}"]`).forEach(el => el.classList.toggle("on", on));
+  if (V.list[V.i]?.id === id) $("vheart").classList.toggle("on", on);
 }
 
 /* ---------- pages ---------- */
 const app = $("app");
 const PAGES = {};
-let homeList = null;
+let homeList = null, banT = null;
 
 PAGES.home = async function () {
-  const fresh = stack[stack.length - 1].r === "home";
-  if (!fresh) return;
-  const showFeat = !hs.q && !hs.cat && !hs.type && hs.sort === "serial";
+  if (stack[stack.length - 1].r !== "home") return;
+  clearInterval(banT);
+  const feat = !hs.cat && !hs.type && hs.sort === "latest";
   app.innerHTML = `<div class="pad">
-    ${pinned ? `<button class="pin" data-act="go" data-r="notices">${ic("notice")}<span>${esc(pinned.title)}</span>${ic("next")}</button>` : ""}
-    <div id="feat"></div>
-    <div class="search">${ic("search")}<input id="q" type="search" placeholder="Title diye khujo" autocomplete="off" value="${esc(hs.q)}"></div>
+    ${feat && banners.length ? `<div class="ban" id="ban">${banners.map((b, i) => `<button class="sl ${i ? "" : "on"}" style="background-image:url('${esc(b.url)}')" data-act="ban" data-i="${i}">${b.title || b.subtitle ? `<div class="tx"><b>${esc(b.title || "")}</b><span>${esc(b.subtitle || "")}</span></div>` : ""}</button>`).join("")}${banners.length > 1 ? `<div class="dots">${banners.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}</div>` : ""}
+    ${feat ? '<div id="feat"></div>' : ""}
     <div class="ctabs"><button class="ct ${hs.cat ? "" : "on"}" data-act="cat" data-v="">All</button>${cats.map(c => `<button class="ct ${hs.cat === c.id ? "on" : ""}" data-act="cat" data-v="${c.id}">${esc(c.name)}</button>`).join("")}</div>
     <div class="tool">
-      <div class="tgroup"><button class="${hs.sort === "serial" ? "on" : ""}" data-act="sort" data-v="serial">Latest</button><button class="${hs.sort === "popular" ? "on" : ""}" data-act="sort" data-v="popular">Popular</button></div>
+      <div class="tgroup"><button class="${hs.sort === "latest" ? "on" : ""}" data-act="sort" data-v="latest">Latest</button><button class="${hs.sort === "popular" ? "on" : ""}" data-act="sort" data-v="popular">Popular</button></div>
       <div class="tgroup"><button class="${hs.type === "" ? "on" : ""}" data-act="type" data-v="">All</button><button class="${hs.type === "image" ? "on" : ""}" data-act="type" data-v="image">Photos</button><button class="${hs.type === "video" ? "on" : ""}" data-act="type" data-v="video">Videos</button></div>
-    </div>
-    <div id="hl2"></div></div>`;
-  let st;
-  $("q").addEventListener("input", e => { clearTimeout(st); st = setTimeout(() => { hs.q = e.target.value.trim(); homeList?.reload(); }, 420); });
-  homeList = mountList($("hl2"), { src: "list", params: () => ({ category_id: hs.cat || null, q: hs.q, type: hs.type, sort: hs.sort }), empty: hs.q ? "<b>Kichu pawa jayni</b>Onno shabdo diye khujo." : "<b>Ekhono kichu nai</b>Shigroi notun post ashbe." });
-  if (showFeat) loadFeat();
+    </div><div id="hl2"></div></div>`;
+  if (banners.length > 1 && feat) { let n = 0; const s = [...document.querySelectorAll("#ban .sl")], d = [...document.querySelectorAll("#ban .dots i")]; banT = setInterval(() => { if (!$("ban")) return clearInterval(banT); s[n].classList.remove("on"); d[n].classList.remove("on"); n = (n + 1) % s.length; s[n].classList.add("on"); d[n].classList.add("on"); }, 4500); timers.push(banT); }
+  homeList = mountList($("hl2"), { src: "feed", group: hs.sort === "latest", select: SELCFG.feed, fetch: (p, s) => api("list", { category_id: hs.cat || null, type: hs.type, sort: hs.sort, page: p, size: s }), empty: "<b>Nothing here yet</b>New posts will appear here." });
+  if (feat) loadFeat();
 };
+function bannerGo(i) {
+  const b = banners[i]; if (!b) return;
+  if (b.link_kind === "plans") nav("plans"); else if (b.link_kind === "album" && b.link_id) nav("album", { id: b.link_id });
+  else if (b.link_kind === "category" && b.link_id) { hs.cat = b.link_id; hs.type = ""; hs.sort = "latest"; nav("home"); }
+}
 async function loadFeat() {
   try {
     const r = await api("list", { sort: "popular", page: 1, size: 6 });
-    if (!r.items.length || !$("feat")) return;
-    SRC.feat = r.items;
-    $("feat").innerHTML = `<div class="sec">Now showing</div><div class="feat">${r.items.map((m, i) => {
+    if (!r.items.length || !$("feat")) return; SRC.feat = r.items;
+    $("feat").innerHTML = `<div class="sec">Trending</div><div class="feat">${r.items.map((m, i) => {
       const bg = m.preview ? `style="background-image:url('${esc(m.preview)}')"` : "";
       const media = m.locked ? `<div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div>`
         : m.type === "image" ? `<img draggable="false" src="${esc(m.url)}" alt="">` : `<video muted playsinline preload="metadata" src="${esc(m.url)}#t=0.5"></video>`;
-      return `<button class="fc" ${bg} data-act="open" data-src="feat" data-i="${i}">${media}<div class="scrim"></div><div class="meta"><b>No. ${pad(m.serial_no)}</b><span>${esc(m.title || "")}</span></div></button>`;
+      return `<button class="fc" ${bg} data-act="open" data-src="feat" data-i="${i}">${media}<div class="scrim"></div><div class="meta"><b>${esc(m.title || "Untitled")}</b><span>${meta(m)}</span></div></button>`;
     }).join("")}</div>`;
   } catch {}
 }
 
-PAGES.cats = async function () {
-  app.innerHTML = `<div class="pad"><div class="sec">Explore</div>${cats.length ? `<div class="grid g2" style="gap:12px">${cats.map((c, i) => `<button class="box" style="margin:0;min-height:112px;text-align:left;display:flex;flex-direction:column;justify-content:space-between" data-act="go-cat" data-id="${c.id}"><span class="mute" style="font-family:var(--disp);font-style:italic;font-size:20px">${String(i + 1).padStart(2, "0")}</span><b class="disp" style="font-size:20px">${esc(c.name)}</b></button>`).join("")}</div>` : `<div class="msg"><b>Kono category nai</b>Admin category add korle ekhane dekhabe.</div>`}</div>`;
-  app.querySelectorAll("[data-act=go-cat]").forEach(b => b.onclick = () => { hs.cat = b.dataset.id; hs.q = ""; hs.type = ""; hs.sort = "serial"; nav("home"); });
+/* explore = search */
+let xs = { q: "", chip: "" };
+PAGES.explore = async function () {
+  const recents = LS.get("gv_recent", []);
+  app.innerHTML = `<div class="pad"><div class="search">${ic("search")}<input id="xq" type="search" placeholder="Search photos, videos and albums" autocomplete="off" value="${esc(xs.q)}"></div>
+    <div class="chipline" style="margin:10px 0 6px">${[["", "All"], ["image", "Photos"], ["video", "Videos"], ["album", "Albums"], ["premium", "Premium"], ["private", "Private"]].map(([v, l]) => `<button class="${xs.chip === v ? "on" : ""}" data-v="${v}">${l}</button>`).join("")}</div><div id="xres"></div></div>`;
+  const run = () => {
+    const box = $("xres"); if (!box) return;
+    if (!xs.q && !xs.chip) {
+      box.innerHTML = `${recents.length ? `<div class="sec" style="margin-top:12px">Recent</div><div class="chipline">${recents.map(r => `<button data-r="${esc(r)}">${esc(r)}</button>`).join("")}</div>` : ""}
+        <div class="sec" style="margin-top:12px">Categories</div>${cats.length ? `<div class="grid g2" style="gap:12px">${cats.map((c, i) => `<button class="box" style="margin:0;min-height:104px;text-align:left;display:flex;flex-direction:column;justify-content:space-between" data-c="${c.id}"><span class="mute" style="font-family:var(--disp);font-style:italic;font-size:19px">${String(i + 1).padStart(2, "0")}</span><b class="disp" style="font-size:20px">${esc(c.name)}</b></button>`).join("")}</div>` : '<div class="msg"><b>No categories yet</b>They will show up here.</div>'}`;
+      box.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { hs.cat = b.dataset.c; hs.type = ""; hs.sort = "latest"; nav("home"); });
+      box.querySelectorAll("[data-r]").forEach(b => b.onclick = () => { xs.q = b.dataset.r; $("xq").value = xs.q; run(); });
+      return;
+    }
+    const ch = xs.chip, extra = ch === "image" || ch === "video" ? { type: ch } : ch === "album" ? { kind: "album" } : ch ? { access: ch } : {};
+    mountList(box, { src: "search", group: false, fetch: (p, s) => api("list", { q: xs.q, ...extra, page: p, size: s }), empty: "<b>No results</b>Try a different word." });
+  };
+  let st; $("xq").addEventListener("input", e => { clearTimeout(st); st = setTimeout(() => { xs.q = e.target.value.trim(); run(); }, 380); });
+  $("xq").addEventListener("keydown", e => { if (e.key === "Enter" && xs.q.length > 1) { LS.set("gv_recent", [xs.q, ...recents.filter(x => x !== xs.q)].slice(0, 8)); e.target.blur(); } });
+  app.querySelector(".chipline").onclick = e => { const b = e.target.closest("button"); if (!b) return; xs.chip = b.dataset.v; app.querySelectorAll(".chipline")[0].querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); haptic("light"); run(); };
+  run();
 };
 
+/* premium + private */
+let pTab = "premium";
 PAGES.premium = async function () {
-  const on = me.premium, left = on ? Math.max(0, Math.ceil((new Date(me.premium_until) - Date.now()) / 86400000)) : 0;
+  const on = me.premium, left = daysLeft();
   app.innerHTML = `<div class="pad">
-    ${on ? `<div class="mcard on"><small>Premium member</small><div class="big">${left}</div><p style="margin-top:2px;opacity:1" class="mute">din baki, ${fmtDate(me.premium_until)} porjonto</p><div class="btns"><button class="btn gh" data-act="go" data-r="plans">Extend</button></div></div>`
-    : `<div class="mcard"><small>Premium collection</small><h2>Poora collection unlock koro</h2><p>${esc(settings.premium_intro || "Shob premium post, kono blur chhara.")}</p><div class="btns"><button class="btn" data-act="go" data-r="plans">Plan dekho</button><button class="btn gh" data-act="go" data-r="plans" data-p='{"code":1}'>Code ache</button></div></div>`}
-    <div class="sec">${on ? "Tomar collection" : "Ekhane ki ache"}</div><div id="pl"></div></div>`;
-  mountList($("pl"), { src: "list", params: () => ({ access: "premium", sort: "serial" }), empty: "<b>Premium post nai</b>Shigroi notun collection ashbe." });
+    ${on ? `<div class="mcard on"><small>Premium member</small><div class="big">${left}</div><p style="margin-top:2px;opacity:1" class="mute">days left, until ${fmtDate(me.premium_until)}</p><div class="btns"><button class="btn gh" data-act="go" data-r="plans">Extend</button></div></div>`
+    : `<div class="mcard"><small>Premium collection</small><h2>Unlock the full collection</h2><p>${esc(settings.premium_intro || "Every premium post in full quality, no blur.")}</p><div class="btns"><button class="btn" data-act="go" data-r="plans">View plans</button><button class="btn gh" data-act="go" data-r="plans" data-p='{"code":1}'>I have a code</button></div></div>`}
+    <div class="segw"><div class="seg"><button class="${pTab === "premium" ? "on" : ""}" data-act="ptab" data-v="premium">${ic("crown")}Premium</button><button class="${pTab === "private" ? "on" : ""}" data-act="ptab" data-v="private">${ic("lock")}Private</button></div></div>
+    ${pTab === "private" && !me.private_access ? `<div class="box vault"><div class="big2">${ic("lock")}</div><b class="disp" style="font-size:22px">Private vault</b><p>A members-only space opened by invitation${plans.some(p => p.grants_private) ? " or with selected plans" : ""}.</p><div class="btns"><button class="btn" data-act="vault">Request access</button>${plans.some(p => p.grants_private) ? '<button class="btn gh" data-act="go" data-r="plans">View plans</button>' : ""}</div></div>` : ""}
+    <div id="pl"></div></div>`;
+  mountList($("pl"), { src: "prem", group: false, select: SELCFG.feed, fetch: (p, s) => api("list", { access: pTab, page: p, size: s }), empty: `<b>${pTab === "private" ? "Nothing private yet" : "No premium posts yet"}</b>New collections will appear here soon.` });
 };
 
-PAGES.notices = async function () {
-  app.innerHTML = `<div class="pad"><div class="sec">Notice board</div><div id="nl"><div class="skel" style="aspect-ratio:3/1"></div></div></div>`;
-  const r = await api("notice_list");
-  $("nl").innerHTML = r.items.length ? r.items.map(n => `<div class="nt ${n.pinned ? "pin2" : ""}"><b>${esc(n.title)}</b><div class="m">${n.pinned ? ic("pin", "") + "Pinned" : ""}<span>${ago(n.created_at)}</span></div>${n.body ? `<p class="pre">${esc(n.body)}</p>` : ""}</div>`).join("")
-    : `<div class="msg"><b>Kono notice nai</b>Notun khobor ashle ekhane dekhabe.</div>`;
-  app.querySelectorAll(".nt .i").forEach(s => { s.style.width = "14px"; s.style.height = "14px"; s.style.color = "var(--gold)"; });
-};
-
-const MILES = [[1, "First invite"], [5, "Connector"], [10, "Ambassador"], [25, "Legend"]];
-PAGES.profile = async function () {
-  const name = nameOf(me), left = me.premium ? Math.max(0, Math.ceil((new Date(me.premium_until) - Date.now()) / 86400000)) : 0;
-  const days = Math.max(1, Math.ceil((Date.now() - new Date(me.created_at)) / 86400000));
-  app.innerHTML = `<div class="pad">
-    <div class="pcard"><div class="ring"><div class="av">${me.photo_url ? `<img src="${esc(me.photo_url)}" alt="">` : esc(name[0].toUpperCase())}</div>${me.premium ? `<div class="cr">${ic("crown")}</div>` : ""}</div>
-      <div class="pname">${esc(name)}</div><div class="psub">${me.username ? "@" + esc(me.username) + "  ·  " : ""}ID ${me.tg_id}</div>
-      ${me.bio ? `<div class="pbio pre">${esc(me.bio)}</div>` : ""}</div>
-    <div class="stats"><div class="stat"><b>${me.ref_count}</b><span>Invites</span></div><div class="stat"><b>${left}</b><span>Premium din</span></div><div class="stat"><b>${days}</b><span>Din ekhane</span></div></div>
-    <div class="menu">
-      ${mi("edit", "Edit profile", "", "edit")}${mi("heart", "Saved", saved.size ? saved.size + " ta" : "", "saved")}
-      ${mi("crown", "Premium", me.premium ? "Active" : "Free", "plans")}${mi("gift", "Invite and earn", "", "referral")}
-      ${mi("ticket", "Support tickets", "", "tickets")}${mi("sliders", "Settings", "", "settings")}
-    </div></div>`;
+/* library */
+PAGES.library = async function () {
+  app.innerHTML = `<div class="pad"><div class="sec">Library</div><div class="menu">
+    ${mi("heart", "Saved", favs.size ? favs.size + " items" : "", "saved")}${mi("cloud", "My space", "your own photos and videos", "space")}
+    ${settings.community_on === "0" ? "" : mi("users", "Community", "photos shared by members", "community")}${mi("coin", "Payments", "", "payments")}${mi("gift", "Invite and earn", "", "referral")}${mi("bell", "Notifications", unread ? unread + " new" : "", "notifs")}</div></div>`;
 };
 const mi = (icon, t, em, r) => `<button class="mi" data-act="go" data-r="${r}"><span class="ic">${ic(icon)}</span><b>${t}</b><em>${em}</em>${ic("next", "ch")}</button>`;
-const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || "User";
 
+/* saved */
+PAGES.saved = async function () {
+  app.innerHTML = `<div class="pad"><div class="row2" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="mute" style="font-size:13px">Press and hold an item to select</span><button class="btn gh sm dgt" data-act="clearfav">Clear all</button></div><div id="sv"></div></div>`;
+  mountList($("sv"), { src: "saved", group: false, select: SELCFG.saved, fetch: (p, s) => api("fav_list", { page: p, size: s }), empty: "<b>Nothing saved yet</b>Tap the heart on any photo, video or album." });
+};
+async function clearFavs() {
+  if (!favs.size) return toast("Nothing to clear");
+  if (!await confirmBox("Clear all saved items?", "Your saved list will be emptied. The originals stay in the gallery.", "Clear all", true)) return;
+  try { await api("fav_clear"); favs.clear(); toast("Saved list cleared"); PAGES.saved(); } catch (e) { toast(e.message); }
+}
+
+/* album */
+PAGES.album = async function (p) {
+  app.innerHTML = `<div class="pad"><div class="skel" style="aspect-ratio:3/1"></div></div>`;
+  const r = await api("album_get", { id: p.id }), a = r.album;
+  app.innerHTML = `<div class="pad"><div class="ahd"><div style="min-width:0"><div class="disp" style="font-size:30px;line-height:1.1;word-break:break-word">${esc(a.title)}</div><div class="mute" style="margin-top:4px;font-size:13.5px">${r.items.length} item${r.items.length === 1 ? "" : "s"}  ·  ${fmtDate(a.created_at)}${a.access !== "public" ? `<span class="tag">${a.access === "premium" ? "Premium" : "Private"}</span>` : ""}</div></div>${a.locked ? "" : `<button class="hb2 ${favs.has(a.id) ? "on" : ""}" data-act="heart" data-id="${a.id}" data-kind="album" aria-label="Save">${ic("heart")}</button>`}</div><div id="al"></div></div>`;
+  mountList($("al"), { src: "album", group: false, fetch: async () => ({ items: r.items, total: r.items.length }), empty: "<b>Empty album</b>" });
+};
+
+/* profile */
+PAGES.profile = async function () {
+  const name = nameOf(me), av = me.avatar_url || me.photo_url, days = Math.max(1, Math.ceil((Date.now() - new Date(me.created_at)) / 86400000));
+  app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
+    <div class="pcard"><div class="ring"><div class="av">${av ? `<img src="${esc(av)}" alt="">` : esc(name[0].toUpperCase())}</div>${me.premium ? `<div class="cr">${ic("crown")}</div>` : ""}</div>
+      <div class="pname">${esc(name)}</div><div class="psub">${me.username ? "@" + esc(me.username) + "  ·  " : ""}ID ${me.tg_id}</div>
+      ${me.bio ? `<div class="pbio pre">${esc(me.bio)}</div>` : ""}</div>
+    <div class="stats"><div class="stat"><b>${me.ref_count}</b><span>Invites</span></div><div class="stat"><b>${daysLeft()}</b><span>Premium days</span></div><div class="stat"><b>${days}</b><span>Days here</span></div></div>
+    <div class="menu">${mi("edit", "Edit profile", "", "edit")}${mi("crown", "Premium", me.premium ? "Active" : "Free", "plans")}${mi("cloud", "My space", "", "space")}${mi("ticket", "Support", "", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
+};
+
+/* edit profile with crop */
 PAGES.edit = async function () {
-  app.innerHTML = `<div class="pad"><label class="field"><span>Naam (ei app e eta dekhabe)</span><input id="dn" maxlength="40" value="${esc(me.display_name || "")}" placeholder="${esc([me.first_name, me.last_name].filter(Boolean).join(" ") || "Tomar naam")}"></label>
-    <label class="field"><span>Bio</span><textarea id="bio" maxlength="140" placeholder="Nijer somporke chhoto kichu likho">${esc(me.bio || "")}</textarea><div class="count" id="bc">0/140</div></label>
-    <p class="mute" style="font-size:13px;margin-bottom:16px">Photo ar username Telegram theke automatic ashe.</p>
+  const av = me.avatar_url || me.photo_url, name = nameOf(me);
+  app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}><button class="cam" data-act="pickimg" data-k="cover" aria-label="Change cover">${ic("cam")}</button></div>
+    <div class="edav"><div class="ring"><div class="av">${av ? `<img src="${esc(av)}" alt="">` : esc(name[0].toUpperCase())}</div><button class="cam" data-act="pickimg" data-k="avatar" aria-label="Change photo">${ic("cam")}</button></div></div>
+    <div class="row2" style="display:flex;gap:10px;justify-content:center;margin-bottom:18px">${me.avatar_url ? `<button class="btn gh sm" data-act="rmimg" data-k="avatar">Use Telegram photo</button>` : ""}${me.cover_url ? `<button class="btn gh sm" data-act="rmimg" data-k="cover">Remove cover</button>` : ""}</div>
+    <label class="field"><span>Display name</span><input id="dn" maxlength="40" value="${esc(me.display_name || "")}" placeholder="${esc([me.first_name, me.last_name].filter(Boolean).join(" ") || "Your name")}"></label>
+    <label class="field"><span>Bio</span><textarea id="bio" maxlength="140" placeholder="Say something about yourself">${esc(me.bio || "")}</textarea><div class="count" id="bc">0/140</div></label>
     <button class="btn block" data-act="saveprofile">Save</button></div>`;
   const upd = () => $("bc").textContent = $("bio").value.length + "/140"; $("bio").oninput = upd; upd();
 };
 async function saveProfile() {
-  try { const r = await api("profile_update", { display_name: $("dn").value, bio: $("bio").value }); me = r.me; toast("Save hoyeche"); haptic("medium"); back(); }
-  catch (e) { toast(e.message); }
+  try { const r = await api("profile_update", { display_name: $("dn").value, bio: $("bio").value }); me = r.me; toast("Saved"); haptic("medium"); back(); } catch (e) { toast(e.message); }
+}
+function pickImage(kind) {
+  const i = document.createElement("input"); i.type = "file"; i.accept = "image/*";
+  i.onchange = () => { const f = i.files[0]; if (f) openCrop(f, kind); }; i.click();
+}
+async function clearImage(kind) {
+  if (!await confirmBox(kind === "avatar" ? "Use your Telegram photo?" : "Remove cover?", kind === "avatar" ? "Your custom photo will be removed." : "Your cover picture will be removed.", "Confirm", true)) return;
+  try { const r = await api("pm_clear", { kind }); me = r.me; PAGES.edit(); } catch (e) { toast(e.message); }
+}
+const sbc = window.supabase ? window.supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, { auth: { persistSession: false } }) : null;
+async function uploadSigned(path, token, blob, type) {
+  if (!sbc) throw new Error("Upload library did not load. Check your connection and reload.");
+  const { error } = await sbc.storage.from(C.BUCKET).uploadToSignedUrl(path, token, blob, { contentType: type });
+  if (error) throw new Error(error.message);
 }
 
-PAGES.saved = async function () {
-  app.innerHTML = `<div class="pad"><div id="sv"></div></div>`;
-  mountList($("sv"), { saved: true, src: "list", empty: "<b>Kichu save kora nai</b>Kono post e heart chaple ekhane jomabe." });
+/* cropper */
+const CR = {}, cp = new Map();
+function openCrop(file, kind) {
+  const url = URL.createObjectURL(file), img = new Image();
+  img.onerror = () => toast("Couldn't open that image");
+  img.onload = () => {
+    $("crop").classList.add("open"); syncBack();
+    const st = $("cstage").getBoundingClientRect(), av = kind === "avatar";
+    const fw = av ? Math.min(st.width - 56, 320) : Math.min(st.width - 28, 560), fh = av ? fw : Math.round(fw * 5 / 12);
+    const fx = (st.width - fw) / 2, fy = (st.height - fh) / 2, base = Math.max(fw / img.naturalWidth, fh / img.naturalHeight);
+    Object.assign(CR, { img, url, kind, fx, fy, fw, fh, min: base, s: base, ix: fx + (fw - img.naturalWidth * base) / 2, iy: fy + (fh - img.naturalHeight * base) / 2 });
+    const f = $("cframe"); Object.assign(f.style, { left: fx + "px", top: fy + "px", width: fw + "px", height: fh + "px", borderRadius: av ? "50%" : "14px" });
+    $("cimg").src = url; $("czoom").value = 100; $("ctitle").textContent = av ? "Move and zoom your photo" : "Move and zoom your cover"; cropApply();
+  };
+  img.src = url;
+}
+function cropClamp() { const w = CR.img.naturalWidth * CR.s, h = CR.img.naturalHeight * CR.s; CR.ix = Math.min(CR.fx, Math.max(CR.fx + CR.fw - w, CR.ix)); CR.iy = Math.min(CR.fy, Math.max(CR.fy + CR.fh - h, CR.iy)); }
+function cropApply() { cropClamp(); $("cimg").style.transform = `translate(${CR.ix}px,${CR.iy}px) scale(${CR.s})`; $("czoom").value = Math.round(CR.s / CR.min * 100); }
+function cropZoom(z, cx, cy) {
+  z = Math.min(5, Math.max(1, z)); const ns = CR.min * z; cx = cx ?? CR.fx + CR.fw / 2; cy = cy ?? CR.fy + CR.fh / 2;
+  const px = (cx - CR.ix) / CR.s, py = (cy - CR.iy) / CR.s; CR.s = ns; CR.ix = cx - px * ns; CR.iy = cy - py * ns; cropApply();
+}
+function closeCrop() { $("crop").classList.remove("open"); if (CR.url) URL.revokeObjectURL(CR.url); CR.url = null; syncBack(); }
+(function () {
+  const st = $("cstage"), dist = () => { const [a, b] = [...cp.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  let d0 = 0, z0 = 1;
+  st.addEventListener("pointerdown", e => { st.setPointerCapture(e.pointerId); cp.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (cp.size === 2) { d0 = dist(); z0 = CR.s / CR.min; } });
+  st.addEventListener("pointermove", e => {
+    const p = cp.get(e.pointerId); if (!p || !CR.img) return;
+    const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+    if (cp.size === 2) { const [a, b] = [...cp.values()]; const rc = st.getBoundingClientRect(); cropZoom(z0 * dist() / d0, (a.x + b.x) / 2 - rc.left, (a.y + b.y) / 2 - rc.top); }
+    else { CR.ix += dx; CR.iy += dy; cropApply(); }
+  });
+  ["pointerup", "pointercancel"].forEach(ev => st.addEventListener(ev, e => cp.delete(e.pointerId)));
+  st.addEventListener("wheel", e => { e.preventDefault(); cropZoom(CR.s / CR.min * (e.deltaY < 0 ? 1.1 : .9)); }, { passive: false });
+  $("czoom").oninput = e => cropZoom(+e.target.value / 100);
+  $("ccancel").onclick = closeCrop;
+  $("cok").onclick = async () => {
+    const btn = $("cok"); btn.disabled = true; btn.textContent = "Saving...";
+    try {
+      const av = CR.kind === "avatar", W = av ? 512 : 1200, H = av ? 512 : 500, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      cv.getContext("2d").drawImage(CR.img, (CR.fx - CR.ix) / CR.s, (CR.fy - CR.iy) / CR.s, CR.fw / CR.s, CR.fh / CR.s, 0, 0, W, H);
+      const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", .86));
+      const u = await api("pm_upload_url", { kind: CR.kind }); await uploadSigned(u.path, u.token, blob, "image/jpeg");
+      const r = await api("pm_set", { kind: CR.kind, path: u.path }); me = r.me; closeCrop(); toast("Saved"); haptic("medium");
+      if (stack[stack.length - 1].r === "edit") PAGES.edit();
+    } catch (e) { toast(e.message); }
+    btn.disabled = false; btn.textContent = "Save";
+  };
+})();
+
+/* community: approved public uploads from members */
+PAGES.community = async function () {
+  app.innerHTML = `<div class="pad"><div class="sec">Community</div><p class="mute" style="font-size:13.5px;margin:-4px 0 12px">Photos and videos shared by members. Want to post yours? Upload in My space, select a file and tap Share.</p><div id="cm"></div><button class="btn gh block" data-act="go" data-r="space" style="margin-top:14px">${ic("cloud")}Go to My space</button></div>`;
+  mountList($("cm"), { src: "comm", group: false, fetch: (p, s) => api("comm_list", { page: p, size: s }), empty: "<b>Nothing shared yet</b>Be the first to share something." });
 };
 
-/* premium plans + code */
+/* my space (personal uploads) */
+let SP = null;
+PAGES.space = async function () {
+  app.innerHTML = `<div class="pad"><div id="sph"></div><div id="spl"></div></div>`;
+  const draw = () => {
+    if (!SP) return; const s = SP.stats, l = SP.limits, used = Math.min(100, Math.round(s.files / l.max_items * 100));
+    $("sph").innerHTML = `<div class="sp3"><div><b>${s.files}</b><span>Files</span></div><div><b>${s.photos}</b><span>Photos</span></div><div><b>${s.videos}</b><span>Videos</span></div></div>
+      <div class="box" style="padding:16px 18px"><div style="display:flex;justify-content:space-between;font-size:13.5px"><span>${s.files} of ${l.max_items} files</span><span class="mute">${fmtMB(s.bytes)} used</span></div><div class="prog"><i style="width:${used}%"></i></div>
+      <button class="btn block" data-act="upload" ${l.enabled ? "" : "disabled"} style="margin-top:12px">${ic("cloud")}${l.enabled ? "Upload photos or videos" : "Uploads are paused"}</button>
+      <p class="mute" style="font-size:12.5px;margin-top:10px;text-align:center">Private by default. Up to ${l.max_mb} MB per file. Press and hold to select, then Share to post to Community.</p><div class="prog" id="upg" hidden><i></i></div></div>`;
+  };
+  SPL = mountList($("spl"), { src: "mine", group: false, select: SELCFG.mine, fetch: (p, s) => api("my_list", { page: p, size: s }), onData: r => { SP = { stats: r.stats, limits: r.limits }; draw(); }, empty: "<b>Your space is empty</b>Upload photos or videos to keep them here." });
+  spDraw = draw;
+};
+let SPL = null, spDraw = null;
+function pickUploads() {
+  const i = document.createElement("input"); i.type = "file"; i.accept = "image/*,video/*"; i.multiple = true;
+  i.onchange = () => uploadMine([...i.files]); i.click();
+}
+async function uploadMine(files) {
+  if (!files.length || !SP) return; const max = SP.limits.max_mb * 1048576; let ok = 0;
+  const g = $("upg"), bar = g?.firstElementChild; if (g) g.hidden = false;
+  for (const [n, f] of files.entries()) {
+    if (f.size > max) { toast(`${f.name} is over ${SP.limits.max_mb} MB, skipped`); continue; }
+    try {
+      if (bar) bar.style.width = Math.round(n / files.length * 100) + "%"; toast(`Uploading ${n + 1} of ${files.length}...`);
+      const ext = (f.name.split(".").pop() || "").toLowerCase();
+      const u = await api("my_upload_url", { ext, size: f.size, mime: f.type }); await uploadSigned(u.path, u.token, f, f.type);
+      await api("my_add", { path: u.path, title: f.name.replace(/\.[^.]+$/, ""), type: f.type.startsWith("video") ? "video" : "image" }); ok++;
+    } catch (e) { toast(e.message); }
+  }
+  if (g) g.hidden = true; if (ok) { toast(`${ok} file${ok > 1 ? "s" : ""} added`); haptic("medium"); } SPL?.reload();
+}
+
+/* ---------- premium plans + checkout ---------- */
 PAGES.plans = async function (p) {
-  const on = me.premium, left = on ? Math.max(0, Math.ceil((new Date(me.premium_until) - Date.now()) / 86400000)) : 0;
+  const on = me.premium, left = daysLeft();
   const steps = (settings.how_to_buy || "").split("\n").map(s => s.replace(/^\s*\d+[.)]\s*/, "").trim()).filter(Boolean);
   app.innerHTML = `<div class="pad">
     <div class="box" style="text-align:center"><span class="pill ${on ? "g" : ""}">${on ? "Premium active" : "Free plan"}</span>
-      <div class="disp" style="font-size:30px;margin:12px 0 2px">${on ? left + " din baki" : "Premium unlock koro"}</div>
-      <div class="mute" style="font-size:14px">${on ? fmtDate(me.premium_until) + " porjonto" : esc(settings.premium_intro || "")}</div></div>
+      <div class="disp" style="font-size:30px;margin:12px 0 2px">${on ? left + " days left" : "Unlock Premium"}</div>
+      <div class="mute" style="font-size:14px">${on ? "Until " + fmtDate(me.premium_until) : esc(settings.premium_intro || "")}</div></div>
     <div class="sec">Plans</div>
-    ${plans.length ? plans.map((pl, i) => `<div class="plan ${pl.badge ? "hot" : ""}">${pl.badge ? `<span class="bdg">${esc(pl.badge)}</span>` : ""}<h3>${esc(pl.name)}</h3>
-      <div class="pr"><b>${esc(pl.price)}</b>${pl.old_price ? `<s>${esc(pl.old_price)}</s>` : ""}<span class="mute">${pl.days} din</span></div>
-      <ul>${String(pl.perks || "").split("\n").filter(x => x.trim()).map(x => `<li>${ic("check")}${esc(x.trim())}</li>`).join("")}</ul>
-      <button class="btn block" data-act="buy" data-i="${i}">Ei plan nibo</button></div>`).join("") : `<div class="msg"><b>Plan ekhono set kora nai</b>Admin shigroi add korbe.</div>`}
-    ${steps.length ? `<div class="sec" style="margin-top:26px">Kibhabe kinbe</div><div class="box"><ol class="steps">${steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol></div>` : ""}
+    ${plans.length ? plans.map((pl, i) => {
+      const us = usdtOn() && pl.price_usdt != null, st = starsOn() && pl.price_stars != null;
+      return `<div class="plan ${pl.badge ? "hot" : ""}">${pl.badge ? `<span class="bdg">${esc(pl.badge)}</span>` : ""}<h3>${esc(pl.name)}</h3>
+      <div class="pr"><span class="mute" style="font-size:15px">${pl.days} days</span>${pl.old_price ? `<s>${esc(pl.old_price)}</s>` : ""}</div>
+      <div class="pp">${us ? `<span class="us">$${Number(pl.price_usdt).toFixed(2)} USDT</span>` : ""}${st ? `<span class="st">★ ${pl.price_stars} Stars</span>` : ""}${!us && !st && pl.price ? `<span>${esc(pl.price)}</span>` : ""}</div>
+      <ul>${String(pl.perks || "").split("\n").filter(x => x.trim()).map(x => `<li>${ic("check")}${esc(x.trim())}</li>`).join("")}${pl.grants_private ? `<li>${ic("check")}Private vault access</li>` : ""}</ul>
+      <button class="btn block" data-act="buy" data-i="${i}">${us || st ? "Choose plan" : "Contact to buy"}</button></div>`;
+    }).join("") : `<div class="msg"><b>No plans yet</b>Plans will appear here soon.</div>`}
+    ${steps.length ? `<div class="sec" style="margin-top:26px">How it works</div><div class="box"><ol class="steps">${steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol></div>` : ""}
     <div class="sec" style="margin-top:26px" id="codeAnchor">Unlock code</div>
-    <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Admin je code dilo seta ekhane boshao.</p>
+    <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Got a code from the admin? Enter it here.</p>
       <div class="code"><input id="cd" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocapitalize="characters" autocomplete="off"><button class="btn" data-act="redeem">Unlock</button></div></div>
-    <button class="btn gh block" data-act="go" data-r="ticketnew" data-p='{"category":"payment","subject":"Premium payment"}' style="margin-top:6px">Payment niye shahajjo lagbe</button></div>`;
+    <div class="btns"><button class="btn gh" data-act="go" data-r="payments">Payment history</button><button class="btn gh" data-act="go" data-r="ticketnew" data-p='{"category":"payment","subject":"Premium payment"}'>Need help?</button></div></div>`;
   if (p?.code) setTimeout(() => { $("codeAnchor").scrollIntoView({ behavior: "smooth", block: "center" }); $("cd").focus(); }, 250);
 };
 function buyPlan(i) {
   const pl = plans[i]; if (!pl) return;
-  const text = `Ami ${pl.name} plan (${pl.days} din, ${pl.price}) kinte chai. My ID: ${me.tg_id}`;
-  const link = (settings.contact_link || "").trim();
-  if (link) {
-    const url = link + (link.includes("?") ? "&" : "?") + "text=" + encodeURIComponent(text);
-    if (tg?.openTelegramLink && /^https:\/\/t\.me\//i.test(link)) tg.openTelegramLink(url); else window.open(url, "_blank");
-  } else nav("ticketnew", { category: "payment", subject: `${pl.name} plan`, body: text });
+  if ((usdtOn() && pl.price_usdt != null) || (starsOn() && pl.price_stars != null)) return nav("pay", { i });
+  const text = `Hi, I'd like to buy the ${pl.name} plan (${pl.days} days). My ID: ${me.tg_id}`, link = (settings.contact_link || "").trim();
+  if (link) { const url = link + (link.includes("?") ? "&" : "?") + "text=" + encodeURIComponent(text); if (tg?.openTelegramLink && /^https:\/\/t\.me\//i.test(link)) tg.openTelegramLink(url); else window.open(url, "_blank"); }
+  else nav("ticketnew", { category: "payment", subject: `${pl.name} plan`, body: text });
 }
 async function redeem() {
-  const code = $("cd").value.trim(); if (!code) return toast("Code ta likho");
+  const code = $("cd").value.trim(); if (!code) return toast("Enter your code");
   const btn = document.querySelector("[data-act=redeem]"); btn.disabled = true;
-  try {
-    const r = await api("redeem", { code }); me = r.me; haptic("heavy");
-    showPopup({ kind: "premium", title: `+${r.days} din Premium`, body: "Tomar Premium chalu hoyeche. Ekhon shob collection dekhte paro." }, true);
-    PAGES.plans({});
-  } catch (e) { toast(e.message); haptic("heavy"); btn.disabled = false; }
+  try { const r = await api("redeem", { code }); me = r.me; haptic("heavy"); showPopup({ kind: "premium", title: `+${r.days} days Premium`, body: "Your Premium is now active." }, true); PAGES.plans({}); }
+  catch (e) { toast(e.message); haptic("heavy"); btn.disabled = false; }
 }
 
-/* referral */
+const CK = { plan: null, method: "stars", code: "", promo: null, quote: null, order: null, poll: 0 };
+PAGES.pay = async function (p) {
+  const pl = plans[p.i]; if (!pl) return back();
+  Object.assign(CK, { plan: pl, code: "", promo: null, quote: null, order: null, poll: 0 });
+  CK.method = starsOn() && pl.price_stars != null ? "stars" : "usdt"; drawCheckout();
+};
+const curQuote = () => CK.quote || { usdt: CK.plan.price_usdt != null ? Number(CK.plan.price_usdt) : null, stars: CK.plan.price_stars, percent: 0, bonus_days: 0 };
+function drawCheckout() {
+  if (CK.order) return drawOrder();
+  const pl = CK.plan, q = curQuote(), aS = starsOn() && pl.price_stars != null, aU = usdtOn() && pl.price_usdt != null;
+  const total = CK.method === "stars" ? `★ ${q.stars}` : `$${Number(q.usdt).toFixed(2)}`;
+  app.innerHTML = `<div class="pad"><div class="box"><div class="disp" style="font-size:25px">${esc(pl.name)}</div><div class="mute" style="margin-top:2px">${pl.days}${q.bonus_days ? ` + ${q.bonus_days} bonus` : ""} days of Premium${pl.grants_private ? " + Private vault" : ""}</div></div>
+    <div class="sec">Pay with</div><div class="pm">
+      <button class="${CK.method === "stars" ? "on" : ""}" data-act="method" data-v="stars" ${aS ? "" : "disabled"}><b>★ Telegram Stars</b><span>${aS ? `${q.stars} Stars · instant` : "Not available"}</span></button>
+      <button class="${CK.method === "usdt" ? "on" : ""}" data-act="method" data-v="usdt" ${aU ? "" : "disabled"}><b>USDT</b><span>${aU ? `$${Number(q.usdt).toFixed(2)} · BNB Smart Chain` : "Not available"}</span></button></div>
+    <div class="sec">Promo code</div><div class="code"><input id="pcode" placeholder="Enter code" maxlength="40" autocapitalize="characters" autocomplete="off" value="${esc(CK.code)}"><button class="btn gh" data-act="applypromo">Apply</button></div>
+    ${CK.promo ? `<p style="font-size:13.5px;margin-top:10px;color:var(--gold)">${ic("check")} ${esc(CK.promo)} applied${q.percent ? `: ${q.percent}% off` : ""}${q.bonus_days ? `${q.percent ? "," : ":"} +${q.bonus_days} bonus days` : ""}</p>` : ""}
+    <div class="tot"><span class="mute">Total</span><b>${total}</b></div>
+    <button class="btn block" data-act="paygo" style="margin-top:10px">${CK.method === "stars" ? "Pay with Stars" : "Continue"}</button>
+    <p class="mute" style="font-size:12.5px;text-align:center;margin-top:12px">Premium activates automatically after payment.</p></div>`;
+}
+async function applyPromo() {
+  const code = ($("pcode").value || "").trim(); CK.code = code;
+  if (!code) { CK.promo = null; CK.quote = null; return drawCheckout(); }
+  try { const r = await api("promo_check", { plan_id: CK.plan.id, code }); CK.promo = r.code; CK.quote = r; haptic("medium"); drawCheckout(); }
+  catch (e) { CK.promo = null; CK.quote = null; toast(e.message); drawCheckout(); }
+}
+function paidDone(r) {
+  CK.poll = 0; me = r.me; haptic("heavy"); nav("premium");
+  showPopup({ kind: "premium", title: `+${r.days} days Premium`, body: "Payment confirmed. Enjoy the full collection." }, true);
+}
+async function payGo() {
+  const pl = CK.plan, btn = document.querySelector("[data-act=paygo]"); btn.disabled = true;
+  CK.code = ($("pcode")?.value || "").trim();
+  try {
+    if (CK.code && CK.promo !== CK.code.toUpperCase()) { const r = await api("promo_check", { plan_id: pl.id, code: CK.code }); CK.promo = r.code; CK.quote = r; }
+    if (CK.method === "stars") {
+      const r = await api("pay_start_stars", { plan_id: pl.id, promo: CK.promo });
+      if (tg?.openInvoice) tg.openInvoice(r.link, st => { if (st === "paid") { toast("Confirming payment..."); pollPay(r.id); } else if (st === "failed") toast("Payment failed"); });
+      else { window.open(r.link, "_blank"); toast("Complete the payment in Telegram"); pollPay(r.id); }
+      btn.disabled = false;
+    } else {
+      CK.order = await api("pay_start_usdt", { plan_id: pl.id, promo: CK.promo }); drawOrder();
+    }
+  } catch (e) { toast(e.message); btn.disabled = false; }
+}
+async function pollPay(id) {
+  const my = CK.poll = Date.now();
+  for (let n = 0; n < 70 && CK.poll === my; n++) {
+    await new Promise(r => setTimeout(r, 2500)); if (CK.poll !== my) return;
+    try { const r = await api("pay_get", { id }); if (r.status === "approved") return paidDone(r); if (r.status === "rejected") return toast("Payment was rejected"); } catch {}
+  }
+}
+function drawOrder() {
+  const o = CK.order;
+  app.innerHTML = `<div class="pad"><div class="box ord"><span class="pill g">Send exactly</span><div class="amt" style="margin-top:12px">${o.amount} USDT</div>
+      <button class="btn gh sm" data-act="copy" data-t="${o.amount}">${ic("copy")}Copy amount</button>
+      <div class="mute" style="margin-top:18px;font-size:13.5px">to this address on ${esc(o.network)}</div><div class="addr">${esc(o.address)}</div>
+      <button class="btn gh sm" data-act="copy" data-t="${esc(o.address)}">${ic("copy")}Copy address</button>
+      <div class="warn">Send <b>USDT on BNB Smart Chain (BEP20) only</b>. The amount must match exactly, including every decimal, so we can recognise your payment. Sending a different amount or network can't be matched automatically.</div></div>
+    <div class="box"><label class="field"><span>Transaction hash (optional, makes the check faster)</span><input id="txh" placeholder="0x..." autocomplete="off"></label>
+      <button class="btn block" data-act="paycheck">I've paid, check now</button>
+      <div class="stat2"><i class="spin"></i><span id="pmsg">Waiting for your payment...</span></div><div class="mute" style="text-align:center;font-size:12.5px" id="pcd"></div></div>
+    <button class="btn gh block" data-act="paynew">Cancel and start over</button></div>`;
+  const tick = () => { const s = Math.max(0, Math.floor((new Date(o.expires_at) - Date.now()) / 1000)); if ($("pcd")) $("pcd").textContent = s ? `This order is open for ${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : "Order time is over. You can still check if you've already paid."; };
+  tick(); timers.push(setInterval(tick, 1000), setInterval(() => payCheck(false), 15000));
+}
+async function payCheck(manual) {
+  const o = CK.order; if (!o) return; const btn = document.querySelector("[data-act=paycheck]"); if (manual && btn) btn.disabled = true;
+  try {
+    const r = await api("pay_check", { id: o.id, tx: manual ? ($("txh")?.value || "").trim() : "" });
+    if (r.status === "approved") return paidDone(r);
+    if (r.status === "expired" || r.status === "rejected") { toast(r.message || "This order is closed"); CK.order = null; return drawCheckout(); }
+    if ($("pmsg") && r.message) $("pmsg").textContent = r.message; if (manual && r.message) toast(r.message);
+  } catch (e) { if (manual) toast(e.message); }
+  if (btn) btn.disabled = false;
+}
+PAGES.payments = async function () {
+  app.innerHTML = `<div class="pad"><div id="pyl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
+  const r = await api("pay_history"), ST = { approved: ["Paid", "ok"], pending: ["Pending", "warn"], rejected: ["Rejected", ""] };
+  $("pyl").innerHTML = r.items.length ? r.items.map(x => `<div class="box" style="padding:16px 18px"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><b>${esc(x.plan_name)}</b><span class="pill ${ST[x.status]?.[1] || ""}">${ST[x.status]?.[0] || x.status}</span></div>
+    <div class="mute" style="font-size:13px;margin-top:5px">${x.method === "stars" ? `★ ${Number(x.amount)} Stars` : x.method === "usdt" ? `${Number(x.amount).toFixed(4)} USDT` : "Manual"}  ·  ${fmtDate(x.created_at)}</div>
+    ${x.status === "pending" && x.method === "usdt" ? `<button class="btn gh sm" style="margin-top:10px" data-act="checkpay" data-id="${x.id}">Check payment</button>` : ""}</div>`).join("")
+    : `<div class="msg"><b>No payments yet</b>Your payments will be listed here.</div>`;
+};
+async function checkOld(id) {
+  try { const r = await api("pay_check", { id, tx: "" }); if (r.status === "approved") return paidDone(r); toast(r.message || "Not confirmed yet"); } catch (e) { toast(e.message); }
+}
+
+/* ---------- referral ---------- */
+const MILES = [[1, "First invite"], [5, "Connector"], [10, "Ambassador"], [25, "Legend"]];
 PAGES.referral = async function () {
   const link = refLink(), n = me.ref_count;
   const next = MILES.find(m => n < m[0]), prev = [...MILES].reverse().find(m => n >= m[0]);
   const pct = next ? Math.round(((n - (prev ? prev[0] : 0)) / (next[0] - (prev ? prev[0] : 0))) * 100) : 100;
-  app.innerHTML = `<div class="pad">
-    <div class="hero-n"><b>${n}</b><span class="mute">bondhu ashechhe</span></div>
-    <div class="box" style="margin-top:18px"><p style="font-size:14.5px">Proti notun bondhu tomar link diye dhukle tumi <b>${me.reward_days} din</b> free Premium pabe.</p>
-      <div class="prog"><i style="width:${pct}%"></i></div>
-      <p class="mute" style="font-size:13px">${next ? `${next[1]} badge pete aro ${next[0] - n} jon baki.` : "Shob badge unlock hoyeche."}</p>
-      <div class="reflink">${esc(link)}</div>
-      <div class="btns"><button class="btn" data-act="share">${ic("share")}Share</button><button class="btn gh" data-act="copy">${ic("copy")}Copy</button></div></div>
-    <div class="box"><div class="badges">${MILES.map(([k, l]) => `<div class="bg ${n >= k ? "got" : ""}"><div class="c">${k}</div><span>${l}</span></div>`).join("")}</div></div>
-    <div id="rx"></div></div>`;
+  app.innerHTML = `<div class="pad"><div class="hero-n"><b>${n}</b><span class="mute">friends joined</span></div>
+    <div class="box" style="margin-top:18px"><p style="font-size:14.5px">Every new friend who joins with your link earns you <b>${me.reward_days} day${me.reward_days === 1 ? "" : "s"}</b> of free Premium.</p>
+      <div class="prog"><i style="width:${pct}%"></i></div><p class="mute" style="font-size:13px">${next ? `${next[0] - n} more to unlock the ${next[1]} badge.` : "All badges unlocked."}</p>
+      <div class="reflink">${esc(link)}</div><div class="btns"><button class="btn" data-act="share">${ic("share")}Share</button><button class="btn gh" data-act="copy">${ic("copy")}Copy</button></div></div>
+    <div class="box"><div class="badges">${MILES.map(([k, l]) => `<div class="bg ${n >= k ? "got" : ""}"><div class="c">${k}</div><span>${l}</span></div>`).join("")}</div></div><div id="rx"></div></div>`;
   try {
     const r = await api("referrals");
-    $("rx").innerHTML = (r.top.length ? `<div class="sec" style="margin-top:22px">Top inviters</div><div class="box">${r.top.map((t, i) => `<div class="lrow"><span class="rk">${i + 1}</span><span>${esc(t.name)}</span><b>${t.count}</b></div>`).join("")}${r.rank ? `<p class="mute" style="font-size:13px;margin-top:10px">Tomar rank: ${r.rank}</p>` : ""}</div>` : "")
-      + (r.invited.length ? `<div class="sec" style="margin-top:22px">Tumi invite korechho</div><div class="box">${r.invited.map(t => `<div class="lrow"><span style="flex:1">${esc(t.name)}</span><span class="mute" style="font-size:13px">${fmtDate(t.created_at)}</span></div>`).join("")}</div>` : "");
+    $("rx").innerHTML = (r.top.length ? `<div class="sec" style="margin-top:22px">Top inviters</div><div class="box">${r.top.map((t, i) => `<div class="lrow"><span class="rk">${i + 1}</span><span>${esc(t.name)}</span><b>${t.count}</b></div>`).join("")}${r.rank ? `<p class="mute" style="font-size:13px;margin-top:10px">Your rank: ${r.rank}</p>` : ""}</div>` : "")
+      + (r.invited.length ? `<div class="sec" style="margin-top:22px">You invited</div><div class="box">${r.invited.map(t => `<div class="lrow"><span style="flex:1">${esc(t.name)}</span><span class="mute" style="font-size:13px">${fmtDate(t.created_at)}</span></div>`).join("")}</div>` : "");
   } catch {}
 };
 const refLink = () => `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}?startapp=ref_${me.tg_id}`;
-function copyRef() {
-  const t = refLink(), ok = () => { toast("Link copy hoyeche"); haptic("medium"); };
-  const fb = () => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); ok(); } catch { toast("Copy hoyni"); } ta.remove(); };
-  navigator.clipboard?.writeText ? navigator.clipboard.writeText(t).then(ok).catch(fb) : fb();
-}
-function shareRef() {
-  const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Ei gallery ta dekho")}`;
-  tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank");
-}
+function shareRef() { const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Check out this gallery")}`; tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank"); }
 
-/* settings */
+/* ---------- settings ---------- */
 PAGES.settings = async function () {
   const seg = (a, items, cur) => `<div class="seg">${items.map(([v, l]) => `<button class="${cur === v ? "on" : ""}" data-act="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
   app.innerHTML = `<div class="pad"><div class="box" style="padding:6px 20px">
-    <div class="srow"><div>Theme<small>Dark ba light</small></div>${seg("setmode", [["auto", "Auto"], ["dark", "Dark"], ["light", "Light"]], prefs.mode)}</div>
-    <div class="srow"><div>Accent rong</div><div class="sws">${Object.entries(ACC).map(([k, a]) => `<button class="sw ${prefs.accent === k ? "on" : ""}" data-act="setacc" data-v="${k}" title="${a[3]}" aria-label="${a[3]}" style="background:linear-gradient(135deg,${a[0]},${a[1]} 55%,${a[2]})"></button>`).join("")}</div></div>
+    <div class="srow"><div>Theme<small>Dark or light</small></div>${seg("setmode", [["auto", "Auto"], ["dark", "Dark"], ["light", "Light"]], prefs.mode)}</div>
+    <div class="srow"><div>Accent colour</div><div class="sws">${Object.entries(ACC).map(([k, a]) => `<button class="sw ${prefs.accent === k ? "on" : ""}" data-act="setacc" data-v="${k}" title="${a[3]}" aria-label="${a[3]}" style="background:linear-gradient(135deg,${a[0]},${a[1]} 55%,${a[2]})"></button>`).join("")}</div></div>
     <div class="srow"><div>Layout</div>${seg("setlay", [["g3", "Compact"], ["g2", "Large"], ["list", "List"]], prefs.layout)}</div>
-    <div class="srow"><div>Haptic feedback<small>Tap korle halka kompon</small></div><button class="switch ${prefs.haptics ? "on" : ""}" data-act="haptics" aria-label="Haptics"></button></div>
-    <div class="srow"><div>Notification<small>Notun post ar offer er khobor</small></div><button class="switch ${me.notify ? "on" : ""}" data-act="notify" aria-label="Notifications"></button></div></div>
-    <div class="box" style="padding:6px 20px">
-      <button class="srow" style="width:100%;text-align:left" data-act="clearsaved"><span>Saved list khali koro</span></button>
-      ${inTg ? "" : `<button class="srow" style="width:100%;text-align:left" data-act="logout"><span>Log out</span>${ic("out")}</button>`}</div>
+    <div class="srow"><div>Haptic feedback<small>A light tap on touch</small></div><button class="switch ${prefs.haptics ? "on" : ""}" data-act="haptics" aria-label="Haptics"></button></div>
+    <div class="srow"><div>Notifications<small>New posts and offers</small></div><button class="switch ${me.notify ? "on" : ""}" data-act="notify" aria-label="Notifications"></button></div></div>
+    ${inTg ? "" : `<div class="box" style="padding:6px 20px"><button class="srow" style="width:100%;text-align:left" data-act="logout"><span>Log out</span>${ic("out")}</button></div>`}
     <p class="mute" style="text-align:center;font-size:12.5px;margin-top:18px">${esc(C.APP_TITLE)}</p></div>`;
 };
 async function toggleNotify() {
   const want = !me.notify;
   try {
     if (want && tg?.requestWriteAccess) await new Promise(res => { try { tg.requestWriteAccess(() => res()); } catch { res(); } });
-    const r = await api("profile_update", { notify: want }); me = r.me; haptic("light");
-    toast(want ? "Notification chalu" : "Notification bondho"); PAGES.settings();
+    const r = await api("profile_update", { notify: want }); me = r.me; haptic("light"); toast(want ? "Notifications on" : "Notifications off"); PAGES.settings();
   } catch (e) { toast(e.message); }
 }
 
-/* tickets */
+/* ---------- tickets ---------- */
 let tkFilter = "all", tkCat = "other";
 const TKS = { open: "Open", answered: "Replied", closed: "Closed" };
 PAGES.tickets = async function () {
-  app.innerHTML = `<div class="pad"><button class="btn block" data-act="go" data-r="ticketnew" style="margin-bottom:18px">${ic("plus")}Notun ticket</button><div class="chipline">${[["all", "All"], ["open", "Open"], ["answered", "Replied"], ["closed", "Closed"]].map(([v, l]) => `<button class="${tkFilter === v ? "on" : ""}" data-act="tkfilter" data-v="${v}">${l}</button>`).join("")}</div><div id="tl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
-  const r = await api("ticket_list");
-  const items = r.items.filter(t => tkFilter === "all" || t.status === tkFilter);
+  app.innerHTML = `<div class="pad"><button class="btn block" data-act="go" data-r="ticketnew" style="margin-bottom:18px">${ic("plus")}New ticket</button><div class="chipline">${[["all", "All"], ["open", "Open"], ["answered", "Replied"], ["closed", "Closed"]].map(([v, l]) => `<button class="${tkFilter === v ? "on" : ""}" data-act="tkfilter" data-v="${v}">${l}</button>`).join("")}</div><div id="tl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
+  const r = await api("ticket_list"), items = r.items.filter(t => tkFilter === "all" || t.status === tkFilter);
   $("tl").innerHTML = items.length ? items.map(t => `<button class="tk" data-act="go" data-r="ticket" data-p='{"id":"${t.id}"}'><b>${esc(t.subject)}</b><div class="m"><span class="pill ${t.status === "answered" ? "g" : ""}">${TKS[t.status]}</span><span>${esc(t.category)}</span><span>${ago(t.updated_at)}</span></div></button>`).join("")
-    : `<div class="msg"><b>Kono ticket nai</b>Kono somossa hole notun ticket kholo.</div>`;
+    : `<div class="msg"><b>No tickets</b>Open a ticket if you need any help.</div>`;
 };
 PAGES.ticketnew = async function (p) {
   tkCat = p?.category || "other";
   app.innerHTML = `<div class="pad"><div class="chipline">${[["payment", "Payment"], ["premium", "Premium"], ["problem", "Problem"], ["other", "Other"]].map(([v, l]) => `<button class="${tkCat === v ? "on" : ""}" data-act="tkcat" data-v="${v}">${l}</button>`).join("")}</div>
-    <label class="field"><span>Subject</span><input id="ts" maxlength="80" value="${esc(p?.subject || "")}" placeholder="Ki niye shahajjo lagbe?"></label>
-    <label class="field"><span>Details</span><textarea id="tb" maxlength="1000" placeholder="Bistarito likho">${esc(p?.body || "")}</textarea></label>
-    <button class="btn block" data-act="tkcreate">Pathao</button></div>`;
+    <label class="field"><span>Subject</span><input id="ts" maxlength="80" value="${esc(p?.subject || "")}" placeholder="What do you need help with?"></label>
+    <label class="field"><span>Details</span><textarea id="tb" maxlength="1000" placeholder="Tell us more">${esc(p?.body || "")}</textarea></label>
+    <button class="btn block" data-act="tkcreate">Send</button></div>`;
 };
 async function createTicket() {
   try { const r = await api("ticket_create", { subject: $("ts").value, body: $("tb").value, category: tkCat }); haptic("medium"); stack.pop(); nav("ticket", { id: r.id }); stack.splice(stack.length - 1, 0, { r: "tickets", p: {} }); }
@@ -839,43 +1275,39 @@ async function createTicket() {
 }
 PAGES.ticket = async function (p) {
   const draw = (r, keep) => {
-    const t = r.ticket; const val = keep ? ($("rt")?.value || "") : "";
+    const t = r.ticket, val = keep ? ($("rt")?.value || "") : "";
     app.innerHTML = `<div class="pad"><div style="margin-bottom:16px"><div class="disp" style="font-size:24px">${esc(t.subject)}</div><div class="m mute" style="font-size:13px;margin-top:4px">${TKS[t.status]}  ·  ${esc(t.category)}</div></div>
       <div class="thread">${r.messages.map(m => `<div class="bub ${m.from_admin ? "" : "me"} pre">${esc(m.body)}<small>${m.from_admin ? "Support  ·  " : ""}${ago(m.created_at)}</small></div>`).join("")}</div>
-      ${t.status === "closed" ? `<div class="msg" style="padding:20px"><b style="font-size:17px">Ticket bondho</b>Notun somossa hole notun ticket kholo.</div>` : `<div class="reply"><input id="rt" maxlength="1000" placeholder="Reply likho..." value="${esc(val)}"><button class="btn" data-act="tkreply" aria-label="Send">${ic("send")}</button></div>`}</div>`;
+      ${t.status === "closed" ? `<div class="msg" style="padding:20px"><b style="font-size:17px">Ticket closed</b>Open a new ticket if you need more help.</div>` : `<div class="reply"><input id="rt" maxlength="1000" placeholder="Write a reply..." value="${esc(val)}"><button class="btn" data-act="tkreply" aria-label="Send">${ic("send")}</button></div>`}</div>`;
     if (!keep) window.scrollTo(0, document.body.scrollHeight);
   };
-  const r = await api("ticket_get", { id: p.id }); draw(r);
+  draw(await api("ticket_get", { id: p.id }));
   timers.push(setInterval(async () => { if (stack[stack.length - 1].r !== "ticket" || document.activeElement?.id === "rt") return; try { draw(await api("ticket_get", { id: p.id }), true); } catch {} }, 15000));
 };
 async function replyTicket() {
-  const v = $("rt").value.trim(); if (!v) return;
-  const id = stack[stack.length - 1].p.id;
-  try { const r = await api("ticket_reply", { id, body: v }); haptic("light"); PAGES.ticket({ id }); } catch (e) { toast(e.message); }
+  const v = $("rt").value.trim(); if (!v) return; const id = stack[stack.length - 1].p.id;
+  try { await api("ticket_reply", { id, body: v }); haptic("light"); PAGES.ticket({ id }); } catch (e) { toast(e.message); }
 }
 
-/* notifications */
+/* ---------- notifications ---------- */
 const KIND = { post: ["image", "New post"], premium: ["crown", "Premium"], notice: ["notice", "Notice"], ticket: ["ticket", "Support"], custom: ["bell", "Update"] };
 let nfItems = [];
 PAGES.notifs = async function () {
   app.innerHTML = `<div class="pad"><div id="nfl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
   const r = await api("notif_list"); nfItems = r.items;
   $("nfl").innerHTML = r.items.length ? r.items.map(n => `<button class="nf ${n.unread ? "un" : ""}" data-act="nfopen" data-id="${n.id}"><span class="ic">${ic(KIND[n.kind]?.[0] || "bell")}</span><div style="flex:1;min-width:0"><b>${esc(n.title)}</b>${n.body ? `<p>${esc(n.body)}</p>` : ""}</div><small>${ago(n.created_at)}</small></button>`).join("")
-    : `<div class="msg"><b>Kono notification nai</b>Notun post ba offer ashle ekhane dekhabe.</div>`;
+    : `<div class="msg"><b>No notifications</b>New posts and offers will show up here.</div>`;
   if (unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); }
 };
 async function nfOpen(id) {
   const n = nfItems.find(x => x.id === id); if (!n) return; haptic("light");
-  if (n.kind === "post" && n.media_id) {
-    try { const r = await api("byids", { ids: [n.media_id] }); SRC.nf = r.items; if (r.items[0]) return openFrom("nf", 0); } catch {}
-  }
-  if (n.kind === "premium") return nav("plans");
-  if (n.kind === "notice") return nav("notices");
-  if (n.kind === "ticket") return nav("tickets");
+  if (n.kind === "post" && n.media_id) { try { const r = await api("byids", { ids: [n.media_id] }); SRC.nf = r.items; if (r.items[0]) { if (r.items[0].album_id) return nav("album", { id: r.items[0].album_id }); return openFrom("nf", 0); } } catch {} }
+  if (n.kind === "premium") return nav("plans"); if (n.kind === "ticket") return nav("tickets");
 }
 
-/* ---------- viewer (download nai, watermark ache) ---------- */
-const V = { list: [], i: 0, fs: false };
+/* ---------- viewer (pinch zoom, swipe, no download, watermark) ---------- */
+const V = { list: [], i: 0, fs: false, z: 1, x: 0, y: 0 };
+const vpt = new Map(); let vg = null, lastTap = 0, tapT = 0;
 function buildWM() { const t = `ID ${me.tg_id}`; $("wm").innerHTML = Array.from({ length: 90 }, () => `<span>${t}</span>`).join(""); }
 function tryFS(v) {
   try { const f = v.requestFullscreen || v.webkitRequestFullscreen || v.webkitEnterFullscreen; const r = f?.call(v); r?.catch?.(() => {}); } catch {}
@@ -883,77 +1315,116 @@ function tryFS(v) {
 }
 function openViewer(list, idx) {
   const id = list[idx].id;
-  V.list = list.filter(x => !x.locked && x.url);
+  V.list = list.filter(x => !x.locked && x.url && x.kind !== "album");
   V.i = Math.max(0, V.list.findIndex(x => x.id === id));
-  $("viewer").classList.add("open"); syncBack();
-  drawViewer();
+  $("viewer").classList.add("open"); $("viewer").classList.remove("bare"); $("vsheet").classList.remove("on"); syncBack(); drawViewer();
+}
+function setT(anim) { const im = $("vimg"); if (!im) return; im.style.transition = anim ? "transform .25s ease" : "none"; im.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; }
+function clampPan() {
+  const im = $("vimg"); if (!im || V.z <= 1) { V.x = V.y = 0; return; }
+  const mx = Math.max(0, (im.clientWidth * V.z - innerWidth) / 2), my = Math.max(0, (im.clientHeight * V.z - innerHeight) / 2);
+  V.x = Math.min(mx, Math.max(-mx, V.x)); V.y = Math.min(my, Math.max(-my, V.y));
 }
 function drawViewer() {
-  const m = V.list[V.i]; if (!m) return;
+  const m = V.list[V.i]; if (!m) return; V.z = 1; V.x = V.y = 0; vpt.clear();
   const vid = m.type === "video";
-  $("viewer").classList.toggle("vid", vid);
+  $("viewer").classList.toggle("vid", vid); $("viewer").classList.toggle("mine", m.kind === "mine" || m.kind === "comm");
+  $("stage").style.touchAction = vid ? "auto" : "none";
   if (vid) {
     $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline autoplay></video>`;
     const v = $("stage").firstElementChild; v.oncontextmenu = e => e.preventDefault();
     v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); v.play?.().catch(() => {});
-  } else {
-    $("stage").innerHTML = `<div class="iw"><img draggable="false" src="${esc(m.url)}" alt=""><div class="shield"></div></div>`;
-    const img = $("stage").querySelector("img"), sh = $("stage").querySelector(".shield"); let z = false;
-    sh.ondblclick = e => { z = !z; img.style.transformOrigin = `${e.offsetX}px ${e.offsetY}px`; img.style.transform = z ? "scale(2.4)" : "none"; };
-  }
+  } else $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.url)}" alt="">`;
   $("vcnt").textContent = `${V.i + 1} / ${V.list.length}`;
-  $("vt").textContent = m.title || "Untitled"; $("vm").textContent = `No. ${pad(m.serial_no)}  ·  ${short(m.views)} views`;
-  $("vheart").classList.toggle("on", saved.has(m.id));
+  $("vt").textContent = m.title || "Untitled"; $("vm").textContent = fmtDate(m.created_at) + (m.kind === "comm" ? `  ·  by ${m.by}` : m.kind === "mine" ? "" : `  ·  ${short(m.views)} views`);
+  $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
-  api("view", { media_id: m.id }).catch(() => {});
+  if (m.kind === "media") api("view", { media_id: m.id }).catch(() => {});
+  if ($("vsheet").classList.contains("on")) drawInfo();
+}
+function drawInfo() {
+  const m = V.list[V.i]; if (!m) return; const c = cats.find(x => x.id === m.category_id);
+  const row = (a, b) => `<div class="ir"><span>${a}</span><span>${b}</span></div>`;
+  $("vsheet").innerHTML = `<h3>${esc(m.title || "Untitled")}</h3>${row("Type", m.type === "video" ? "Video" : "Photo")}${row("Added", fmtDate(m.created_at))}${c ? row("Category", esc(c.name)) : ""}${m.kind === "mine" ? row("Where", SHS[m.share] || "Only you") : m.kind === "comm" ? row("Shared by", esc(m.by)) : row("Views", short(m.views)) + row("Access", m.access === "premium" ? "Premium" : m.access === "private" ? "Private" : "Public")}`;
 }
 function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); }
 function closeViewer() {
-  $("viewer").classList.remove("open"); $("stage").innerHTML = "";
+  $("viewer").classList.remove("open"); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
-  if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; }
-  syncBack();
+  if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; } syncBack();
 }
 $("vclose").onclick = closeViewer; $("vp").onclick = () => step(-1); $("vn").onclick = () => step(1);
-$("vheart").onclick = () => { const m = V.list[V.i]; if (m) toggleSave(m.id); };
-let tx = 0;
-$("stage").addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, { passive: true });
-$("stage").addEventListener("touchend", e => { const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 70) step(dx < 0 ? 1 : -1); }, { passive: true });
+$("vheart").onclick = () => { const m = V.list[V.i]; if (m) toggleFav(m.id, "media"); };
+$("vinfo").onclick = () => { const s = $("vsheet"); if (!s.classList.contains("on")) drawInfo(); s.classList.toggle("on"); };
+(function () {
+  const st = $("stage"), pd = () => { const [a, b] = [...vpt.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+  const isVid = () => V.list[V.i]?.type === "video";
+  st.addEventListener("pointerdown", e => {
+    if (isVid()) return; st.setPointerCapture(e.pointerId); vpt.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (vpt.size === 1) vg = { sx: e.clientX, sy: e.clientY, t: Date.now(), x0: V.x, y0: V.y, dx: 0, dy: 0 };
+    if (vpt.size === 2) { vg.d0 = pd(); vg.z0 = V.z; }
+  });
+  st.addEventListener("pointermove", e => {
+    const p = vpt.get(e.pointerId); if (!p || !vg) return; p.x = e.clientX; p.y = e.clientY;
+    if (vpt.size === 2) { V.z = Math.min(5, Math.max(1, vg.z0 * pd() / vg.d0)); clampPan(); setT(false); return; }
+    vg.dx = e.clientX - vg.sx; vg.dy = e.clientY - vg.sy;
+    if (V.z > 1) { V.x = vg.x0 + vg.dx; V.y = vg.y0 + vg.dy; clampPan(); setT(false); }
+    else { V.x = vg.dx * .8; V.y = Math.max(0, vg.dy) * .8; setT(false); }
+  });
+  const end = e => {
+    if (!vpt.has(e.pointerId)) return; vpt.delete(e.pointerId); if (vpt.size || !vg) return;
+    const { dx, dy, t } = vg, quick = Date.now() - t < 280, tap = Math.abs(dx) < 8 && Math.abs(dy) < 8 && quick;
+    if (V.z > 1.02) { if (V.z < 1.08) { V.z = 1; } clampPan(); setT(true); }
+    else if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.2) { V.z = 1; V.x = V.y = 0; step(dx < 0 ? 1 : -1); }
+    else if (dy > 110 && dy > Math.abs(dx)) closeViewer();
+    else {
+      V.z = 1; V.x = V.y = 0; setT(true);
+      if (tap) {
+        const now = Date.now();
+        if (now - lastTap < 300) { clearTimeout(tapT); lastTap = 0; V.z = 2.6; V.x = -(e.clientX - innerWidth / 2) * 1.6; V.y = -(e.clientY - innerHeight / 2) * 1.6; clampPan(); setT(true); }
+        else { lastTap = now; tapT = setTimeout(() => $("viewer").classList.toggle("bare"), 290); }
+      }
+    }
+    vg = null;
+  };
+  st.addEventListener("pointerup", end); st.addEventListener("pointercancel", end);
+  st.addEventListener("wheel", e => { if (isVid()) return; e.preventDefault(); V.z = Math.min(5, Math.max(1, V.z * (e.deltaY < 0 ? 1.15 : .87))); clampPan(); setT(true); }, { passive: false });
+})();
 document.addEventListener("keydown", e => { if (!$("viewer").classList.contains("open")) return; if (e.key === "Escape") closeViewer(); if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1); });
 
 /* ---------- sheet / popup ---------- */
 function lockedSheet(m) {
-  const prem = m.access === "premium";
-  $("sheet").innerHTML = `<div class="big">${ic(prem ? "crown" : "lock")}</div><h2>${prem ? "Premium content" : "Private area"}</h2>
-    <p>${prem ? `Eta dekhte Premium lagbe. Plan kino, code boshao, ba bondhuder invite kore <b>${me.reward_days} din</b> free pao.` : "Eta shudhu admin approved member der jonno. Access chaile ticket kholo."}</p>
-    <div class="btns">${prem ? `<button class="btn" data-act="sheetgo">Premium dekho</button>` : `<button class="btn" data-act="sheetgo2">Ticket kholo</button>`}<button class="btn gh" data-act="sheetclose">Pore</button></div>`;
+  const prem = m.access === "premium", canBuy = plans.length > 0;
+  $("sheet").innerHTML = `<div class="big">${ic(prem ? "crown" : "lock")}</div><h2>${prem ? "Premium content" : "Private vault"}</h2>
+    <p>${prem ? `You need Premium to view this. Pick a plan, enter a code, or invite friends for <b>${me.reward_days} free day${me.reward_days === 1 ? "" : "s"}</b> each.` : "This is a members-only area opened by invitation. Send a request and we'll get back to you."}</p>
+    <div class="btns">${prem ? `<button class="btn" id="lk1">${canBuy ? "View plans" : "Open Premium"}</button>` : `<button class="btn" id="lk2">Request access</button>`}<button class="btn gh" data-act="sheetclose" id="lk0">Not now</button></div>`;
   $("modal").classList.add("open"); syncBack();
-  const g = $("sheet").querySelector("[data-act=sheetgo]"), g2 = $("sheet").querySelector("[data-act=sheetgo2]");
-  if (g) g.onclick = () => { closeSheet(); nav("plans"); };
-  if (g2) g2.onclick = () => { closeSheet(); nav("ticketnew", { category: "other", subject: "Private access" }); };
+  $("lk0").onclick = closeSheet; if ($("lk1")) $("lk1").onclick = () => { closeSheet(); nav("plans"); }; if ($("lk2")) $("lk2").onclick = () => { closeSheet(); ACT.vault(); };
 }
-function closeSheet() { $("modal").classList.remove("open"); syncBack(); }
-let popN = null;
+let popN = null, popT = 0;
 function showPopup(n, local) {
-  popN = n; const k = KIND[n.kind] || KIND.custom, pv = n.media?.preview;
-  $("popbox").innerHTML = `${pv ? `<div class="pi" style="background-image:url('${esc(pv)}')"></div>` : ""}<div class="pb ${pv ? "" : "noimg"}">
-    <span class="kind">${ic(k[0])}${k[1]}</span><h3>${esc(n.title)}</h3>${n.body ? `<p class="pre">${esc(n.body)}</p>` : ""}
-    <div class="btns"><button class="btn" data-act="popgo">${local ? "Thik ache" : n.kind === "post" ? "Dekho" : n.kind === "premium" ? "Premium" : "Dekho"}</button>${local ? "" : `<button class="btn gh" data-act="popclose">Pore</button>`}</div></div>`;
-  $("popup").classList.add("open"); syncBack(); haptic("medium");
+  popN = n; popN._local = !!local; const k = KIND[n.kind] || KIND.custom, pv = n.media?.preview, sec = Math.min(10, Math.max(2, Number(settings.popup_seconds) || 3));
+  const box = $("popbox"); box.style.setProperty("--dur", sec + "s");
+  box.innerHTML = `<div class="pi2 ${pv ? "img" : ""}" ${pv ? `style="background-image:url('${esc(pv)}')"` : ""}>${pv ? "" : ic(k[0])}</div>
+    <div class="pb2"><div class="kd">${ic("crown")}${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}</div>
+    <button class="x" data-act="popclose" aria-label="Close">${ic("close")}</button><i class="bar"></i>`;
+  $("popup").classList.add("open"); haptic("medium"); clearTimeout(popT); popT = setTimeout(closePopup, sec * 1000);
 }
-function closePopup() { $("popup").classList.remove("open"); syncBack(); if (popN && !popN._local && unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); } popN = null; }
+function closePopup() {
+  clearTimeout(popT); $("popup").classList.remove("open");
+  if (popN && !popN._local && unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); } popN = null;
+}
 function popGo() {
-  const n = popN; closePopup(); if (!n || n.title?.startsWith("+")) return;
+  const n = popN; closePopup(); if (!n || n._local) return;
   if (n.kind === "post" && n.media?.id) { nfItems = [{ id: "x", kind: "post", media_id: n.media.id }]; nfOpen("x"); }
-  else if (n.kind === "premium") nav("plans"); else if (n.kind === "notice") nav("notices"); else if (n.kind === "ticket") nav("tickets"); else nav("notifs");
+  else if (n.kind === "premium") nav("plans"); else if (n.kind === "ticket") nav("tickets"); else nav("notifs");
 }
 
 /* ---------- start ---------- */
-let pinned = null;
 function endSplash() { setTimeout(() => $("splash").classList.add("done"), 1700); }
 function landing() {
   $("top").hidden = true; $("nav").hidden = true;
-  app.innerHTML = `<div class="land"><svg><use href="#logo"/></svg><h1>${esc(C.APP_TITLE)}</h1><p>Telegram diye login kore collection dekho.</p><div id="tgw"></div><small>Login e shudhu tomar Telegram naam ar photo dekha hoy. Password lage na.</small></div>`;
+  app.innerHTML = `<div class="land"><svg><use href="#logo"/></svg><h1>${esc(C.APP_TITLE)}</h1><p>Log in with Telegram to view the collection.</p><div id="tgw"></div><small>We only read your Telegram name and photo. No password needed.</small></div>`;
   const s = document.createElement("script"); s.async = true; s.src = "https://telegram.org/js/telegram-widget.js?22";
   s.dataset.telegramLogin = C.BOT_USERNAME; s.dataset.size = "large"; s.dataset.radius = "14"; s.dataset.requestAccess = "write"; s.dataset.onauth = "onTgAuth(user)";
   $("tgw").appendChild(s);
@@ -964,12 +1435,14 @@ window.onTgAuth = u => { LS.set("gv_web", u); location.reload(); };
   if (!inTg && !webAuth) { landing(); return endSplash(); }
   try {
     const r = await api("init");
-    me = r.me; cats = r.categories; plans = r.plans; settings = r.settings; unread = r.unread; pinned = r.pinned;
+    me = r.me; cats = r.categories; plans = r.plans; settings = r.settings; unread = r.unread; banners = r.banners || []; favs = new Set(r.favs || []);
     buildWM(); render();
-    if (r.popup) setTimeout(() => showPopup(r.popup), 2200);
+    const old = LS.get("gv_saved", []);
+    if (old.length) api("fav_import", { ids: old }).then(x => { favs = new Set(x.favs); LS.del("gv_saved"); }).catch(() => {});
+    if (r.popup) setTimeout(() => { if (stack[stack.length - 1].r === "home") showPopup(r.popup); }, 1500);
   } catch (e) {
-    if (!inTg && !webAuth) { landing(); }
-    else { $("top").hidden = true; app.innerHTML = `<div class="land"><svg><use href="#logo"/></svg><h1>Load hoyni</h1><p>${esc(e.message)}</p><button class="btn" onclick="location.reload()">Abar try koro</button></div>`; }
+    if (!inTg && !webAuth) landing();
+    else { $("top").hidden = true; $("nav").hidden = true; app.innerHTML = `<div class="land"><svg><use href="#logo"/></svg><h1>${/maintenance|back/i.test(e.message) ? "Be right back" : "Couldn't load"}</h1><p>${esc(e.message)}</p><button class="btn" onclick="location.reload()">Try again</button></div>`; }
   }
   endSplash();
 })();
