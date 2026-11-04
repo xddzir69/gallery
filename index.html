@@ -1299,7 +1299,8 @@ PAGES.referral = async function () {
     <div class="box" style="margin-top:18px"><p style="font-size:14.5px">Every new friend who joins with your link earns you <b>${me.reward_days} day${me.reward_days === 1 ? "" : "s"}</b> of free Premium.</p>
       <div class="prog"><i style="width:${pct}%"></i></div><p class="mute" style="font-size:13px">${next ? `${next[0] - n} more to unlock the ${next[1]} badge.` : "All badges unlocked."}</p>
       <div class="reflink">${esc(link)}</div><div class="btns"><button class="btn" data-act="share">${ic("share")}Share</button><button class="btn gh" data-act="copy">${ic("copy")}Copy</button></div>
-      <p class="mute" style="font-size:12.5px;margin-top:16px">Friend can't open the Telegram link? Send this browser link instead. They log in with Telegram on the website and you still get the reward.</p><div class="reflink">${esc(webLink())}</div><button class="btn gh sm" data-act="copy" data-t="${esc(webLink())}">${ic("copy")}Copy browser link</button></div>
+      <p class="mute" style="font-size:12.5px;margin-top:16px">If the link above doesn't open the app, send this one. It opens the bot chat, then your friend taps <b>Open gallery</b>.</p><div class="reflink">${esc(botLink())}</div><button class="btn gh sm" data-act="copy" data-t="${esc(botLink())}">${ic("copy")}Copy bot link</button>
+      <p class="mute" style="font-size:12.5px;margin-top:16px">Still not working? Send this browser link instead. They log in with Telegram on the website and you still get the reward.</p><div class="reflink">${esc(webLink())}</div><button class="btn gh sm" data-act="copy" data-t="${esc(webLink())}">${ic("copy")}Copy browser link</button></div>
     <div class="box"><div class="badges">${MILES.map(([k, l]) => `<div class="bg ${n >= k ? "got" : ""}"><div class="c">${k}</div><span>${l}</span></div>`).join("")}</div></div><div id="rx"></div></div>`;
   try {
     const r = await api("referrals");
@@ -1307,9 +1308,10 @@ PAGES.referral = async function () {
       + (r.invited.length ? `<div class="sec" style="margin-top:22px">You invited</div><div class="box">${r.invited.map(t => `<div class="lrow"><span style="flex:1">${esc(t.name)}</span><span class="mute" style="font-size:13px">${fmtDate(t.created_at)}</span></div>`).join("")}</div>` : "");
   } catch {}
 };
+const botLink = () => `https://t.me/${C.BOT_USERNAME}?start=ref_${me.tg_id}`;
 const webLink = () => location.origin + location.pathname.replace(/[^/]*$/, "") + "?ref=" + me.tg_id;
 const refLink = () => `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}?startapp=ref_${me.tg_id}`;
-function shareRef() { const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Check out this gallery.\nIf the link doesn't open, use this one: " + webLink())}`; tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank"); }
+function shareRef() { const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Check out this gallery.\nIf the link doesn't open the app, use this one: " + botLink() + "\nOr in a browser: " + webLink())}`; tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank"); }
 
 /* ---------- settings ---------- */
 PAGES.settings = async function () {

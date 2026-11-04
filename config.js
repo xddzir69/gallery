@@ -6,5 +6,5 @@ window.APP_CONFIG = {
 
   // Referral link er jonno: tomar bot er username (@ chhara) ar /newapp e deya short name
   BOT_USERNAME: "VPV69BOT",
-  APP_SHORT_NAME: "gallery",
+  APP_SHORT_NAME: "VPV",
 };
