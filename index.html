@@ -1065,9 +1065,14 @@ async function clearImage(kind) {
   try { const r = await api("pm_clear", { kind }); me = r.me; PAGES.edit(); } catch (e) { toast(e.message); }
 }
 const sbc = window.supabase ? window.supabase.createClient(C.SUPABASE_URL, C.SUPABASE_ANON_KEY, { auth: { persistSession: false } }) : null;
-async function uploadSigned(path, token, blob, type) {
+async function uploadSigned(u, blob, type) {
+  if (u.url) {   // Cloudflare R2: plain PUT to a signed link
+    const r = await fetch(u.url, { method: "PUT", headers: { "Content-Type": type || "application/octet-stream" }, body: blob });
+    if (!r.ok) throw new Error("Upload failed (" + r.status + "). Please try again.");
+    return;
+  }
   if (!sbc) throw new Error("Upload library did not load. Check your connection and reload.");
-  const { error } = await sbc.storage.from(C.BUCKET).uploadToSignedUrl(path, token, blob, { contentType: type });
+  const { error } = await sbc.storage.from(C.BUCKET).uploadToSignedUrl(u.path, u.token, blob, { contentType: type });
   if (error) throw new Error(error.message);
 }
 
@@ -1114,7 +1119,7 @@ function closeCrop() { $("crop").classList.remove("open"); if (CR.url) URL.revok
       const av = CR.kind === "avatar", W = av ? 512 : 1200, H = av ? 512 : 500, cv = document.createElement("canvas"); cv.width = W; cv.height = H;
       cv.getContext("2d").drawImage(CR.img, (CR.fx - CR.ix) / CR.s, (CR.fy - CR.iy) / CR.s, CR.fw / CR.s, CR.fh / CR.s, 0, 0, W, H);
       const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", .86));
-      const u = await api("pm_upload_url", { kind: CR.kind }); await uploadSigned(u.path, u.token, blob, "image/jpeg");
+      const u = await api("pm_upload_url", { kind: CR.kind }); await uploadSigned(u, blob, "image/jpeg");
       const r = await api("pm_set", { kind: CR.kind, path: u.path }); me = r.me; closeCrop(); toast("Saved"); haptic("medium");
       if (stack[stack.length - 1].r === "edit") PAGES.edit();
     } catch (e) { toast(e.message); }
@@ -1155,7 +1160,7 @@ async function uploadMine(files) {
     try {
       if (bar) bar.style.width = Math.round(n / files.length * 100) + "%"; toast(`Uploading ${n + 1} of ${files.length}...`);
       const ext = (f.name.split(".").pop() || "").toLowerCase();
-      const u = await api("my_upload_url", { ext, size: f.size, mime: f.type }); await uploadSigned(u.path, u.token, f, f.type);
+      const u = await api("my_upload_url", { ext, size: f.size, mime: f.type }); await uploadSigned(u, f, f.type);
       await api("my_add", { path: u.path, title: f.name.replace(/\.[^.]+$/, ""), type: f.type.startsWith("video") ? "video" : "image" }); ok++;
     } catch (e) { toast(e.message); }
   }

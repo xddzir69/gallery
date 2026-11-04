@@ -303,6 +303,9 @@
         <label class="f"><span>Referral reward: Premium days per new invite</span><input type="number" id="refDays" min="0" style="max-width:160px"></label>
         <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
         <button class="btn" id="refSave">Save</button></div>
+      <div class="card"><h3>File storage (Cloudflare R2)</h3><p class="sm mute" id="stInfo" style="margin-bottom:12px"></p>
+        <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
+        <div class="prog"><i id="stProg"></i></div><div class="sm mute" id="stMsg" style="margin-top:8px"></div></div>
       <div class="card"><h3>Setup check</h3><p class="sm mute" id="chkInfo" style="margin-bottom:10px"></p><button class="btn gh" id="chkBtn">Test notify function</button><span class="sm mute" id="chkMsg" style="margin-left:10px"></span></div>
     </section>
   </main>
@@ -334,7 +337,7 @@ $("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session; $("panel").hidden = !session;
-  if (session) { await Promise.all([loadCats(), loadPlansCache(), loadAlbumsCache()]); show("dash"); badges(); }
+  if (session) { await Promise.all([loadCats(), loadPlansCache(), loadAlbumsCache(), detectR2()]); show("dash"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
@@ -380,7 +383,33 @@ async function pushTG(title, body, tg_id, dry) {
 }
 const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: String(v ?? "") });
 const getSettings = async keys => { const { data } = await sb.from("settings").select("key,value").in("key", keys); const m = {}; (data || []).forEach(r => m[r.key] = r.value); return m; };
-async function sign(paths, secs = 3600) { const m = {}; const l = [...new Set((paths || []).filter(Boolean))]; if (!l.length) return m; const { data } = await sb.storage.from(C.BUCKET).createSignedUrls(l, secs); (data || []).forEach(x => { if (x.signedUrl) m[x.path] = x.signedUrl; }); return m; }
+async function r2call(action, extra = {}) { const { data: { session } } = await sb.auth.getSession(); const r = await fetch(`${C.SUPABASE_URL}/functions/v1/r2`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY }, body: JSON.stringify({ action, ...extra }) }); return r.json(); }
+let R2_OK = false;
+async function detectR2() { try { const r = await r2call("ping"); R2_OK = !!r.r2; } catch { R2_OK = false; } }
+const newKey = rest => (R2_OK ? "r2/" : "") + rest;
+const isR2 = p => String(p || "").startsWith("r2/");
+async function sign(paths, secs = 3600) {
+  const m = {}; const l = [...new Set((paths || []).filter(Boolean))]; if (!l.length) return m;
+  const sbp = l.filter(p => !isR2(p)), r2p = l.filter(isR2);
+  if (sbp.length) { const { data } = await sb.storage.from(C.BUCKET).createSignedUrls(sbp, secs); (data || []).forEach(x => { if (x.signedUrl) m[x.path] = x.signedUrl; }); }
+  if (r2p.length) { try { const r = await r2call("get", { paths: r2p, secs }); Object.assign(m, r.urls || {}); } catch {} }
+  return m;
+}
+async function putFile(path, file) {
+  if (isR2(path)) {
+    try {
+      const r = await r2call("put", { path }); const url = r.urls && r.urls[path]; if (!url) return { error: { message: r.error || "No upload link" } };
+      const res = await fetch(url, { method: "PUT", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
+      return res.ok ? {} : { error: { message: `R2 upload failed (${res.status}). Check the bucket CORS settings.` } };
+    } catch (e) { return { error: { message: String(e.message || e) + " (check the R2 bucket CORS settings)" } }; }
+  }
+  return sb.storage.from(C.BUCKET).upload(path, file, { contentType: file.type, cacheControl: "3600" });
+}
+async function rmFiles(paths) {
+  const l = (paths || []).filter(Boolean), sbp = l.filter(p => !isR2(p)), r2p = l.filter(isR2);
+  if (sbp.length) await sb.storage.from(C.BUCKET).remove(sbp);
+  if (r2p.length) { try { await r2call("del", { paths: r2p }); } catch {} }
+}
 const catOpts = (sel, all) => (all ? '<option value="">All categories</option><option value="none">(No category)</option>' : '<option value="">(No category)</option>') + cats.map(c => `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("");
 const albOpts = sel => '<option value="">(None)</option>' + albumsCache.map(a => `<option value="${a.id}" ${a.id === sel ? "selected" : ""}>${esc(a.title)}</option>`).join("");
 const thumb = (u, type) => !u ? '<div class="pv"></div>' : type === "video" ? `<video class="pv" muted preload="metadata" src="${esc(u)}#t=0.5"></video>` : `<img class="pv" loading="lazy" src="${esc(u)}">`;
@@ -456,14 +485,14 @@ $("upBtn").onclick = async () => {
   let serial = top?.[0]?.serial_no || 0, ok = 0, firstId = null;
   for (const [i, f] of files.entries()) {
     const type = f.type.startsWith("video") ? "video" : "image", ext = (f.name.split(".").pop() || "bin").toLowerCase();
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const path = newKey(`${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`);
     $("log").textContent += `(${i + 1}/${files.length}) ${f.name}\n`;
-    const { error: ue } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
+    const { error: ue } = await putFile(path, f);
     if (ue) { $("log").textContent += `  failed: ${ue.message}\n`; continue; }
     const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
     serial++;
     const { data: row, error: de } = await sb.from("media").insert({ title: asAlbum ? f.name.replace(/\.[^.]+$/, "") : (title || f.name.replace(/\.[^.]+$/, "")), type, path, category_id, access, serial_no: serial, preview, album_id: album?.id ?? null, album_order: i }).select("id").single();
-    if (de) { $("log").textContent += `  failed: ${de.message}\n`; await sb.storage.from(C.BUCKET).remove([path]); serial--; continue; }
+    if (de) { $("log").textContent += `  failed: ${de.message}\n`; await rmFiles([path]); serial--; continue; }
     ok++; firstId = firstId || row.id; $("upProg").style.width = Math.round(((i + 1) / files.length) * 100) + "%";
   }
   if (album) { if (firstId) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id); else await sb.from("albums").delete().eq("id", album.id); }
@@ -488,7 +517,7 @@ $("bAccGo").onclick = async () => { const { error } = await sb.from("media").upd
 $("bDel").onclick = async () => {
   if (!confirm(`Delete ${sel.size} item(s) permanently?`)) return;
   const ids = [...sel], { data } = await sb.from("media").select("id,path").in("id", ids);
-  if (data?.length) await sb.storage.from(C.BUCKET).remove(data.map(x => x.path));
+  if (data?.length) await rmFiles(data.map(x => x.path));
   const { error } = await sb.from("media").delete().in("id", ids); error ? toast(error.message) : (toast("Deleted"), clrSel(), loadMedia(true));
 };
 $("bAlbum").onclick = async () => {
@@ -519,7 +548,7 @@ async function loadPosts() {
     d.querySelector(".a").value = m.access;
     d.querySelector(".pvw input").onchange = e => { e.target.checked ? sel.add(m.id) : sel.delete(m.id); drawSel(); };
     d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, album_id: d.querySelector(".al").value || null }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
-    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post?")) return; await rmFiles([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
     $("mList").appendChild(d);
   });
   mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
@@ -544,7 +573,7 @@ async function loadAlbums() {
     d.querySelector(".dl").onclick = async () => {
       const files = confirm(`Delete album "${a.title}"?\n\nOK = delete the album AND its ${items.length} files\nCancel = keep the files as separate posts (next step)`);
       if (!files && !confirm("Delete only the album and keep its files as separate posts?")) return;
-      if (files) { await sb.storage.from(C.BUCKET).remove(items.map(m => (ms.find(x => x.id === m.id) || {}).path).filter(Boolean)); await sb.from("media").delete().eq("album_id", a.id); }
+      if (files) { await rmFiles(items.map(m => (ms.find(x => x.id === m.id) || {}).path).filter(Boolean)); await sb.from("media").delete().eq("album_id", a.id); }
       const { error } = await sb.from("albums").delete().eq("id", a.id); error ? toast(error.message) : (toast("Album deleted"), loadAlbumsCache(), loadMedia(true));
     };
     d.querySelector(".ed").onclick = () => {
@@ -575,9 +604,9 @@ function bnTargets() {
 $("bnKind").onchange = bnTargets;
 $("bnAdd").onclick = async () => {
   const f = $("bnFile").files[0]; if (!f) return toast("Choose an image");
-  const ext = (f.name.split(".").pop() || "jpg").toLowerCase(), path = `banners/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`;
+  const ext = (f.name.split(".").pop() || "jpg").toLowerCase(), path = newKey(`banners/${Date.now()}-${Math.random().toString(36).slice(2, 6)}.${ext}`);
   $("bnAdd").disabled = true;
-  const { error: ue } = await sb.storage.from(C.BUCKET).upload(path, f, { contentType: f.type, cacheControl: "3600" });
+  const { error: ue } = await putFile(path, f);
   if (ue) { $("bnAdd").disabled = false; return toast(ue.message); }
   const kind = $("bnKind").value, { error } = await sb.from("banners").insert({ path, title: $("bnTitle").value.trim() || null, subtitle: $("bnSub").value.trim() || null, link_kind: kind, link_id: ["category", "album"].includes(kind) ? $("bnTarget").value : null, sort_order: 99 });
   $("bnAdd").disabled = false; if (error) return toast(error.message);
@@ -591,7 +620,7 @@ async function loadBanners() {
   $("bnList").querySelectorAll("[data-id]").forEach(r => {
     const b = data.find(x => x.id === r.dataset.id);
     r.querySelector(".sv").onclick = async () => { const { error } = await sb.from("banners").update({ title: r.querySelector(".t").value.trim() || null, subtitle: r.querySelector(".s").value.trim() || null, sort_order: num(r.querySelector(".o").value), active: r.querySelector(".ac").checked }).eq("id", b.id); error ? toast(error.message) : toast("Saved"); };
-    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this banner?")) return; await sb.storage.from(C.BUCKET).remove([b.path]); await sb.from("banners").delete().eq("id", b.id); loadBanners(); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this banner?")) return; await rmFiles([b.path]); await sb.from("banners").delete().eq("id", b.id); loadBanners(); };
   });
 }
 
@@ -796,7 +825,7 @@ async function loadUU(reset) {
     d.innerHTML = `${thumb(urls[m.path], m.type)}<div><b>${esc(m.title || "Untitled")}</b><div class="mute sm">${esc(nm(m.profiles))} · ID ${m.tg_id} · ${(m.size_bytes / 1048576).toFixed(1)} MB · ${fdate(m.created_at)}</div><div class="row" style="margin-top:8px">${m.share_status !== "none" ? `<span class="pill ${m.share_status === "approved" ? "ok" : m.share_status === "pending" ? "warn" : "r"}">${{ pending: "Waiting", approved: "In Community", rejected: "Rejected" }[m.share_status]}</span>` : ""}${m.share_status !== "approved" && m.share_status !== "none" ? '<button class="btn xs ap">Approve</button>' : ""}${m.share_status === "approved" || m.share_status === "pending" ? '<button class="btn gh xs rj">' + (m.share_status === "approved" ? "Remove from Community" : "Reject") + "</button>" : ""}<button class="btn dg xs dl">Delete</button></div></div>`;
     d.querySelector(".ap")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "approved", shared_at: new Date().toISOString() }).eq("id", m.id); loadUU(true); badges(); });
     d.querySelector(".rj")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "rejected" }).eq("id", m.id); loadUU(true); badges(); });
-    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this file?")) return; await sb.storage.from(C.BUCKET).remove([m.path]); await sb.from("user_media").delete().eq("id", m.id); d.remove(); };
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this file?")) return; await rmFiles([m.path]); await sb.from("user_media").delete().eq("id", m.id); d.remove(); };
     $("uuList").appendChild(d);
   });
   uuPage++; $("uuMore").hidden = uuPage * UP >= (count ?? 0);
@@ -805,6 +834,7 @@ async function loadUU(reset) {
 
 /* ---------- settings ---------- */
 async function loadSettings() {
+  loadStorageInfo();
   const s = await getSettings(["ref_reward_days", "maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_upload_max_mb", "user_upload_max_items", "popup_seconds", "community_on", "community_auto"]);
   $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
   $("refDays").value = s.ref_reward_days ?? "1"; $("setMaint").value = s.maintenance || "";
@@ -825,6 +855,42 @@ $("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("
 $("refSave").onclick = async () => { const r = await Promise.all([setSetting("ref_reward_days", Math.max(0, Math.floor(num($("refDays").value)))), setSetting("maintenance", $("setMaint").value.trim())]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
 $("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
+
+async function loadStorageInfo() {
+  const cnt = async t => (await sb.from(t).select("id", { count: "exact", head: true }).not("path", "like", "r2/%")).count || 0;
+  const [m, u, b] = await Promise.all([cnt("media"), cnt("user_media"), cnt("banners")]); const old = m + u + b;
+  $("stInfo").textContent = (R2_OK ? "Connected. New uploads go to R2." : "Not connected. New uploads still go to Supabase Storage (1 GB free limit). See SETUP_R2.md.") + `  ${old} file${old === 1 ? "" : "s"} still in Supabase Storage.`;
+  $("stMove").disabled = !R2_OK || !old;
+}
+$("stTest").onclick = async () => {
+  await detectR2(); if (!R2_OK) { $("stMsg").textContent = "R2 is not connected. Check the secrets and the r2 function."; return loadStorageInfo(); }
+  $("stMsg").textContent = "Testing..."; const key = `r2/_test/${Date.now()}.txt`, blob = new Blob(["hello r2"], { type: "text/plain" });
+  try {
+    const up = await putFile(key, blob); if (up.error) throw new Error(up.error.message);
+    const g = await r2call("get", { paths: [key], secs: 120 }); const back = await (await fetch(g.urls[key])).text(); if (back !== "hello r2") throw new Error("Read back did not match");
+    await r2call("del", { paths: [key] }); $("stMsg").textContent = "Storage works: upload, read and delete all OK.";
+  } catch (e) { $("stMsg").textContent = "Test failed: " + e.message; }
+  loadStorageInfo();
+};
+let stStop = false; $("stStop").onclick = () => { stStop = true; };
+$("stMove").onclick = async () => {
+  if (!R2_OK) return toast("Connect R2 first");
+  if (!confirm("Move your existing files from Supabase to R2?\nKeep this tab open until it finishes. You can stop and continue later. Files are copied first and only removed from Supabase after the copy succeeded.")) return;
+  stStop = false; $("stStop").hidden = false; $("stMove").disabled = true; let done = 0, failed = 0, last = "";
+  const jobs = []; for (const t of ["media", "user_media", "banners"]) { const { data } = await sb.from(t).select("id,path").not("path", "like", "r2/%").limit(3000); (data || []).forEach(r => jobs.push([t, r])); }
+  for (const [i, [t, row]] of jobs.entries()) {
+    if (stStop) break;
+    try {
+      const { data: s, error } = await sb.storage.from(C.BUCKET).createSignedUrl(row.path, 600); if (error || !s) throw new Error(error ? error.message : "file missing");
+      const res = await fetch(s.signedUrl); if (!res.ok) throw new Error("download " + res.status);
+      const blob = await res.blob(), nk = "r2/" + row.path, up = await putFile(nk, blob); if (up.error) throw new Error(up.error.message);
+      const { error: ue } = await sb.from(t).update({ path: nk }).eq("id", row.id); if (ue) throw new Error(ue.message);
+      await sb.storage.from(C.BUCKET).remove([row.path]); done++;
+    } catch (e) { failed++; last = `${row.path}: ${e.message}`; }
+    $("stProg").style.width = Math.round((i + 1) / jobs.length * 100) + "%"; $("stMsg").textContent = `${done} moved, ${failed} failed of ${jobs.length}${last ? "  |  last problem: " + last : ""}`;
+  }
+  $("stStop").hidden = true; $("stMsg").textContent += stStop ? "  |  stopped" : "  |  finished"; loadStorageInfo();
+};
 refreshUI();
 </script>
 </body>
