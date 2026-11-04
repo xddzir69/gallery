@@ -7,7 +7,7 @@
 <title>Gallery</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,700;1,6..96,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="config.js?v=6"></script>
@@ -461,6 +461,72 @@
   @keyframes drain { to { transform: scaleX(0); } }
   #sheet .btns .btn.dg { color: #fff; }
   #sheet input { width: 100%; margin-top: 14px; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; outline: none; text-align: left; }
+
+  /* =================== V5 premium theme: simple, flat, one accent =================== */
+  :root { --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; --disp: var(--body); }
+  :root[data-mode="dark"] { --bg:#0C0C0E; --bg2:#111114; --card:#161619; --card2:#1D1D21; --line:rgba(255,255,255,.08); --text:#F3F2EF; --mute:#8E8E95; --glass:rgba(12,12,14,.84); --shadow:0 18px 50px rgba(0,0,0,.45); }
+  :root[data-mode="light"] { --bg:#F6F5F2; --bg2:#EFEEEA; --card:#FFFFFF; --card2:#F1F0EC; --line:rgba(0,0,0,.08); --text:#18181A; --mute:#6B6B72; --glass:rgba(246,245,242,.86); --shadow:0 18px 44px rgba(0,0,0,.08); }
+  body { font-size: 15px; padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .disp, .sec, .brand b, #pgtitle, .pname, .stat b, .plan h3, .plan .pr b, .mcard h2, .mcard .big, .tot b, .sp3 b, .ban .tx b, .pop h3, #vsheet h3, #splash b, .land h1, .hero-n b, .dh, .ord .amt, .fc .meta b, .steps li::before, .lrow .rk, .vtop .cnt { font-family: var(--body); font-style: normal; font-weight: 600; letter-spacing: -.025em; }
+  .brand b { font-size: 17px; } #pgtitle { font-size: 17px; } .sec { font-size: 17px; margin: 4px 0 12px; } .pname { font-size: 24px; }
+  .dh { font-size: 15px; color: var(--mute); font-weight: 600; letter-spacing: -.01em; }
+  #splash b { font-size: 22px; }
+
+  header#top { padding: 11px 16px; }
+  .brand svg { width: 28px; height: 28px; }
+  .hbtn { border: 0; background: transparent; width: 38px; height: 38px; }
+  .hbtn .dot { background: var(--mid); }
+  .back { border: 0; background: transparent; padding: 6px 10px 6px 2px; color: var(--gold); font-weight: 600; }
+
+  nav { left: 0; transform: none; bottom: 0; width: 100%; padding: 7px 6px calc(7px + env(safe-area-inset-bottom)); border-radius: 0; border: 0; border-top: 1px solid var(--line); box-shadow: none; }
+  nav button { border-radius: 12px; font-weight: 500; font-size: 10.5px; padding: 6px 0 4px; }
+  nav button.on { background: none; color: var(--gold); font-weight: 600; } nav button.on .i { stroke-width: 2.1; }
+  .fab { bottom: calc(80px + env(safe-area-inset-bottom)); } #selbar { bottom: calc(76px + env(safe-area-inset-bottom)); }
+
+  .btn { background: var(--mid); box-shadow: none; font-weight: 600; border-radius: 14px; }
+  .btn.gh { background: transparent; box-shadow: none; }
+  .th, .skel { border-radius: 12px; box-shadow: none; }
+  .it.alb .th { box-shadow: 0 -4px 0 -2px rgba(150,150,150,.3), 0 -8px 0 -4px rgba(150,150,150,.16); }
+  .th::after { background: linear-gradient(to top, rgba(0,0,0,.35), transparent 35%); }
+  .box, .plan, .tk, .nt, .nf, .bub { border-radius: 18px; }
+  .plan.hot { box-shadow: none; }
+  .plan .bdg, .pill.g { background: color-mix(in srgb, var(--mid) 18%, transparent); color: var(--gold); box-shadow: none; }
+  .plan .bdg { border: 1px solid color-mix(in srgb, var(--mid) 40%, transparent); }
+  .mcard { background: var(--card); color: var(--text); border: 1px solid var(--line); box-shadow: none; border-radius: 22px; }
+  .mcard::before { display: none; } .mcard small { color: var(--gold); opacity: 1; } .mcard p { color: var(--mute); opacity: 1; }
+  .mcard h2 { font-size: 26px; }
+  .mcard .btns .btn { background: var(--mid); color: var(--onmetal); } .mcard .btns .btn.gh { background: transparent; color: var(--text); border: 1px solid var(--line); }
+  .mcard.on .big, .hero-n b { background: none; -webkit-text-fill-color: currentColor; color: var(--gold); }
+  .mcard .big { font-size: 48px; }
+  .ring { background: var(--mid); padding: 2px; } .ring .cr { background: var(--mid); }
+  .seg { box-shadow: none; background: var(--card2); }
+  .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
+  .chipline button.on { background: var(--text); color: var(--bg); }
+  .switch.on { background: var(--mid); } .bub.me { background: var(--mid); }
+  .stats { border-color: var(--line); }
+  .mi .ic { border: 0; background: var(--card2); }
+  .ban { border: 0; border-radius: 20px; box-shadow: none; }
+  .ban .tx b { font-size: 22px; }
+
+  /* spotlight: big cinematic cards with an ambient glow */
+  .spot { position: relative; margin: 0 -16px 24px; padding: 8px 0 2px; overflow: hidden; }
+  .spot .sbg { position: absolute; inset: 12% 0; background: center/cover; filter: blur(34px) saturate(1.4); opacity: .3; transition: opacity .6s; pointer-events: none; -webkit-mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent); mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent); }
+  .spot .sh { position: relative; padding: 0 16px 10px; display: flex; align-items: baseline; justify-content: space-between; }
+  .spot .sh b { font-size: 17px; font-weight: 600; letter-spacing: -.025em; } .spot .sh span { font-size: 12.5px; color: var(--mute); }
+  .strack { position: relative; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 7% 6px; scrollbar-width: none; }
+  .strack::-webkit-scrollbar { display: none; }
+  .sc { position: relative; flex: none; width: 86%; aspect-ratio: 5/6; max-height: 520px; border-radius: 22px; overflow: hidden; scroll-snap-align: center; background: var(--card) center/cover; opacity: .55; transform: scale(.93); transition: transform .45s cubic-bezier(.2,.8,.2,1), opacity .45s; text-align: left; box-shadow: 0 22px 44px -18px rgba(0,0,0,.55); }
+  .sc.on { opacity: 1; transform: none; }
+  .sc img, .sc video, .sc .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sc .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.74), rgba(0,0,0,0) 55%); }
+  .sc .smeta { position: absolute; left: 18px; right: 18px; bottom: 18px; color: #fff; }
+  .sc .smeta small { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.16); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-size: 11.5px; font-weight: 600; margin-bottom: 9px; }
+  .sc .smeta small .i { width: 12px; height: 12px; stroke-width: 2.2; }
+  .sc .smeta b { display: block; font-size: 22px; font-weight: 600; letter-spacing: -.025em; line-height: 1.15; }
+  .sc .smeta span { display: block; margin-top: 3px; font-size: 13px; opacity: .78; }
+  .sc .lk { z-index: 3; }
+  .sdots { position: relative; display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
+  .sdots i { width: 6px; height: 6px; border-radius: 6px; background: var(--mute); opacity: .4; transition: all .3s; } .sdots i.on { width: 20px; background: var(--mid); opacity: 1; }
 </style>
 </head>
 <body>
@@ -547,7 +613,6 @@
   <button class="vnav" id="vp" aria-label="Previous"><svg class="i"><use href="#i-back"/></svg></button>
   <button class="vnav" id="vn" aria-label="Next"><svg class="i"><use href="#i-next"/></svg></button>
   <div id="stage"></div>
-  <div id="wm"></div>
   <div class="vcap"><b id="vt"></b><span id="vm"></span></div>
   <div id="vsheet"></div>
 </div>
@@ -600,7 +665,7 @@ function applyTheme() {
   document.documentElement.dataset.mode = mode;
   r.setProperty("--hi", a[0]); r.setProperty("--mid", a[1]); r.setProperty("--lo", a[2]);
   r.setProperty("--gold", mode === "dark" ? a[1] : shade(a[1], .42));
-  r.setProperty("--metal", `linear-gradient(135deg, ${a[0]}, ${a[1]} 55%, ${a[2]})`);
+  r.setProperty("--metal", a[1]);
   try { const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(); tg?.setHeaderColor?.(bg); tg?.setBackgroundColor?.(bg); tg?.setBottomBarColor?.(bg); } catch {}
   if ($("themeBtn")) $("themeBtn").innerHTML = ic(mode === "dark" ? "sun" : "moon");
 }
@@ -878,16 +943,27 @@ function bannerGo(i) {
   if (b.link_kind === "plans") nav("plans"); else if (b.link_kind === "album" && b.link_id) nav("album", { id: b.link_id });
   else if (b.link_kind === "category" && b.link_id) { hs.cat = b.link_id; hs.type = ""; hs.sort = "latest"; nav("home"); }
 }
+let spT = null;
 async function loadFeat() {
   try {
     const r = await api("list", { sort: "popular", page: 1, size: 6 });
-    if (!r.items.length || !$("feat")) return; SRC.feat = r.items;
-    $("feat").innerHTML = `<div class="sec">Trending</div><div class="feat">${r.items.map((m, i) => {
+    if (!r.items.length || !$("feat")) return; SRC.feat = r.items; clearInterval(spT);
+    $("feat").innerHTML = `<div class="spot"><div class="sbg" id="sbg"></div><div class="sh"><b>Spotlight</b><span>Most viewed</span></div><div class="strack" id="strack">${r.items.map((m, i) => {
       const bg = m.preview ? `style="background-image:url('${esc(m.preview)}')"` : "";
       const media = m.locked ? `<div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div>`
-        : m.type === "image" ? `<img draggable="false" src="${esc(m.url)}" alt="">` : `<video muted playsinline preload="metadata" src="${esc(m.url)}#t=0.5"></video>`;
-      return `<button class="fc" ${bg} data-act="open" data-src="feat" data-i="${i}">${media}<div class="scrim"></div><div class="meta"><b>${esc(m.title || "Untitled")}</b><span>${meta(m)}</span></div></button>`;
-    }).join("")}</div>`;
+        : m.type === "image" ? `<img draggable="false" src="${esc(m.url)}" alt="">` : `<video muted loop playsinline preload="metadata" src="${esc(m.url)}#t=0.5"></video>`;
+      return `<button class="sc ${i ? "" : "on"}" ${bg} data-act="open" data-src="feat" data-i="${i}">${media}<div class="shade"></div><div class="smeta"><small>${ic(m.kind === "album" ? "folder" : m.type === "video" ? "play" : "image")}${m.kind === "album" ? m.count + " items" : m.type === "video" ? "Video" : "Photo"}</small><b>${esc(m.title || "Untitled")}</b><span>${meta(m)}</span></div></button>`;
+    }).join("")}</div><div class="sdots">${r.items.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div></div>`;
+    const tr = $("strack"), cards = [...tr.children], dots = [...document.querySelectorAll(".sdots i")]; let cur = -1, tick = 0;
+    const setActive = n => {
+      if (n === cur) return; cur = n;
+      cards.forEach((c, k) => { c.classList.toggle("on", k === n); const v = c.querySelector("video"); if (v) { k === n ? v.play().catch(() => {}) : v.pause(); } });
+      dots.forEach((d, k) => d.classList.toggle("on", k === n)); const m = r.items[n]; $("sbg").style.backgroundImage = m.preview ? `url('${m.preview}')` : "none";
+    };
+    const idx = () => { const c = cards[0], step = c.offsetWidth + 12; return Math.max(0, Math.min(cards.length - 1, Math.round(tr.scrollLeft / step))); };
+    tr.addEventListener("scroll", () => { cancelAnimationFrame(tick); tick = requestAnimationFrame(() => setActive(idx())); }, { passive: true });
+    setActive(0);
+    if (cards.length > 1) { let pause = 0; ["touchstart", "pointerdown"].forEach(e => tr.addEventListener(e, () => pause = Date.now() + 9000, { passive: true })); spT = setInterval(() => { if (!$("strack")) return clearInterval(spT); if (Date.now() < pause || stack[stack.length - 1].r !== "home") return; const n = (idx() + 1) % cards.length; tr.scrollTo({ left: n * (cards[0].offsetWidth + 12), behavior: "smooth" }); }, 5500); timers.push(spT); }
   } catch {}
 }
 
@@ -1222,7 +1298,8 @@ PAGES.referral = async function () {
   app.innerHTML = `<div class="pad"><div class="hero-n"><b>${n}</b><span class="mute">friends joined</span></div>
     <div class="box" style="margin-top:18px"><p style="font-size:14.5px">Every new friend who joins with your link earns you <b>${me.reward_days} day${me.reward_days === 1 ? "" : "s"}</b> of free Premium.</p>
       <div class="prog"><i style="width:${pct}%"></i></div><p class="mute" style="font-size:13px">${next ? `${next[0] - n} more to unlock the ${next[1]} badge.` : "All badges unlocked."}</p>
-      <div class="reflink">${esc(link)}</div><div class="btns"><button class="btn" data-act="share">${ic("share")}Share</button><button class="btn gh" data-act="copy">${ic("copy")}Copy</button></div></div>
+      <div class="reflink">${esc(link)}</div><div class="btns"><button class="btn" data-act="share">${ic("share")}Share</button><button class="btn gh" data-act="copy">${ic("copy")}Copy</button></div>
+      <p class="mute" style="font-size:12.5px;margin-top:16px">Friend can't open the Telegram link? Send this browser link instead. They log in with Telegram on the website and you still get the reward.</p><div class="reflink">${esc(webLink())}</div><button class="btn gh sm" data-act="copy" data-t="${esc(webLink())}">${ic("copy")}Copy browser link</button></div>
     <div class="box"><div class="badges">${MILES.map(([k, l]) => `<div class="bg ${n >= k ? "got" : ""}"><div class="c">${k}</div><span>${l}</span></div>`).join("")}</div></div><div id="rx"></div></div>`;
   try {
     const r = await api("referrals");
@@ -1230,8 +1307,9 @@ PAGES.referral = async function () {
       + (r.invited.length ? `<div class="sec" style="margin-top:22px">You invited</div><div class="box">${r.invited.map(t => `<div class="lrow"><span style="flex:1">${esc(t.name)}</span><span class="mute" style="font-size:13px">${fmtDate(t.created_at)}</span></div>`).join("")}</div>` : "");
   } catch {}
 };
+const webLink = () => location.origin + location.pathname.replace(/[^/]*$/, "") + "?ref=" + me.tg_id;
 const refLink = () => `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}?startapp=ref_${me.tg_id}`;
-function shareRef() { const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Check out this gallery")}`; tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank"); }
+function shareRef() { const url = `https://t.me/share/url?url=${encodeURIComponent(refLink())}&text=${encodeURIComponent("Check out this gallery.\nIf the link doesn't open, use this one: " + webLink())}`; tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank"); }
 
 /* ---------- settings ---------- */
 PAGES.settings = async function () {
@@ -1308,7 +1386,6 @@ async function nfOpen(id) {
 /* ---------- viewer (pinch zoom, swipe, no download, watermark) ---------- */
 const V = { list: [], i: 0, fs: false, z: 1, x: 0, y: 0 };
 const vpt = new Map(); let vg = null, lastTap = 0, tapT = 0;
-function buildWM() { const t = `ID ${me.tg_id}`; $("wm").innerHTML = Array.from({ length: 90 }, () => `<span>${t}</span>`).join(""); }
 function tryFS(v) {
   try { const f = v.requestFullscreen || v.webkitRequestFullscreen || v.webkitEnterFullscreen; const r = f?.call(v); r?.catch?.(() => {}); } catch {}
   if (!V.fs) { try { tg?.requestFullscreen?.(); V.fs = true; } catch {} }
@@ -1436,7 +1513,7 @@ window.onTgAuth = u => { LS.set("gv_web", u); location.reload(); };
   try {
     const r = await api("init");
     me = r.me; cats = r.categories; plans = r.plans; settings = r.settings; unread = r.unread; banners = r.banners || []; favs = new Set(r.favs || []);
-    buildWM(); render();
+    render();
     const old = LS.get("gv_saved", []);
     if (old.length) api("fav_import", { ids: old }).then(x => { favs = new Set(x.favs); LS.del("gv_saved"); }).catch(() => {});
     if (r.popup) setTimeout(() => { if (stack[stack.length - 1].r === "home") showPopup(r.popup); }, 1500);
