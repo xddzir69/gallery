@@ -7,7 +7,7 @@
 <title>Gallery</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="config.js?v=6"></script>
@@ -299,7 +299,19 @@
   #vp { left: 10px; } #vn { right: 10px; }
   #viewer.vid .vcap { display: none; }
 
-  /* ---------- sheet / popup ---------- */
+  const itemLink = (id, k) => `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}?startapp=${k}_${id}`;
+function shareItem(id, k, title) {
+  const url = `https://t.me/share/url?url=${encodeURIComponent(itemLink(id, k))}&text=${encodeURIComponent((title || "Take a look") + " on " + C.APP_TITLE)}`;
+  tg?.openTelegramLink ? tg.openTelegramLink(url) : window.open(url, "_blank");
+}
+$("vshare").onclick = () => { const m = V.list[V.i]; if (m && m.kind === "media") shareItem(m.id, "m", m.title); };
+async function openDeepLink() {
+  const sp = tg?.initDataUnsafe?.start_param || "", m = /^([ma])_([0-9a-f-]{36})$/i.exec(sp); if (!m) return;
+  if (m[1].toLowerCase() === "a") return nav("album", { id: m[2] });
+  try { const r = await api("byids", { ids: [m[2]] }); SRC.dl = r.items; if (r.items[0]) { if (r.items[0].album_id) nav("album", { id: r.items[0].album_id }); else openFrom("dl", 0); } } catch {}
+}
+
+/* ---------- sheet / popup ---------- */
   #modal { position: fixed; inset: 0; z-index: 120; background: rgba(0,0,0,.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); display: none; align-items: flex-end; justify-content: center; }
   #modal.open { display: flex; }
   #sheet { width: min(520px, 100%); background: var(--bg2); border-top: 1px solid var(--line); border-radius: 28px 28px 0 0; padding: 28px 22px calc(26px + env(safe-area-inset-bottom)); text-align: center; animation: up .32s cubic-bezier(.2,.9,.3,1); }
@@ -356,7 +368,7 @@
   /* select mode */
   .sck { position: absolute; left: 8px; top: 8px; z-index: 4; width: 24px; height: 24px; border-radius: 50%; border: 2px solid #fff; background: rgba(0,0,0,.28); display: none; align-items: center; justify-content: center; color: var(--onmetal); }
   .sck .i { width: 14px; height: 14px; stroke-width: 3; opacity: 0; }
-  body.selmode .sck { display: flex; } body.selmode .pl, body.selmode .hb { display: none; }
+  body.selmode .nw { display: none; } body.selmode .sck { display: flex; } body.selmode .pl, body.selmode .hb { display: none; }
   .it.sel .sck { background: var(--metal); border-color: transparent; } .it.sel .sck .i { opacity: 1; }
   .it.sel .th { outline: 3px solid var(--mid); outline-offset: -3px; }
   #selbar { position: fixed; z-index: 70; left: 50%; transform: translate(-50%, 30px); bottom: calc(82px + env(safe-area-inset-bottom)); width: min(460px, calc(100% - 20px)); display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 22px; background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--mid); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .22s; }
@@ -462,52 +474,6 @@
   #sheet .btns .btn.dg { color: #fff; }
   #sheet input { width: 100%; margin-top: 14px; padding: 13px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; outline: none; text-align: left; }
 
-  /* =================== V5 premium theme: simple, flat, one accent =================== */
-  :root { --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; --disp: var(--body); }
-  :root[data-mode="dark"] { --bg:#0C0C0E; --bg2:#111114; --card:#161619; --card2:#1D1D21; --line:rgba(255,255,255,.08); --text:#F3F2EF; --mute:#8E8E95; --glass:rgba(12,12,14,.84); --shadow:0 18px 50px rgba(0,0,0,.45); }
-  :root[data-mode="light"] { --bg:#F6F5F2; --bg2:#EFEEEA; --card:#FFFFFF; --card2:#F1F0EC; --line:rgba(0,0,0,.08); --text:#18181A; --mute:#6B6B72; --glass:rgba(246,245,242,.86); --shadow:0 18px 44px rgba(0,0,0,.08); }
-  body { font-size: 15px; padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
-  .disp, .sec, .brand b, #pgtitle, .pname, .stat b, .plan h3, .plan .pr b, .mcard h2, .mcard .big, .tot b, .sp3 b, .ban .tx b, .pop h3, #vsheet h3, #splash b, .land h1, .hero-n b, .dh, .ord .amt, .fc .meta b, .steps li::before, .lrow .rk, .vtop .cnt { font-family: var(--body); font-style: normal; font-weight: 600; letter-spacing: -.025em; }
-  .brand b { font-size: 17px; } #pgtitle { font-size: 17px; } .sec { font-size: 17px; margin: 4px 0 12px; } .pname { font-size: 24px; }
-  .dh { font-size: 15px; color: var(--mute); font-weight: 600; letter-spacing: -.01em; }
-  #splash b { font-size: 22px; }
-
-  header#top { padding: 11px 16px; }
-  .brand svg { width: 28px; height: 28px; }
-  .hbtn { border: 0; background: transparent; width: 38px; height: 38px; }
-  .hbtn .dot { background: var(--mid); }
-  .back { border: 0; background: transparent; padding: 6px 10px 6px 2px; color: var(--gold); font-weight: 600; }
-
-  nav { left: 0; transform: none; bottom: 0; width: 100%; padding: 7px 6px calc(7px + env(safe-area-inset-bottom)); border-radius: 0; border: 0; border-top: 1px solid var(--line); box-shadow: none; }
-  nav button { border-radius: 12px; font-weight: 500; font-size: 10.5px; padding: 6px 0 4px; }
-  nav button.on { background: none; color: var(--gold); font-weight: 600; } nav button.on .i { stroke-width: 2.1; }
-  .fab { bottom: calc(80px + env(safe-area-inset-bottom)); } #selbar { bottom: calc(76px + env(safe-area-inset-bottom)); }
-
-  .btn { background: var(--mid); box-shadow: none; font-weight: 600; border-radius: 14px; }
-  .btn.gh { background: transparent; box-shadow: none; }
-  .th, .skel { border-radius: 12px; box-shadow: none; }
-  .it.alb .th { box-shadow: 0 -4px 0 -2px rgba(150,150,150,.3), 0 -8px 0 -4px rgba(150,150,150,.16); }
-  .th::after { background: linear-gradient(to top, rgba(0,0,0,.35), transparent 35%); }
-  .box, .plan, .tk, .nt, .nf, .bub { border-radius: 18px; }
-  .plan.hot { box-shadow: none; }
-  .plan .bdg, .pill.g { background: color-mix(in srgb, var(--mid) 18%, transparent); color: var(--gold); box-shadow: none; }
-  .plan .bdg { border: 1px solid color-mix(in srgb, var(--mid) 40%, transparent); }
-  .mcard { background: var(--card); color: var(--text); border: 1px solid var(--line); box-shadow: none; border-radius: 22px; }
-  .mcard::before { display: none; } .mcard small { color: var(--gold); opacity: 1; } .mcard p { color: var(--mute); opacity: 1; }
-  .mcard h2 { font-size: 26px; }
-  .mcard .btns .btn { background: var(--mid); color: var(--onmetal); } .mcard .btns .btn.gh { background: transparent; color: var(--text); border: 1px solid var(--line); }
-  .mcard.on .big, .hero-n b { background: none; -webkit-text-fill-color: currentColor; color: var(--gold); }
-  .mcard .big { font-size: 48px; }
-  .ring { background: var(--mid); padding: 2px; } .ring .cr { background: var(--mid); }
-  .seg { box-shadow: none; background: var(--card2); }
-  .seg button.on { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.25); }
-  .chipline button.on { background: var(--text); color: var(--bg); }
-  .switch.on { background: var(--mid); } .bub.me { background: var(--mid); }
-  .stats { border-color: var(--line); }
-  .mi .ic { border: 0; background: var(--card2); }
-  .ban { border: 0; border-radius: 20px; box-shadow: none; }
-  .ban .tx b { font-size: 22px; }
-
   /* spotlight: big cinematic cards with an ambient glow */
   .spot { position: relative; margin: 0 -16px 24px; padding: 8px 0 2px; overflow: hidden; }
   .spot .sbg { position: absolute; inset: 12% 0; background: center/cover; filter: blur(34px) saturate(1.4); opacity: .3; transition: opacity .6s; pointer-events: none; -webkit-mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent); mask-image: linear-gradient(transparent, #000 35%, #000 65%, transparent); }
@@ -527,6 +493,140 @@
   .sc .lk { z-index: 3; }
   .sdots { position: relative; display: flex; justify-content: center; gap: 6px; margin-top: 10px; }
   .sdots i { width: 6px; height: 6px; border-radius: 6px; background: var(--mute); opacity: .4; transition: all .3s; } .sdots i.on { width: 20px; background: var(--mid); opacity: 1; }
+
+  /* =================== V6 Noir & Gold: luxury theme =================== */
+  :root { --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif; --serif: "Playfair Display", "Cormorant Garamond", "Times New Roman", Georgia, serif; --disp: var(--serif); }
+  :root[data-mode="dark"] { --bg:#060608; --bg2:#0B0B0F; --card:#101015; --card2:#17171D; --line:rgba(255,255,255,.075); --line2:rgba(212,175,95,.26); --text:#F6F2E9; --mute:#8F8C97; --glass:rgba(10,10,14,.74); --shadow:0 26px 60px -22px rgba(0,0,0,.75); --glow:rgba(212,175,95,.11); }
+  :root[data-mode="light"] { --bg:#F8F5EE; --bg2:#F1EDE3; --card:#FFFFFF; --card2:#F5F1E7; --line:rgba(30,24,10,.09); --line2:rgba(156,122,43,.34); --text:#17140E; --mute:#6F6A5E; --glass:rgba(248,245,238,.8); --shadow:0 26px 50px -24px rgba(60,45,10,.28); --glow:rgba(212,175,95,.2); }
+  body { background: var(--bg); font-size: 15px; padding-bottom: calc(108px + env(safe-area-inset-bottom)); }
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(900px 520px at 50% -10%, var(--glow), transparent 70%), radial-gradient(700px 420px at 105% 105%, color-mix(in srgb, var(--mid) 7%, transparent), transparent 70%); }
+  ::selection { background: color-mix(in srgb, var(--mid) 40%, transparent); }
+
+  /* type */
+  .disp, .sec, .pname, .plan h3, .hero-n b, .tot b, .ord .amt, .stat b, .ban .tx b, .pop h3, #vsheet h3, .land h1, .sc .smeta b, .fc .meta b, .spot .sh b, #pgtitle, .mcard h2, .sp3 b, .mc-name, .vault b.disp { font-family: var(--serif); font-style: normal; letter-spacing: -.01em; }
+  .sec { font-size: 21px; font-weight: 500; margin: 6px 0 14px; display: flex; align-items: center; gap: 14px; }
+  .sec::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line2), transparent); }
+  .dh { font-family: var(--body); font-size: 11.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); background: linear-gradient(var(--bg) 65%, transparent); }
+  .pname { font-size: 28px; font-weight: 500; } .stat b { font-weight: 500; font-size: 28px; color: var(--gold); }
+
+  /* header + brand */
+  header#top { padding: 12px 18px; background: var(--glass); backdrop-filter: blur(20px) saturate(1.3); -webkit-backdrop-filter: blur(20px) saturate(1.3); border-bottom: 1px solid var(--line); }
+  .brand { gap: 12px; } .brand svg { width: 30px; height: 30px; filter: drop-shadow(0 0 10px color-mix(in srgb, var(--mid) 45%, transparent)); }
+  .brand b { font-family: var(--body); font-size: 12px; font-weight: 700; letter-spacing: .3em; text-transform: uppercase; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #pgtitle { font-size: 19px; font-weight: 500; }
+  .hbtn { border: 1px solid var(--line); background: color-mix(in srgb, var(--card) 80%, transparent); width: 38px; height: 38px; }
+  .hbtn .dot { background: var(--metal); color: var(--onmetal); }
+  .back { border: 0; background: transparent; color: var(--gold); font-weight: 600; padding: 6px 10px 6px 2px; }
+
+  /* floating glass dock */
+  nav { left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom)); width: min(440px, calc(100% - 28px)); padding: 7px; border-radius: 26px; border: 1px solid var(--line); background: var(--glass); backdrop-filter: blur(26px) saturate(1.5); -webkit-backdrop-filter: blur(26px) saturate(1.5); box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.05); }
+  nav button { position: relative; border-radius: 18px; font-size: 10px; font-weight: 600; letter-spacing: .05em; color: var(--mute); padding: 9px 0 6px; background: none; }
+  nav button.on { background: none; color: var(--gold); box-shadow: none; }
+  nav button.on::before { content: ""; position: absolute; top: -8px; left: 50%; width: 24px; height: 3px; margin-left: -12px; border-radius: 0 0 5px 5px; background: var(--metal); box-shadow: 0 2px 16px var(--mid); }
+  nav button.on .i { stroke-width: 2.1; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--mid) 55%, transparent)); }
+  .fab { bottom: calc(96px + env(safe-area-inset-bottom)); } #selbar { bottom: calc(92px + env(safe-area-inset-bottom)); }
+
+  /* buttons */
+  .btn { background: var(--metal); color: var(--onmetal); font-weight: 700; letter-spacing: .01em; border-radius: 14px; box-shadow: 0 12px 28px -12px color-mix(in srgb, var(--mid) 75%, transparent), inset 0 1px 0 rgba(255,255,255,.38); }
+  .btn.gh { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line); } .btn.gh:active { background: var(--card2); }
+  .btn.dg { background: var(--danger); color: #fff; box-shadow: none; }
+
+  /* tiles */
+  .th { border-radius: 16px; outline: 1px solid var(--line); outline-offset: -1px; box-shadow: 0 16px 30px -18px rgba(0,0,0,.7); }
+  .th::after { background: linear-gradient(to top, rgba(0,0,0,.4), transparent 38%); }
+  .it.alb .th { box-shadow: 0 -4px 0 -2px rgba(160,150,120,.28), 0 -8px 0 -4px rgba(160,150,120,.14), 0 16px 30px -18px rgba(0,0,0,.7); }
+  .cap b { font-weight: 600; } .th .pl { top: auto; bottom: 8px; left: 8px; }
+  .nw { position: absolute; z-index: 3; left: 9px; top: 9px; padding: 3px 9px; border-radius: 999px; background: var(--metal); color: var(--onmetal); font-size: 9.5px; font-weight: 800; letter-spacing: .12em; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+  .dur { position: absolute; z-index: 2; right: 8px; bottom: 8px; padding: 2px 8px; border-radius: 999px; background: rgba(6,6,8,.62); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F6F2E9; font-size: 11px; font-weight: 700; } .dur:empty { display: none; }
+  .lkc { background: rgba(8,8,10,.55); border: 1px solid var(--line2); color: var(--hi); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .lk i { font-style: normal; font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--hi); }
+  .hb { background: rgba(6,6,8,.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .ctabs .ct { font-weight: 600; letter-spacing: .01em; } .ctabs .ct.on { color: var(--gold); }
+  .tgroup { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .tgroup button.on { background: var(--card2); color: var(--gold); box-shadow: inset 0 0 0 1px var(--line2); }
+  .skel { background: linear-gradient(100deg, var(--card) 30%, color-mix(in srgb, var(--mid) 9%, var(--card2)) 50%, var(--card) 70%); background-size: 200% 100%; border-radius: 16px; }
+
+  /* generic surfaces */
+  .box, .plan, .tk, .nt, .nf, .stats, .menu, .vault, .sp3 div { background: linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 18px 40px -26px rgba(0,0,0,.8); }
+  .stats { border-radius: 20px; } .menu { padding: 4px; }
+  .mi .ic { background: color-mix(in srgb, var(--mid) 12%, transparent); border: 1px solid var(--line2); color: var(--gold); }
+  .pill.g, .tag { background: color-mix(in srgb, var(--mid) 16%, transparent); color: var(--gold); box-shadow: inset 0 0 0 1px var(--line2); }
+  .seg { background: var(--card); border: 1px solid var(--line); box-shadow: none; } .seg button.on { background: var(--card2); color: var(--gold); box-shadow: inset 0 0 0 1px var(--line2); }
+  .chipline button.on { background: var(--metal); color: var(--onmetal); box-shadow: none; }
+  .switch.on { background: var(--metal); } .bub.me { background: var(--metal); color: var(--onmetal); }
+  .field input:focus, .field textarea:focus, .code input:focus, .search input:focus { border-color: var(--line2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mid) 14%, transparent); }
+  .ring { background: var(--metal); padding: 2px; box-shadow: 0 0 0 1px var(--line2), 0 10px 30px -8px color-mix(in srgb, var(--mid) 55%, transparent); }
+  .prog i { background: var(--metal); } .hero-n b { color: var(--gold); -webkit-text-fill-color: currentColor; background: none; font-weight: 500; }
+
+  /* membership card */
+  .mcard { position: relative; overflow: hidden; aspect-ratio: 1.586; max-height: 230px; margin: 0 auto 18px; padding: 20px 22px; border-radius: 22px; color: #F3E7C4; text-align: left; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--line2);
+    background: radial-gradient(circle at 92% -10%, rgba(240,221,166,.34), transparent 52%), repeating-radial-gradient(circle at 12% 120%, transparent 0 14px, rgba(212,175,95,.07) 14px 15px), linear-gradient(135deg, #1D1B16, #0A0A0C 62%);
+    box-shadow: 0 30px 60px -26px rgba(0,0,0,.85), 0 0 0 1px rgba(212,175,95,.1), inset 0 1px 0 rgba(255,255,255,.08); }
+  .mcard::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 38%, rgba(255,240,200,.16) 50%, transparent 62%); transform: translateX(-120%); animation: shine 6s ease-in-out infinite; pointer-events: none; }
+  @keyframes shine { 0%, 62% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+  .mcard::before { display: none; }
+  .mc-top { display: flex; justify-content: space-between; align-items: center; } .mc-brand { font-size: 10.5px; font-weight: 700; letter-spacing: .3em; color: var(--hi); } .mc-top .i { width: 22px; height: 22px; color: var(--hi); fill: color-mix(in srgb, var(--hi) 22%, transparent); }
+  .mc-chip { width: 40px; height: 30px; border-radius: 7px; background: linear-gradient(135deg, #F0DDA6, #B58E3F); position: relative; opacity: .95; } .mc-chip::before { content: ""; position: absolute; inset: 0; border-radius: 7px; background: repeating-linear-gradient(90deg, transparent 0 9px, rgba(60,40,10,.35) 9px 10px), repeating-linear-gradient(0deg, transparent 0 9px, rgba(60,40,10,.35) 9px 10px); }
+  .mc-name { font-size: 22px; font-weight: 500; letter-spacing: .02em; color: #F6EBCB; text-shadow: 0 2px 10px rgba(0,0,0,.5); line-height: 1.1; }
+  .mc-row { display: flex; gap: 22px; } .mc-row small { display: block; font-size: 8.5px; font-weight: 700; letter-spacing: .18em; color: rgba(243,231,196,.55); margin-bottom: 2px; } .mc-row b { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; color: #F3E7C4; }
+  .mcard.free { filter: saturate(.55) brightness(.9); } .mcard.free .mc-brand, .mcard.free .mc-top .i { color: #BDB6A3; }
+  .mcard-cta { text-align: center; margin: -4px 0 20px; } .mcard-cta p { color: var(--mute); font-size: 13.5px; margin: 0 0 12px; } .mcard-cta .btns { justify-content: center; }
+
+  /* plans */
+  .plan { padding: 24px 22px; border-radius: 24px; position: relative; overflow: hidden; }
+  .plan::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line2), transparent); }
+  .plan.hot { border-color: var(--line2); box-shadow: 0 0 0 1px var(--line2), 0 34px 60px -34px color-mix(in srgb, var(--mid) 55%, transparent); background: radial-gradient(500px 220px at 100% 0%, color-mix(in srgb, var(--mid) 14%, transparent), transparent 65%), linear-gradient(165deg, var(--card2), var(--card)); }
+  .plan h3 { font-size: 28px; font-weight: 500; }
+  .plan .bdg { background: var(--metal); color: var(--onmetal); border: 0; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; box-shadow: 0 8px 20px -8px var(--mid); }
+  .pp span { background: var(--card); } .pp span.us { color: #5FCB95; } .pp span.st { color: var(--gold); }
+  .plan li .i { color: var(--gold); }
+  .tot b { font-size: 36px; font-weight: 500; color: var(--gold); } .ord .amt { font-size: 44px; font-weight: 500; }
+
+  /* spotlight */
+  .spot .sh b { font-size: 21px; font-weight: 500; } .spot .sh span { font-size: 11px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+  .sc { border-radius: 24px; } .sc.on { box-shadow: 0 0 0 1px var(--line2), 0 34px 60px -26px rgba(0,0,0,.8); }
+  .sc .smeta b { font-size: 25px; font-weight: 500; line-height: 1.1; } .sc .smeta small { letter-spacing: .1em; text-transform: uppercase; font-size: 10px; background: rgba(8,8,10,.5); border: 1px solid rgba(240,221,166,.3); color: #F3E7C4; }
+  .sdots i.on { background: var(--metal); }
+  .ban { border: 1px solid var(--line2); border-radius: 22px; box-shadow: 0 24px 50px -30px rgba(0,0,0,.8); } .ban .tx b { font-size: 26px; font-weight: 500; } .ban .dots i.on { background: var(--hi); }
+
+  /* upsell + renew strips */
+  .upsell { display: flex; align-items: center; gap: 14px; padding: 14px 16px; margin: 4px 0 22px; border-radius: 20px; border: 1px solid var(--line2); background: radial-gradient(400px 120px at 0% 0%, color-mix(in srgb, var(--mid) 16%, transparent), transparent 70%), linear-gradient(165deg, var(--card2), var(--card)); text-align: left; width: 100%; }
+  .upsell .ui { width: 42px; height: 42px; border-radius: 14px; flex: none; background: var(--metal); color: var(--onmetal); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 22px -10px var(--mid); } .upsell .ui .i { width: 21px; height: 21px; }
+  .upsell div.t { flex: 1; min-width: 0; } .upsell b { display: block; font-family: var(--serif); font-weight: 500; font-size: 17px; } .upsell span { font-size: 12.5px; color: var(--mute); }
+  .upsell .go { color: var(--gold); } .upsell .go .i { width: 20px; height: 20px; }
+
+  /* age gate */
+  #agegate { position: fixed; inset: 0; z-index: 250; display: none; align-items: center; justify-content: center; padding: 24px; background: radial-gradient(700px 500px at 50% 0%, var(--glow), transparent 70%), var(--bg); }
+  #agegate.on { display: flex; }
+  .ag { width: min(380px, 100%); text-align: center; }
+  .ag svg.lg { display: block; width: 76px; height: 76px; margin: 0 auto 20px; filter: drop-shadow(0 0 24px color-mix(in srgb, var(--mid) 50%, transparent)); }
+  .ag .age18 { display: inline-block; margin-bottom: 16px; padding: 5px 16px; border-radius: 999px; font-size: 12px; font-weight: 700; letter-spacing: .24em; color: var(--gold); border: 1px solid var(--line2); background: color-mix(in srgb, var(--mid) 8%, transparent); }
+  .ag h1 { font-family: var(--serif); font-weight: 500; font-size: 34px; letter-spacing: -.02em; margin-bottom: 10px; } .ag p { color: var(--mute); font-size: 14.5px; line-height: 1.55; margin-bottom: 26px; }
+  .ag .btn { margin-bottom: 10px; padding: 15px; } .ag small { display: block; margin-top: 12px; color: var(--mute); font-size: 11.5px; line-height: 1.5; }
+
+  /* splash + landing */
+  #splash { background: radial-gradient(700px 500px at 50% 35%, var(--glow), transparent 70%), var(--bg); flex-direction: column; gap: 18px; }
+  #splash svg { width: 84px; height: 84px; filter: drop-shadow(0 0 26px color-mix(in srgb, var(--mid) 55%, transparent)); }
+  #splash b { font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: .42em; text-transform: uppercase; padding-left: .42em; background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .land h1 { font-size: 36px; font-weight: 500; } .land svg { filter: drop-shadow(0 0 24px color-mix(in srgb, var(--mid) 45%, transparent)); }
+
+  /* viewer + popup + sheets */
+  #vsheet, #sheet { background: linear-gradient(165deg, var(--card2), var(--bg2)); border-top: 1px solid var(--line2); }
+  #sheet h2 { font-family: var(--serif); font-weight: 500; font-size: 26px; }
+  #sheet .big { background: var(--metal); color: var(--onmetal); box-shadow: 0 14px 30px -10px var(--mid); }
+  .vb { background: rgba(10,10,14,.55); border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .pop { border: 1px solid var(--line2); background: linear-gradient(135deg, var(--card2), var(--card)); }
+  .pop .pi2 { background: var(--metal) center/cover; } .pop .bar { background: var(--metal); }
+  #toast { background: var(--card2); border: 1px solid var(--line2); color: var(--text); box-shadow: var(--shadow); }
+  .sp3 div b { color: var(--gold); font-weight: 500; }
+  .avc { position: absolute; }
+
+  /* polish */
+  .hbtn { position: relative; } .hbtn .dot { position: absolute; top: -4px; right: -4px; min-width: 18px; height: 18px; padding: 0 5px; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 10px; font-weight: 800; border: 2px solid var(--bg); }
+  .plan { overflow: visible; } .plan .bdg { top: -12px; right: 18px; }
+  .plan::before { border-radius: 24px 24px 0 0; }
+  .mcard.free { filter: saturate(.8) brightness(.95); }
+  :root[data-mode="light"] .brand b, :root[data-mode="light"] #splash b { background: linear-gradient(135deg, #B8862E, #7E5A16); -webkit-background-clip: text; background-clip: text; }
 </style>
 </head>
 <body>
@@ -538,11 +638,10 @@
     </linearGradient>
   </defs>
   <symbol id="logo" viewBox="0 0 64 64">
-    <rect width="64" height="64" rx="18" fill="#0B120E"/>
-    <rect x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".6"/>
-    <path d="M19 47V30a13 13 0 0 1 26 0v17" fill="none" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="32" cy="33" r="3.4" fill="url(#mg)"/>
-    <path d="M14 47h36" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/>
+    <rect width="64" height="64" rx="18" fill="#08080B"/>
+    <rect x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".7"/>
+    <path d="M32 9l19 23-19 23L13 32z" fill="none" stroke="url(#mg)" stroke-width="2.4" stroke-linejoin="round"/>
+    <path d="M25.5 40.5L32 24l6.5 16.5M28 35.5h8" fill="none" stroke="url(#mg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
   </symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
@@ -573,6 +672,7 @@
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M6 14l6-6 6 6"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M10 4H5v16h5M15 8l4 4-4 4M19 12H9"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
   <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 8.5a4 4 0 0 1-.5 9.5zM12 17v-6M9.5 13.5L12 11l2.5 2.5"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
@@ -582,14 +682,11 @@
 </svg>
 
 <div id="splash">
-  <svg viewBox="0 0 64 64">
-    <rect class="frame" width="64" height="64" rx="18" fill="#0B120E"/>
-    <rect class="frame" x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".6"/>
-    <path class="arch" d="M19 47V30a13 13 0 0 1 26 0v17M14 47h36" fill="none" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/>
-    <circle class="dotc" cx="32" cy="33" r="3.4" fill="url(#mg)"/>
-  </svg>
-  <b id="sn">Gallery</b>
+  <svg viewBox="0 0 64 64"><use href="#logo"/></svg>
+  <b id="sn">Adult Gallery</b>
 </div>
+
+<div id="agegate"><div class="ag"><svg class="lg" viewBox="0 0 64 64"><use href="#logo"/></svg><div class="age18">18+</div><h1>Adults only</h1><p>This app contains adult content. You must be at least 18 years old to continue.</p><button class="btn block" id="ageYes">I am 18 or older</button><button class="btn gh block" id="ageNo">Leave</button><small>By entering you confirm you are of legal age in your country and that you want to view adult content.</small></div></div>
 
 <header id="top" hidden>
   <div id="hl" class="brand"></div>
@@ -605,6 +702,7 @@
   <div class="vtop">
     <span class="cnt" id="vcnt"></span>
     <div class="acts">
+      <button class="vb" id="vshare" aria-label="Share"><svg class="i"><use href="#i-share"/></svg></button>
       <button class="vb" id="vinfo" aria-label="Info"><svg class="i"><use href="#i-info"/></svg></button>
       <button class="vb" id="vheart" aria-label="Save"><svg class="i"><use href="#i-heart"/></svg></button>
       <button class="vb" id="vclose" aria-label="Close"><svg class="i"><use href="#i-close"/></svg></button>
@@ -665,7 +763,7 @@ function applyTheme() {
   document.documentElement.dataset.mode = mode;
   r.setProperty("--hi", a[0]); r.setProperty("--mid", a[1]); r.setProperty("--lo", a[2]);
   r.setProperty("--gold", mode === "dark" ? a[1] : shade(a[1], .42));
-  r.setProperty("--metal", a[1]);
+  r.setProperty("--metal", `linear-gradient(135deg, ${a[0]}, ${a[1]} 52%, ${a[2]})`);
   try { const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(); tg?.setHeaderColor?.(bg); tg?.setBackgroundColor?.(bg); tg?.setBottomBarColor?.(bg); } catch {}
   if ($("themeBtn")) $("themeBtn").innerHTML = ic(mode === "dark" ? "sun" : "moon");
 }
@@ -697,7 +795,7 @@ const SRC = {};
 const hs = { cat: "", sort: "latest", type: "" };
 const stack = [{ r: "home", p: {} }];
 const TABS = ["home", "explore", "premium", "library", "profile"];
-const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Ticket", ticketnew: "New ticket", settings: "Settings", notifs: "Notifications", album: "Album", space: "My space", community: "Community", pay: "Checkout", payments: "Payments" };
+const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Ticket", ticketnew: "New ticket", settings: "Settings", notifs: "Notifications", album: "Album", space: "My space", history: "History", community: "Community", pay: "Checkout", payments: "Payments" };
 let timers = [];
 const usdtOn = () => settings.pay_usdt_on !== "0" && !!settings.usdt_address;
 const starsOn = () => settings.pay_stars_on !== "0";
@@ -793,6 +891,8 @@ const ACT = {
   selcancel() { selEnd(); }, selrun(d) { selRun(+d.k); },
   upload() { pickUploads(); },
   clearfav() { clearFavs(); },
+  sharealb(d) { shareItem(d.id, "a", d.t); },
+  dismissup() { LS.set("gv_upsell", Date.now()); const e = document.getElementById("upsell"); if (e) e.remove(); },
   method(d) { CK.method = d.v; drawCheckout(); },
   applypromo() { applyPromo(); }, paygo() { payGo(); },
   paycheck() { payCheck(true); }, paynew() { CK.order = null; drawCheckout(); },
@@ -849,15 +949,17 @@ const SELCFG = {
 /* ---------- gallery list (infinite scroll, date groups, stacked albums) ---------- */
 const SHS = { pending: "Pending review", approved: "Shared", rejected: "Not approved" };
 const meta = m => m.kind === "comm" ? "by " + m.by : m.kind === "mine" && SHS[m.share] ? SHS[m.share] : m.kind === "album" ? `${m.count} item${m.count === 1 ? "" : "s"}` : m.kind === "mine" ? (m.type === "video" ? "Video" : "Photo") : m.locked ? (m.access === "premium" ? "Premium" : "Private") : short(m.views) + " views";
+function durTag(v) { const s = v.parentElement.querySelector(".dur"); if (s && isFinite(v.duration)) { const t = Math.round(v.duration); s.textContent = Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); } }
 function thumbHTML(m) {
   const bg = m.preview ? `style="background-image:url('${esc(m.preview)}')"` : "";
   let inner;
   if (m.locked) inner = `<div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div>`;
   else inner = m.type === "image"
     ? `<img draggable="false" loading="lazy" src="${esc(m.url)}" alt="" onload="this.classList.add('ok')">`
-    : `<video muted playsinline preload="metadata" disablepictureinpicture controlslist="nodownload" src="${esc(m.url)}#t=0.5" onloadeddata="this.classList.add('ok')"></video><span class="pl">${ic("play")}</span>`;
+    : `<video muted playsinline preload="metadata" disablepictureinpicture controlslist="nodownload" src="${esc(m.url)}#t=0.5" onloadeddata="this.classList.add('ok')" onloadedmetadata="durTag(this)"></video><span class="pl">${ic("play")}</span><span class="dur"></span>`;
   const heart = (m.locked || m.kind === "mine" || m.kind === "comm") ? "" : `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="${m.kind === "album" ? "album" : "media"}" aria-label="Save">${ic("heart")}</button>`;
-  return `<div class="th ${m.locked ? "lockd" : ""}" ${bg}>${inner}${heart}${m.kind === "album" ? `<span class="abg">${ic("folder")}${m.count}</span>` : ""}<span class="sck">${ic("check")}</span></div>`;
+  const fresh = (m.kind === "media" || m.kind === "album") && Date.now() - new Date(m.created_at) < 48 * 3600e3 ? '<span class="nw">NEW</span>' : "";
+  return `<div class="th ${m.locked ? "lockd" : ""}" ${bg}>${inner}${fresh}${heart}${m.kind === "album" ? `<span class="abg">${ic("folder")}${m.count}</span>` : ""}<span class="sck">${ic("check")}</span></div>`;
 }
 const itemHTML = (m, i, src) => `<div class="it ${m.kind === "album" ? "alb" : ""}" data-act="open" data-src="${src}" data-i="${i}">${thumbHTML(m)}<div class="cap"><b>${esc(m.title || "Untitled")}</b><span>${meta(m)}</span></div></div>`;
 function dateLabel(d) {
@@ -922,13 +1024,21 @@ const app = $("app");
 const PAGES = {};
 let homeList = null, banT = null;
 
+function upsellHTML() {
+  if (me.premium) {
+    const d = daysLeft(); if (d > 3) return "";
+    return `<button class="upsell" id="upsell" data-act="go" data-r="plans"><span class="ui">${ic("clock")}</span><div class="t"><b>Your Premium ends ${d <= 1 ? "today or tomorrow" : "in " + d + " days"}</b><span>Renew now so you don't lose access</span></div><span class="go">${ic("next")}</span></button>`;
+  }
+  if (Date.now() - LS.get("gv_upsell", 0) < 864e5) return "";
+  return `<button class="upsell" id="upsell" data-act="go" data-r="plans"><span class="ui">${ic("crown")}</span><div class="t"><b>Unlock Premium</b><span>Every premium post in full quality, no blur</span></div><span class="go">${ic("next")}</span></button>`;
+}
 PAGES.home = async function () {
   if (stack[stack.length - 1].r !== "home") return;
   clearInterval(banT);
   const feat = !hs.cat && !hs.type && hs.sort === "latest";
   app.innerHTML = `<div class="pad">
     ${feat && banners.length ? `<div class="ban" id="ban">${banners.map((b, i) => `<button class="sl ${i ? "" : "on"}" style="background-image:url('${esc(b.url)}')" data-act="ban" data-i="${i}">${b.title || b.subtitle ? `<div class="tx"><b>${esc(b.title || "")}</b><span>${esc(b.subtitle || "")}</span></div>` : ""}</button>`).join("")}${banners.length > 1 ? `<div class="dots">${banners.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("")}</div>` : ""}</div>` : ""}
-    ${feat ? '<div id="feat"></div>' : ""}
+    ${feat ? '<div id="feat"></div>' + upsellHTML() : ""}
     <div class="ctabs"><button class="ct ${hs.cat ? "" : "on"}" data-act="cat" data-v="">All</button>${cats.map(c => `<button class="ct ${hs.cat === c.id ? "on" : ""}" data-act="cat" data-v="${c.id}">${esc(c.name)}</button>`).join("")}</div>
     <div class="tool">
       <div class="tgroup"><button class="${hs.sort === "latest" ? "on" : ""}" data-act="sort" data-v="latest">Latest</button><button class="${hs.sort === "popular" ? "on" : ""}" data-act="sort" data-v="popular">Popular</button></div>
@@ -946,9 +1056,11 @@ function bannerGo(i) {
 let spT = null;
 async function loadFeat() {
   try {
-    const r = await api("list", { sort: "popular", page: 1, size: 6 });
+    let items = (await api("list", { featured: true, page: 1, size: 6 })).items;
+    if (items.length < 4) { const seen = new Set(items.map(x => x.id)); items = items.concat((await api("list", { sort: "popular", page: 1, size: 8 })).items.filter(x => !seen.has(x.id))).slice(0, 6); }
+    const r = { items };
     if (!r.items.length || !$("feat")) return; SRC.feat = r.items; clearInterval(spT);
-    $("feat").innerHTML = `<div class="spot"><div class="sbg" id="sbg"></div><div class="sh"><b>Spotlight</b><span>Most viewed</span></div><div class="strack" id="strack">${r.items.map((m, i) => {
+    $("feat").innerHTML = `<div class="spot"><div class="sbg" id="sbg"></div><div class="sh"><b>Spotlight</b><span>Featured</span></div><div class="strack" id="strack">${r.items.map((m, i) => {
       const bg = m.preview ? `style="background-image:url('${esc(m.preview)}')"` : "";
       const media = m.locked ? `<div class="ph" ${bg}></div><div class="veil"></div><div class="lk"><span class="lkc">${ic("lock")}</span><i>${m.access === "premium" ? "Premium" : "Private"}</i></div>`
         : m.type === "image" ? `<img draggable="false" src="${esc(m.url)}" alt="">` : `<video muted loop playsinline preload="metadata" src="${esc(m.url)}#t=0.5"></video>`;
@@ -993,21 +1105,37 @@ PAGES.explore = async function () {
 
 /* premium + private */
 let pTab = "premium";
+const fmtShort = d => new Date(d).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+function memberCard() {
+  const on = me.premium, name = nameOf(me);
+  return `<div class="mcard ${on ? "" : "free"}"><div class="mc-top"><span class="mc-brand">${esc(String(C.APP_TITLE).toUpperCase())}</span>${ic("crown")}</div><div class="mc-chip"></div><div class="mc-name">${esc(name)}</div>
+    <div class="mc-row"><div><small>MEMBER SINCE</small><b>${new Date(me.created_at).toLocaleDateString("en-US", { month: "short", year: "numeric" }).toUpperCase()}</b></div><div><small>STATUS</small><b>${on ? "PREMIUM" : "FREE"}</b></div>${on ? `<div><small>VALID UNTIL</small><b>${fmtShort(me.premium_until)}</b></div>` : ""}</div></div>`;
+}
 PAGES.premium = async function () {
   const on = me.premium, left = daysLeft();
   app.innerHTML = `<div class="pad">
-    ${on ? `<div class="mcard on"><small>Premium member</small><div class="big">${left}</div><p style="margin-top:2px;opacity:1" class="mute">days left, until ${fmtDate(me.premium_until)}</p><div class="btns"><button class="btn gh" data-act="go" data-r="plans">Extend</button></div></div>`
-    : `<div class="mcard"><small>Premium collection</small><h2>Unlock the full collection</h2><p>${esc(settings.premium_intro || "Every premium post in full quality, no blur.")}</p><div class="btns"><button class="btn" data-act="go" data-r="plans">View plans</button><button class="btn gh" data-act="go" data-r="plans" data-p='{"code":1}'>I have a code</button></div></div>`}
+    ${memberCard()}
+    ${on ? `<div class="mcard-cta"><p>${left} day${left === 1 ? "" : "s"} of Premium left</p><div class="btns"><button class="btn" data-act="go" data-r="plans">Extend membership</button></div></div>`
+    : `<div class="mcard-cta"><p>${esc(settings.premium_intro || "Every premium post in full quality, no blur.")}</p><div class="btns"><button class="btn" data-act="go" data-r="plans">View plans</button><button class="btn gh" data-act="go" data-r="plans" data-p='{"code":1}'>I have a code</button></div></div>`}
     <div class="segw"><div class="seg"><button class="${pTab === "premium" ? "on" : ""}" data-act="ptab" data-v="premium">${ic("crown")}Premium</button><button class="${pTab === "private" ? "on" : ""}" data-act="ptab" data-v="private">${ic("lock")}Private</button></div></div>
     ${pTab === "private" && !me.private_access ? `<div class="box vault"><div class="big2">${ic("lock")}</div><b class="disp" style="font-size:22px">Private vault</b><p>A members-only space opened by invitation${plans.some(p => p.grants_private) ? " or with selected plans" : ""}.</p><div class="btns"><button class="btn" data-act="vault">Request access</button>${plans.some(p => p.grants_private) ? '<button class="btn gh" data-act="go" data-r="plans">View plans</button>' : ""}</div></div>` : ""}
     <div id="pl"></div></div>`;
   mountList($("pl"), { src: "prem", group: false, select: SELCFG.feed, fetch: (p, s) => api("list", { access: pTab, page: p, size: s }), empty: `<b>${pTab === "private" ? "Nothing private yet" : "No premium posts yet"}</b>New collections will appear here soon.` });
 };
 
+/* history (recently viewed, stored on this device) */
+function histAdd(id) { const l = LS.get("gv_hist", []).filter(x => x !== id); l.unshift(id); LS.set("gv_hist", l.slice(0, 40)); }
+PAGES.history = async function () {
+  const ids = LS.get("gv_hist", []);
+  app.innerHTML = `<div class="pad">${ids.length ? `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span class="mute" style="font-size:13px">Last ${ids.length} things you opened</span><button class="btn gh sm dgt" id="hclr">Clear</button></div>` : ""}<div id="hs"></div></div>`;
+  if ($("hclr")) $("hclr").onclick = async () => { if (await confirmBox("Clear history?", "This only removes the list on this device.", "Clear", true)) { LS.del("gv_hist"); PAGES.history(); } };
+  mountList($("hs"), { src: "hist", group: false, fetch: async () => { if (!ids.length) return { items: [], total: 0 }; const r = await api("byids", { ids: ids.slice(0, 40) }); const ord = new Map(ids.map((x, i) => [x, i])); r.items.sort((a, b) => ord.get(a.id) - ord.get(b.id)); return r; }, empty: "<b>Nothing yet</b>What you open will show up here." });
+};
+
 /* library */
 PAGES.library = async function () {
   app.innerHTML = `<div class="pad"><div class="sec">Library</div><div class="menu">
-    ${mi("heart", "Saved", favs.size ? favs.size + " items" : "", "saved")}${mi("cloud", "My space", "your own photos and videos", "space")}
+    ${mi("heart", "Saved", favs.size ? favs.size + " items" : "", "saved")}${mi("clock", "History", "recently viewed", "history")}${mi("cloud", "My space", "your own photos and videos", "space")}
     ${settings.community_on === "0" ? "" : mi("users", "Community", "photos shared by members", "community")}${mi("coin", "Payments", "", "payments")}${mi("gift", "Invite and earn", "", "referral")}${mi("bell", "Notifications", unread ? unread + " new" : "", "notifs")}</div></div>`;
 };
 const mi = (icon, t, em, r) => `<button class="mi" data-act="go" data-r="${r}"><span class="ic">${ic(icon)}</span><b>${t}</b><em>${em}</em>${ic("next", "ch")}</button>`;
@@ -1027,7 +1155,7 @@ async function clearFavs() {
 PAGES.album = async function (p) {
   app.innerHTML = `<div class="pad"><div class="skel" style="aspect-ratio:3/1"></div></div>`;
   const r = await api("album_get", { id: p.id }), a = r.album;
-  app.innerHTML = `<div class="pad"><div class="ahd"><div style="min-width:0"><div class="disp" style="font-size:30px;line-height:1.1;word-break:break-word">${esc(a.title)}</div><div class="mute" style="margin-top:4px;font-size:13.5px">${r.items.length} item${r.items.length === 1 ? "" : "s"}  ·  ${fmtDate(a.created_at)}${a.access !== "public" ? `<span class="tag">${a.access === "premium" ? "Premium" : "Private"}</span>` : ""}</div></div>${a.locked ? "" : `<button class="hb2 ${favs.has(a.id) ? "on" : ""}" data-act="heart" data-id="${a.id}" data-kind="album" aria-label="Save">${ic("heart")}</button>`}</div><div id="al"></div></div>`;
+  app.innerHTML = `<div class="pad"><div class="ahd"><div style="min-width:0"><div class="disp" style="font-size:30px;line-height:1.1;word-break:break-word">${esc(a.title)}</div><div class="mute" style="margin-top:4px;font-size:13.5px">${r.items.length} item${r.items.length === 1 ? "" : "s"}  ·  ${fmtDate(a.created_at)}${a.access !== "public" ? `<span class="tag">${a.access === "premium" ? "Premium" : "Private"}</span>` : ""}</div></div>${a.locked ? "" : `<div style="display:flex;gap:8px"><button class="hb2" data-act="sharealb" data-id="${a.id}" data-t="${esc(a.title)}" aria-label="Share">${ic("share")}</button><button class="hb2 ${favs.has(a.id) ? "on" : ""}" data-act="heart" data-id="${a.id}" data-kind="album" aria-label="Save">${ic("heart")}</button></div>`}</div><div id="al"></div></div>`;
   mountList($("al"), { src: "album", group: false, fetch: async () => ({ items: r.items, total: r.items.length }), empty: "<b>Empty album</b>" });
 };
 
@@ -1037,7 +1165,7 @@ PAGES.profile = async function () {
   app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
     <div class="pcard"><div class="ring"><div class="av">${av ? `<img src="${esc(av)}" alt="">` : esc(name[0].toUpperCase())}</div>${me.premium ? `<div class="cr">${ic("crown")}</div>` : ""}</div>
       <div class="pname">${esc(name)}</div><div class="psub">${me.username ? "@" + esc(me.username) + "  ·  " : ""}ID ${me.tg_id}</div>
-      ${me.bio ? `<div class="pbio pre">${esc(me.bio)}</div>` : ""}</div>
+      ${me.premium ? `<div style="margin-top:10px"><span class="pill g">${ic("crown")} Premium until ${fmtDate(me.premium_until)}</span></div>` : ""}${me.bio ? `<div class="pbio pre">${esc(me.bio)}</div>` : ""}</div>
     <div class="stats"><div class="stat"><b>${me.ref_count}</b><span>Invites</span></div><div class="stat"><b>${daysLeft()}</b><span>Premium days</span></div><div class="stat"><b>${days}</b><span>Days here</span></div></div>
     <div class="menu">${mi("edit", "Edit profile", "", "edit")}${mi("crown", "Premium", me.premium ? "Active" : "Free", "plans")}${mi("cloud", "My space", "", "space")}${mi("ticket", "Support", "", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
 };
@@ -1172,9 +1300,7 @@ PAGES.plans = async function (p) {
   const on = me.premium, left = daysLeft();
   const steps = (settings.how_to_buy || "").split("\n").map(s => s.replace(/^\s*\d+[.)]\s*/, "").trim()).filter(Boolean);
   app.innerHTML = `<div class="pad">
-    <div class="box" style="text-align:center"><span class="pill ${on ? "g" : ""}">${on ? "Premium active" : "Free plan"}</span>
-      <div class="disp" style="font-size:30px;margin:12px 0 2px">${on ? left + " days left" : "Unlock Premium"}</div>
-      <div class="mute" style="font-size:14px">${on ? "Until " + fmtDate(me.premium_until) : esc(settings.premium_intro || "")}</div></div>
+    ${memberCard()}
     <div class="sec">Plans</div>
     ${plans.length ? plans.map((pl, i) => {
       const us = usdtOn() && pl.price_usdt != null, st = starsOn() && pl.price_stars != null;
@@ -1412,7 +1538,7 @@ function clampPan() {
 function drawViewer() {
   const m = V.list[V.i]; if (!m) return; V.z = 1; V.x = V.y = 0; vpt.clear();
   const vid = m.type === "video";
-  $("viewer").classList.toggle("vid", vid); $("viewer").classList.toggle("mine", m.kind === "mine" || m.kind === "comm");
+  $("vshare").hidden = m.kind !== "media"; $("viewer").classList.toggle("vid", vid); $("viewer").classList.toggle("mine", m.kind === "mine" || m.kind === "comm");
   $("stage").style.touchAction = vid ? "auto" : "none";
   if (vid) {
     $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline autoplay></video>`;
@@ -1423,6 +1549,7 @@ function drawViewer() {
   $("vt").textContent = m.title || "Untitled"; $("vm").textContent = fmtDate(m.created_at) + (m.kind === "comm" ? `  ·  by ${m.by}` : m.kind === "mine" ? "" : `  ·  ${short(m.views)} views`);
   $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
+  if (m.kind === "media") histAdd(m.id);
   if (m.kind === "media") api("view", { media_id: m.id }).catch(() => {});
   if ($("vsheet").classList.contains("on")) drawInfo();
 }
@@ -1515,12 +1642,21 @@ function landing() {
 }
 window.onTgAuth = u => { LS.set("gv_web", u); location.reload(); };
 
+function ageCheck() {
+  return new Promise(res => {
+    if (LS.get("gv_age", "") === "1") return res();
+    $("agegate").classList.add("on");
+    $("ageYes").onclick = () => { LS.set("gv_age", "1"); $("agegate").classList.remove("on"); haptic("medium"); res(); };
+    $("ageNo").onclick = () => { try { if (tg?.close) return tg.close(); } catch {} $("agegate").querySelector("h1").textContent = "Come back when you're 18"; $("agegate").querySelector("p").textContent = "You can close this window now."; $("ageYes").hidden = true; $("ageNo").hidden = true; };
+  });
+}
 (async function init() {
+  await ageCheck();
   if (!inTg && !webAuth) { landing(); return endSplash(); }
   try {
     const r = await api("init");
     me = r.me; cats = r.categories; plans = r.plans; settings = r.settings; unread = r.unread; banners = r.banners || []; favs = new Set(r.favs || []);
-    render();
+    render(); openDeepLink();
     const old = LS.get("gv_saved", []);
     if (old.length) api("fav_import", { ids: old }).then(x => { favs = new Set(x.favs); LS.del("gv_saved"); }).catch(() => {});
     if (r.popup) setTimeout(() => { if (stack[stack.length - 1].r === "home") showPopup(r.popup); }, 1500);

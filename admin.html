@@ -7,7 +7,7 @@
 <title>Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="config.js?v=6"></script>
 <style>
@@ -107,39 +107,58 @@
   .cvr .t.on { outline-color: var(--gold); } .cvr img, .cvr video { width: 100%; height: 100%; object-fit: cover; }
   a.lk { color: var(--gold); text-decoration: none; }
 
-  /* =================== V5 admin theme: simple, premium =================== */
-  :root { --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --disp: var(--body); --metal: var(--mid); }
-  :root[data-mode="dark"] { --bg:#0C0C0E; --bg2:#101013; --card:#161619; --card2:#1D1D21; --line:rgba(255,255,255,.08); --text:#F3F2EF; --mute:#8E8E95; }
-  :root[data-mode="light"] { --bg:#F6F5F2; --bg2:#FFFFFF; --card:#FFFFFF; --card2:#F1F0EC; --line:rgba(0,0,0,.08); --text:#18181A; --mute:#6B6B72; }
-  body { font-size: 14px; }
-  h2, h3, .brand, .stat b { font-family: var(--body); font-weight: 600; letter-spacing: -.025em; }
-  h2 { font-size: 24px; } h3 { font-size: 15px; margin-bottom: 10px; }
-  .brand { font-size: 16px; }
-  .stat b { font-size: 28px; }
-  .btn { background: var(--mid); box-shadow: none; font-weight: 600; }
-  .btn.gh, .btn.dg { background: transparent; }
-  aside { background: var(--bg2); }
-  .grp { margin: 18px 12px 6px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); opacity: .75; }
-  aside nav .grp:first-child { margin-top: 4px; }
-  .tab { font-weight: 500; padding: 9px 12px; } .tab.on { background: var(--card2); box-shadow: none; color: var(--text); font-weight: 600; }
-  .tab .bd { background: var(--mid); }
-  .card, .stat { border-radius: 16px; box-shadow: none; }
-  .pill.g { background: color-mix(in srgb, var(--mid) 18%, transparent); color: var(--gold); }
-  .chips button.on { background: var(--text); color: var(--bg); }
-  .bub.me { background: var(--mid); } .prog i { background: var(--mid); }
-  .attn { border-color: color-mix(in srgb, var(--mid) 50%, transparent); }
+
+  /* =================== V6 admin: Noir & Gold =================== */
+  :root { --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; --serif: "Playfair Display", "Cormorant Garamond", "Times New Roman", Georgia, serif; --disp: var(--serif); --metal: linear-gradient(135deg, var(--hi), var(--mid) 52%, var(--lo)); }
+  :root[data-mode="dark"] { --bg:#060608; --bg2:#0B0B0F; --card:#101015; --card2:#17171D; --line:rgba(255,255,255,.075); --line2:rgba(212,175,95,.26); --text:#F6F2E9; --mute:#8F8C97; --glow:rgba(212,175,95,.09); }
+  :root[data-mode="light"] { --bg:#F8F5EE; --bg2:#FFFFFF; --card:#FFFFFF; --card2:#F5F1E7; --line:rgba(30,24,10,.09); --line2:rgba(156,122,43,.34); --text:#17140E; --mute:#6F6A5E; --glow:rgba(212,175,95,.18); }
+  body { font-size: 14px; background: var(--bg); }
+  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(1000px 520px at 60% -12%, var(--glow), transparent 70%); }
+  h2, h3, .stat b { font-family: var(--serif); font-style: normal; letter-spacing: -.01em; }
+  h2 { font-size: 30px; font-weight: 500; } h3 { font-size: 17px; font-weight: 500; margin-bottom: 12px; }
+  .stat b { font-size: 32px; font-weight: 500; color: var(--gold); }
+  aside { background: linear-gradient(180deg, var(--bg2), var(--bg)); border-right: 1px solid var(--line); }
+  .brand { font-family: var(--body); font-size: 11.5px; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; }
+  .brand svg { filter: drop-shadow(0 0 10px color-mix(in srgb, var(--mid) 45%, transparent)); }
+  .brand span { background: var(--metal); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .grp { margin: 18px 12px 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); opacity: .8; }
+  aside nav .grp:first-child { margin-top: 6px; }
+  .tab { font-weight: 500; padding: 10px 12px; border-radius: 12px; color: var(--mute); position: relative; }
+  .tab:hover { color: var(--text); background: color-mix(in srgb, var(--card2) 70%, transparent); }
+  .tab.on { background: linear-gradient(90deg, color-mix(in srgb, var(--mid) 14%, transparent), transparent); color: var(--text); font-weight: 600; box-shadow: none; }
+  .tab.on::before { content: ""; position: absolute; left: -12px; top: 9px; bottom: 9px; width: 3px; border-radius: 0 3px 3px 0; background: var(--metal); box-shadow: 0 0 14px var(--mid); }
+  .tab.on .i { color: var(--gold); } .tab .bd { background: var(--metal); color: var(--onmetal); }
+  .qs { margin: 4px 4px 2px; position: relative; } .qs input { width: 100%; padding: 10px 12px 10px 34px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; font-size: 13px; outline: none; }
+  .qs input:focus { border-color: var(--line2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--mid) 12%, transparent); } .qs .i { position: absolute; left: 11px; top: 50%; margin-top: -8px; width: 16px; height: 16px; color: var(--mute); }
+  .card, .stat { background: linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 20px 44px -30px rgba(0,0,0,.85); }
+  .card { padding: 22px; }
+  .btn { background: var(--metal); color: var(--onmetal); font-weight: 700; box-shadow: 0 10px 24px -12px color-mix(in srgb, var(--mid) 75%, transparent), inset 0 1px 0 rgba(255,255,255,.35); border-radius: 12px; }
+  .btn.gh { background: transparent; color: var(--text); box-shadow: inset 0 0 0 1px var(--line); } .btn.dg { background: transparent; color: var(--danger); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--danger) 45%, transparent); }
+  input[type=text], input[type=number], input[type=search], input[type=email], input[type=password], input[type=date], select, textarea { border-radius: 12px; background: var(--bg2); border: 1px solid var(--line); }
+  input:focus, select:focus, textarea:focus { border-color: var(--line2) !important; box-shadow: 0 0 0 3px color-mix(in srgb, var(--mid) 12%, transparent); outline: none; }
+  .pill.g { background: color-mix(in srgb, var(--mid) 16%, transparent); color: var(--gold); box-shadow: inset 0 0 0 1px var(--line2); }
+  .chips button { border-radius: 999px; } .chips button.on { background: var(--metal); color: var(--onmetal); box-shadow: none; }
+  .bub.me { background: var(--metal); color: var(--onmetal); } .prog { background: var(--card2); } .prog i { background: var(--metal); }
+  .bars i { background: var(--metal); } .bars b { color: var(--gold); }
+  .attn { border-color: var(--line2); background: radial-gradient(520px 160px at 0% 0%, color-mix(in srgb, var(--mid) 14%, transparent), transparent 70%), linear-gradient(165deg, var(--card2), var(--card)); }
   .attn h3 { color: var(--gold); }
-  .qa { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-  .qa .btn { padding: 9px 14px; }
+  .qa { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; } .qa .btn { padding: 10px 16px; }
+  .line { border-color: var(--line); }
+  .ck4 { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid var(--line); } .ck4:first-of-type { border-top: 0; }
+  .ck4 .o { width: 24px; height: 24px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; border: 1.5px solid var(--line2); color: var(--onmetal); } .ck4.ok .o { background: var(--metal); border-color: transparent; } .ck4 .o .i { width: 14px; height: 14px; stroke-width: 3; opacity: 0; } .ck4.ok .o .i { opacity: 1; }
+  .ck4 span.t { flex: 1; } .ck4.ok span.t { color: var(--mute); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--mute) 50%, transparent); }
+  .login .card { max-width: 380px; margin: auto; }
   .hint { color: var(--mute); font-size: 12.5px; margin: -6px 0 12px; }
-  @media (max-width: 860px) { .grp { display: none; } }
+  @media (max-width: 860px) { .grp { display: none; } .tab.on::before { display: none; } }
 </style>
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0DDA6"/><stop offset=".55" stop-color="#CDAA5E"/><stop offset="1" stop-color="#9C7A33"/></linearGradient></defs>
-  <symbol id="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#0B120E"/><rect x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".6"/><path d="M19 47V30a13 13 0 0 1 26 0v17" fill="none" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="33" r="3.4" fill="url(#mg)"/><path d="M14 47h36" stroke="url(#mg)" stroke-width="3" stroke-linecap="round"/></symbol>
+  <symbol id="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="18" fill="#08080B"/><rect x=".8" y=".8" width="62.4" height="62.4" rx="17.4" fill="none" stroke="url(#mg)" stroke-width="1.4" opacity=".7"/><path d="M32 9l19 23-19 23L13 32z" fill="none" stroke="url(#mg)" stroke-width="2.4" stroke-linejoin="round"/><path d="M25.5 40.5L32 24l6.5 16.5M28 35.5h8" fill="none" stroke="url(#mg)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></symbol>
   <symbol id="i-img" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></symbol>
@@ -170,6 +189,7 @@
 <div class="shell" id="panel" hidden>
   <aside>
     <div class="brand"><svg><use href="#logo"/></svg><span id="bt">Admin</span></div>
+    <div class="qs"><svg class="i"><use href="#i-search"/></svg><input type="search" id="gq" placeholder="Find a member" autocomplete="off"></div>
     <nav id="tabs"></nav>
     <div class="sp"></div>
     <div class="side-foot"><button class="btn gh xs" id="themeBtn">Theme</button><button class="btn gh xs" id="logoutBtn">Log out</button></div>
@@ -178,6 +198,7 @@
     <!-- DASHBOARD -->
     <section id="t-dash"><h2>Dashboard</h2><p class="mute" style="margin-bottom:18px">A quick look at how things are going.</p>
       <div class="card attn" id="dAttn" hidden></div>
+      <div class="card" id="dCheck" hidden></div>
       <div class="qa"><button class="btn" data-go="upload">Upload photos</button><button class="btn gh" data-go="premium">New promo or plan</button><button class="btn gh" data-go="banners">Add banner</button><button class="btn gh" data-go="payments">Manual sale</button></div>
       <div class="stats" id="dStats"></div>
       <div class="two"><div class="card"><h3>New users, 14 days</h3><div class="bars" id="dUsers"></div></div><div class="card"><h3>Revenue, 14 days (USDT)</h3><div class="bars" id="dRev"></div><p class="sm mute" id="dRevNote" style="margin-top:6px"></p></div></div>
@@ -304,7 +325,8 @@
         <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
         <button class="btn" id="refSave">Save</button></div>
       <div class="card"><h3>File storage (Cloudflare R2)</h3><p class="sm mute" id="stInfo" style="margin-bottom:12px"></p>
-        <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
+        <div id="stUse" style="margin-bottom:14px"></div>
+        <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn gh" id="stUseBtn">Refresh usage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
         <div class="prog"><i id="stProg"></i></div><div class="sm mute" id="stMsg" style="margin-top:8px"></div></div>
       <div class="card"><h3>Setup check</h3><p class="sm mute" id="chkInfo" style="margin-bottom:10px"></p><button class="btn gh" id="chkBtn">Test notify function</button><span class="sm mute" id="chkMsg" style="margin-left:10px"></span></div>
     </section>
@@ -385,7 +407,8 @@ const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: String(
 const getSettings = async keys => { const { data } = await sb.from("settings").select("key,value").in("key", keys); const m = {}; (data || []).forEach(r => m[r.key] = r.value); return m; };
 async function r2call(action, extra = {}) { const { data: { session } } = await sb.auth.getSession(); const r = await fetch(`${C.SUPABASE_URL}/functions/v1/r2`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY }, body: JSON.stringify({ action, ...extra }) }); return r.json(); }
 let R2_OK = false;
-async function detectR2() { try { const r = await r2call("ping"); R2_OK = !!r.r2; } catch { R2_OK = false; } }
+let R2_INFO = {};
+async function detectR2() { try { const r = await r2call("ping"); R2_INFO = r; R2_OK = !!r.r2; } catch { R2_OK = false; } }
 const newKey = rest => (R2_OK ? "r2/" : "") + rest;
 const isR2 = p => String(p || "").startsWith("r2/");
 async function sign(paths, secs = 3600) {
@@ -434,6 +457,7 @@ async function loadDash() {
   const at = [[pend.count, "payment", "waiting for confirmation", "payments"], [tk.count, "ticket", "open, waiting for your reply", "tickets"], [pendUp.count, "member file", "waiting for your review", "uploads"]].filter(x => x[0]);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
   $("dStats").innerHTML = [[users.count, "Users"], [prem.count, "Premium members"], [new7.count, "New this week"], [media.count, "Posts"], [albums.count, "Albums"], [mine.count, "User uploads"], [tk.count, "Open tickets"], [pend.count, "Pending payments"]].map(([n, l]) => `<div class="stat"><b>${n ?? 0}</b><span>${l}</span></div>`).join("");
+  storageStat(); loadChecklist();
   const days = lastDays(14), uc = {}; (users14.data || []).forEach(u => { const k = dayKey(u.created_at); uc[k] = (uc[k] || 0) + 1; });
   $("dUsers").innerHTML = bars(days.map(l => ({ l, v: uc[l] || 0 })));
   const rc = {}; let stars = 0; (pays.data || []).forEach(p => { if (p.method === "usdt" || (p.method === "manual" && p.currency === "USD")) { const k = dayKey(p.created_at); rc[k] = (rc[k] || 0) + num(p.amount); } else if (p.method === "stars") stars += num(p.amount); });
@@ -544,10 +568,11 @@ async function loadPosts() {
       <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div><div><label>Category</label><select class="c">${catOpts(m.category_id)}</select></div>
       <div><label>Access</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
       <div><label>Album</label><select class="al">${albOpts(m.album_id)}</select></div></div>
+      <label class="ck" style="margin-top:8px"><input type="checkbox" class="ft" ${m.featured ? "checked" : ""}> Feature in Spotlight</label>
       <div class="row between" style="margin-top:8px"><span class="mute sm">${m.views} views · ${fdate(m.created_at)} ${m.preview ? "" : '<span class="pill r">no preview</span>'}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div>`;
     d.querySelector(".a").value = m.access;
     d.querySelector(".pvw input").onchange = e => { e.target.checked ? sel.add(m.id) : sel.delete(m.id); drawSel(); };
-    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, album_id: d.querySelector(".al").value || null }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
+    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, album_id: d.querySelector(".al").value || null, featured: d.querySelector(".ft").checked }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
     d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post?")) return; await rmFiles([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
     $("mList").appendChild(d);
   });
@@ -563,10 +588,11 @@ async function loadAlbums() {
     const d = document.createElement("div"); d.className = "item";
     d.innerHTML = `${thumb(cover && urls[cover.path], cover?.type)}<div><div class="fs"><div><label>Album title</label><input type="text" class="t" value="${esc(a.title)}"></div><div><label>Category</label><select class="c">${catOpts(a.category_id)}</select></div>
       <div><label>Access (applies to all items)</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div></div>
+      <label class="ck" style="margin-top:8px"><input type="checkbox" class="ft" ${a.featured ? "checked" : ""}> Feature in Spotlight</label>
       <div class="row between" style="margin-top:8px"><span class="mute sm">${items.length} items · ${fdate(a.created_at)}</span><span class="row"><button class="btn gh xs ed">Cover and items</button><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div><div class="ex" hidden></div></div>`;
     d.querySelector(".a").value = a.access;
     d.querySelector(".sv").onclick = async () => {
-      const patch = { title: d.querySelector(".t").value.trim() || "Untitled", category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value };
+      const patch = { title: d.querySelector(".t").value.trim() || "Untitled", category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, featured: d.querySelector(".ft").checked };
       const { error } = await sb.from("albums").update(patch).eq("id", a.id); if (error) return toast(error.message);
       await sb.from("media").update({ access: patch.access, category_id: patch.category_id }).eq("album_id", a.id); toast("Saved"); loadAlbumsCache();
     };
@@ -856,7 +882,32 @@ $("refSave").onclick = async () => { const r = await Promise.all([setSetting("re
 $("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
 
+const fmtBytes = b => b >= 1073741824 ? (b / 1073741824).toFixed(2) + " GB" : b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB";
+let usageCache = null, usageAt = 0;
+async function getUsage(force) {
+  if (!force && usageCache && Date.now() - usageAt < 300000) return usageCache;
+  const out = { r2: null, sb: null, err: "" };
+  if (R2_OK) { try { const r = await r2call("usage"); if (r.error) throw new Error(r.error); out.r2 = r; } catch (e) { out.err = String(e.message || e); } }
+  try { const { data, error } = await sb.rpc("storage_usage"); if (!error && data) out.sb = data; } catch {}
+  usageCache = out; usageAt = Date.now(); return out;
+}
+async function loadUsage(force) {
+  const el = $("stUse"); el.innerHTML = '<span class="mute sm">Checking usage...</span>'; const u = await getUsage(force); let h = "";
+  if (u.r2) {
+    const gb = u.r2.bytes / 1073741824, g = u.r2.groups, cost = Math.max(0, gb - 10) * 0.015;
+    h += `<b>R2:</b> ${fmtBytes(u.r2.bytes)} used of 10 GB free  ·  ${u.r2.objects} files${u.r2.partial ? " (partial count)" : ""}<div class="prog"><i style="width:${Math.min(100, gb / 10 * 100)}%"></i></div>
+      <div class="sm mute">Posts ${fmtBytes(g.posts)}  ·  Member files ${fmtBytes(g.members)}  ·  Profile pictures ${fmtBytes(g.profiles)}  ·  Banners ${fmtBytes(g.banners)}<br>Estimated storage cost this month: <b>$${cost.toFixed(2)}</b> (R2 charges only above 10 GB; downloads are free)</div>`;
+  } else if (u.err) h += `<div class="sm" style="color:var(--danger)">R2 usage failed: ${esc(u.err)}</div>`;
+  if (u.sb) h += `<div style="margin-top:12px"><b>Supabase Storage:</b> ${fmtBytes(Number(u.sb.bytes))} of 1 GB free  ·  ${u.sb.objects} files</div><div class="prog"><i style="width:${Math.min(100, Number(u.sb.bytes) / 1073741824 * 100)}%"></i></div>`;
+  el.innerHTML = h || '<span class="mute sm">No usage data yet. Run supabase_v4c.sql and connect R2.</span>';
+}
+$("stUseBtn").onclick = () => loadUsage(true);
+async function storageStat() {
+  const u = await getUsage(false); const total = (u.r2 ? u.r2.bytes : 0) + (u.sb ? Number(u.sb.bytes) : 0);
+  if ((u.r2 || u.sb) && $("dStats")) $("dStats").insertAdjacentHTML("beforeend", `<div class="stat"><b>${fmtBytes(total)}</b><span>Storage used</span></div>`);
+}
 async function loadStorageInfo() {
+  loadUsage(false);
   const cnt = async t => (await sb.from(t).select("id", { count: "exact", head: true }).not("path", "like", "r2/%")).count || 0;
   const [m, u, b] = await Promise.all([cnt("media"), cnt("user_media"), cnt("banners")]); const old = m + u + b;
   $("stInfo").textContent = (R2_OK ? "Connected. New uploads go to R2." : "Not connected. New uploads still go to Supabase Storage (1 GB free limit). See SETUP_R2.md.") + `  ${old} file${old === 1 ? "" : "s"} still in Supabase Storage.`;
@@ -869,7 +920,11 @@ $("stTest").onclick = async () => {
     const up = await putFile(key, blob); if (up.error) throw new Error(up.error.message);
     const g = await r2call("get", { paths: [key], secs: 120 }); const back = await (await fetch(g.urls[key])).text(); if (back !== "hello r2") throw new Error("Read back did not match");
     await r2call("del", { paths: [key] }); $("stMsg").textContent = "Storage works: upload, read and delete all OK.";
-  } catch (e) { $("stMsg").textContent = "Test failed: " + e.message; }
+  } catch (e) {
+    const hints = []; if (R2_INFO.acctOk === false) hints.push("R2_ACCOUNT_ID does not look right (it must be 32 letters/numbers).");
+    hints.push(`This page's address is ${location.origin}. The CORS policy in your R2 bucket must list exactly this address in AllowedOrigins.`); if (R2_INFO.bucket) hints.push(`Bucket name in use: ${R2_INFO.bucket}.`);
+    $("stMsg").innerHTML = "Test failed: " + esc(e.message) + "<br>" + hints.map(esc).join("<br>");
+  }
   loadStorageInfo();
 };
 let stStop = false; $("stStop").onclick = () => { stStop = true; };
@@ -891,6 +946,23 @@ $("stMove").onclick = async () => {
   }
   $("stStop").hidden = true; $("stMsg").textContent += stStop ? "  |  stopped" : "  |  finished"; loadStorageInfo();
 };
+$("gq").addEventListener("keydown", e => { if (e.key !== "Enter") return; const v = e.target.value.trim(); if (!v) return; $("uQ").value = v; $("uF").value = ""; show("users"); e.target.value = ""; });
+async function loadChecklist() {
+  const [st, b, m] = await Promise.all([getSettings(["usdt_address", "pay_stars_on"]), sb.from("banners").select("id", { count: "exact", head: true }), sb.from("media").select("id", { count: "exact", head: true })]);
+  const priced = plansCache.some(p => p.price_usdt != null || p.price_stars != null);
+  const items = [
+    [R2_OK, "Connect file storage (R2) so you are not limited to 1 GB", "settings"],
+    [cats.length > 0, "Add at least one category", "cats"],
+    [(m.count || 0) > 0, "Upload your first post", "upload"],
+    [priced, "Set prices on your Premium plans", "premium"],
+    [/^0x[a-fA-F0-9]{40}$/.test(st.usdt_address || "") || st.pay_stars_on !== "0", "Turn on a payment method (Stars or your USDT wallet)", "settings"],
+    [(b.count || 0) > 0, "Add a banner for the Home page", "banners"],
+  ];
+  const done = items.filter(x => x[0]).length, el = $("dCheck"); el.hidden = done === items.length;
+  if (el.hidden) return;
+  el.innerHTML = `<div class="row between"><h3 style="margin:0">Get started</h3><span class="pill g">${done} of ${items.length} done</span></div><div class="prog" style="margin:12px 0 8px"><i style="width:${Math.round(done / items.length * 100)}%"></i></div>` +
+    items.map(([ok, t, go]) => `<div class="ck4 ${ok ? "ok" : ""}"><span class="o">${ic("check")}</span><span class="t">${t}</span>${ok ? "" : `<button class="btn xs" data-go="${go}">Set up</button>`}</div>`).join("");
+}
 refreshUI();
 </script>
 </body>
