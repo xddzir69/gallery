@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
-<script src="config.js?v=6"></script>
+<script src="config.js?v=7"></script>
 <style>
   :root { --disp: "Bodoni Moda", "Didot", Georgia, serif; --body: "Hanken Grotesk", system-ui, sans-serif; --hi: #F0DDA6; --mid: #CDAA5E; --lo: #9C7A33; --metal: linear-gradient(135deg, var(--hi), var(--mid) 55%, var(--lo)); --onmetal: #1A1405; }
   :root[data-mode="dark"] { --bg:#080C0A; --bg2:#0D1410; --card:#111A15; --card2:#17231C; --line:rgba(232,226,206,.11); --text:#EAE6D8; --mute:#8E9A92; --gold:#CDAA5E; --danger:#E5726B; color-scheme: dark; }
@@ -150,6 +150,33 @@
   .login .card { max-width: 380px; margin: auto; }
   .hint { color: var(--mute); font-size: 12.5px; margin: -6px 0 12px; }
   @media (max-width: 860px) { .grp { display: none; } .tab.on::before { display: none; } }
+
+  /* ---- V6 additions: folder tree, tiers ---- */
+  .pill.rose { color: #E88B93; background: rgba(232,139,147,.14); box-shadow: inset 0 0 0 1px rgba(232,139,147,.3); }
+  .pill.roy { color: #EBC96F; background: rgba(235,201,111,.14); box-shadow: inset 0 0 0 1px rgba(235,201,111,.4), 0 0 14px rgba(235,201,111,.22); }
+  .tree ul { list-style: none; margin: 0; padding: 0 0 0 20px; }
+  .tree > ul { padding-left: 0; }
+  .tree li { position: relative; padding: 4px 0 4px 16px; }
+  .tree li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-left: 1px solid var(--line2); }
+  .tree li::after { content: ""; position: absolute; left: 0; top: 24px; width: 12px; border-top: 1px solid var(--line2); }
+  .tree li:last-child::before { bottom: auto; height: 24px; }
+  .tree > ul > li { padding-left: 0; } .tree > ul > li::before, .tree > ul > li::after { display: none; }
+  .nd { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 10px; border-radius: 12px; background: var(--card2); border: 1px solid var(--line); }
+  .nd.hit { border-color: var(--gold); }
+  .nd .nm { font-weight: 600; }
+  .caret { width: 22px; height: 22px; border-radius: 7px; background: var(--bg2); box-shadow: inset 0 0 0 1px var(--line); line-height: 22px; text-align: center; font-weight: 700; flex: none; }
+  .caret.ghost { background: none; box-shadow: none; }
+  .panel2 { margin: 6px 0 8px 4px; padding: 14px; border-radius: 14px; background: var(--bg2); border: 1px solid var(--line2); }
+  .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+  .kv div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 13px; } .kv small { display: block; color: var(--mute); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+  .fl { display: grid; grid-template-columns: 24px 56px 1fr; gap: 10px; align-items: start; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .fl:last-child { border: 0; } .fl .pv { width: 56px; height: 56px; border-radius: 9px; object-fit: cover; background: var(--card); }
+  .fl .fs { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 6px; margin: 6px 0; }
+  .mini { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+  .sg { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .sg .c { border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--card2); font-size: 13px; }
+  .sg .c.pin { border-color: var(--line2); box-shadow: 0 0 18px -6px var(--mid); }
+  .mrow { display: grid; grid-template-columns: 90px 1fr 90px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -173,6 +200,8 @@
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
   <symbol id="i-banner" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M6 14l3-3 3 3 2-2 4 4"/></symbol>
   <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 3v6M12 9H5v4M12 9h7v4M5 13v3M19 13v3M3 18h4M17 18h4"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
   <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.8-1.5-1.2-2.8-1.2-1.6 0-2.7.8-2.7 2 0 2.8 5.6 1.2 5.6 4 0 1.2-1.2 2-2.9 2-1.3 0-2.4-.5-3-1.4M12 6.5V8M12 16v1.5"/></symbol>
 </svg>
 
@@ -199,45 +228,63 @@
     <section id="t-dash"><h2>Dashboard</h2><p class="mute" style="margin-bottom:18px">A quick look at how things are going.</p>
       <div class="card attn" id="dAttn" hidden></div>
       <div class="card" id="dCheck" hidden></div>
-      <div class="qa"><button class="btn" data-go="upload">Upload photos</button><button class="btn gh" data-go="premium">New promo or plan</button><button class="btn gh" data-go="banners">Add banner</button><button class="btn gh" data-go="payments">Manual sale</button></div>
+      <div class="qa"><button class="btn" data-go="upload">Upload</button><button class="btn gh" data-go="structure">Folder structure</button><button class="btn gh" data-go="spotlight">Spotlight</button><button class="btn gh" data-go="uploads">Member posts</button></div>
       <div class="stats" id="dStats"></div>
-      <div class="two"><div class="card"><h3>New users, 14 days</h3><div class="bars" id="dUsers"></div></div><div class="card"><h3>Revenue, 14 days (USDT)</h3><div class="bars" id="dRev"></div><p class="sm mute" id="dRevNote" style="margin-top:6px"></p></div></div>
-      <div class="two"><div class="card"><h3>Most viewed</h3><div id="dTop"></div></div><div class="card"><h3>Latest payments</h3><div id="dPay"></div></div></div>
+      <div class="two"><div class="card"><h3>New users, 14 days</h3><div class="bars" id="dUsers"></div></div><div class="card"><h3>Member posts, 14 days</h3><div class="bars" id="dRev"></div><p class="sm mute" id="dRevNote" style="margin-top:6px"></p></div></div>
+      <div class="two"><div class="card"><h3>Most viewed</h3><div id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
     </section>
 
     <!-- UPLOAD -->
-    <section id="t-upload" hidden><h2>Upload</h2><p class="mute" style="margin-bottom:18px">Photos and videos. Two or more can be grouped into one album (folder).</p>
+    <section id="t-upload" hidden><h2>Upload</h2><p class="mute" style="margin-bottom:18px">Every post is a folder, even a single photo or video. Members never see file names unless you set a display name later.</p>
       <div class="card">
         <div class="dz" id="dz">Drop files here or click to choose<input type="file" id="files" accept="image/*,video/*" multiple hidden></div>
         <div class="tg" id="upPrev"></div>
         <div class="cols">
-          <label class="f"><span>Category</span><select id="upCat"></select></label>
-          <label class="f"><span>Access</span><select id="upAccess"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></label>
-          <label class="f"><span id="upTitleLb">Title (blank = file name)</span><input type="text" id="upTitle"></label>
+          <label class="f"><span>Put into</span><select id="upDest"></select></label>
+          <label class="f" id="upParentF"><span>New folder goes inside</span><select id="upParent"></select></label>
+          <label class="f" id="upNameF"><span>Folder name (blank = first file name)</span><input type="text" id="upTitle"></label>
+          <label class="f" id="upCatF"><span>Topic</span><select id="upCat"></select></label>
+          <label class="f" id="upAccF"><span>Access</span><select id="upAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label>
         </div>
-        <div class="row" style="margin-bottom:10px"><label class="ck"><input type="checkbox" id="upAlbum" checked> Group into one album</label></div>
         <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="upNotif" checked> Send an in-app notification</label><label class="ck"><input type="checkbox" id="upPush"> Also push to Telegram</label></div>
         <button class="btn" id="upBtn">Upload</button>
         <div class="prog"><i id="upProg"></i></div><div id="log"></div>
       </div>
     </section>
 
+    <!-- STRUCTURE -->
+    <section id="t-structure" hidden><h2>Structure</h2><p class="mute" style="margin-bottom:18px">The whole library as a diagram: folders inside folders, with the files in each. Every folder has three tools: <b>Track</b> (where things are), <b>Modify</b> (move, access, pin, order) and <b>Edit</b> (rename, files, delete).</p>
+      <div class="card"><div class="row"><input type="search" id="stQ" placeholder="Find a folder" style="flex:1;min-width:180px"><button class="btn gh xs" id="stExp">Expand all</button><button class="btn gh xs" id="stCol">Collapse all</button><button class="btn xs" id="stNew">New top-level folder</button></div><div class="sm mute" id="stSum" style="margin-top:8px"></div></div>
+      <div class="card"><div class="tree" id="stTree"></div></div>
+      <div class="card" id="stOrphans" hidden></div>
+    </section>
+
+    <!-- SPOTLIGHT -->
+    <section id="t-spotlight" hidden><h2>Spotlight</h2><p class="mute" style="margin-bottom:18px">The slider at the top of Home. Pinned folders hold the first slot, then new folders, then the top popular ones.</p>
+      <div class="card"><h3>Pinned folders</h3><p class="hint">A pinned folder stays in the first slot. With more than one pin they take turns there every 3 seconds.</p><div id="spPins"></div>
+        <div class="row" style="margin-top:12px"><select id="spAdd" style="flex:1;min-width:200px"></select><button class="btn" id="spAddBtn">Pin folder</button></div></div>
+      <div class="card"><h3>What members will see</h3><div id="spPrev"></div></div>
+      <div class="card"><h3>Rules</h3><div class="cols"><label class="f"><span>New folder stays "new" for (days)</span><input type="number" id="spDays" min="1"></label><label class="f"><span>Shown in Spotlight for each member's first (opens)</span><input type="number" id="spOpens" min="1"></label>
+        <label class="f"><span>Max new folders</span><input type="number" id="spMax" min="0"></label><label class="f"><span>Popular folders (top N, all time)</span><input type="number" id="spPop" min="0" max="20"></label></div><button class="btn" id="spSave">Save rules</button></div>
+    </section>
+
     <!-- LIBRARY -->
-    <section id="t-media" hidden><h2>Library</h2><p class="mute" style="margin-bottom:14px"><span id="mCount">0</span> items</p>
-      <div class="chips" id="mView"><button data-v="posts" class="on">Posts</button><button data-v="albums">Albums</button></div>
-      <div class="card" id="mFilters"><div class="cols"><input type="search" id="mQ" placeholder="Search title"><select id="mCat"></select>
-        <select id="mAcc"><option value="">All access</option><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select>
+    <section id="t-media" hidden><h2>Files</h2><p class="mute" style="margin-bottom:14px"><span id="mCount">0</span> files. Give a file a display name only if you want members to see one.</p>
+      <div class="card" id="mFilters"><div class="cols"><input type="search" id="mQ" placeholder="Search file name or display name">
+        <select id="mFold"></select>
+        <select id="mAcc"><option value="">All access</option><option value="public">Public</option><option value="lite">Rose</option><option value="expensive">Royal</option></select>
         <select id="mType"><option value="">Photos + videos</option><option value="image">Photos</option><option value="video">Videos</option></select></div>
         <div class="row" style="margin-top:12px"><button class="btn" id="mGo">Filter</button><button class="btn gh" id="mFix">Fix previews</button><span class="mute sm" id="mFixMsg"></span></div></div>
-      <div id="mBulk" class="bulk" hidden><b id="mSelN">0 selected</b><select id="bCat" style="width:auto"></select><button class="btn xs" id="bCatGo">Set category</button>
-        <select id="bAcc" style="width:auto"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select><button class="btn xs" id="bAccGo">Set access</button>
-        <button class="btn xs" id="bAlbum">Group into album</button><button class="btn dg xs" id="bDel">Delete</button><button class="btn gh xs" id="bClr">Clear</button></div>
+      <div id="mBulk" class="bulk" hidden><b id="mSelN">0 selected</b><select id="bFold" style="width:auto"></select><button class="btn xs" id="bFoldGo">Move to folder</button>
+        <select id="bAcc" style="width:auto"><option value="public">Public</option><option value="lite">Rose</option><option value="expensive">Royal</option></select><button class="btn xs" id="bAccGo">Set access</button>
+        <button class="btn dg xs" id="bDel">Delete</button><button class="btn gh xs" id="bClr">Clear</button></div>
       <div class="card" style="padding-top:4px"><div id="mList"></div><button class="btn gh" id="mMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- CATEGORIES -->
-    <section id="t-cats" hidden><h2>Categories</h2><p class="mute" style="margin-bottom:18px">Lower number shows first. Pick a category when you upload.</p>
-      <div class="card"><div class="row"><input type="text" id="newCat" placeholder="New category" style="flex:1"><button class="btn" id="addCat">Add</button></div><div id="catList" style="margin-top:8px"></div></div>
+    <section id="t-cats" hidden><h2>Topics</h2><p class="mute" style="margin-bottom:18px">Topics appear in the Category column on Explore. Add a topic, then put folders into it.</p>
+      <div class="card"><div class="row"><input type="text" id="newCat" placeholder="New topic" style="flex:1"><button class="btn" id="addCat">Add</button></div><div id="catList" style="margin-top:8px"></div></div>
+      <div class="card"><h3>Put a folder into a topic</h3><div class="row"><select id="ctFold" style="flex:1;min-width:200px"></select><select id="ctCat" style="width:auto"></select><button class="btn" id="ctGo">Assign</button></div><p class="hint" style="margin-top:10px">Folders in a topic: use the Topic field in Structure → Modify to change it later.</p></div>
     </section>
 
     <!-- BANNERS -->
@@ -250,9 +297,9 @@
     </section>
 
     <!-- USERS -->
-    <section id="t-users" hidden><h2>Users</h2><p class="mute" style="margin-bottom:18px">Premium days, private access, bans and messages.</p>
+    <section id="t-users" hidden><h2>Users</h2><p class="mute" style="margin-bottom:18px">Rose and Royal time, bans and messages. Usernames and IDs are visible here only.</p>
       <div class="card"><div class="row"><input type="search" id="uQ" placeholder="Name, @username or Telegram ID" style="flex:1;min-width:200px">
-        <select id="uF" style="width:auto"><option value="">Everyone</option><option value="premium">Premium</option><option value="private">Private access</option><option value="banned">Banned</option></select>
+        <select id="uF" style="width:auto"><option value="">Everyone</option><option value="rose">Rose members</option><option value="royal">Royal members</option><option value="banned">Banned</option></select>
         <button class="btn" id="uGo">Search</button><button class="btn gh" id="uCsv">Export CSV</button></div><div id="uList" style="margin-top:6px"></div></div>
     </section>
 
@@ -268,23 +315,23 @@
     </section>
 
     <!-- PREMIUM -->
-    <section id="t-premium" hidden><h2>Premium</h2><p class="mute" style="margin-bottom:18px">Plans, promo codes, unlock codes and page text.</p>
+    <section id="t-premium" hidden><h2>Plans and codes</h2><p class="mute" style="margin-bottom:18px">Rose (lite) and Royal (expensive). Members see the details and the time, never a price.</p>
       <div class="stats" id="pStats"></div>
-      <div class="card"><h3>Plans</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">New plan</button></div>
-      <div class="card"><h3>Promo codes</h3><p class="sm mute" style="margin-bottom:10px">Customers enter these at checkout for a discount or bonus days.</p>
-        <div class="cols"><label class="f"><span>Code (blank = random)</span><input type="text" id="prCode" style="text-transform:uppercase"></label><label class="f"><span>Discount %</span><input type="number" id="prPct" min="0" max="100" value="20"></label>
-          <label class="f"><span>Bonus days</span><input type="number" id="prBonus" min="0" value="0"></label><label class="f"><span>Only for plan</span><select id="prPlan"></select></label>
-          <label class="f"><span>Max uses</span><input type="number" id="prMax" min="1" value="100"></label><label class="f"><span>Expires (optional)</span><input type="date" id="prExp"></label><label class="f"><span>Note</span><input type="text" id="prNote"></label></div>
-        <button class="btn" id="prGo">Create promo</button><div id="prList" style="margin-top:12px"></div></div>
-      <div class="card"><h3>Unlock codes</h3><p class="sm mute" style="margin-bottom:10px">Free Premium days you give out by hand (gifts, winners, partners).</p>
-        <div class="cols"><label class="f"><span>How many codes</span><input type="number" id="cgN" value="5" min="1" max="100"></label><label class="f"><span>Premium days</span><input type="number" id="cgD" value="30" min="1"></label>
+      <div class="card"><h3>Plans (shown on the Premium plans page)</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">New plan</button></div>
+      <div class="card"><h3>Unlock codes</h3><p class="sm mute" style="margin-bottom:10px">Free Premium time you give out by hand. Invite rewards create their own codes automatically.</p>
+        <div class="cols"><label class="f"><span>Tier</span><select id="cgT"><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label><label class="f"><span>How many codes</span><input type="number" id="cgN" value="5" min="1" max="100"></label><label class="f"><span>Days</span><input type="number" id="cgD" value="7" min="1"></label>
           <label class="f"><span>Uses per code</span><input type="number" id="cgU" value="1" min="1"></label><label class="f"><span>Expires (optional)</span><input type="date" id="cgE"></label><label class="f"><span>Note</span><input type="text" id="cgNote"></label></div>
         <button class="btn" id="cgGo">Generate codes</button>
         <div class="chips" style="margin:16px 0 8px" id="cFilter"><button data-v="unused" class="on">Unused</button><button data-v="used">Used</button><button data-v="all">All</button></div>
         <button class="btn gh xs" id="cCopy" style="margin-bottom:6px">Copy all unused</button><div id="cList"></div></div>
+      <div class="card" id="prCard" hidden><h3>Promo codes (payments module)</h3><p class="sm mute" style="margin-bottom:10px">Only used when payments are switched on in Settings.</p>
+        <div class="cols"><label class="f"><span>Code (blank = random)</span><input type="text" id="prCode" style="text-transform:uppercase"></label><label class="f"><span>Discount %</span><input type="number" id="prPct" min="0" max="100" value="20"></label>
+          <label class="f"><span>Bonus days</span><input type="number" id="prBonus" min="0" value="0"></label><label class="f"><span>Only for plan</span><select id="prPlan"></select></label>
+          <label class="f"><span>Max uses</span><input type="number" id="prMax" min="1" value="100"></label><label class="f"><span>Expires (optional)</span><input type="date" id="prExp"></label><label class="f"><span>Note</span><input type="text" id="prNote"></label></div>
+        <button class="btn" id="prGo">Create promo</button><div id="prList" style="margin-top:12px"></div></div>
       <div class="card"><h3>Premium page text</h3>
         <label class="f"><span>Intro (top of the Premium page)</span><input type="text" id="sIntro"></label>
-        <label class="f"><span>How it works (one step per line)</span><textarea id="sHow"></textarea></label>
+        <input type="hidden" id="sHow">
         <label class="f"><span>Support contact link (e.g. https://t.me/yourusername)</span><input type="text" id="sContact"></label><button class="btn" id="sSave">Save</button></div>
     </section>
 
@@ -299,31 +346,36 @@
     </section>
 
     <!-- TICKETS -->
-    <section id="t-tickets" hidden><h2>Tickets</h2><p class="mute" style="margin-bottom:18px">Help requests from users.</p>
+    <section id="t-tickets" hidden><h2>Support chats</h2><p class="mute" style="margin-bottom:18px">Messenger-style chats with members. Members cannot delete or close a chat. Only you can close it.</p>
       <div id="tkListWrap"><div class="chips" id="tkF"><button data-v="active" class="on">Open</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><div class="card" style="padding-top:6px"><div id="tkList"></div></div></div><div id="tkThread" hidden></div>
     </section>
 
     <!-- USER UPLOADS -->
-    <section id="t-uploads" hidden><h2>User uploads</h2><p class="mute" style="margin-bottom:18px">Files users keep in their own space. Only they can see them; you can remove anything inappropriate.</p>
-      <div class="card"><div class="row"><input type="text" id="uuQ" placeholder="Filter by Telegram ID" style="flex:1"><select id="uuS" style="width:auto"><option value="">All files</option><option value="pending">Waiting for review</option><option value="approved">Shared in Community</option><option value="rejected">Rejected</option></select><button class="btn" id="uuGo">Filter</button></div><div class="mute sm" id="uuInfo" style="margin-top:8px"></div></div>
+    <section id="t-uploads" hidden><h2>Member posts</h2><p class="mute" style="margin-bottom:18px">Photos and videos members upload. Approve to show in Community, decline with a note, or fix the title first.</p>
+      <div class="card"><div class="row"><input type="text" id="uuQ" placeholder="Filter by Telegram ID" style="flex:1"><select id="uuS" style="width:auto"><option value="pending">Waiting for review</option><option value="approved">Approved</option><option value="rejected">Declined</option><option value="private">Private (old uploads)</option><option value="">All</option></select><button class="btn" id="uuGo">Filter</button></div><div class="mute sm" id="uuInfo" style="margin-top:8px"></div></div>
+      <div id="uuBulk" class="bulk" hidden><b id="uuSelN">0 selected</b><button class="btn xs" id="uuBA">Approve</button><button class="btn dg xs" id="uuBR">Decline</button><button class="btn gh xs" id="uuBC">Clear</button></div>
       <div class="card" style="padding-top:4px"><div id="uuList"></div><button class="btn gh" id="uuMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- SETTINGS -->
-    <section id="t-settings" hidden><h2>Settings</h2><p class="mute" style="margin-bottom:18px">Payments, uploads and general setup.</p>
-      <div class="card"><h3>Payments</h3>
+    <section id="t-settings" hidden><h2>Settings</h2><p class="mute" style="margin-bottom:18px">Member uploads, invite rewards, storage and general setup.</p>
+      <div class="card"><h3>Member uploads and Community</h3>
+        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setUp"> Members can upload</label><label class="ck"><input type="checkbox" id="setComm"> Community page on</label><label class="ck"><input type="checkbox" id="setCommAuto"> Publish without my review</label></div>
+        <div class="cols"><label class="f"><span>Who may upload</span><select id="setUpPrem"><option value="none">Everyone</option><option value="lite">Rose and Royal only</option><option value="expensive">Royal only</option></select></label>
+          <label class="f"><span>Max MB per file</span><input type="number" id="setFileMb" min="1" max="100"></label><label class="f"><span>Max MB per folder (several files)</span><input type="number" id="setFolderMb" min="1" max="500"></label><label class="f"><span>Popup seconds</span><input type="number" id="setPop" min="2" max="10"></label></div>
+        <p class="hint">Keep "Publish without my review" off. Anything members upload then waits for your approval.</p>
+        <button class="btn" id="setUpSave">Save</button></div>
+      <div class="card"><h3>Invite rewards</h3><p class="sm mute" style="margin-bottom:10px">When a member reaches a number of invites, a one-use unlock code is created and sent to them as a notification.</p>
+        <div id="msRows"></div><div class="row"><button class="btn gh xs" id="msAdd">Add reward</button><button class="btn" id="msSave">Save rewards</button></div></div>
+      <div class="card"><h3>General</h3>
+        <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
+        <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="setPayOn"> Show the payments module (hidden and off by default)</label><br>
+        <button class="btn" id="refSave">Save</button></div>
+      <div class="card" id="payCard" hidden><h3>Payments</h3>
         <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setStars"> Accept Telegram Stars</label><label class="ck"><input type="checkbox" id="setUsdt"> Accept USDT (BEP20)</label></div>
         <label class="f"><span>Your USDT wallet address (BNB Smart Chain, starts with 0x)</span><input type="text" id="setAddr" placeholder="0x..."></label>
         <div class="cols"><label class="f"><span>Confirmations needed</span><input type="number" id="setConf" min="1" max="30"></label><label class="f"><span>Custom RPC URL (optional)</span><input type="text" id="setRpc" placeholder="https://..."></label></div>
         <div class="row"><button class="btn" id="setPaySave">Save</button><button class="btn gh" id="rpcTest">Test network</button><span class="sm mute" id="rpcMsg"></span></div></div>
-      <div class="card"><h3>Uploads and popups</h3>
-        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setUp"> Let users upload to their own space</label><label class="ck"><input type="checkbox" id="setComm"> Community page on</label><label class="ck"><input type="checkbox" id="setCommAuto"> Publish shared files without review</label></div>
-        <div class="cols"><label class="f"><span>Max MB per file</span><input type="number" id="setMb" min="1" max="50"></label><label class="f"><span>Max files per user</span><input type="number" id="setItems" min="1" max="500"></label><label class="f"><span>Popup seconds</span><input type="number" id="setPop" min="2" max="10"></label></div>
-        <button class="btn" id="setUpSave">Save</button></div>
-      <div class="card"><h3>General</h3>
-        <label class="f"><span>Referral reward: Premium days per new invite</span><input type="number" id="refDays" min="0" style="max-width:160px"></label>
-        <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
-        <button class="btn" id="refSave">Save</button></div>
       <div class="card"><h3>File storage (Cloudflare R2)</h3><p class="sm mute" id="stInfo" style="margin-bottom:12px"></p>
         <div id="stUse" style="margin-bottom:14px"></div>
         <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn gh" id="stUseBtn">Refresh usage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
@@ -359,7 +411,7 @@ $("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session; $("panel").hidden = !session;
-  if (session) { await Promise.all([loadCats(), loadPlansCache(), loadAlbumsCache(), detectR2()]); show("dash"); badges(); }
+  if (session) { await loadPayFlag(); await Promise.all([loadPlansCache(), loadAlbumsCache(), detectR2()]); await loadCats(); show("dash"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
@@ -370,23 +422,28 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["media", "img", "Library"], ["cats", "grid", "Categories"], ["banners", "banner", "Banners"], ["users", "user", "Users"], ["tickets", "ticket", "Tickets"], ["uploads", "folder", "Member files"], ["payments", "coin", "Payments"], ["premium", "crown", "Plans and promos"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
-const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "media", "cats", "banners"]], ["People", ["users", "tickets", "uploads"]], ["Money", ["payments", "premium"]], ["System", ["notify", "settings"]]];
-$("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["spotlight", "star", "Spotlight"], ["media", "img", "Files"], ["cats", "grid", "Topics"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
+let PAY_ON = false;
+function buildTabs() {
+  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "structure", "spotlight", "media", "cats"]], ["People", ["users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "payments"] : ["premium"]], ["System", ["notify", "settings"]]];
+  const cur = document.querySelector(".tab.on")?.dataset.t;
+  $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
+}
+async function loadPayFlag() { const s = await getSettings(["payments_on"]); PAY_ON = s.payments_on === "1"; buildTabs(); }
 document.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) show(g.dataset.go); });
 let tkTimer;
 function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
-  TABS.forEach(([k]) => $("t-" + k).hidden = k !== t);
+  document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
   clearInterval(tkTimer);
-  ({ dash: loadDash, media: () => loadMedia(true), banners: loadBanners, cats: loadCats, users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { tkOpen = null; showList(); loadTickets(); tkTimer = setInterval(() => { if (!tkOpen) loadTickets(); }, 30000); }, uploads: () => loadUU(true), settings: loadSettings, upload: () => {} }[t] || (() => {}))();
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, spotlight: loadSpot, users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { tkOpen = null; showList(); loadTickets(); tkTimer = setInterval(() => { if (!tkOpen) loadTickets(); else if (!($("tkR") && $("tkR").value)) openTicket(tkOpen); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
 async function badges() {
-  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").eq("method", "usdt").gt("expires_at", new Date().toISOString()), sb.from("user_media").select("id", { count: "exact", head: true }).eq("share_status", "pending")]);
-  const uu = $("uuBd"); uu.hidden = !u.count; uu.textContent = u.count || "";
-  const b = $("tkBd"); b.hidden = !t.count; b.textContent = t.count || ""; const q = $("pyBd"); q.hidden = !p.count; q.textContent = p.count || "";
+  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), PAY_ON ? sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").eq("method", "usdt").gt("expires_at", new Date().toISOString()) : Promise.resolve({ count: 0 }), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
+  const uu = $("uuBd"); if (uu) { uu.hidden = !u.count; uu.textContent = u.count || ""; }
+  const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; } const q = $("pyBd"); if (q) { q.hidden = !p.count; q.textContent = p.count || ""; }
 }
 
 /* helpers */
@@ -445,27 +502,25 @@ function lastDays(n) { return Array.from({ length: n }, (_, i) => { const d = ne
 async function loadDash() {
   const now = new Date(), d7 = new Date(now - 7 * 864e5).toISOString(), d14 = new Date(now - 14 * 864e5).toISOString(), iso = now.toISOString();
   const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
-  const [users, prem, new7, media, albums, mine, tk, pend, users14, pays, top, recent, pendUp] = await Promise.all([
-    cnt("profiles"), cnt("profiles", q => q.gt("premium_until", iso)), cnt("profiles", q => q.gt("created_at", d7)), cnt("media"), cnt("albums"), cnt("user_media"),
-    cnt("tickets", q => q.eq("status", "open")), cnt("payments", q => q.eq("status", "pending").gt("expires_at", iso)),
+  const [users, rose, roy, new7, media, albums, posts, tk, pend, users14, posts14, top, recent, pendUp] = await Promise.all([
+    cnt("profiles"), cnt("profiles", q => q.gt("lite_until", iso)), cnt("profiles", q => q.gt("expensive_until", iso)), cnt("profiles", q => q.gt("created_at", d7)), cnt("media"), cnt("albums"), cnt("user_posts"),
+    cnt("tickets", q => q.eq("status", "open")), PAY_ON ? cnt("payments", q => q.eq("status", "pending").gt("expires_at", iso)) : Promise.resolve({ count: 0 }),
     sb.from("profiles").select("created_at").gt("created_at", d14).limit(5000),
-    sb.from("payments").select("method,currency,amount,created_at").eq("status", "approved").gt("created_at", d14).limit(5000),
-    sb.from("media").select("title,views,type,album_id").order("views", { ascending: false }).limit(5),
-    sb.from("payments").select("plan_name,method,currency,amount,status,created_at,profiles(first_name,display_name,username)").order("created_at", { ascending: false }).limit(5),
-    cnt("user_media", q => q.eq("share_status", "pending")),
+    sb.from("user_posts").select("created_at").gt("created_at", d14).limit(5000),
+    sb.from("media").select("title,label,views,album_id").order("views", { ascending: false }).limit(5),
+    sb.from("profiles").select("first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(5),
+    cnt("user_posts", q => q.eq("status", "pending")),
   ]);
-  const at = [[pend.count, "payment", "waiting for confirmation", "payments"], [tk.count, "ticket", "open, waiting for your reply", "tickets"], [pendUp.count, "member file", "waiting for your review", "uploads"]].filter(x => x[0]);
+  const at = [[pendUp.count, "member post", "waiting for your review", "uploads"], [tk.count, "support chat", "open, waiting for your reply", "tickets"], [pend.count, "payment", "waiting for confirmation", "payments"]].filter(x => x[0]);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
-  $("dStats").innerHTML = [[users.count, "Users"], [prem.count, "Premium members"], [new7.count, "New this week"], [media.count, "Posts"], [albums.count, "Albums"], [mine.count, "User uploads"], [tk.count, "Open tickets"], [pend.count, "Pending payments"]].map(([n, l]) => `<div class="stat"><b>${n ?? 0}</b><span>${l}</span></div>`).join("");
+  $("dStats").innerHTML = [[users.count, "Members"], [rose.count, "Rose members"], [roy.count, "Royal members"], [new7.count, "New this week"], [media.count, "Files"], [albums.count, "Folders"], [posts.count, "Member posts"], [tk.count, "Open chats"]].map(([n, l]) => `<div class="stat"><b>${n ?? 0}</b><span>${l}</span></div>`).join("");
   storageStat(); loadChecklist();
-  const days = lastDays(14), uc = {}; (users14.data || []).forEach(u => { const k = dayKey(u.created_at); uc[k] = (uc[k] || 0) + 1; });
-  $("dUsers").innerHTML = bars(days.map(l => ({ l, v: uc[l] || 0 })));
-  const rc = {}; let stars = 0; (pays.data || []).forEach(p => { if (p.method === "usdt" || (p.method === "manual" && p.currency === "USD")) { const k = dayKey(p.created_at); rc[k] = (rc[k] || 0) + num(p.amount); } else if (p.method === "stars") stars += num(p.amount); });
-  $("dRev").innerHTML = bars(days.map(l => ({ l, v: Math.round((rc[l] || 0) * 100) / 100 })), v => v.toFixed(v % 1 ? 1 : 0));
-  $("dRevNote").textContent = `Stars in the same period: ★ ${stars}`;
-  $("dTop").innerHTML = (top.data || []).map(m => `<div class="row between line"><span>${esc(m.title || "Untitled")}</span><span class="pill">${m.views} views</span></div>`).join("") || '<p class="mute">No posts yet.</p>';
-  $("dPay").innerHTML = (recent.data || []).map(p => `<div class="row between line"><span>${esc(nm(p.profiles))} · ${esc(p.plan_name)}</span><span class="pill ${p.status === "approved" ? "ok" : "warn"}">${fmtAmt(p)}</span></div>`).join("") || '<p class="mute">No payments yet.</p>';
+  const days = lastDays(14), uc = {}, pc = {}; (users14.data || []).forEach(u => { const k = dayKey(u.created_at); uc[k] = (uc[k] || 0) + 1; }); (posts14.data || []).forEach(u => { const k = dayKey(u.created_at); pc[k] = (pc[k] || 0) + 1; });
+  $("dUsers").innerHTML = bars(days.map(l => ({ l, v: uc[l] || 0 }))); $("dRev").innerHTML = bars(days.map(l => ({ l, v: pc[l] || 0 }))); $("dRevNote").textContent = "";
+  $("dTop").innerHTML = (top.data || []).map(m => `<div class="row between line"><span>${esc(m.label || m.title || "File")}</span><span class="pill">${m.views} views</span></div>`).join("") || '<p class="mute">No files yet.</p>';
+  $("dPay").innerHTML = (recent.data || []).map(p => `<div class="row between line"><span>${esc(nm(p))}</span><span class="pill ${active(p.expensive_until) ? "roy" : active(p.lite_until) ? "rose" : ""}">${active(p.expensive_until) ? "Royal" : active(p.lite_until) ? "Rose" : "Free"}</span></div>`).join("") || '<p class="mute">No members yet.</p>';
 }
+const active = x => !!x && new Date(x).getTime() > Date.now();
 const fmtAmt = p => p.method === "stars" ? `★ ${num(p.amount)}` : p.method === "usdt" ? `${num(p.amount).toFixed(4)} USDT` : p.amount ? `$${num(p.amount).toFixed(2)}` : "Manual";
 
 /* ---------- categories ---------- */
@@ -473,7 +528,7 @@ async function loadCats() {
   const [{ data, error }, { data: usage }] = await Promise.all([sb.from("categories").select("*").order("sort_order").order("name"), sb.from("media").select("category_id").limit(5000)]);
   if (error) return toast(error.message);
   cats = data || []; const use = {}; (usage || []).forEach(m => { if (m.category_id) use[m.category_id] = (use[m.category_id] || 0) + 1; });
-  $("upCat").innerHTML = catOpts(""); const cur = $("mCat").value; $("mCat").innerHTML = catOpts("", true); $("mCat").value = cur; $("bCat").innerHTML = catOpts("");
+  $("upCat").innerHTML = catOpts(""); fillCatFolderSel();
   $("catList").innerHTML = cats.map(c => `<div class="row line" data-id="${c.id}"><input type="text" class="cn" value="${esc(c.name)}" style="flex:1;min-width:140px"><input type="number" class="co" value="${c.sort_order}" style="width:80px"><span class="pill">${use[c.id] || 0} posts</span><button class="btn xs cs">Save</button><button class="btn dg xs cd">Delete</button></div>`).join("") || '<p class="mute" style="padding:12px 0">No categories yet.</p>';
   document.querySelectorAll("#catList [data-id]").forEach(r => {
     r.querySelector(".cs").onclick = async () => { const { error } = await sb.from("categories").update({ name: r.querySelector(".cn").value.trim(), sort_order: Number(r.querySelector(".co").value) || 0 }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadCats()); };
@@ -481,11 +536,14 @@ async function loadCats() {
   });
 }
 $("addCat").onclick = async () => { const name = $("newCat").value.trim(); if (!name) return; const { error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 }); error ? toast(error.message) : ($("newCat").value = "", loadCats()); };
-async function loadPlansCache() { const { data } = await sb.from("plans").select("id,name,days,price_usdt,price_stars,grants_private").order("sort_order"); plansCache = data || []; }
-async function loadAlbumsCache() { const { data } = await sb.from("albums").select("id,title").order("created_at", { ascending: false }).limit(300); albumsCache = data || []; }
+async function loadPlansCache() { const { data } = await sb.from("plans").select("id,name,days,tier").order("sort_order"); plansCache = data || []; }
 function fillPlanSel(id, none) { $(id).innerHTML = (none ? '<option value="">All plans</option>' : "") + plansCache.map(p => `<option value="${p.id}">${esc(p.name)} (${p.days}d)</option>`).join(""); }
 
-/* ---------- upload ---------- */
+
+function fillCatFolderSel() { if (!$("ctFold")) return; $("ctFold").innerHTML = folderOpts("", false); $("ctCat").innerHTML = catOpts("") ; }
+$("ctGo").onclick = async () => { const id = $("ctFold").value; if (!id) return toast("Choose a folder"); const { error } = await sb.from("albums").update({ category_id: $("ctCat").value || null }).eq("id", id); error ? toast(error.message) : (toast("Saved"), loadTree().then(loadCats)); };
+
+/* ---------- upload (always into a folder) ---------- */
 let picked = [];
 const dz = $("dz"), fi = $("files");
 dz.onclick = e => { if (e.target !== fi) fi.click(); };
@@ -493,18 +551,29 @@ dz.ondragover = e => { e.preventDefault(); dz.classList.add("on"); }; dz.ondragl
 dz.ondrop = e => { e.preventDefault(); dz.classList.remove("on"); addPicked([...e.dataTransfer.files]); };
 fi.onchange = () => { addPicked([...fi.files]); fi.value = ""; };
 function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => picked.push(f)); drawPicked(); }
+function fillUpload() {
+  const cur = $("upDest").value;
+  $("upDest").innerHTML = '<option value="">A new folder</option>' + folderOpts("", false).replace(/<option /g, '<option data-x="1" ');
+  $("upDest").value = cur; $("upParent").innerHTML = folderOpts("", true); upDestChange();
+}
+function upDestChange() { const n = !$("upDest").value; ["upParentF", "upNameF", "upCatF", "upAccF"].forEach(i => $(i).hidden = !n); }
+$("upDest").onchange = upDestChange;
 function drawPicked() {
   $("upPrev").innerHTML = picked.map((f, i) => `<div class="t">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button data-i="${i}">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div>`).join("");
   $("upPrev").querySelectorAll("button").forEach(b => b.onclick = () => { picked.splice(+b.dataset.i, 1); drawPicked(); });
-  const multi = picked.length > 1; $("upAlbum").parentElement.hidden = !multi; $("upTitleLb").textContent = multi && $("upAlbum").checked ? "Album title" : "Title (blank = file name)";
 }
-$("upAlbum").onchange = drawPicked;
 $("upBtn").onclick = async () => {
   if (!picked.length) return toast("Choose files first");
-  const files = [...picked], title = $("upTitle").value.trim(), category_id = $("upCat").value || null, access = $("upAccess").value, asAlbum = files.length > 1 && $("upAlbum").checked;
+  const files = [...picked], title = $("upTitle").value.trim(), dest = $("upDest").value;
   $("upBtn").disabled = true; $("log").textContent = ""; $("upProg").style.width = "0";
-  let album = null;
-  if (asAlbum) { const { data, error } = await sb.from("albums").insert({ title: title || files[0].name.replace(/\.[^.]+$/, ""), category_id, access }).select("id,title").single(); if (error) { $("upBtn").disabled = false; return toast(error.message); } album = data; }
+  let album, base = 0, access;
+  if (dest) {
+    album = tree.find(f => f.id === dest); access = album.access; base = Number(album.media_count) || 0;
+  } else {
+    access = $("upAccess").value;
+    const { data, error } = await sb.from("albums").insert({ title: title || files[0].name.replace(/\.[^.]+$/, ""), category_id: $("upCat").value || null, access, parent_id: $("upParent").value || null }).select("id,title").single();
+    if (error) { $("upBtn").disabled = false; return toast(error.message); } album = data;
+  }
   const { data: top } = await sb.from("media").select("serial_no").order("serial_no", { ascending: false }).limit(1);
   let serial = top?.[0]?.serial_no || 0, ok = 0, firstId = null;
   for (const [i, f] of files.entries()) {
@@ -515,98 +584,177 @@ $("upBtn").onclick = async () => {
     if (ue) { $("log").textContent += `  failed: ${ue.message}\n`; continue; }
     const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
     serial++;
-    const { data: row, error: de } = await sb.from("media").insert({ title: asAlbum ? f.name.replace(/\.[^.]+$/, "") : (title || f.name.replace(/\.[^.]+$/, "")), type, path, category_id, access, serial_no: serial, preview, album_id: album?.id ?? null, album_order: i }).select("id").single();
+    const { data: row, error: de } = await sb.from("media").insert({ title: f.name, label: null, type, path, access, serial_no: serial, preview, album_id: album.id, album_order: base + i }).select("id").single();
     if (de) { $("log").textContent += `  failed: ${de.message}\n`; await rmFiles([path]); serial--; continue; }
     ok++; firstId = firstId || row.id; $("upProg").style.width = Math.round(((i + 1) / files.length) * 100) + "%";
   }
-  if (album) { if (firstId) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id); else await sb.from("albums").delete().eq("id", album.id); }
-  $("log").textContent += `\nDone: ${ok}/${files.length}${album ? " (saved as one album)" : ""}`;
-  if (ok && $("upNotif").checked) {
-    const body = album ? `${album.title} (${ok} items)` : (title || `${ok} new post${ok > 1 ? "s" : ""}`);
+  if (!dest) { if (firstId) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id); else await sb.from("albums").delete().eq("id", album.id); }
+  $("log").textContent += `\nDone: ${ok}/${files.length} in folder "${album.title}"`;
+  if (ok && !dest && $("upNotif").checked) {
+    const body = `${album.title} (${ok} ${ok > 1 ? "files" : "file"})`;
     await sb.from("notifications").insert({ kind: "post", title: "New post added", body, media_id: firstId, popup: true });
     if ($("upPush").checked) { try { const r = await pushTG("New post added", body); $("log").textContent += `\nTelegram push: ${r.sent ?? 0} sent, ${r.failed ?? 0} failed${r.error ? " (" + r.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
   }
-  picked = []; drawPicked(); $("upBtn").disabled = false; loadAlbumsCache(); if (ok) toast(`${ok} uploaded`);
+  picked = []; drawPicked(); $("upBtn").disabled = false; await loadTree(); fillUpload(); if (ok) toast(`${ok} uploaded`);
 };
+/* ---------- structure: folder tree with Track / Modify / Edit ---------- */
+let tree = [], openSet = new Set(); const toolOpen = new Map();
+const accPill = a => a === "lite" ? '<span class="pill rose">Rose</span>' : a === "expensive" ? '<span class="pill roy">Royal</span>' : '<span class="pill">Public</span>';
+const accSel = (v, cls = "ac") => `<select class="${cls}"><option value="public" ${v === "public" ? "selected" : ""}>Public</option><option value="lite" ${v === "lite" ? "selected" : ""}>Rose (Lite)</option><option value="expensive" ${v === "expensive" ? "selected" : ""}>Royal (Expensive)</option></select>`;
+async function loadTree() { const { data, error } = await sb.rpc("album_tree"); if (error) { toast(error.message + " (run supabase_v6.sql)"); return; } tree = data || []; }
+const byId = id => tree.find(f => f.id === id);
+const kids = id => tree.filter(f => (f.parent_id || null) === (id || null)).sort((a, b) => (a.sort_order - b.sort_order) || (new Date(a.created_at) - new Date(b.created_at)));
+function descIds(id) { const out = [id]; for (let i = 0; i < out.length; i++) tree.forEach(f => { if (f.parent_id === out[i] && !out.includes(f.id)) out.push(f.id); }); return out; }
+function totals(id) { const ids = descIds(id), fs = tree.filter(f => ids.includes(f.id)); return { files: fs.reduce((n, f) => n + Number(f.media_count), 0), views: fs.reduce((n, f) => n + Number(f.views), 0), folders: ids.length - 1 }; }
+function folderPath(id) { const out = []; let c = byId(id), n = 0; while (c && n++ < 30) { out.unshift(c.title); c = byId(c.parent_id); } return out.join(" › "); }
+function folderOpts(sel, top, skip) {
+  const ex = skip ? descIds(skip) : [];
+  return (top ? '<option value="">Top level</option>' : "") + tree.filter(f => !ex.includes(f.id)).map(f => ({ id: f.id, p: folderPath(f.id) })).sort((a, b) => a.p.localeCompare(b.p)).map(f => `<option value="${f.id}" ${f.id === sel ? "selected" : ""}>${esc(f.p)}</option>`).join("");
+}
+async function loadAlbumsCache() { await loadTree(); albumsCache = tree.map(f => ({ id: f.id, title: folderPath(f.id) })); fillUpload(); fillCatFolderSel(); if ($("mFold")) { const c = $("mFold").value; $("mFold").innerHTML = '<option value="">All folders</option>' + folderOpts("", false); $("mFold").value = c; $("bFold").innerHTML = folderOpts("", false); } }
+async function loadStructure() { await loadTree(); drawTree(); }
+function drawTree() {
+  const q = $("stQ").value.trim().toLowerCase(), ok = new Set();
+  if (q) tree.forEach(f => { if (f.title.toLowerCase().includes(q)) { let c = f, n = 0; while (c && n++ < 30) { ok.add(c.id); c = byId(c.parent_id); } } });
+  const t = (pid) => { const l = kids(pid).filter(f => !q || ok.has(f.id)); if (!l.length) return ""; return "<ul>" + l.map(f => { const tt = totals(f.id), k = kids(f.id).length, open = openSet.has(f.id) || !!q;
+    return `<li data-id="${f.id}"><div class="nd ${q && f.title.toLowerCase().includes(q) ? "hit" : ""}">${k ? `<button class="caret" data-a="tog">${open ? "−" : "+"}</button>` : '<span class="caret ghost"></span>'}${ic("folder")}<span class="nm">${esc(f.title)}</span>${accPill(f.access)}${f.pinned ? '<span class="pill g">Pinned</span>' : ""}<span class="mute sm">${f.media_count} files · ${k} folders · ${tt.views} views</span><span class="sp"></span><button class="btn gh xs" data-a="track">Track</button><button class="btn gh xs" data-a="modify">Modify</button><button class="btn gh xs" data-a="edit">Edit</button></div><div data-slot="${f.id}"></div>${open ? t(f.id) : ""}</li>`; }).join("") + "</ul>"; };
+  const tr = tree.length ? t(null) : '<p class="mute" style="padding:10px 0">No folders yet. Upload something or create a folder.</p>';
+  $("stTree").innerHTML = tr || '<p class="mute">Nothing matches.</p>';
+  const top = kids(null).length, all = totals(null); $("stSum").textContent = `${tree.length} folders (${top} at the top level) · ${tree.reduce((n, f) => n + Number(f.media_count), 0)} files`;
+  toolOpen.forEach((tool, id) => { if (byId(id)) renderTool(id, tool); else toolOpen.delete(id); });
+  loadOrphans();
+}
+$("stQ").oninput = drawTree;
+$("stExp").onclick = () => { tree.forEach(f => openSet.add(f.id)); drawTree(); }; $("stCol").onclick = () => { openSet.clear(); drawTree(); };
+$("stNew").onclick = async () => { const t = prompt("Folder name?"); if (!t) return; const { error } = await sb.from("albums").insert({ title: t.trim(), access: "public" }); error ? toast(error.message) : (await loadTree(), drawTree()); };
+$("stTree").onclick = e => {
+  const b = e.target.closest("button[data-a]"); if (!b) return; const li = b.closest("li"), id = li.dataset.id, a = b.dataset.a;
+  if (a === "tog") { openSet.has(id) ? openSet.delete(id) : openSet.add(id); return drawTree(); }
+  if (toolOpen.get(id) === a) { toolOpen.delete(id); const s = li.querySelector(`[data-slot="${id}"]`); if (s) s.innerHTML = ""; return; }
+  toolOpen.set(id, a); renderTool(id, a);
+};
+async function renderTool(id, tool) {
+  const slot = document.querySelector(`[data-slot="${id}"]`), f = byId(id); if (!slot || !f) return;
+  slot.innerHTML = '<div class="panel2 mute sm">Loading...</div>';
+  if (tool === "track") return toolTrack(f, slot); if (tool === "modify") return toolModify(f, slot); return toolEdit(f, slot);
+}
+async function toolTrack(f, slot) {
+  const tt = totals(f.id), cat = cats.find(c => c.id === f.category_id), subs = kids(f.id);
+  const { data: files } = await sb.from("media").select("id,title,label,type,path,views,access,preview,album_order,created_at").eq("album_id", f.id).order("album_order");
+  const urls = await sign((files || []).slice(0, 80).map(m => m.path), 1800), pinNo = f.pinned ? tree.filter(x => x.pinned).sort((a, b) => a.pin_order - b.pin_order).findIndex(x => x.id === f.id) + 1 : 0;
+  slot.innerHTML = `<div class="panel2"><div class="kv"><div><small>Where</small>${esc(folderPath(f.id))}</div><div><small>Access</small>${accPill(f.access)}</div><div><small>Topic</small>${esc(cat?.name || "none")}</div><div><small>Spotlight</small>${f.pinned ? "Pinned, slot " + pinNo : "Not pinned"}</div>
+    <div><small>Files here</small>${f.media_count}</div><div><small>Sub-folders</small>${subs.length}</div><div><small>All files inside</small>${tt.files}</div><div><small>Total views</small>${tt.views}</div><div><small>Created</small>${fdate(f.created_at)}</div><div><small>ID</small><span class="sm">${f.id.slice(0, 8)}…</span></div></div>
+    ${subs.length ? `<p class="sm mute">Folders inside</p><div class="sg" style="margin-bottom:12px">${subs.map(s => `<div class="c"><b>${esc(s.title)}</b><br>${accPill(s.access)} <span class="mute sm">${totals(s.id).files} files</span></div>`).join("")}</div>` : ""}
+    <p class="sm mute">Files in this folder</p>${(files || []).map(m => `<div class="fl"><span></span>${thumb(urls[m.path], m.type)}<div><b class="sm">${esc(m.title || "(unnamed)")}</b> <span class="pill">${m.type}</span> ${accPill(m.access)}<div class="mute sm">Members see: ${m.label ? "“" + esc(m.label) + "”" : "no name (hidden)"} · ${m.views} views${m.id === f.cover_media_id ? " · cover" : ""}</div></div></div>`).join("") || '<p class="mute sm">No files directly in this folder.</p>'}</div>`;
+}
+function toolModify(f, slot) {
+  slot.innerHTML = `<div class="panel2"><div class="cols"><label class="f"><span>Move inside</span><select class="mv">${folderOpts(f.parent_id, true, f.id)}</select></label><label class="f"><span>Access</span>${accSel(f.access)}</label><label class="f"><span>Topic</span><select class="ct">${catOpts(f.category_id)}</select></label><label class="f"><span>Order (small = first)</span><input type="number" class="so" value="${f.sort_order}"></label></div>
+    <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" class="pr" ${f.pinned ? "checked" : ""}> Pin to Spotlight</label><label class="f" style="margin:0"><input type="number" class="po" value="${f.pin_order}" style="width:90px" title="Pin order"></label><label class="ck"><input type="checkbox" class="pp" checked> Apply access to everything inside</label></div>
+    <div class="row"><button class="btn xs sv">Save changes</button><button class="btn gh xs up">Move up</button><button class="btn gh xs dn">Move down</button><button class="btn gh xs cov">Set cover…</button></div><div class="cvx"></div></div>`;
+  const q = s => slot.querySelector(s);
+  q(".sv").onclick = async () => {
+    const parent = q(".mv").value || null, access = q(".ac").value;
+    if (parent !== (f.parent_id || null)) { const { error } = await sb.rpc("admin_move_album", { p_id: f.id, p_parent: parent }); if (error) return toast(error.message); }
+    const { error } = await sb.from("albums").update({ access, category_id: q(".ct").value || null, sort_order: num(q(".so").value), pinned: q(".pr").checked, pin_order: num(q(".po").value) }).eq("id", f.id); if (error) return toast(error.message);
+    if (q(".pp").checked) { const ids = descIds(f.id); await sb.from("albums").update({ access }).in("id", ids); await sb.from("media").update({ access }).in("album_id", ids); }
+    toast("Saved"); await loadTree(); drawTree();
+  };
+  const swap = async d => { const sib = kids(f.parent_id), i = sib.findIndex(x => x.id === f.id), j = i + d; if (j < 0 || j >= sib.length) return; [sib[i], sib[j]] = [sib[j], sib[i]]; await Promise.all(sib.map((x, k) => sb.from("albums").update({ sort_order: k * 10 }).eq("id", x.id))); await loadTree(); drawTree(); };
+  q(".up").onclick = () => swap(-1); q(".dn").onclick = () => swap(1);
+  q(".cov").onclick = async () => {
+    const { data: ms } = await sb.from("media").select("id,path,type").eq("album_id", f.id).order("album_order").limit(60); const urls = await sign((ms || []).map(m => m.path), 1800);
+    q(".cvx").innerHTML = `<p class="sm mute" style="margin-top:12px">Tap the file to use as the cover.</p><div class="cvr">${(ms || []).map(m => `<div class="t ${m.id === f.cover_media_id ? "on" : ""}" data-id="${m.id}">${thumb(urls[m.path], m.type).replace('class="pv"', "")}</div>`).join("") || "<span class='mute sm'>No files here.</span>"}</div>`;
+    q(".cvx").querySelectorAll(".t").forEach(t => t.onclick = async () => { const { error } = await sb.from("albums").update({ cover_media_id: t.dataset.id }).eq("id", f.id); if (error) return toast(error.message); toast("Cover updated"); await loadTree(); });
+  };
+}
+async function delFolder(id) {
+  const ids = descIds(id), { data: ms } = await sb.from("media").select("id,path").in("album_id", ids);
+  if (ms?.length) { await rmFiles(ms.map(m => m.path)); await sb.from("media").delete().in("album_id", ids); }
+  await sb.from("favorites").delete().in("item_id", ids);
+  const { error } = await sb.from("albums").delete().in("id", ids); if (error) return toast(error.message);
+  toolOpen.delete(id); toast("Folder deleted"); await loadTree(); drawTree();
+}
+async function toolEdit(f, slot) {
+  const { data: files } = await sb.from("media").select("id,title,label,type,path,access,album_order,views").eq("album_id", f.id).order("album_order");
+  const urls = await sign((files || []).slice(0, 80).map(m => m.path), 1800), tt = totals(f.id);
+  slot.innerHTML = `<div class="panel2"><div class="row" style="margin-bottom:10px"><input type="text" class="rn" value="${esc(f.title)}" style="flex:1;min-width:180px"><button class="btn xs rs">Rename</button></div>
+    <div class="row" style="margin-bottom:14px"><input type="text" class="sn" placeholder="New sub-folder name" style="flex:1;min-width:180px"><button class="btn gh xs sa">Add sub-folder</button></div>
+    <div class="row between" style="margin-bottom:6px"><b>Files in this folder (${(files || []).length})</b><span class="row"><select class="bm" style="width:auto">${folderOpts("", false, f.id)}</select><button class="btn gh xs bmv">Move selected</button><button class="btn dg xs bdl">Delete selected</button></span></div>
+    <div class="fls">${(files || []).map(m => `<div class="fl" data-m="${m.id}"><input type="checkbox" class="sk">${thumb(urls[m.path], m.type)}<div><div class="mute sm">${esc(m.title || "(unnamed)")} · ${m.views} views</div><div class="fs"><label><span class="sm mute">Display name (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="empty = hidden"></label><label><span class="sm mute">Access</span>${accSel(m.access, "fa")}</label></div>
+      <div class="mini"><button class="btn xs fsv">Save</button><button class="btn gh xs fcv">Make cover</button><button class="btn dg xs fdl">Delete</button></div></div></div>`).join("") || '<p class="mute sm">No files directly in this folder.</p>'}</div>
+    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)"><button class="btn dg xs dfa">Delete this folder and everything inside (${tt.files} files, ${tt.folders} folders)</button></div></div>`;
+  const q = s => slot.querySelector(s);
+  q(".rs").onclick = async () => { const t = q(".rn").value.trim(); if (!t) return; const { error } = await sb.from("albums").update({ title: t }).eq("id", f.id); error ? toast(error.message) : (toast("Renamed"), await loadTree(), drawTree()); };
+  q(".sa").onclick = async () => { const t = q(".sn").value.trim(); if (!t) return; const { error } = await sb.from("albums").insert({ title: t, access: f.access, parent_id: f.id }); error ? toast(error.message) : (openSet.add(f.id), await loadTree(), drawTree()); };
+  const picks = () => [...slot.querySelectorAll(".fl")].filter(r => r.querySelector(".sk")?.checked).map(r => r.dataset.m);
+  q(".bmv").onclick = async () => { const ids = picks(); if (!ids.length) return toast("Tick files first"); const dest = q(".bm").value, a = byId(dest); const { error } = await sb.from("media").update({ album_id: dest, access: a.access }).in("id", ids); error ? toast(error.message) : (toast("Moved"), await loadTree(), drawTree()); };
+  q(".bdl").onclick = async () => { const ids = picks(); if (!ids.length || !confirm(`Delete ${ids.length} file(s)?`)) return; const ps = (files || []).filter(m => ids.includes(m.id)).map(m => m.path); await rmFiles(ps); await sb.from("media").delete().in("id", ids); toast("Deleted"); await loadTree(); drawTree(); };
+  q(".dfa").onclick = () => { if (confirm(`Delete "${f.title}" with ${tt.files} files and ${tt.folders} sub-folders? This cannot be undone.`)) delFolder(f.id); };
+  slot.querySelectorAll(".fl[data-m]").forEach(r => { const m = files.find(x => x.id === r.dataset.m);
+    r.querySelector(".fsv").onclick = async () => { const { error } = await sb.from("media").update({ label: r.querySelector(".lb").value.trim() || null, access: r.querySelector(".fa").value }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
+    r.querySelector(".fcv").onclick = async () => { const { error } = await sb.from("albums").update({ cover_media_id: m.id }).eq("id", f.id); error ? toast(error.message) : toast("Cover updated"); };
+    r.querySelector(".fdl").onclick = async () => { if (!confirm("Delete this file?")) return; await rmFiles([m.path]); await sb.from("media").delete().eq("id", m.id); toast("Deleted"); await loadTree(); drawTree(); };
+  });
+}
+async function loadOrphans() {
+  const { data, count } = await sb.from("media").select("id,title", { count: "exact" }).is("album_id", null).limit(200); const el = $("stOrphans");
+  el.hidden = !count; if (!count) return;
+  el.innerHTML = `<h3>Files without a folder (${count})</h3><p class="sm mute" style="margin-bottom:10px">Members cannot see these. Put each one into its own folder in one tap.</p><button class="btn" id="orW">Give each its own folder</button>`;
+  $("orW").onclick = async () => { for (const m of data) { const { data: a } = await sb.from("albums").insert({ title: (m.title || "Untitled").replace(/\.[^.]+$/, ""), access: "public", cover_media_id: m.id }).select("id").single(); if (a) await sb.from("media").update({ album_id: a.id }).eq("id", m.id); } toast("Done"); await loadTree(); drawTree(); };
+}
 
-/* ---------- library ---------- */
-let mPage = 0, mView = "posts"; const MP = 30; const sel = new Set();
-$("mView").onclick = e => { const b = e.target.closest("button"); if (!b) return; mView = b.dataset.v; document.querySelectorAll("#mView button").forEach(x => x.classList.toggle("on", x === b)); $("mFilters").hidden = mView === "albums"; clrSel(); loadMedia(true); };
+/* ---------- spotlight ---------- */
+async function loadSpot() {
+  await loadTree(); const s = await getSettings(["spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
+  $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
+  const pins = tree.filter(f => f.pinned).sort((a, b) => a.pin_order - b.pin_order);
+  $("spPins").innerHTML = pins.map((f, i) => `<div class="row between line" data-id="${f.id}"><span><b>${i + 1}.</b> ${esc(folderPath(f.id))} ${accPill(f.access)}</span><span class="row"><button class="btn gh xs u">↑</button><button class="btn gh xs d">↓</button><button class="btn dg xs x">Unpin</button></span></div>`).join("") || '<p class="mute sm">Nothing pinned. Home shows new folders, then the popular ones.</p>';
+  $("spPins").querySelectorAll("[data-id]").forEach((r, i) => {
+    const mv = async d => { const j = i + d; if (j < 0 || j >= pins.length) return; [pins[i], pins[j]] = [pins[j], pins[i]]; await Promise.all(pins.map((x, k) => sb.from("albums").update({ pin_order: k }).eq("id", x.id))); loadSpot(); };
+    r.querySelector(".u").onclick = () => mv(-1); r.querySelector(".d").onclick = () => mv(1);
+    r.querySelector(".x").onclick = async () => { await sb.from("albums").update({ pinned: false }).eq("id", r.dataset.id); loadSpot(); };
+  });
+  $("spAdd").innerHTML = folderOpts("", false).split("</option>").filter(o => { const m = /value="([^"]+)"/.exec(o); return m && !byId(m[1]).pinned; }).map(o => o + "</option>").join("");
+  const days = Number($("spDays").value) || 14, since = Date.now() - days * 864e5, top = kids(null).filter(f => !f.pinned);
+  const fresh = top.filter(f => new Date(f.created_at) > since && Number(f.media_count) + totals(f.id).files > 0).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, Number($("spMax").value) || 8);
+  const pop = top.filter(f => !fresh.includes(f) && totals(f.id).files > 0).sort((a, b) => totals(b.id).views - totals(a.id).views).slice(0, Number($("spPop").value) || 0);
+  const c = (f, tag, extra = "") => `<div class="c ${tag === "Pinned" ? "pin" : ""}"><span class="pill ${tag === "Pinned" ? "g" : ""}">${tag}</span> ${extra}<br><b>${esc(f.title)}</b><br>${accPill(f.access)} <span class="mute sm">${totals(f.id).views} views</span></div>`;
+  $("spPrev").innerHTML = `<p class="sm mute">Left slot (stays put): ${pins.length ? pins.map(f => esc(f.title)).join(" → ") : "nothing pinned, so two cards slide"}</p><div class="sg" style="margin:10px 0">${pins.map(f => c(f, "Pinned")).join("")}${fresh.map(f => c(f, "New")).join("")}${pop.map((f, i) => c(f, "Popular", "#" + (i + 1))).join("")}</div><p class="sm mute">Each member sees "New" folders only for their first ${$("spOpens").value || 3} app opens.</p>`;
+}
+$("spAddBtn").onclick = async () => { const id = $("spAdd").value; if (!id) return; const n = tree.filter(f => f.pinned).length; const { error } = await sb.from("albums").update({ pinned: true, pin_order: n }).eq("id", id); error ? toast(error.message) : loadSpot(); };
+$("spSave").onclick = async () => { const r = await Promise.all([setSetting("spot_new_days", Math.max(1, num($("spDays").value) || 14)), setSetting("spot_new_opens", Math.max(1, num($("spOpens").value) || 3)), setSetting("spot_new_max", Math.max(0, num($("spMax").value))), setSetting("spot_pop_n", Math.min(20, Math.max(0, num($("spPop").value))))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); loadSpot(); };
+
+/* ---------- files library ---------- */
+let mPage = 0; const MP = 30; const sel = new Set();
 $("mGo").onclick = () => loadMedia(true); $("mMore").onclick = () => loadMedia(false);
 function drawSel() { $("mBulk").hidden = !sel.size; $("mSelN").textContent = sel.size + " selected"; }
 function clrSel() { sel.clear(); document.querySelectorAll("#mList .pvw input").forEach(c => c.checked = false); drawSel(); }
 $("bClr").onclick = clrSel;
-$("bCatGo").onclick = async () => { const { error } = await sb.from("media").update({ category_id: $("bCat").value || null }).in("id", [...sel]); error ? toast(error.message) : (toast("Category updated"), clrSel(), loadMedia(true)); };
+$("bFoldGo").onclick = async () => { const dest = $("bFold").value, a = byId(dest); if (!a) return toast("Choose a folder"); const { error } = await sb.from("media").update({ album_id: dest, access: a.access }).in("id", [...sel]); error ? toast(error.message) : (toast("Moved"), clrSel(), loadAlbumsCache(), loadMedia(true)); };
 $("bAccGo").onclick = async () => { const { error } = await sb.from("media").update({ access: $("bAcc").value }).in("id", [...sel]); error ? toast(error.message) : (toast("Access updated"), clrSel(), loadMedia(true)); };
 $("bDel").onclick = async () => {
-  if (!confirm(`Delete ${sel.size} item(s) permanently?`)) return;
+  if (!confirm(`Delete ${sel.size} file(s) permanently?`)) return;
   const ids = [...sel], { data } = await sb.from("media").select("id,path").in("id", ids);
   if (data?.length) await rmFiles(data.map(x => x.path));
-  const { error } = await sb.from("media").delete().in("id", ids); error ? toast(error.message) : (toast("Deleted"), clrSel(), loadMedia(true));
-};
-$("bAlbum").onclick = async () => {
-  const title = prompt("Album title?"); if (!title) return;
-  const ids = [...sel], { data: rows } = await sb.from("media").select("id,access,category_id").in("id", ids); if (!rows?.length) return;
-  const { data: a, error } = await sb.from("albums").insert({ title, access: rows[0].access, category_id: rows[0].category_id, cover_media_id: rows[0].id }).select("id").single(); if (error) return toast(error.message);
-  const r = await sb.from("media").update({ album_id: a.id, access: rows[0].access, category_id: rows[0].category_id }).in("id", ids);
-  r.error ? toast(r.error.message) : (toast("Album created"), clrSel(), loadAlbumsCache(), loadMedia(true));
+  const { error } = await sb.from("media").delete().in("id", ids); error ? toast(error.message) : (toast("Deleted"), clrSel(), loadAlbumsCache(), loadMedia(true));
 };
 async function loadMedia(reset) {
   if (reset) { mPage = 0; $("mList").innerHTML = ""; }
-  return mView === "albums" ? loadAlbums() : loadPosts();
-}
-async function loadPosts() {
   let q = sb.from("media").select("*", { count: "exact" }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
-  const f = $("mCat").value; if (f === "none") q = q.is("category_id", null); else if (f) q = q.eq("category_id", f);
+  if ($("mFold").value) q = q.eq("album_id", $("mFold").value);
   if ($("mAcc").value) q = q.eq("access", $("mAcc").value); if ($("mType").value) q = q.eq("type", $("mType").value);
-  const s = $("mQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = q.ilike("title", `%${s}%`);
+  const s = $("mQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = q.or(`title.ilike.%${s}%,label.ilike.%${s}%`);
   const { data, count, error } = await q; if (error) return toast(error.message);
   $("mCount").textContent = count ?? 0; const urls = await sign(data.map(m => m.path));
   data.forEach(m => {
     const d = document.createElement("div"); d.className = "item";
-    d.innerHTML = `<div class="pvw"><input type="checkbox" ${sel.has(m.id) ? "checked" : ""}>${thumb(urls[m.path], m.type)}</div><div><div class="fs">
-      <div><label>Title</label><input type="text" class="t" value="${esc(m.title)}"></div><div><label>Category</label><select class="c">${catOpts(m.category_id)}</select></div>
-      <div><label>Access</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div>
-      <div><label>Album</label><select class="al">${albOpts(m.album_id)}</select></div></div>
-      <label class="ck" style="margin-top:8px"><input type="checkbox" class="ft" ${m.featured ? "checked" : ""}> Feature in Spotlight</label>
+    d.innerHTML = `<div class="pvw"><input type="checkbox" ${sel.has(m.id) ? "checked" : ""}>${thumb(urls[m.path], m.type)}</div><div><div class="mute sm" style="margin-bottom:6px">${esc(m.title || "(unnamed)")}</div><div class="fs">
+      <div><label>Display name (members see it)</label><input type="text" class="t" value="${esc(m.label || "")}" placeholder="empty = hidden"></div><div><label>Folder</label><select class="al">${folderOpts(m.album_id, false)}</select></div>
+      <div><label>Access</label>${accSel(m.access, "a")}</div></div>
       <div class="row between" style="margin-top:8px"><span class="mute sm">${m.views} views · ${fdate(m.created_at)} ${m.preview ? "" : '<span class="pill r">no preview</span>'}</span><span class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div></div>`;
-    d.querySelector(".a").value = m.access;
     d.querySelector(".pvw input").onchange = e => { e.target.checked ? sel.add(m.id) : sel.delete(m.id); drawSel(); };
-    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ title: d.querySelector(".t").value.trim() || null, category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, album_id: d.querySelector(".al").value || null, featured: d.querySelector(".ft").checked }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
-    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post?")) return; await rmFiles([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : d.remove(); };
-    $("mList").appendChild(d);
-  });
-  mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
-}
-async function loadAlbums() {
-  const { data: al, count, error } = await sb.from("albums").select("*", { count: "exact" }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1); if (error) return toast(error.message);
-  $("mCount").textContent = count ?? 0;
-  const ids = al.map(a => a.id), { data: ms } = ids.length ? await sb.from("media").select("id,path,type,album_id,title").in("album_id", ids).order("album_order") : { data: [] };
-  const urls = await sign((ms || []).map(m => m.path));
-  al.forEach(a => {
-    const items = (ms || []).filter(m => m.album_id === a.id), cover = items.find(m => m.id === a.cover_media_id) || items[0];
-    const d = document.createElement("div"); d.className = "item";
-    d.innerHTML = `${thumb(cover && urls[cover.path], cover?.type)}<div><div class="fs"><div><label>Album title</label><input type="text" class="t" value="${esc(a.title)}"></div><div><label>Category</label><select class="c">${catOpts(a.category_id)}</select></div>
-      <div><label>Access (applies to all items)</label><select class="a"><option value="public">Public</option><option value="premium">Premium</option><option value="private">Private</option></select></div></div>
-      <label class="ck" style="margin-top:8px"><input type="checkbox" class="ft" ${a.featured ? "checked" : ""}> Feature in Spotlight</label>
-      <div class="row between" style="margin-top:8px"><span class="mute sm">${items.length} items · ${fdate(a.created_at)}</span><span class="row"><button class="btn gh xs ed">Cover and items</button><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></span></div><div class="ex" hidden></div></div>`;
-    d.querySelector(".a").value = a.access;
-    d.querySelector(".sv").onclick = async () => {
-      const patch = { title: d.querySelector(".t").value.trim() || "Untitled", category_id: d.querySelector(".c").value || null, access: d.querySelector(".a").value, featured: d.querySelector(".ft").checked };
-      const { error } = await sb.from("albums").update(patch).eq("id", a.id); if (error) return toast(error.message);
-      await sb.from("media").update({ access: patch.access, category_id: patch.category_id }).eq("album_id", a.id); toast("Saved"); loadAlbumsCache();
-    };
-    d.querySelector(".dl").onclick = async () => {
-      const files = confirm(`Delete album "${a.title}"?\n\nOK = delete the album AND its ${items.length} files\nCancel = keep the files as separate posts (next step)`);
-      if (!files && !confirm("Delete only the album and keep its files as separate posts?")) return;
-      if (files) { await rmFiles(items.map(m => (ms.find(x => x.id === m.id) || {}).path).filter(Boolean)); await sb.from("media").delete().eq("album_id", a.id); }
-      const { error } = await sb.from("albums").delete().eq("id", a.id); error ? toast(error.message) : (toast("Album deleted"), loadAlbumsCache(), loadMedia(true));
-    };
-    d.querySelector(".ed").onclick = () => {
-      const ex = d.querySelector(".ex"); ex.hidden = !ex.hidden; if (ex.hidden) return;
-      ex.innerHTML = `<p class="sm mute" style="margin-top:12px">Tap a picture to make it the cover.</p><div class="cvr">${items.map(m => `<div class="t ${m.id === (cover && cover.id) ? "on" : ""}" data-id="${m.id}">${thumb(urls[m.path], m.type).replace('class="pv"', "")}</div>`).join("")}</div>`;
-      ex.querySelectorAll(".t").forEach(t => t.onclick = async () => { const { error } = await sb.from("albums").update({ cover_media_id: t.dataset.id }).eq("id", a.id); if (error) return toast(error.message); ex.querySelectorAll(".t").forEach(x => x.classList.toggle("on", x === t)); toast("Cover updated"); });
-    };
+    d.querySelector(".sv").onclick = async () => { const { error } = await sb.from("media").update({ label: d.querySelector(".t").value.trim() || null, album_id: d.querySelector(".al").value || null, access: d.querySelector(".a").value }).eq("id", m.id); error ? toast(error.message) : (toast("Saved"), loadAlbumsCache()); };
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this file?")) return; await rmFiles([m.path]); const { error } = await sb.from("media").delete().eq("id", m.id); error ? toast(error.message) : (d.remove(), loadAlbumsCache()); };
     $("mList").appendChild(d);
   });
   mPage++; $("mMore").hidden = mPage * MP >= (count ?? 0);
@@ -656,24 +804,24 @@ function userQuery(limit) {
   let q = sb.from("profiles").select("*").order("created_at", { ascending: false }).limit(limit);
   const s = $("uQ").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
   if (s) q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`);
-  const f = $("uF").value; if (f === "premium") q = q.gt("premium_until", new Date().toISOString()); else if (f === "private") q = q.eq("private_access", true); else if (f === "banned") q = q.eq("is_banned", true);
+  const f = $("uF").value, iso = new Date().toISOString(); if (f === "rose") q = q.gt("lite_until", iso); else if (f === "royal") q = q.gt("expensive_until", iso); else if (f === "banned") q = q.eq("is_banned", true);
   return q;
 }
-$("uCsv").onclick = async () => { const { data, error } = await userQuery(5000); if (error) return toast(error.message); csv("users.csv", [["tg_id", "name", "username", "premium_until", "private", "banned", "invites", "joined"], ...data.map(u => [u.tg_id, nm(u), u.username, u.premium_until, u.private_access, u.is_banned, u.ref_count, u.created_at])]); };
+$("uCsv").onclick = async () => { const { data, error } = await userQuery(5000); if (error) return toast(error.message); csv("users.csv", [["tg_id", "name", "username", "rose_until", "royal_until", "banned", "invites", "joined"], ...data.map(u => [u.tg_id, nm(u), u.username, u.lite_until, u.expensive_until, u.is_banned, u.ref_count, u.created_at])]); };
+const tleft = d => { const ms = new Date(d) - Date.now(); if (ms <= 0) return "ended"; const dd = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `${dd}d ${h}h ${m}m left`; };
 async function loadUsers() {
   const { data, error } = await userQuery(50); if (error) return toast(error.message);
   const box = $("uList"); box.innerHTML = data.length ? "" : '<p class="mute" style="padding:12px 0">No users found.</p>';
   data.forEach(u => {
-    const prem = u.premium_until && new Date(u.premium_until) > new Date();
     const d = document.createElement("div"); d.className = "line";
-    d.innerHTML = `<div class="row"><b>${esc(nm(u))}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${prem ? `<span class="pill g">Premium till ${fdate(u.premium_until)}</span>` : ""}${u.private_access ? '<span class="pill v">Private</span>' : ""}${u.is_banned ? '<span class="pill r">Banned</span>' : ""}${u.notify === false ? '<span class="pill">Notifications off</span>' : ""}</div>
-      <div class="mute sm" style="margin:3px 0 8px">ID ${u.tg_id}  ·  Invites ${u.ref_count}  ·  Joined ${fdate(u.created_at)}  ·  Seen ${u.last_seen ? ago(u.last_seen) : "-"}</div>
-      <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><input type="number" placeholder="days" class="cu" style="width:80px;padding:5px 8px"><button class="btn gh xs ca">Add</button><button class="btn gh xs rm">Remove Premium</button><button class="btn gh xs ms">Message</button>
-      <label class="ck"><input type="checkbox" class="pa" ${u.private_access ? "checked" : ""}> Private</label><label class="ck"><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label></div>`;
-    const add = async days => { if (!days) return; const base = Math.max(Date.now(), u.premium_until ? new Date(u.premium_until).getTime() : 0); const { error } = await sb.from("profiles").update({ premium_until: new Date(base + days * 86400000).toISOString() }).eq("tg_id", u.tg_id); error ? toast(error.message) : loadUsers(); };
-    d.querySelectorAll("[data-d]").forEach(b => b.onclick = () => add(+b.dataset.d)); d.querySelector(".ca").onclick = () => add(num(d.querySelector(".cu").value));
-    d.querySelector(".rm").onclick = async () => { if (!confirm("Remove Premium from this user?")) return; await sb.from("profiles").update({ premium_until: null }).eq("tg_id", u.tg_id); loadUsers(); };
-    d.querySelector(".pa").onchange = async e => { await sb.from("profiles").update({ private_access: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
+    d.innerHTML = `<div class="row"><b>${esc(nm(u))}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${active(u.lite_until) ? `<span class="pill rose">Rose · ${tleft(u.lite_until)}</span>` : ""}${active(u.expensive_until) ? `<span class="pill roy">Royal · ${tleft(u.expensive_until)}</span>` : ""}${u.is_banned ? '<span class="pill r">Banned</span>' : ""}${u.notify === false ? '<span class="pill">Notifications off</span>' : ""}</div>
+      <div class="mute sm" style="margin:3px 0 8px">ID ${u.tg_id}  ·  Invites ${u.ref_count}${u.referred_by ? "  ·  Invited by " + u.referred_by : ""}  ·  Joined ${fdate(u.created_at)}  ·  Seen ${u.last_seen ? ago(u.last_seen) : "-"}</div>
+      <div class="row"><select class="tr" style="width:auto"><option value="lite">Rose</option><option value="expensive">Royal</option></select><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><input type="number" placeholder="days" class="cu" style="width:80px;padding:5px 8px"><button class="btn gh xs ca">Add</button><button class="btn gh xs cut">Cut days</button><button class="btn gh xs rm">Remove all Premium</button><button class="btn gh xs ms">Message</button>
+      <label class="ck"><input type="checkbox" class="bn" ${u.is_banned ? "checked" : ""}> Ban</label></div>`;
+    const tier = () => d.querySelector(".tr").value;
+    const add = async days => { if (!days) return; const { error } = await sb.rpc("admin_grant_tier", { p_tg: u.tg_id, p_tier: tier(), p_days: days }); error ? toast(error.message) : loadUsers(); };
+    d.querySelectorAll("[data-d]").forEach(b => b.onclick = () => add(+b.dataset.d)); d.querySelector(".ca").onclick = () => add(num(d.querySelector(".cu").value)); d.querySelector(".cut").onclick = () => add(-Math.abs(num(d.querySelector(".cu").value)));
+    d.querySelector(".rm").onclick = async () => { if (!confirm("Remove Rose and Royal from this user?")) return; await sb.rpc("admin_grant_tier", { p_tg: u.tg_id, p_tier: "none", p_days: 0 }); loadUsers(); };
     d.querySelector(".bn").onchange = async e => { await sb.from("profiles").update({ is_banned: e.target.checked }).eq("tg_id", u.tg_id); loadUsers(); };
     d.querySelector(".ms").onclick = async () => { const t = prompt("Message to " + nm(u) + ":"); if (!t) return; const { error } = await sb.from("notifications").insert({ kind: "custom", title: "Message from admin", body: t, tg_id: u.tg_id, popup: true }); error ? toast(error.message) : toast("Sent"); };
     box.appendChild(d);
@@ -716,40 +864,42 @@ async function loadPays(reset) {
 $("mpGo").onclick = async () => {
   const tg = $("mpTg").value.trim(), plan = plansCache.find(p => p.id === $("mpPlan").value); if (!/^\d+$/.test(tg) || !plan) return toast("Enter a Telegram ID and choose a plan");
   const { data: pr } = await sb.from("profiles").select("tg_id").eq("tg_id", Number(tg)).maybeSingle(); if (!pr) return toast("That user hasn't opened the app yet");
-  const { data: row, error } = await sb.from("payments").insert({ tg_id: Number(tg), plan_id: plan.id, plan_name: plan.name, days: plan.days, grants_private: !!plan.grants_private, method: "manual", currency: "USD", amount: num($("mpAmt").value), base_amount: num($("mpAmt").value), note: $("mpNote").value.trim() || "Manual sale" }).select("id").single();
+  const { data: row, error } = await sb.from("payments").insert({ tg_id: Number(tg), plan_id: plan.id, plan_name: plan.name, days: plan.days, tier: plan.tier || "lite", method: "manual", currency: "USD", amount: num($("mpAmt").value), base_amount: num($("mpAmt").value), note: $("mpNote").value.trim() || "Manual sale" }).select("id").single();
   if (error) return toast(error.message);
   const { data: r, error: e2 } = await sb.rpc("admin_approve_payment", { p_id: row.id, p_note: null }); if (e2 || !r?.ok) return toast(e2?.message || "Failed");
   toast("Recorded. Premium activated."); $("mpTg").value = ""; $("mpAmt").value = ""; $("mpNote").value = ""; loadPays(true); loadPayStats();
 };
 
-/* ---------- premium: plans, promos, codes ---------- */
+/* ---------- plans, codes, promos ---------- */
 async function loadPremium() {
-  const [pm, mem, cu, pl, st, pc] = await Promise.all([
-    sb.from("media").select("id", { count: "exact", head: true }).eq("access", "premium"),
-    sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("premium_until", new Date().toISOString()),
+  const iso = new Date().toISOString();
+  const [lk, rose, roy, cu, pl, st, pc] = await Promise.all([
+    sb.from("albums").select("id", { count: "exact", head: true }).neq("access", "public"),
+    sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("lite_until", iso),
+    sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("expensive_until", iso),
     sb.from("codes").select("used_count,max_uses"), sb.from("plans").select("*").order("sort_order"),
-    getSettings(["premium_intro", "how_to_buy", "contact_link"]), sb.from("promos").select("*").order("created_at", { ascending: false }).limit(100),
+    getSettings(["premium_intro", "contact_link"]), PAY_ON ? sb.from("promos").select("*").order("created_at", { ascending: false }).limit(100) : Promise.resolve({ data: [] }),
   ]);
-  const codes = cu.data || [], used = codes.reduce((a, c) => a + c.used_count, 0);
-  $("pStats").innerHTML = [[pm.count ?? 0, "Premium posts"], [mem.count ?? 0, "Active members"], [codes.length, "Codes made"], [used, "Codes used"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
-  $("sIntro").value = st.premium_intro || ""; $("sHow").value = st.how_to_buy || ""; $("sContact").value = st.contact_link || "";
+  const codes = cu.data || [], used = codes.reduce((a, c) => a + (c.used_count || 0), 0);
+  $("pStats").innerHTML = [[lk.count ?? 0, "Locked folders"], [rose.count ?? 0, "Rose members"], [roy.count ?? 0, "Royal members"], [codes.length, "Codes made"], [used, "Codes used"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+  $("sIntro").value = st.premium_intro || ""; $("sContact").value = st.contact_link || ""; $("prCard").hidden = !PAY_ON;
   plansCache = pl.data || []; drawPlans(plansCache); fillPlanSel("prPlan", true); drawPromos(pc.data || []); loadCodes();
 }
 function drawPlans(list) {
   $("plList").innerHTML = list.map(p => `<div class="line" data-id="${p.id}"><div class="cols">
-    <label class="f"><span>Name</span><input type="text" class="n" value="${esc(p.name)}"></label><label class="f"><span>Days</span><input type="number" class="d" value="${p.days}"></label>
-    <label class="f"><span>Price (USDT)</span><input type="number" step="0.01" class="pu" value="${p.price_usdt ?? ""}"></label><label class="f"><span>Price (Stars)</span><input type="number" class="ps" value="${p.price_stars ?? ""}"></label>
-    <label class="f"><span>Old price label</span><input type="text" class="op" value="${esc(p.old_price || "")}"></label><label class="f"><span>Badge</span><input type="text" class="b" value="${esc(p.badge || "")}"></label>
-    <label class="f"><span>Order</span><input type="number" class="o" value="${p.sort_order}"></label></div>
-    <label class="f"><span>Perks (one per line)</span><textarea class="pk" style="min-height:70px">${esc(p.perks || "")}</textarea></label>
-    <div class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><label class="ck"><input type="checkbox" class="gp" ${p.grants_private ? "checked" : ""}> Also grants Private access</label><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></div></div>`).join("") || '<p class="mute">No plans yet.</p>';
+    <label class="f"><span>Name</span><input type="text" class="n" value="${esc(p.name)}"></label>
+    <label class="f"><span>Tier</span><select class="tr"><option value="lite" ${p.tier !== "expensive" ? "selected" : ""}>Rose (Lite)</option><option value="expensive" ${p.tier === "expensive" ? "selected" : ""}>Royal (Expensive)</option></select></label>
+    <label class="f"><span>Time (days)</span><input type="number" class="d" value="${p.days}"></label>
+    <label class="f"><span>Badge</span><input type="text" class="b" value="${esc(p.badge || "")}"></label><label class="f"><span>Order</span><input type="number" class="o" value="${p.sort_order}"></label></div>
+    <label class="f"><span>Details (one per line)</span><textarea class="pk" style="min-height:70px">${esc(p.perks || "")}</textarea></label>
+    <div class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Shown to members</label><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete</button></div></div>`).join("") || '<p class="mute">No plans yet. Add one Rose and one Royal plan.</p>';
   $("plList").querySelectorAll("[data-id]").forEach(r => {
-    r.querySelector(".sv").onclick = async () => { const pu = r.querySelector(".pu").value, ps = r.querySelector(".ps").value; const { error } = await sb.from("plans").update({ name: r.querySelector(".n").value.trim(), days: Math.max(1, num(r.querySelector(".d").value)), price_usdt: pu === "" ? null : num(pu), price_stars: ps === "" ? null : Math.max(1, Math.round(num(ps))), old_price: r.querySelector(".op").value.trim() || null, badge: r.querySelector(".b").value.trim() || null, sort_order: num(r.querySelector(".o").value), perks: r.querySelector(".pk").value, active: r.querySelector(".ac").checked, grants_private: r.querySelector(".gp").checked }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadPlansCache()); };
-    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this plan? Past payments keep their record.")) return; await sb.from("plans").delete().eq("id", r.dataset.id); loadPremium(); };
+    r.querySelector(".sv").onclick = async () => { const { error } = await sb.from("plans").update({ name: r.querySelector(".n").value.trim(), tier: r.querySelector(".tr").value, days: Math.max(1, num(r.querySelector(".d").value)), badge: r.querySelector(".b").value.trim() || null, sort_order: num(r.querySelector(".o").value), perks: r.querySelector(".pk").value, active: r.querySelector(".ac").checked }).eq("id", r.dataset.id); error ? toast(error.message) : (toast("Saved"), loadPlansCache()); };
+    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this plan?")) return; await sb.from("plans").delete().eq("id", r.dataset.id); loadPremium(); };
   });
 }
-$("plAdd").onclick = async () => { const { error } = await sb.from("plans").insert({ name: "New plan", days: 30, price: "", sort_order: 99 }); error ? toast(error.message) : loadPremium(); };
-$("sSave").onclick = async () => { const r = await Promise.all([setSetting("premium_intro", $("sIntro").value.trim()), setSetting("how_to_buy", $("sHow").value), setSetting("contact_link", $("sContact").value.trim())]); toast(r.some(x => x.error) ? "Error" : "Saved"); };
+$("plAdd").onclick = async () => { const { error } = await sb.from("plans").insert({ name: "New plan", days: 30, price: "", tier: "lite", sort_order: 99 }); error ? toast(error.message) : loadPremium(); };
+$("sSave").onclick = async () => { const r = await Promise.all([setSetting("premium_intro", $("sIntro").value.trim()), setSetting("contact_link", $("sContact").value.trim())]); toast(r.some(x => x.error) ? "Error" : "Saved"); };
 
 const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 function genCode() { const b = crypto.getRandomValues(new Uint8Array(12)); const s = [...b].map(x => ALPHA[x % ALPHA.length]).join(""); return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`; }
@@ -763,7 +913,7 @@ $("prGo").onclick = async () => {
   $("prCode").value = ""; toast("Promo " + code + " created"); loadPremium();
 };
 function drawPromos(list) {
-  $("prList").innerHTML = list.map(p => `<div class="row between line" data-c="${p.code}"><div><code class="cd">${esc(p.code)}</code> ${p.percent ? `<span class="pill g">${p.percent}% off</span>` : ""} ${p.bonus_days ? `<span class="pill g">+${p.bonus_days}d</span>` : ""} <span class="pill">${p.used_count}/${p.max_uses}</span>${p.plan_id ? ` <span class="mute sm">${esc(plansCache.find(x => x.id === p.plan_id)?.name || "one plan")}</span>` : ""}${p.expires_at ? ` <span class="mute sm">till ${fdate(p.expires_at)}</span>` : ""}${p.note ? ` <span class="mute sm">${esc(p.note)}</span>` : ""}</div>
+  $("prList").innerHTML = list.map(p => `<div class="row between line" data-c="${p.code}"><div><code class="cd">${esc(p.code)}</code> ${p.percent ? `<span class="pill g">${p.percent}% off</span>` : ""} ${p.bonus_days ? `<span class="pill g">+${p.bonus_days}d</span>` : ""} <span class="pill">${p.used_count}/${p.max_uses}</span></div>
     <span class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute">No promo codes yet.</p>';
   $("prList").querySelectorAll("[data-c]").forEach(r => {
     r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied"));
@@ -773,17 +923,17 @@ function drawPromos(list) {
 }
 $("cgGo").onclick = async () => {
   const n = Math.min(100, Math.max(1, num($("cgN").value) || 1)), days = num($("cgD").value), uses = num($("cgU").value) || 1; if (!days) return toast("Enter the days");
-  const exp = $("cgE").value ? new Date($("cgE").value + "T23:59:59").toISOString() : null, note = $("cgNote").value.trim() || null;
-  const { error } = await sb.from("codes").insert(Array.from({ length: n }, () => ({ code: genCode(), days, max_uses: uses, expires_at: exp, note }))); if (error) return toast(error.message);
+  const exp = $("cgE").value ? new Date($("cgE").value + "T23:59:59").toISOString() : null, note = $("cgNote").value.trim() || null, tier = $("cgT").value;
+  const { error } = await sb.from("codes").insert(Array.from({ length: n }, () => ({ code: genCode(), days, tier, source: "admin", max_uses: uses, expires_at: exp, note }))); if (error) return toast(error.message);
   toast(`${n} codes created`); loadCodes(); loadPremium();
 };
 let cFilter = "unused", codeCache = [];
 $("cFilter").onclick = e => { const b = e.target.closest("button"); if (!b) return; cFilter = b.dataset.v; document.querySelectorAll("#cFilter button").forEach(x => x.classList.toggle("on", x === b)); drawCodes(); };
 async function loadCodes() { const { data } = await sb.from("codes").select("*").order("created_at", { ascending: false }).limit(300); codeCache = data || []; drawCodes(); }
-const unusedList = () => codeCache.filter(c => c.used_count < c.max_uses && !(c.expires_at && new Date(c.expires_at) < new Date()));
+const unusedList = () => codeCache.filter(c => (c.used_count || 0) < c.max_uses && !(c.expires_at && new Date(c.expires_at) < new Date()));
 function drawCodes() {
   const list = cFilter === "all" ? codeCache : cFilter === "used" ? codeCache.filter(c => c.used_count > 0) : unusedList();
-  $("cList").innerHTML = list.map(c => `<div class="row between line" data-c="${c.code}"><div><code class="cd">${c.code}</code> <span class="pill">${c.days}d</span> <span class="pill ${c.used_count ? "g" : ""}">${c.used_count}/${c.max_uses}</span>${c.expires_at ? ` <span class="mute sm">till ${fdate(c.expires_at)}</span>` : ""}${c.note ? ` <span class="mute sm">${esc(c.note)}</span>` : ""}</div><span class="row"><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute" style="padding:10px 0">No codes.</p>';
+  $("cList").innerHTML = list.map(c => `<div class="row between line" data-c="${c.code}"><div><code class="cd">${c.code}</code> <span class="pill ${c.tier === "expensive" ? "roy" : "rose"}">${c.tier === "expensive" ? "Royal" : "Rose"} ${c.days}d</span> <span class="pill ${c.used_count ? "g" : ""}">${c.used_count || 0}/${c.max_uses}</span>${c.source === "referral" ? ` <span class="pill v">invite reward${c.owner_tg ? " · " + c.owner_tg : ""}</span>` : ""}${c.expires_at ? ` <span class="mute sm">till ${fdate(c.expires_at)}</span>` : ""}${c.note ? ` <span class="mute sm">${esc(c.note)}</span>` : ""}</div><span class="row"><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute" style="padding:10px 0">No codes.</p>';
   $("cList").querySelectorAll("[data-c]").forEach(r => { r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied")); r.querySelector(".dl").onclick = async () => { await sb.from("codes").delete().eq("code", r.dataset.c); loadCodes(); }; });
 }
 $("cCopy").onclick = () => { const t = unusedList().map(c => c.code).join("\n"); navigator.clipboard.writeText(t).then(() => toast(`${unusedList().length} codes copied`)); };
@@ -823,9 +973,10 @@ async function openTicket(t) {
   tkOpen = t; $("tkListWrap").hidden = true; $("tkThread").hidden = false;
   const { data: msgs } = await sb.from("ticket_messages").select("*").eq("ticket_id", t.id).order("created_at"); const p = t.profiles || {};
   $("tkThread").innerHTML = `<button class="btn gh xs" id="tkBack" style="margin-bottom:14px">Back</button><div class="card"><div class="row between"><div><h3 style="margin:0">${esc(t.subject)}</h3><div class="mute sm">${esc(nm(p))}${p.username ? " @" + esc(p.username) : ""}  ·  ID ${t.tg_id}  ·  ${t.category}</div></div><span class="pill ${t.status === "open" ? "g" : ""}">${t.status}</span></div>
-    <div style="margin:18px 0">${(msgs || []).map(m => `<div class="bub ${m.from_admin ? "me" : ""}">${esc(m.body)}<small>${m.from_admin ? "Admin" : "User"}  ·  ${ago(m.created_at)}</small></div>`).join("")}</div>
+    <div style="margin:18px 0">${(msgs || []).map(m => `<div class="bub ${m.from_admin ? "me" : ""}">${esc(m.body)}<small>${m.from_admin ? "You" : esc(nm(p))}  ·  ${ago(m.created_at)}</small></div>`).join("")}</div>
     ${t.status === "closed" ? '<button class="btn gh" id="tkRe">Reopen</button>' : `<textarea id="tkR" placeholder="Write a reply"></textarea><div class="row" style="margin-top:10px"><button class="btn" id="tkSend">Send reply</button><button class="btn gh" id="tkClose">Close ticket</button></div>`}</div>`;
   $("tkBack").onclick = () => { tkOpen = null; showList(); loadTickets(); };
+  $("tkR")?.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("tkSend").click(); } });
   const setStatus = async s => { await sb.from("tickets").update({ status: s, updated_at: new Date().toISOString() }).eq("id", t.id); t.status = s; openTicket(t); badges(); };
   $("tkSend")?.addEventListener("click", async () => {
     const body = $("tkR").value.trim(); if (!body) return;
@@ -837,37 +988,56 @@ async function openTicket(t) {
   $("tkClose")?.addEventListener("click", () => setStatus("closed")); $("tkRe")?.addEventListener("click", () => setStatus("open"));
 }
 
-/* ---------- user uploads ---------- */
-let uuPage = 0; const UP = 30;
+/* ---------- member posts (review) ---------- */
+let uuPage = 0; const UP = 20; const uuSel = new Set();
 $("uuGo").onclick = () => loadUU(true); $("uuMore").onclick = () => loadUU(false);
+const drawUUSel = () => { $("uuBulk").hidden = !uuSel.size; $("uuSelN").textContent = uuSel.size + " selected"; };
+$("uuBC").onclick = () => { uuSel.clear(); document.querySelectorAll("#uuList .usk").forEach(c => c.checked = false); drawUUSel(); };
+const bulkReview = async st => { const note = st === "rejected" ? (prompt("Reason (optional, the member will see it):") || null) : null; for (const id of [...uuSel]) await sb.rpc("admin_review_post", { p_id: id, p_status: st, p_note: note, p_title: null }); uuSel.clear(); drawUUSel(); loadUU(true); badges(); toast("Done"); };
+$("uuBA").onclick = () => bulkReview("approved"); $("uuBR").onclick = () => bulkReview("rejected");
 async function loadUU(reset) {
   if (reset) { uuPage = 0; $("uuList").innerHTML = ""; }
-  let q = sb.from("user_media").select("*, profiles(first_name,last_name,display_name,username)", { count: "exact" }).order("created_at", { ascending: false }).range(uuPage * UP, uuPage * UP + UP - 1);
-  const s = $("uuQ").value.trim(); if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); if ($("uuS").value) q = q.eq("share_status", $("uuS").value);
+  let q = sb.from("user_posts").select("*, profiles(first_name,last_name,display_name,username), user_media(id,path,type,size_bytes,preview)", { count: "exact" }).order("created_at", { ascending: false }).range(uuPage * UP, uuPage * UP + UP - 1);
+  const s = $("uuQ").value.trim(); if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); if ($("uuS").value) q = q.eq("status", $("uuS").value);
   const { data, count, error } = await q; if (error) return toast(error.message);
-  $("uuInfo").textContent = `${count ?? 0} files`; const urls = await sign((data || []).map(m => m.path));
-  (data || []).forEach(m => {
-    const d = document.createElement("div"); d.className = "item";
-    d.innerHTML = `${thumb(urls[m.path], m.type)}<div><b>${esc(m.title || "Untitled")}</b><div class="mute sm">${esc(nm(m.profiles))} · ID ${m.tg_id} · ${(m.size_bytes / 1048576).toFixed(1)} MB · ${fdate(m.created_at)}</div><div class="row" style="margin-top:8px">${m.share_status !== "none" ? `<span class="pill ${m.share_status === "approved" ? "ok" : m.share_status === "pending" ? "warn" : "r"}">${{ pending: "Waiting", approved: "In Community", rejected: "Rejected" }[m.share_status]}</span>` : ""}${m.share_status !== "approved" && m.share_status !== "none" ? '<button class="btn xs ap">Approve</button>' : ""}${m.share_status === "approved" || m.share_status === "pending" ? '<button class="btn gh xs rj">' + (m.share_status === "approved" ? "Remove from Community" : "Reject") + "</button>" : ""}<button class="btn dg xs dl">Delete</button></div></div>`;
-    d.querySelector(".ap")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "approved", shared_at: new Date().toISOString() }).eq("id", m.id); loadUU(true); badges(); });
-    d.querySelector(".rj")?.addEventListener("click", async () => { await sb.from("user_media").update({ share_status: "rejected" }).eq("id", m.id); loadUU(true); badges(); });
-    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this file?")) return; await rmFiles([m.path]); await sb.from("user_media").delete().eq("id", m.id); d.remove(); };
+  $("uuInfo").textContent = `${count ?? 0} posts`; const urls = await sign((data || []).flatMap(p => (p.user_media || []).slice(0, 8).map(m => m.path)));
+  (data || []).forEach(p => {
+    const fl = p.user_media || [], bytes = fl.reduce((n, m) => n + (m.size_bytes || 0), 0), d = document.createElement("div"); d.className = "line";
+    d.innerHTML = `<div class="row" style="align-items:flex-start"><input type="checkbox" class="usk" ${uuSel.has(p.id) ? "checked" : ""} style="margin-top:6px"><div style="flex:1;min-width:220px"><div class="tg" style="margin:0 0 8px">${fl.slice(0, 8).map(m => `<div class="t">${urls[m.path] ? (m.type === "video" ? `<video muted preload="metadata" src="${esc(urls[m.path])}#t=0.5"></video>` : `<a href="${esc(urls[m.path])}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[m.path])}"></a>`) : ""}</div>`).join("")}</div>
+      <div class="row"><input type="text" class="t" value="${esc(p.title || "")}" placeholder="Title" style="flex:1;min-width:160px"><span class="pill ${p.status === "approved" ? "ok" : p.status === "pending" ? "warn" : p.status === "rejected" ? "r" : ""}">${{ pending: "Waiting", approved: "Approved", rejected: "Declined", private: "Private (old)" }[p.status]}</span></div>
+      <div class="mute sm" style="margin:5px 0">${esc(nm(p.profiles))}${p.profiles?.username ? " @" + esc(p.profiles.username) : ""} · ID ${p.tg_id} · ${fl.length} file${fl.length === 1 ? "" : "s"} · ${(bytes / 1048576).toFixed(1)} MB · ${fdate(p.created_at)} · 👍 ${p.likes} 👎 ${p.dislikes} · ${p.views} views</div>
+      <div class="row"><input type="text" class="nt" value="${esc(p.note || "")}" placeholder="Note to member (for decline)" style="flex:1;min-width:160px"><button class="btn xs ap">Approve</button><button class="btn dg xs rj">Decline</button><button class="btn gh xs sv">Save title</button><button class="btn dg xs dl">Delete</button></div></div></div>`;
+    d.querySelector(".usk").onchange = e => { e.target.checked ? uuSel.add(p.id) : uuSel.delete(p.id); drawUUSel(); };
+    const rev = async st => { const { error } = await sb.rpc("admin_review_post", { p_id: p.id, p_status: st, p_note: d.querySelector(".nt").value.trim() || null, p_title: d.querySelector(".t").value.trim() || null }); error ? toast(error.message) : (toast("Done"), loadUU(true), badges()); };
+    d.querySelector(".ap").onclick = () => rev("approved"); d.querySelector(".rj").onclick = () => rev("rejected");
+    d.querySelector(".sv").onclick = () => rev(p.status);
+    d.querySelector(".dl").onclick = async () => { if (!confirm("Delete this post and its files?")) return; await rmFiles(fl.map(m => m.path)); await sb.from("favorites").delete().eq("item_id", p.id); await sb.from("user_posts").delete().eq("id", p.id); d.remove(); badges(); };
     $("uuList").appendChild(d);
   });
   uuPage++; $("uuMore").hidden = uuPage * UP >= (count ?? 0);
-  if (!$("uuList").children.length) $("uuList").innerHTML = '<p class="mute" style="padding:10px 0">Nothing uploaded yet.</p>';
+  if (!$("uuList").children.length) $("uuList").innerHTML = '<p class="mute" style="padding:10px 0">Nothing here.</p>';
 }
 
 /* ---------- settings ---------- */
+const msRow = (m = { n: 5, tier: "lite", days: 3 }) => `<div class="mrow"><input type="number" class="mn" min="1" value="${m.n}" title="Invites"><select class="mt"><option value="lite" ${m.tier !== "expensive" ? "selected" : ""}>Rose (Lite)</option><option value="expensive" ${m.tier === "expensive" ? "selected" : ""}>Royal (includes Rose)</option></select><input type="number" class="md" min="1" value="${m.days}" title="Days"><button class="btn dg xs mx">Remove</button></div>`;
+const msBind = () => $("msRows").querySelectorAll(".mx").forEach(b => b.onclick = () => b.parentElement.remove());
 async function loadSettings() {
   loadStorageInfo();
-  const s = await getSettings(["ref_reward_days", "maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_upload_max_mb", "user_upload_max_items", "popup_seconds", "community_on", "community_auto"]);
-  $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
-  $("refDays").value = s.ref_reward_days ?? "1"; $("setMaint").value = s.maintenance || "";
+  const s = await getSettings(["maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "payments_on", "ref_milestones"]);
+  $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1"; $("setMaint").value = s.maintenance || "";
+  $("setUp").checked = s.user_upload_on !== "0"; $("setUpPrem").value = ["lite", "expensive"].includes(s.user_upload_premium_only) ? s.user_upload_premium_only : "none";
+  $("setFileMb").value = s.user_file_max_mb || "20"; $("setFolderMb").value = s.user_folder_max_mb || "50"; $("setPop").value = s.popup_seconds || "5";
+  $("setPayOn").checked = s.payments_on === "1"; $("payCard").hidden = s.payments_on !== "1";
   $("setUsdt").checked = s.pay_usdt_on !== "0"; $("setStars").checked = s.pay_stars_on !== "0"; $("setAddr").value = s.usdt_address || ""; $("setConf").value = s.usdt_min_conf || "3"; $("setRpc").value = s.bsc_rpc || "";
-  $("setUp").checked = s.user_upload_on !== "0"; $("setMb").value = s.user_upload_max_mb || "20"; $("setItems").value = s.user_upload_max_items || "60"; $("setPop").value = s.popup_seconds || "3";
+  let ms = []; try { ms = JSON.parse(s.ref_milestones || "[]"); } catch {} if (!ms.length) ms = [{ n: 5, tier: "lite", days: 3 }, { n: 10, tier: "lite", days: 7 }, { n: 20, tier: "lite", days: 10 }, { n: 50, tier: "expensive", days: 7 }];
+  $("msRows").innerHTML = ms.map(msRow).join(""); msBind();
   $("chkInfo").textContent = `Bot: @${C.BOT_USERNAME}  ·  Mini app short name: ${C.APP_SHORT_NAME}  ·  Open link: https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`;
 }
+$("msAdd").onclick = () => { $("msRows").insertAdjacentHTML("beforeend", msRow({ n: 100, tier: "expensive", days: 7 })); msBind(); };
+$("msSave").onclick = async () => {
+  const list = [...$("msRows").querySelectorAll(".mrow")].map(r => ({ n: Math.max(1, Math.round(num(r.querySelector(".mn").value))), tier: r.querySelector(".mt").value, days: Math.max(1, Math.round(num(r.querySelector(".md").value))) })).sort((a, b) => a.n - b.n);
+  const { error } = await setSetting("ref_milestones", JSON.stringify(list)); toast(error ? error.message : "Saved. New rewards apply to future invites.");
+};
 $("setPaySave").onclick = async () => {
   const a = $("setAddr").value.trim(); if (a && !/^0x[a-fA-F0-9]{40}$/.test(a)) return toast("That doesn't look like a valid wallet address");
   const r = await Promise.all([setSetting("pay_usdt_on", $("setUsdt").checked ? "1" : "0"), setSetting("pay_stars_on", $("setStars").checked ? "1" : "0"), setSetting("usdt_address", a), setSetting("usdt_min_conf", Math.min(30, Math.max(1, num($("setConf").value) || 3))), setSetting("bsc_rpc", $("setRpc").value.trim())]);
@@ -877,8 +1047,8 @@ $("rpcTest").onclick = async () => {
   $("rpcMsg").textContent = "Checking..."; const url = $("setRpc").value.trim() || "https://bsc-dataseed.binance.org";
   try { const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }) }); const j = await r.json(); $("rpcMsg").textContent = j.result ? `OK. Latest block ${parseInt(j.result, 16)}` : "Network answered with an error"; } catch (e) { $("rpcMsg").textContent = "Could not reach it from the browser (the server may still reach it): " + e.message; }
 };
-$("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_max_mb", Math.min(50, Math.max(1, num($("setMb").value) || 20))), setSetting("user_upload_max_items", Math.min(500, Math.max(1, num($("setItems").value) || 60))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 3)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
-$("refSave").onclick = async () => { const r = await Promise.all([setSetting("ref_reward_days", Math.max(0, Math.floor(num($("refDays").value)))), setSetting("maintenance", $("setMaint").value.trim())]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_premium_only", $("setUpPrem").value), setSetting("user_file_max_mb", Math.min(100, Math.max(1, num($("setFileMb").value) || 20))), setSetting("user_folder_max_mb", Math.min(500, Math.max(1, num($("setFolderMb").value) || 50))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 5)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("refSave").onclick = async () => { const r = await Promise.all([setSetting("maintenance", $("setMaint").value.trim()), setSetting("payments_on", $("setPayOn").checked ? "1" : "0")]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); await loadPayFlag(); $("payCard").hidden = !PAY_ON; };
 $("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
 
@@ -948,15 +1118,14 @@ $("stMove").onclick = async () => {
 };
 $("gq").addEventListener("keydown", e => { if (e.key !== "Enter") return; const v = e.target.value.trim(); if (!v) return; $("uQ").value = v; $("uF").value = ""; show("users"); e.target.value = ""; });
 async function loadChecklist() {
-  const [st, b, m] = await Promise.all([getSettings(["usdt_address", "pay_stars_on"]), sb.from("banners").select("id", { count: "exact", head: true }), sb.from("media").select("id", { count: "exact", head: true })]);
-  const priced = plansCache.some(p => p.price_usdt != null || p.price_stars != null);
+  const [st, m, pin] = await Promise.all([getSettings(["contact_link"]), sb.from("media").select("id", { count: "exact", head: true }), sb.from("albums").select("id", { count: "exact", head: true }).eq("pinned", true)]);
   const items = [
     [R2_OK, "Connect file storage (R2) so you are not limited to 1 GB", "settings"],
-    [cats.length > 0, "Add at least one category", "cats"],
-    [(m.count || 0) > 0, "Upload your first post", "upload"],
-    [priced, "Set prices on your Premium plans", "premium"],
-    [/^0x[a-fA-F0-9]{40}$/.test(st.usdt_address || "") || st.pay_stars_on !== "0", "Turn on a payment method (Stars or your USDT wallet)", "settings"],
-    [(b.count || 0) > 0, "Add a banner for the Home page", "banners"],
+    [cats.length > 0, "Add at least one topic", "cats"],
+    [(m.count || 0) > 0, "Upload your first folder", "upload"],
+    [(pin.count || 0) > 0, "Pin a folder to the Spotlight", "spotlight"],
+    [plansCache.some(p => p.tier === "lite") && plansCache.some(p => p.tier === "expensive"), "Add a Rose plan and a Royal plan (details only)", "premium"],
+    [!!(st.contact_link || "").trim(), "Add your support contact link", "premium"],
   ];
   const done = items.filter(x => x[0]).length, el = $("dCheck"); el.hidden = done === items.length;
   if (el.hidden) return;
