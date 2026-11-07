@@ -635,6 +635,14 @@ let timers = [], observers = [];
 const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || "User";
 const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
+/* ---------- live screen (lets the admin see which page a member is on) ---------- */
+const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
+function pingScreen(ev) {
+  if (!me) return; const t = stack[stack.length - 1]; if (!t || t.r === "album") return;
+  api("ping", { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 }).catch(() => {});
+}
+setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
+
 /* ---------- router ---------- */
 function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
 function back() { if (stack.length > 1) { stack.pop(); render(); } }
@@ -645,6 +653,7 @@ function render() {
   const { r, p } = stack[stack.length - 1];
   const sub = !TABS.includes(r);
   $("top").hidden = false; $("nav").hidden = false;
+  pingScreen(true);
   $("hl").innerHTML = sub
     ? `<button class="back" data-act="back">${ic("back")}<span>Back</span></button><span id="pgtitle">${esc(p.title || TITLES[r] || "")}</span>`
     : `<svg><use href="#logo"/></svg><b>${esc(C.APP_TITLE)}</b>`;

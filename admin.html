@@ -270,6 +270,35 @@
   .bigap { padding: 11px 22px !important; font-size: 15px !important; }
   .reasons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .reasons button { border: 1px solid var(--line2); background: var(--card2); color: inherit; border-radius: 999px; padding: 4px 11px; font-size: 12px; cursor: pointer; }
 
+
+  /* ===== V8 ===== */
+  input[type=datetime-local] { width: 100%; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg2); color: var(--text); font: inherit; outline: none; }
+  .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .cdow { text-align: center; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); padding: 4px 0; }
+  .cd { min-height: 112px; max-height: 150px; overflow: auto; padding: 6px; border-radius: 12px; border: 1px solid var(--line); background: var(--card2); cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .cd:hover { border-color: var(--gold); } .cd.off { opacity: .4; } .cd.today { border-color: var(--gold); box-shadow: 0 0 22px -10px var(--gold); }
+  .cd .n { font-size: 12px; color: var(--mute); margin-bottom: 4px; } .cd.today .n { color: var(--gold); font-weight: 700; }
+  .cc { display: flex; align-items: center; gap: 5px; width: 100%; text-align: left; padding: 3px 6px; margin-bottom: 3px; border-radius: 8px; font-size: 11px; font-weight: 600; background: rgba(232,197,107,.16); box-shadow: inset 0 0 0 1px rgba(232,197,107,.4); color: var(--text); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .cc.live { background: rgba(120,200,140,.14); box-shadow: inset 0 0 0 1px rgba(120,200,140,.4); }
+  .cc img { width: 16px; height: 16px; border-radius: 4px; object-fit: cover; flex: none; }
+  .calhd { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; } .calhd h3 { margin: 0 !important; flex: 1; text-align: center; }
+  @media (max-width: 700px) { .cd { min-height: 74px; } .cc { font-size: 10px; } }
+  .upi { display: grid; grid-template-columns: 56px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); } .upi:last-child { border: 0; }
+  .upi img, .upi .ph { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; background: var(--bg2); }
+  .sw { position: relative; width: 74px; height: 38px; border-radius: 999px; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line2); cursor: pointer; flex: none; transition: background .2s; }
+  .sw::after { content: ""; position: absolute; left: 4px; top: 4px; width: 30px; height: 30px; border-radius: 50%; background: var(--mute); transition: transform .2s, background .2s; }
+  .sw.on { background: linear-gradient(135deg, #F3D98B, #B8893A); } .sw.on::after { transform: translateX(36px); background: #1b1406; }
+  .mbig { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; } .mbig .st { font-family: var(--disp); font-size: 26px; }
+  .lvg { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr); gap: 16px; align-items: start; } @media (max-width: 960px) { .lvg { grid-template-columns: 1fr; } }
+  .lv { display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; padding: 11px 6px; border-bottom: 1px solid var(--line); } .lv:last-child { border: 0; }
+  .lv .ua { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: var(--gold); background: var(--bg2) center/cover; box-shadow: 0 0 0 1.5px var(--line2); position: relative; }
+  .lv .ua::after { content: ""; position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: #4CD08A; box-shadow: 0 0 10px #4CD08A; border: 2px solid var(--card); }
+  .lv .now { font-size: 13px; color: var(--text); } .lv .now b { color: var(--gold); }
+  .feed { max-height: 70vh; overflow: auto; } .fe { padding: 8px 4px; border-bottom: 1px solid var(--line); font-size: 13px; } .fe:last-child { border: 0; } .fe .t { color: var(--mute); font-size: 11px; margin-right: 6px; }
+  .hs { display: grid; grid-template-columns: 110px 1fr auto; gap: 12px; align-items: center; padding: 11px 4px; border-bottom: 1px solid var(--line); } .hs:last-child { border: 0; } .hs.undone { opacity: .5; }
+  .hs .df { color: var(--mute); font-size: 12px; margin-top: 3px; word-break: break-word; }
+  @media (max-width: 700px) { .hs { grid-template-columns: 1fr auto; } .hs > :first-child { grid-column: 1 / -1; } }
+
 </style>
 </head>
 <body>
@@ -298,6 +327,10 @@
   <symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.8-1.5-1.2-2.8-1.2-1.6 0-2.7.8-2.7 2 0 2.8 5.6 1.2 5.6 4 0 1.2-1.2 2-2.9 2-1.3 0-2.4-.5-3-1.4M12 6.5V8M12 16v1.5"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></symbol>
   <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 5a3 3 0 010 6M18 14c1.8.7 3 2.5 3 5"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+  <symbol id="i-live" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.4"/><path d="M7.5 7.5a6.4 6.4 0 000 9M16.5 7.5a6.4 6.4 0 010 9M4.6 4.6a10.5 10.5 0 000 14.8M19.4 4.6a10.5 10.5 0 010 14.8"/></symbol>
+  <symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 005 5L12 19l-3-3 5.5-9.5zM5 19l3-3"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 7L4 12l5 5M4 12h10a6 6 0 010 12"/></symbol>
 </svg>
 
 <div class="login" id="loginBox">
@@ -374,7 +407,43 @@
       <div id="trList"></div>
     </section>
 
-        <!-- BANNERS -->
+        <!-- SCHEDULE -->
+    <section id="t-schedule" hidden><div class="hero"><div class="eb">Content</div><h2>Schedule</h2><p>Upload now, publish later. Pick a day on the calendar, add the files, and the folder goes live by itself at the time you choose. Until then members cannot see it, and you can preview it here.</p><span class="orn"></span></div>
+      <div class="card"><div class="calhd"><button class="btn gh xs" id="calPrev">←</button><h3 id="calTitle"></h3><button class="btn gh xs" id="calNext">→</button><button class="btn xs" id="calToday">Today</button></div>
+        <div class="cal" id="calGrid"></div><p class="sm mute" style="margin-top:10px">Gold = waiting to go live. Green = already live. Tap a day to schedule something on it, or tap a folder to preview it.</p></div>
+      <div class="card" id="scFormCard"><div class="step"><i>+</i><h3>New scheduled folder</h3></div>
+        <div class="cols"><label class="f"><span>Folder name</span><input type="text" id="scTitle" placeholder="e.g. Weekend special"></label><label class="f"><span>Goes live on</span><input type="datetime-local" id="scWhen"></label>
+          <label class="f"><span>Category</span><select id="scCat"></select></label><label class="f"><span>Inside folder (optional)</span><select id="scParent"></select></label>
+          <label class="f"><span>Access</span><select id="scAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label></div>
+        <div class="dz" id="scDz">Drop files here or click to choose<input type="file" id="scFiles" accept="image/*,video/*" multiple hidden></div><div class="tg" id="scPrev"></div>
+        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="scNotif" checked> Send the in-app “new post” notification when it goes live</label></div>
+        <button class="btn bigap" id="scGo">Upload and schedule</button><div class="prog"><i id="scProg"></i></div><div id="scLog" style="white-space:pre-line;margin-top:10px" class="sm mute"></div></div>
+      <div class="card"><h3>Coming up</h3><div id="scUp"></div></div>
+    </section>
+
+    <!-- LIVE -->
+    <section id="t-live" hidden><div class="hero"><div class="eb">People</div><h2>Live screen</h2><p>Who is online right now, which page they are on, and what the bot is doing. Updates every few seconds.</p><span class="orn"></span></div>
+      <div class="kts" id="lvStats"></div>
+      <div class="lvg"><div class="card"><div class="row between"><h3 style="margin:0">Online now</h3><button class="btn gh xs" id="lvPause">Pause</button></div><div id="lvNow" style="margin-top:8px"></div></div>
+        <div class="card"><h3>Activity feed</h3><div class="feed" id="lvFeed"></div></div></div>
+    </section>
+
+    <!-- MAINTENANCE -->
+    <section id="t-maintenance" hidden><div class="hero"><div class="eb">System</div><h2>Maintenance</h2><p>Close the bot and the web app while you work. Members on the allowed list can still get in, so you can test as a normal member.</p><span class="orn"></span></div>
+      <div class="card"><div class="mbig"><div class="sw" id="mtSw" role="switch" tabindex="0"></div><div><div class="st" id="mtSt">…</div><div class="mute sm" id="mtSub"></div></div></div>
+        <label class="f" style="margin-top:16px"><span>Message members will see</span><input type="text" id="mtMsg" placeholder="We are updating the gallery and will be right back."></label><button class="btn" id="mtSave">Save</button></div>
+      <div class="card"><h3>Can still open it during maintenance</h3><p class="sm mute" style="margin-bottom:12px">Search a member by Telegram ID, name or @username and tap Allow. You can also type any Telegram ID and press Enter.</p>
+        <div class="row"><input type="search" id="mtQ" placeholder="Telegram ID, name or @username" style="flex:1;min-width:200px"><button class="btn" id="mtGo">Search</button></div><div id="mtRes" style="margin:8px 0 14px"></div>
+        <div id="mtList"></div></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="t-history" hidden><div class="hero"><div class="eb">System</div><h2>History and undo</h2><p>Every change you make in the admin panel is listed here for 45 days. Tap Undo to put the old value back, or to bring back something you deleted by mistake. Deleted folders and files wait in the Recycle bin.</p><span class="orn"></span></div>
+      <div class="card"><div class="row"><select id="hsF" style="width:auto"><option value="">All changes</option><option value="open">Can still be undone</option><option value="delete">Deleted things</option></select><select id="hsT" style="width:auto"><option value="">Everything</option><option value="albums">Folders</option><option value="media">Files</option><option value="categories">Categories</option><option value="plans">Plans</option><option value="banners">Banners</option><option value="promos">Promo codes</option><option value="profiles">Members</option><option value="user_posts">Member posts</option></select><button class="btn gh xs" data-go="trash">Open Recycle bin</button></div></div>
+      <div class="card"><div id="hsList"></div><button class="btn gh" id="hsMore" hidden style="margin-top:12px">Load more</button></div>
+    </section>
+
+    <!-- BANNERS -->
     <section id="t-banners" hidden><div class="hero"><div class="eb">Content</div><h2>Covers and banners</h2><p>Big slides at the top of the Home page. Wide images work best (21:9).</p><span class="orn"></span></div>
       <div class="card"><div class="cols"><label class="f"><span>Image</span><input type="file" id="bnFile" accept="image/*"></label>
         <label class="f"><span>Title</span><input type="text" id="bnTitle" maxlength="60"></label><label class="f"><span>Subtitle</span><input type="text" id="bnSub" maxlength="90"></label>
@@ -460,7 +529,6 @@
       <div class="card"><h3>Invite rewards</h3><p class="sm mute" style="margin-bottom:10px">When a member reaches a number of invites, a one-use unlock code is created and sent to them as a notification.</p>
         <div id="msRows"></div><div class="row"><button class="btn gh xs" id="msAdd">Add reward</button><button class="btn" id="msSave">Save rewards</button></div></div>
       <div class="card"><h3>General</h3>
-        <label class="f"><span>Maintenance message (blank = app is open; fill it to lock the app)</span><input type="text" id="setMaint" placeholder="We'll be back shortly."></label>
         <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="setPayOn"> Show the payments module (hidden and off by default)</label><br>
         <button class="btn" id="refSave">Save</button></div>
       <div class="card" id="payCard" hidden><h3>Payments</h3>
@@ -514,10 +582,10 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
 let PAY_ON = false;
 function buildTabs() {
-  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "structure", "media", "cats", "trash"]], ["People", ["users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "payments"] : ["premium"]], ["System", ["notify", "settings"]]];
+  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "trash"]], ["People", ["live", "users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "payments"] : ["premium"]], ["System", ["maintenance", "history", "notify", "settings"]]];
   const cur = document.querySelector(".tab.on")?.dataset.t;
   $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
@@ -528,7 +596,7 @@ function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
   clearInterval(tkTimer);
-  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
@@ -614,7 +682,8 @@ async function loadDash() {
     sb.from("profiles").select("tg_id,first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(6),
   ]);
   let views = 0; try { const { data } = await sb.rpc("album_tree"); (data || []).forEach(f => views += Number(f.views) || 0); } catch {}
-  const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"], [pend.count, "payment", "waiting for confirmation", "payments"]].filter(x => x[0]);
+  const mset = await getSettings(["maintenance", "maintenance_on"]), mOn = mset.maintenance_on === "1" || !!mset.maintenance;
+  const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"], [pend.count, "payment", "waiting for confirmation", "payments"]].filter(x => x[0]).concat(mOn ? [["", "", "Maintenance mode is ON, members are locked out", "maintenance"]] : []);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
   $("dStats").innerHTML = [
     kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count], ["banned", banned.count]], "users"),
@@ -808,7 +877,7 @@ function drawTree() {
   const hit = f => sm ? f.serial_no === +sm[1] : f.title.toLowerCase().includes(q);
   if (q) tree.forEach(f => { if (hit(f)) { let c = f, n = 0; while (c && n++ < 30) { ok.add(c.id); c = byId(c.parent_id); } } });
   const t = pid => { const l = kids(pid).filter(f => !q || ok.has(f.id)); if (!l.length) return ""; return "<ul>" + l.map(f => { const tt = totals(f.id), k = kids(f.id).length, open = openSet.has(f.id) || !!q;
-    return `<li data-id="${f.id}"><div class="nd ${q && hit(f) ? "hit" : ""}" draggable="true" data-fid="${f.id}">${k ? `<button class="caret" data-a="tog">${open ? "−" : "+"}</button>` : '<span class="caret ghost"></span>'}${ic("folder")}${fChip(f)}<span class="nm">${esc(f.title)}</span>${accPill(f.access)}${f.pinned ? '<span class="pill g">★</span>' : ""}<span class="mute sm">${f.media_count} files · ${k} folders · ${tt.views} views</span><span class="sp"></span><button class="btn gh xs" data-a="track">Track</button><button class="btn gh xs" data-a="modify">Modify</button><button class="btn gh xs" data-a="edit">Edit</button><button class="btn gh xs" data-a="move">Move</button></div><div data-slot="${f.id}"></div>${open ? t(f.id) : ""}</li>`; }).join("") + "</ul>"; };
+    return `<li data-id="${f.id}"><div class="nd ${q && hit(f) ? "hit" : ""}" draggable="true" data-fid="${f.id}">${k ? `<button class="caret" data-a="tog">${open ? "−" : "+"}</button>` : '<span class="caret ghost"></span>'}${ic("folder")}${fChip(f)}<span class="nm">${esc(f.title)}</span>${accPill(f.access)}${f.pinned ? '<span class="pill g">★</span>' : ""}${schedPill(f)}<span class="mute sm">${f.media_count} files · ${k} folders · ${tt.views} views</span><span class="sp"></span><button class="btn gh xs" data-a="track">Track</button><button class="btn gh xs" data-a="modify">Modify</button><button class="btn gh xs" data-a="edit">Edit</button><button class="btn gh xs" data-a="move">Move</button></div><div data-slot="${f.id}"></div>${open ? t(f.id) : ""}</li>`; }).join("") + "</ul>"; };
   const tr = tree.length ? t(null) : '<p class="mute" style="padding:10px 0">No folders yet. Create one with the button above, or from Upload.</p>';
   $("stTree").innerHTML = tr || '<p class="mute">Nothing matches.</p>';
   $("stSum").textContent = `${tree.length} folders (${kids(null).length} at the top level) · ${tree.reduce((n, f) => n + Number(f.media_count), 0)} files`;
@@ -959,7 +1028,7 @@ async function folderPreviews(fs) {
 const pvHtml = p => !p ? `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>` : p.type === "video" && p.url && !p.preview ? `<video muted preload="metadata" src="${esc(p.url)}#t=0.5"></video>` : (p.url || p.preview) ? `<img loading="lazy" src="${esc(p.url || p.preview)}" alt="">` : `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>`;
 function folderCard(f, pv) {
   const tt = totals(f.id), cat = cats.find(c => c.id === f.category_id);
-  return `<div class="fc ${accCls(f.access)}" data-fid="${f.id}"><div class="pvx" data-open="${f.id}">${pvHtml(pv)}<div class="tl">${fChip(f)}${accPill(f.access)}</div><div class="tr">${f.pinned ? '<span class="pill g">★ Pinned</span>' : ""}</div></div>
+  return `<div class="fc ${accCls(f.access)}" data-fid="${f.id}"><div class="pvx" data-open="${f.id}">${pvHtml(pv)}<div class="tl">${fChip(f)}${accPill(f.access)}${schedPill(f)}</div><div class="tr">${f.pinned ? '<span class="pill g">★ Pinned</span>' : ""}</div></div>
     <div class="bd"><b title="${esc(f.title)}">${esc(f.title)}</b><div class="mute sm">${tt.files} files · ${kids(f.id).length} folders · ${tt.views} views${cat ? " · " + esc(cat.name) : ""}</div><div class="row" style="margin-top:8px"><button class="btn xs" data-open="${f.id}">Open</button><button class="btn gh xs" data-edit="${f.id}">Edit</button><button class="btn gh xs" data-fpin="${f.id}">${f.pinned ? "★ Unpin" : "☆ Pin"}</button></div></div></div>`;
 }
 function fileCard(m, url) {
@@ -1051,6 +1120,152 @@ async function purgeTrash(rows) {
   await rmFiles(paths); const { error } = await sb.from("trash").delete().in("id", rows.map(t => t.id)); toast(error ? error.message : "Deleted forever");
 }
 $("trEmpty").onclick = async () => { if (!confirm("Empty the whole recycle bin? This cannot be undone.")) return; const { data } = await sb.from("trash").select("*").limit(500); if (data?.length) await purgeTrash(data); loadTrash(); };
+
+
+/* ---------- schedule: calendar + upload now, publish later ---------- */
+let scY = new Date().getFullYear(), scM = new Date().getMonth(), scPicked = [];
+const pad2 = n => String(n).padStart(2, "0");
+const dayStr = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const futureAt = f => f.publish_at && new Date(f.publish_at).getTime() > Date.now();
+const schedPill = f => futureAt(f) ? `<span class="pill g" title="Goes live ${esc(fmtDT(f.publish_at))}">⏰ ${esc(fmtDT(f.publish_at))}</span>` : "";
+const fmtDT = d => new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+const inLeft = d => { const ms = new Date(d) - Date.now(); if (ms <= 0) return "live"; const dd = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `in ${dd ? dd + "d " : ""}${h}h ${m}m`; };
+async function loadSchedule() {
+  try { await sb.rpc("release_due"); } catch {}
+  await loadTree(); drawCal(); drawUp(); fillSchedForm();
+}
+function fillSchedForm() { $("scCat").innerHTML = catOpts(""); $("scParent").innerHTML = folderOpts("", true); if (!$("scWhen").value) setWhen(new Date(Date.now() + 864e5)); }
+function setWhen(d) { d = new Date(d); if (!$("scWhen").value || d.getHours() === 0) d.setHours(12, 0, 0, 0); $("scWhen").value = `${dayStr(d)}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+function drawCal() {
+  const first = new Date(scY, scM, 1), lead = (first.getDay() + 6) % 7, days = new Date(scY, scM + 1, 0).getDate(), total = Math.ceil((lead + days) / 7) * 7, today = dayStr(new Date());
+  const by = {}; tree.filter(f => f.publish_at).forEach(f => (by[dayStr(new Date(f.publish_at))] ||= []).push(f));
+  $("calTitle").textContent = first.toLocaleString("en-GB", { month: "long", year: "numeric" });
+  let h = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => `<div class="cdow">${d}</div>`).join("");
+  for (let i = 0; i < total; i++) {
+    const d = new Date(scY, scM, i - lead + 1), k = dayStr(d), out = d.getMonth() !== scM, list = (by[k] || []).sort((a, b) => new Date(a.publish_at) - new Date(b.publish_at));
+    h += `<div class="cd ${out ? "off" : ""} ${k === today ? "today" : ""}" data-day="${k}"><div class="n">${d.getDate()}</div>${list.map(f => `<button class="cc ${futureAt(f) ? "" : "live"}" data-sf="${f.id}" title="${esc(f.title)}">${new Date(f.publish_at).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} ${esc(f.title)}</button>`).join("")}</div>`;
+  }
+  $("calGrid").innerHTML = h;
+}
+function drawUp() {
+  const l = tree.filter(futureAt).sort((a, b) => new Date(a.publish_at) - new Date(b.publish_at));
+  $("scUp").innerHTML = l.map(f => `<div class="upi"><div class="ph"></div><div><b>${fChip(f)} ${esc(f.title)}</b> ${accPill(f.access)}<div class="mute sm">${f.media_count} files · ${esc(fmtDT(f.publish_at))} · ${inLeft(f.publish_at)}${f.publish_notified ? "" : " · will notify"}</div></div><button class="btn xs" data-sf="${f.id}">Preview</button></div>`).join("") || '<p class="mute">Nothing is scheduled. Pick a day above to plan something.</p>';
+}
+$("calPrev").onclick = () => { scM--; if (scM < 0) { scM = 11; scY--; } drawCal(); };
+$("calNext").onclick = () => { scM++; if (scM > 11) { scM = 0; scY++; } drawCal(); };
+$("calToday").onclick = () => { const n = new Date(); scY = n.getFullYear(); scM = n.getMonth(); drawCal(); };
+$("calGrid").onclick = e => {
+  const c = e.target.closest("[data-sf]"); if (c) return previewSched(c.dataset.sf);
+  const d = e.target.closest("[data-day]"); if (!d) return;
+  const [y, m, dd] = d.dataset.day.split("-").map(Number), at = new Date(y, m - 1, dd, 12, 0); if (at < new Date(new Date().setHours(0, 0, 0, 0))) return toast("That day has already passed");
+  $("scWhen").value = ""; setWhen(at); $("scFormCard").scrollIntoView({ behavior: "smooth", block: "center" }); $("scTitle").focus();
+};
+$("scUp").onclick = e => { const b = e.target.closest("[data-sf]"); if (b) previewSched(b.dataset.sf); };
+const scDz = $("scDz"), scFi = $("scFiles");
+scDz.onclick = e => { if (e.target !== scFi) scFi.click(); }; scDz.ondragover = e => { e.preventDefault(); scDz.classList.add("on"); }; scDz.ondragleave = () => scDz.classList.remove("on");
+scDz.ondrop = e => { e.preventDefault(); scDz.classList.remove("on"); addSc([...e.dataTransfer.files]); }; scFi.onchange = () => { addSc([...scFi.files]); scFi.value = ""; };
+function addSc(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => scPicked.push(f)); drawSc(); }
+function drawSc() {
+  $("scPrev").innerHTML = scPicked.map((f, i) => `<div class="t">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button data-i="${i}">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div>`).join("");
+  $("scPrev").querySelectorAll("button").forEach(b => b.onclick = () => { scPicked.splice(+b.dataset.i, 1); drawSc(); });
+}
+$("scGo").onclick = async () => {
+  const title = $("scTitle").value.trim(), when = $("scWhen").value; if (!title) return toast("Give the folder a name"); if (!when) return toast("Pick the date and time"); if (!scPicked.length) return toast("Choose the files first");
+  const at = new Date(when); if (at.getTime() < Date.now() + 60000) return toast("Pick a time in the future");
+  $("scGo").disabled = true; $("scLog").textContent = ""; $("scProg").style.width = "0"; const iso = at.toISOString();
+  const { data: a, error } = await sb.from("albums").insert({ title, access: $("scAccess").value, category_id: $("scCat").value || null, parent_id: $("scParent").value || null, publish_at: iso, created_at: iso, publish_notified: !$("scNotif").checked }).select("id,title").single();
+  if (error) { $("scGo").disabled = false; return toast(error.message + " (run supabase_v8.sql)"); }
+  const r = await doUpload([...scPicked], { id: a.id, title: a.title, media_count: 0, cover_media_id: null }, $("scAccess").value, $("scLog"), $("scProg"));
+  $("scGo").disabled = false;
+  if (!r.ok) { await sb.from("albums").delete().eq("id", a.id); return toast("Nothing could be uploaded, so nothing was scheduled"); }
+  toast(`Scheduled: ${r.ok} file${r.ok > 1 ? "s" : ""}, live ${fmtDT(iso)}`); scPicked = []; drawSc(); $("scTitle").value = ""; $("scLog").textContent = "";
+  scY = at.getFullYear(); scM = at.getMonth(); await loadAlbumsCache(); drawCal(); drawUp();
+};
+/* preview mode: see exactly what will go live, change the time, publish now or delete */
+async function previewSched(id) {
+  const f = byId(id); if (!f) return;
+  const { data: ms } = await sb.from("media").select("id,title,label,type,path,kind_no,preview,access").eq("album_id", id).order("album_order").limit(120);
+  const urls = await sign((ms || []).map(m => m.path), 3600), d = document.createElement("div"); d.className = "mdl";
+  const cat = cats.find(c => c.id === f.category_id), isF = futureAt(f), loc = new Date(f.publish_at), val = `${dayStr(loc)}T${pad2(loc.getHours())}:${pad2(loc.getMinutes())}`;
+  d.innerHTML = `<div class="box" style="width:min(860px,100%)"><div class="row between"><div><span class="sn">PREVIEW</span> ${fChip(f)} <b style="font-size:18px">${esc(f.title)}</b></div><button class="btn gh xs x">Close</button></div>
+    <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Goes live " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
+    <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
+    ${isF ? `<div class="row"><input type="datetime-local" class="w" value="${val}" style="max-width:240px"><button class="btn xs sv">Change time</button><button class="btn xs pn">Publish now</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>` : `<div class="row"><button class="btn dg xs dl">Delete (recycle bin)</button></div>`}</div>`;
+  const close = () => d.remove(); d.onclick = e => { if (e.target === d || e.target.closest(".x")) close(); };
+  document.body.appendChild(d); const q = s => d.querySelector(s);
+  q(".sv")?.addEventListener("click", async () => { const at = new Date(q(".w").value); if (isNaN(at) || at < Date.now() + 60000) return toast("Pick a time in the future"); const { error } = await sb.from("albums").update({ publish_at: at.toISOString(), created_at: at.toISOString() }).eq("id", id); error ? toast(error.message) : (toast("Time changed"), close(), loadSchedule()); });
+  q(".pn")?.addEventListener("click", async () => { if (!confirm("Make this folder visible to members right now?")) return; const now = new Date().toISOString(); const { error } = await sb.from("albums").update({ publish_at: now, created_at: now }).eq("id", id); if (error) return toast(error.message); try { await sb.rpc("release_due"); } catch {} toast("Published"); close(); loadSchedule(); });
+  q(".dl").addEventListener("click", async () => { if (!confirm("Move this folder and its files to the recycle bin?")) return; if (await trashFolder(id)) { close(); await loadAlbumsCache(); loadSchedule(); } });
+}
+
+/* ---------- live screen ---------- */
+let lvPaused = false; const lvNames = new Map();
+$("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; };
+async function loadLive() {
+  if (lvPaused) return;
+  const since = new Date(Date.now() - 3 * 60000).toISOString();
+  const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
+  if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
+  const ids = [...new Set([...(a.data || []), ...(e.data || [])].map(r => r.tg_id))].filter(id => !lvNames.has(id));
+  if (ids.length) { const { data: ps } = await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,photo_url,avatar_path").in("tg_id", ids); const urls = await sign((ps || []).map(p => p.avatar_path)); (ps || []).forEach(p => lvNames.set(p.tg_id, { ...p, av: (p.avatar_path && urls[p.avatar_path]) || p.photo_url })); ids.forEach(id => { if (!lvNames.has(id)) lvNames.set(id, { tg_id: id }); }); }
+  const who = id => lvNames.get(id) || { tg_id: id }, on = a.data || [];
+  const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
+  $("lvStats").innerHTML = kt("roy", "Online now", on.length, [["in the app", nApp], ["in the bot", nBot]], "live") + kt("", "Last hour", new Set((e.data || []).filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size, [["active members", "✓"]], "users");
+  $("lvNow").innerHTML = on.map(r => { const p = who(r.tg_id); return `<div class="lv"><div class="ua" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div><div style="min-width:0"><b>${esc(nm(p))}</b> <span class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</span><div class="now"><span class="pill ${r.source === "bot" ? "rose" : "g"}">${r.source === "bot" ? "Bot" : "App"}</span> <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div></div><div style="text-align:right"><div class="mute sm">${ago(r.at)}</div><button class="btn gh xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("") || '<p class="mute" style="padding:18px 0;text-align:center">Nobody is online right now.</p>';
+  $("lvFeed").innerHTML = (e.data || []).map(r => { const p = who(r.tg_id); return `<div class="fe"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span><span class="pill ${r.source === "bot" ? "rose" : ""}">${r.source === "bot" ? "Bot" : "App"}</span> <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}</div>`; }).join("") || '<p class="mute">No activity yet.</p>';
+}
+
+/* ---------- maintenance mode ---------- */
+let mtOn = false;
+function drawMt() { $("mtSw").classList.toggle("on", mtOn); $("mtSt").textContent = mtOn ? "Maintenance is ON" : "Maintenance is OFF"; $("mtSub").textContent = mtOn ? "Members are locked out. Only the allowed list below can open the bot and web app." : "Everyone can use the bot and the web app."; }
+async function loadMaint() {
+  const s = await getSettings(["maintenance", "maintenance_on", "maintenance_msg"]);
+  mtOn = s.maintenance_on === "1" || !!s.maintenance; $("mtMsg").value = s.maintenance_msg || s.maintenance || ""; drawMt(); drawMtList();
+}
+const saveMt = async on => { mtOn = on; drawMt(); const r = await Promise.all([setSetting("maintenance_on", on ? "1" : "0"), setSetting("maintenance_msg", $("mtMsg").value.trim()), setSetting("maintenance", "")]); toast(r.some(x => x.error) ? "Error saving" : on ? "Maintenance is ON" : "Maintenance is OFF"); };
+$("mtSw").onclick = () => { if (!mtOn && !confirm("Turn maintenance ON? Only the allowed members will be able to open the app and the bot.")) return; saveMt(!mtOn); };
+$("mtSave").onclick = () => saveMt(mtOn);
+async function drawMtList() {
+  const { data, error } = await sb.from("maint_allow").select("*").order("added_at", { ascending: false }); if (error) return toast(error.message + " (run supabase_v8.sql)");
+  const { data: ps } = (data || []).length ? await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username").in("tg_id", data.map(r => r.tg_id)) : { data: [] }; const pm = new Map((ps || []).map(p => [p.tg_id, p]));
+  $("mtList").innerHTML = (data || []).map(r => { const p = pm.get(r.tg_id); return `<div class="row between line"><span><b>${p ? esc(nm(p)) : "Unknown member"}</b> <span class="mute sm">${p?.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</span></span><button class="btn gh xs" data-rm="${r.tg_id}">Remove</button></div>`; }).join("") || '<p class="mute sm">Nobody is allowed yet. Add yourself so you can test.</p>';
+  $("mtList").querySelectorAll("[data-rm]").forEach(b => b.onclick = async () => { await sb.from("maint_allow").delete().eq("tg_id", b.dataset.rm); drawMtList(); });
+}
+async function allowId(id, note) { const { error } = await sb.from("maint_allow").upsert({ tg_id: id, note: note || null }); error ? toast(error.message) : (toast("Allowed"), $("mtRes").innerHTML = "", $("mtQ").value = "", drawMtList()); }
+async function searchMt() {
+  const s = $("mtQ").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, ""); if (!s) return;
+  let q = sb.from("profiles").select("tg_id,first_name,last_name,display_name,username").limit(8);
+  q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`);
+  const { data } = await q; const raw = /^\d{5,}$/.test(s) && !(data || []).some(p => String(p.tg_id) === s);
+  $("mtRes").innerHTML = (data || []).map(p => `<div class="row between line"><span><b>${esc(nm(p))}</b> <span class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${p.tg_id}</span></span><button class="btn xs" data-al="${p.tg_id}">Allow</button></div>`).join("") + (raw ? `<div class="row between line"><span>Telegram ID <b>${s}</b> (not a member yet)</span><button class="btn xs" data-al="${s}">Allow</button></div>` : "") || '<p class="mute sm">No one found.</p>';
+  $("mtRes").querySelectorAll("[data-al]").forEach(b => b.onclick = () => allowId(Number(b.dataset.al)));
+}
+$("mtGo").onclick = searchMt; $("mtQ").addEventListener("keydown", e => { if (e.key === "Enter") searchMt(); });
+
+/* ---------- history and undo ---------- */
+let hsPage = 0; const HP = 40; const TBL_NAME = { albums: "Folder", media: "File", categories: "Category", plans: "Plan", banners: "Banner", promos: "Promo code", profiles: "Member", user_posts: "Member post" };
+$("hsF").onchange = $("hsT").onchange = () => loadHistory(true); $("hsMore").onclick = () => loadHistory(false);
+const shortV = v => v == null ? "empty" : typeof v === "object" ? "…" : String(v).length > 28 ? String(v).slice(0, 27) + "…" : String(v);
+async function loadHistory(reset) {
+  if (reset) { hsPage = 0; $("hsList").innerHTML = ""; }
+  let q = sb.from("admin_log").select("*", { count: "exact" }).order("at", { ascending: false }).range(hsPage * HP, hsPage * HP + HP - 1);
+  if ($("hsF").value === "open") q = q.eq("undone", false); else if ($("hsF").value === "delete") q = q.eq("op", "delete"); if ($("hsT").value) q = q.eq("tbl", $("hsT").value);
+  const { data, count, error } = await q; if (error) return toast(error.message + " (run supabase_v8.sql)");
+  (data || []).forEach(l => {
+    const verb = l.op === "delete" ? "Deleted" : l.op === "insert" ? "Created" : "Edited", keys = l.before ? Object.keys(l.before).filter(k => k !== "preview") : [];
+    const diff = l.op === "update" ? keys.slice(0, 3).map(k => `${k}: ${shortV(l.before[k])} → ${shortV(l.after?.[k])}`).join(" · ") + (keys.length > 3 ? ` · +${keys.length - 3} more` : "") : "";
+    const d = document.createElement("div"); d.className = "hs " + (l.undone ? "undone" : "");
+    d.innerHTML = `<div><span class="pill ${l.op === "delete" ? "r" : ""}">${verb}</span><div class="mute sm" style="margin-top:4px">${new Date(l.at).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}</div></div><div style="min-width:0"><b>${esc(TBL_NAME[l.tbl] || l.tbl)}</b> · ${esc(l.label || l.row_key)}${diff ? `<div class="df">${esc(diff)}</div>` : ""}</div>${l.undone ? '<span class="mute sm">Undone</span>' : '<button class="btn xs">Undo</button>'}`;
+    d.querySelector("button")?.addEventListener("click", async () => {
+      if (!confirm(`Undo: ${verb.toLowerCase()} ${TBL_NAME[l.tbl] || l.tbl} “${l.label || ""}”?`)) return;
+      const { error } = await sb.rpc("admin_undo", { p_id: l.id }); if (error) return toast(error.message);
+      toast("Undone"); await loadAlbumsCache(); loadCats(); loadHistory(true);
+    });
+    $("hsList").appendChild(d);
+  });
+  hsPage++; $("hsMore").hidden = hsPage * HP >= (count ?? 0);
+  if (!$("hsList").children.length) $("hsList").innerHTML = '<p class="mute" style="text-align:center;padding:18px 0">No changes recorded yet.</p>';
+}
 
 /* ---------- banners ---------- */
 function bnTargets() {
@@ -1364,7 +1579,7 @@ async function loadSettings() {
   loadStorageInfo();
   const s = await getSettings(["maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "payments_on", "ref_milestones", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
   $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
-  $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1"; $("setMaint").value = s.maintenance || "";
+  $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
   $("setUp").checked = s.user_upload_on !== "0"; $("setUpPrem").value = ["lite", "expensive"].includes(s.user_upload_premium_only) ? s.user_upload_premium_only : "none";
   $("setFileMb").value = s.user_file_max_mb || "20"; $("setFolderMb").value = s.user_folder_max_mb || "50"; $("setPop").value = s.popup_seconds || "5";
   $("setPayOn").checked = s.payments_on === "1"; $("payCard").hidden = s.payments_on !== "1";
@@ -1388,7 +1603,7 @@ $("rpcTest").onclick = async () => {
   try { const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }) }); const j = await r.json(); $("rpcMsg").textContent = j.result ? `OK. Latest block ${parseInt(j.result, 16)}` : "Network answered with an error"; } catch (e) { $("rpcMsg").textContent = "Could not reach it from the browser (the server may still reach it): " + e.message; }
 };
 $("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_premium_only", $("setUpPrem").value), setSetting("user_file_max_mb", Math.min(100, Math.max(1, num($("setFileMb").value) || 20))), setSetting("user_folder_max_mb", Math.min(500, Math.max(1, num($("setFolderMb").value) || 50))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 5)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
-$("refSave").onclick = async () => { const r = await Promise.all([setSetting("maintenance", $("setMaint").value.trim()), setSetting("payments_on", $("setPayOn").checked ? "1" : "0")]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); await loadPayFlag(); $("payCard").hidden = !PAY_ON; };
+$("refSave").onclick = async () => { const r = await Promise.all([setSetting("payments_on", $("setPayOn").checked ? "1" : "0")]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); await loadPayFlag(); $("payCard").hidden = !PAY_ON; };
 $("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
 
