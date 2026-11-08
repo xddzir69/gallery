@@ -299,6 +299,34 @@
   .hs .df { color: var(--mute); font-size: 12px; margin-top: 3px; word-break: break-word; }
   @media (max-width: 700px) { .hs { grid-template-columns: 1fr auto; } .hs > :first-child { grid-column: 1 / -1; } }
 
+
+  /* ===== premium dropdowns ===== */
+  .dcol .inl { margin: 0 0 10px; }
+  .pk { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 12px 0; }
+  .pkc { border: 1px solid var(--line); border-radius: 14px; background: var(--card2); overflow: hidden; }
+  .pkc .th { position: relative; aspect-ratio: 1; background: var(--bg2); } .pkc .th img, .pkc .th video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pkc .th button { position: absolute; right: 6px; top: 6px; width: 24px; height: 24px; border-radius: 50%; border: 0; cursor: pointer; background: rgba(0,0,0,.6); color: #fff; }
+  .pkc .th i { position: absolute; left: 6px; bottom: 6px; font-style: normal; font-size: 10px; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,.6); color: #fff; }
+  .pkc .pkt { border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; background: transparent !important; padding: 9px 10px !important; font-size: 13px; }
+  .ps { position: relative; display: block; width: 100%; } .ps[hidden] { display: none; }
+  .ps-native { display: none !important; }
+  .ps-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px 10px 14px; border-radius: 12px; border: 1px solid var(--line); cursor: pointer; text-align: left; font: inherit; color: var(--text);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--bg2) 92%, #fff 8%), var(--bg2)); box-shadow: inset 0 1px 0 rgba(255,255,255,.06); transition: border-color .15s, box-shadow .15s; }
+  .ps-btn:hover { border-color: var(--line2); } .ps.open .ps-btn, .ps-btn:focus-visible { border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 16%, transparent); outline: none; }
+  .ps-btn span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .ps-btn svg { width: 16px; height: 16px; flex: none; stroke: var(--gold); fill: none; stroke-width: 2; transition: transform .2s; } .ps.open .ps-btn svg { transform: rotate(180deg); }
+  .ps.dis .ps-btn { opacity: .5; pointer-events: none; }
+  .ps-menu { position: fixed; z-index: 200; max-height: 280px; overflow: auto; padding: 6px; border-radius: 16px; border: 1px solid var(--line2); background: var(--card); box-shadow: 0 24px 60px -14px rgba(0,0,0,.7), 0 0 0 1px rgba(232,197,107,.08); animation: psIn .14s ease-out; }
+  @keyframes psIn { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+  .ps-o { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; color: var(--text); }
+  .ps-o:hover, .ps-o.act { background: rgba(232,197,107,.14); } .ps-o.on { color: var(--gold); font-weight: 600; } .ps-o.on::after { content: "✓"; font-size: 13px; }
+
+
+  /* ===== per-file times ===== */
+  .spb { grid-column: 1 / -1; padding: 12px 14px; margin-bottom: 10px; border: 1px dashed var(--line2); border-radius: 14px; background: var(--bg2); }
+  .spb > b { display: block; margin-bottom: 8px; color: var(--gold); font-size: 13px; letter-spacing: .04em; }
+  .spb .row { align-items: flex-end; } .spb label { flex: 1; min-width: 170px; }
+  .pkc .pka { border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; background: transparent !important; padding: 7px 10px !important; font-size: 11.5px; color: var(--mute); }
+
 </style>
 </head>
 <body>
@@ -363,8 +391,8 @@
     <section id="t-upload" hidden><div class="hero"><div class="eb">Content</div><h2>Upload</h2><p>Pick or create the category and folder first, then drop your photos and videos. Everything you create appears in Data straight away.</p><span class="orn"></span></div>
       <div class="card"><div class="step"><i>1</i><h3>Where should it go?</h3></div>
         <div class="dest">
-          <div class="dcol"><label>Category</label><select id="upCat"></select><div class="inl"><input type="text" id="upCatNew" placeholder="New category name"><button class="btn xs" id="upCatAdd">Create</button></div></div>
-          <div class="dcol"><label>Folder</label><select id="upFold"></select><div class="inl"><input type="text" id="upFoldNew" placeholder="New folder name"><button class="btn xs" id="upFoldAdd">Create</button></div></div>
+          <div class="dcol"><label>Category</label><div class="inl"><input type="text" id="upCatNew" placeholder="New category title"><button class="btn xs" id="upCatAdd">Create</button></div><select id="upCat"></select></div>
+          <div class="dcol"><label>Folder</label><div class="inl"><input type="text" id="upFoldNew" placeholder="New folder title"><button class="btn xs" id="upFoldAdd">Create</button></div><select id="upFold"></select></div>
           <div id="upSubs" style="display:contents"></div>
         </div>
         <div class="where" id="upWhere"></div></div>
@@ -412,7 +440,7 @@
       <div class="card"><div class="calhd"><button class="btn gh xs" id="calPrev">←</button><h3 id="calTitle"></h3><button class="btn gh xs" id="calNext">→</button><button class="btn xs" id="calToday">Today</button></div>
         <div class="cal" id="calGrid"></div><p class="sm mute" style="margin-top:10px">Gold = waiting to go live. Green = already live. Tap a day to schedule something on it, or tap a folder to preview it.</p></div>
       <div class="card" id="scFormCard"><div class="step"><i>+</i><h3>New scheduled folder</h3></div>
-        <div class="cols"><label class="f"><span>Folder name</span><input type="text" id="scTitle" placeholder="e.g. Weekend special"></label><label class="f"><span>Goes live on</span><input type="datetime-local" id="scWhen"></label>
+        <div class="cols"><label class="f"><span>Folder name</span><input type="text" id="scTitle" placeholder="Folder title, e.g. Weekend special"></label><label class="f"><span>Goes live on</span><input type="datetime-local" id="scWhen"></label>
           <label class="f"><span>Category</span><select id="scCat"></select></label><label class="f"><span>Inside folder (optional)</span><select id="scParent"></select></label>
           <label class="f"><span>Access</span><select id="scAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label></div>
         <div class="dz" id="scDz">Drop files here or click to choose<input type="file" id="scFiles" accept="image/*,video/*" multiple hidden></div><div class="tg" id="scPrev"></div>
@@ -770,7 +798,8 @@ async function doUpload(files, album, access, log, prog) {
     if (ue) { log.textContent += `  failed: ${ue.message}\n`; continue; }
     const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
     serial++;
-    const { data: row, error: de } = await sb.from("media").insert({ title: f.name, label: null, type, path, access, serial_no: serial, preview, album_id: album.id, album_order: base + i }).select("id,kind_no").single();
+    const own = String(f._title || "").trim();
+    const { data: row, error: de } = await sb.from("media").insert({ title: own || f.name, label: own || null, type, path, access, serial_no: serial, preview, album_id: album.id, album_order: base + i, ...(toIso(f._at) ? { created_at: toIso(f._at) } : {}) }).select("id,kind_no").single();
     if (de) { log.textContent += `  failed: ${de.message}\n`; await rmFiles([path]); serial--; continue; }
     ok++; firstId = firstId || row.id; prog.style.width = Math.round(((i + 1) / files.length) * 100) + "%";
     log.textContent += `  saved as ${type === "video" ? "V" : "P"}${row.kind_no ?? "?"}\n`;
@@ -825,11 +854,17 @@ dz.ondragover = e => { e.preventDefault(); dz.classList.add("on"); }; dz.ondragl
 dz.ondrop = e => { e.preventDefault(); dz.classList.remove("on"); addPicked([...e.dataTransfer.files]); };
 fi.onchange = () => { addPicked([...fi.files]); fi.value = ""; };
 function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => picked.push(f)); drawPicked(); }
-function drawPicked() {
-  $("upPrev").innerHTML = picked.map((f, i) => `<div class="t">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button data-i="${i}">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div>`).join("");
-  $("upPrev").querySelectorAll("button").forEach(b => b.onclick = () => { picked.splice(+b.dataset.i, 1); drawPicked(); });
-  upWhere();
+/* a grid of chosen files, each with its own title box (the title is what members see) */
+function pickGrid(el, arr, after, def) {
+  el.className = "pk";
+  const [dFrom, dTo] = def ? def() : [Date.now() - 7 * 864e5, Date.now()];
+  el.innerHTML = (arr.length > 1 ? spreadBar("pk", dFrom, dTo, el._sp) : "") + arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
+  el.querySelectorAll(".pkc button").forEach(b => b.onclick = () => { arr.splice(+b.dataset.i, 1); pickGrid(el, arr, after, def); if (after) after(); });
+  el.querySelectorAll(".pkt").forEach(i => i.oninput = () => { arr[+i.dataset.i]._title = i.value; });
+  el.querySelectorAll(".pka").forEach(i => i.oninput = () => { arr[+i.dataset.i]._at = i.value; });
+  bindBar(el, "pk", (f, t, m, v) => { const ts = spreadTimes(arr.length, f, t, m); if (!ts) return toast("Pick valid From and To times"); ts.forEach((d, i) => arr[i]._at = lcl(d)); el._sp = v; pickGrid(el, arr, after, def); });
 }
+function drawPicked() { pickGrid($("upPrev"), picked); upWhere(); }
 function fillUpload() {
   if (!$("upFold")) return;
   upPath = upPath.filter((id, i) => byId(id) && (i === 0 || byId(id).parent_id === upPath[i - 1]));
@@ -838,7 +873,7 @@ function fillUpload() {
   let h = "";
   upPath.forEach((id, i) => {
     const cur = byId(id), nxt = upPath[i + 1];
-    h += `<div class="dcol"><label>Sub-folder inside “${esc(cur.title)}”</label><select data-lv="${i + 1}"><option value="">Upload directly into “${esc(cur.title)}”</option>${kids(id).map(f => `<option value="${f.id}" ${f.id === nxt ? "selected" : ""}>F${f.serial_no} · ${esc(f.title)}</option>`).join("")}</select><div class="inl"><input type="text" data-new="${i}" placeholder="New sub-folder name"><button class="btn xs" data-mk="${i}">Create</button></div></div>`;
+    h += `<div class="dcol"><label>Sub-folder inside “${esc(cur.title)}”</label><div class="inl"><input type="text" data-new="${i}" placeholder="New sub-folder title"><button class="btn xs" data-mk="${i}">Create</button></div><select data-lv="${i + 1}"><option value="">Upload directly into “${esc(cur.title)}”</option>${kids(id).map(f => `<option value="${f.id}" ${f.id === nxt ? "selected" : ""}>F${f.serial_no} · ${esc(f.title)}</option>`).join("")}</select></div>`;
   });
   $("upSubs").innerHTML = h; upWhere();
 }
@@ -948,28 +983,32 @@ function toolModify(f, slot) {
   };
 }
 async function toolEdit(f, slot) {
-  const { data: files } = await sb.from("media").select("id,title,label,type,kind_no,path,access,album_order,views").eq("album_id", f.id).order("album_order");
+  const { data: files } = await sb.from("media").select("id,title,label,type,kind_no,path,access,album_order,views,created_at").eq("album_id", f.id).order("album_order");
   const urls = await sign((files || []).slice(0, 80).map(m => m.path), 1800), tt = totals(f.id);
   slot.innerHTML = `<div class="panel2"><div class="row" style="margin-bottom:10px"><input type="text" class="rn" value="${esc(f.title)}" style="flex:1;min-width:180px"><button class="btn xs rs">Rename</button></div>
-    <div class="row" style="margin-bottom:10px"><input type="text" class="sn2" placeholder="New folder inside this folder" style="flex:1;min-width:180px"><button class="btn gh xs sa">Create folder</button></div>
-    <div class="row" style="margin-bottom:14px;align-items:flex-start"><div style="flex:1;min-width:220px"><input type="file" class="af" accept="image/*,video/*" multiple><div class="prog"><i class="ap"></i></div><div class="al sm mute" style="white-space:pre-line;margin-top:6px"></div></div><button class="btn gh xs ab">Add files here</button></div>
+    <div class="row" style="margin-bottom:10px"><input type="text" class="sn2" placeholder="Create a folder inside this one (title)" style="flex:1;min-width:180px"><button class="btn gh xs sa">Create folder</button></div>
+    <div class="row" style="margin-bottom:14px;align-items:flex-start"><div style="flex:1;min-width:220px"><input type="file" class="af" accept="image/*,video/*" multiple><div class="apv" style="margin-top:10px"></div><div class="prog"><i class="ap"></i></div><div class="al sm mute" style="white-space:pre-line;margin-top:6px"></div></div><button class="btn gh xs ab">Add files here</button></div>
     <div class="row between" style="margin-bottom:6px"><b>Files in this folder (${(files || []).length})</b><span class="row"><button class="btn gh xs bmv">Move selected…</button><button class="btn dg xs bdl">Delete selected</button></span></div>
-    <div class="fls">${(files || []).map(m => `<div class="fl" data-m="${m.id}" draggable="true"><input type="checkbox" class="sk">${thumb(urls[m.path], m.type)}<div><div class="mute sm">${nChip(m)} ${esc(m.title || "(unnamed)")} · ${m.views} views</div><div class="fs"><label><span class="sm mute">Display name (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="empty = hidden"></label><label><span class="sm mute">Access</span>${accSel(m.access, "fa")}</label></div>
+    ${(files || []).length > 1 ? spreadBar("ex", Date.now() - 7 * 864e5, Date.now()) : ""}
+    <div class="fls">${(files || []).map(m => `<div class="fl" data-m="${m.id}" draggable="true"><input type="checkbox" class="sk">${thumb(urls[m.path], m.type)}<div><div class="mute sm">${nChip(m)} ${esc(m.title || "(unnamed)")} · ${m.views} views</div><div class="fs"><label><span class="sm mute">Title (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="Write a title"></label><label><span class="sm mute">Access</span>${accSel(m.access, "fa")}</label><label><span class="sm mute">Time shown to members</span><input type="datetime-local" step="1" class="ft" value="${lcl(m.created_at)}"></label></div>
       <div class="mini"><button class="btn xs fsv">Save</button><button class="btn gh xs fcv">Make cover</button><button class="btn gh xs fmv">Move…</button><button class="btn dg xs fdl">Delete</button></div></div></div>`).join("") || '<p class="mute sm">No files directly in this folder.</p>'}</div>
     <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)"><button class="btn dg xs dfa">Delete this folder (${tt.files} files, ${tt.folders} folders inside)</button> <span class="mute sm">goes to the recycle bin</span></div></div>`;
-  const q = s => slot.querySelector(s); slot.querySelectorAll(".fl[data-m]").forEach(r => r.setAttribute("data-mid", r.dataset.m));
+  const q = s => slot.querySelector(s); const ePicked = [];
+  q(".af").onchange = () => { [...q(".af").files].filter(x => /^(image|video)\//.test(x.type)).forEach(x => ePicked.push(x)); q(".af").value = ""; pickGrid(q(".apv"), ePicked, null, () => [Date.now() - 7 * 864e5, Date.now()]); };
+  slot.querySelectorAll(".fl[data-m]").forEach(r => r.setAttribute("data-mid", r.dataset.m));
   q(".rs").onclick = async () => { const t = q(".rn").value.trim(); if (!t) return; const { error } = await sb.from("albums").update({ title: t }).eq("id", f.id); error ? toast(error.message) : (toast("Renamed"), await loadAlbumsCache(), drawTree()); };
   q(".sa").onclick = async () => { const t = q(".sn2").value.trim(); if (!t) return; const { error } = await sb.from("albums").insert({ title: t, access: f.access, parent_id: f.id }); error ? toast(error.message) : (openSet.add(f.id), toast("Folder created"), await loadAlbumsCache(), drawTree()); };
   q(".ab").onclick = async () => {
-    const fs = [...q(".af").files].filter(x => /^(image|video)\//.test(x.type)); if (!fs.length) return toast("Choose files first");
-    q(".ab").disabled = true; q(".al").textContent = ""; const r = await doUpload(fs, f, f.access, q(".al"), q(".ap")); toast(`${r.ok} added`); await loadAlbumsCache(); drawTree();
+    const fs = ePicked; if (!fs.length) return toast("Choose files first");
+    q(".ab").disabled = true; q(".al").textContent = ""; const r = await doUpload([...fs], f, f.access, q(".al"), q(".ap")); toast(`${r.ok} added`); await loadAlbumsCache(); drawTree();
   };
+  bindBar(slot, "ex", async (a, b, m) => { if (!confirm("Give every file in this folder a different time?")) return; const n = await applySpread(f.id, a, b, m); if (n) toast(`${n} files updated`); renderTool(f.id, "edit"); });
   const picks = () => [...slot.querySelectorAll(".fl")].filter(r => r.querySelector(".sk")?.checked).map(r => r.dataset.m);
   q(".bmv").onclick = () => moveFiles(picks());
   q(".bdl").onclick = async () => { const ids = picks(); if (!ids.length) return toast("Tick files first"); if (!confirm(`Move ${ids.length} file(s) to the recycle bin?`)) return; if (await trashMedia(ids)) { await loadAlbumsCache(); drawTree(); } };
   q(".dfa").onclick = async () => { if (!confirm(`Move “${f.title}” with ${tt.files} files and ${tt.folders} folders inside to the recycle bin?`)) return; if (await trashFolder(f.id)) { toolOpen.delete(f.id); await loadAlbumsCache(); drawTree(); } };
   slot.querySelectorAll(".fl[data-m]").forEach(r => { const m = files.find(x => x.id === r.dataset.m);
-    r.querySelector(".fsv").onclick = async () => { const { error } = await sb.from("media").update({ label: r.querySelector(".lb").value.trim() || null, access: r.querySelector(".fa").value }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
+    r.querySelector(".fsv").onclick = async () => { const { error } = await sb.from("media").update({ label: r.querySelector(".lb").value.trim() || null, access: r.querySelector(".fa").value, ...(toIso(r.querySelector(".ft").value) ? { created_at: toIso(r.querySelector(".ft").value) } : {}) }).eq("id", m.id); error ? toast(error.message) : toast("Saved"); };
     r.querySelector(".fcv").onclick = async () => { const { error } = await sb.from("albums").update({ cover_media_id: m.id }).eq("id", f.id); error ? toast(error.message) : toast("Cover updated"); };
     r.querySelector(".fmv").onclick = () => moveFiles([m.id]);
     r.querySelector(".fdl").onclick = async () => { if (!confirm("Move this file to the recycle bin?")) return; if (await trashMedia([m.id])) { await loadAlbumsCache(); drawTree(); } };
@@ -1072,10 +1111,12 @@ function openPanel(card, id, html) {
 }
 function folderPanel(id) {
   const f = byId(id), card = document.querySelector(`#mFolders [data-fid="${id}"]`); if (!f || !card) return;
-  const p = openPanel(card, id, `<div class="cols"><label class="f"><span>Folder name</span><input type="text" class="n" value="${esc(f.title)}"></label><label class="f"><span>Category</span><select class="ct">${catOpts(f.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(f.access)}</label></div>
+  const p = openPanel(card, id, `<div class="cols"><label class="f"><span>Folder title</span><input type="text" class="n" value="${esc(f.title)}"></label><label class="f"><span>Category</span><select class="ct">${catOpts(f.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(f.access)}</label></div>
     <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" class="pin" ${f.pinned ? "checked" : ""}> Pin to Spotlight</label><label class="ck"><input type="checkbox" class="pp"> Apply access to everything inside</label></div>
+    ${f.media_count > 1 ? spreadBar("fp", Date.now() - 7 * 864e5, Date.now()) : ""}
     <div class="row"><button class="btn xs sv">Save</button><button class="btn gh xs mv">Move…</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
   const q = s => p.querySelector(s);
+  bindBar(p, "fp", async (a, b, m) => { if (!confirm("Give every file directly inside this folder a different time?")) return; const n = await applySpread(id, a, b, m); toast(n ? `${n} files updated` : "No files here"); });
   q(".sv").onclick = async () => {
     const access = q(".ac").value, { error } = await sb.from("albums").update({ title: q(".n").value.trim() || f.title, category_id: q(".ct").value || null, access }).eq("id", id); if (error) return toast(error.message);
     if (q(".pp").checked) { const ids = descIds(id); await sb.from("albums").update({ access }).in("id", ids); await sb.from("media").update({ access }).in("album_id", ids); }
@@ -1087,13 +1128,13 @@ function folderPanel(id) {
 }
 function filePanel(id) {
   const m = mCache.get(id), card = document.querySelector(`#mFiles [data-mid2="${id}"]`); if (!m || !card) return;
-  const p = openPanel(card, id, `<div class="cols"><label class="f"><span>File name</span><input type="text" class="n" value="${esc(m.title || "")}"></label><label class="f"><span>Display name (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="empty = hidden"></label>
-    <label class="f"><span>Category</span><select class="ct">${catOpts(m.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(m.access)}</label></div>
+  const p = openPanel(card, id, `<div class="cols"><label class="f"><span>Title (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="Write a title"></label><label class="f"><span>File name (only you see it)</span><input type="text" class="n" value="${esc(m.title || "")}"></label>
+    <label class="f"><span>Category</span><select class="ct">${catOpts(m.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(m.access)}</label><label class="f"><span>Time shown to members</span><input type="datetime-local" step="1" class="ta" value="${lcl(m.created_at)}"></label></div>
     <div class="row" style="margin-bottom:12px"><span class="mute sm">In:</span><b>${esc(folderPath(m.album_id) || "No folder")}</b><button class="btn gh xs mv">Move…</button><label class="ck"><input type="checkbox" class="pin" ${m.pinned ? "checked" : ""}> Pin to Spotlight</label></div>
     <div class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
   const q = s => p.querySelector(s);
   q(".sv").onclick = async () => {
-    const { error } = await sb.from("media").update({ title: q(".n").value.trim() || m.title, label: q(".lb").value.trim() || null, category_id: q(".ct").value || null, access: q(".ac").value }).eq("id", id); if (error) return toast(error.message);
+    const { error } = await sb.from("media").update({ title: q(".n").value.trim() || m.title, label: q(".lb").value.trim() || null, category_id: q(".ct").value || null, access: q(".ac").value, ...(toIso(q(".ta").value) ? { created_at: toIso(q(".ta").value) } : {}) }).eq("id", id); if (error) return toast(error.message);
     if (q(".pin").checked !== !!m.pinned) await setPin("m", id, q(".pin").checked);
     toast("Saved"); loadMedia(true);
   };
@@ -1165,10 +1206,7 @@ const scDz = $("scDz"), scFi = $("scFiles");
 scDz.onclick = e => { if (e.target !== scFi) scFi.click(); }; scDz.ondragover = e => { e.preventDefault(); scDz.classList.add("on"); }; scDz.ondragleave = () => scDz.classList.remove("on");
 scDz.ondrop = e => { e.preventDefault(); scDz.classList.remove("on"); addSc([...e.dataTransfer.files]); }; scFi.onchange = () => { addSc([...scFi.files]); scFi.value = ""; };
 function addSc(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => scPicked.push(f)); drawSc(); }
-function drawSc() {
-  $("scPrev").innerHTML = scPicked.map((f, i) => `<div class="t">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button data-i="${i}">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div>`).join("");
-  $("scPrev").querySelectorAll("button").forEach(b => b.onclick = () => { scPicked.splice(+b.dataset.i, 1); drawSc(); });
-}
+function drawSc() { pickGrid($("scPrev"), scPicked, null, () => { const to = $("scWhen").value ? new Date($("scWhen").value) : new Date(); return [+to - 7 * 864e5, +to]; }); }
 $("scGo").onclick = async () => {
   const title = $("scTitle").value.trim(), when = $("scWhen").value; if (!title) return toast("Give the folder a name"); if (!when) return toast("Pick the date and time"); if (!scPicked.length) return toast("Choose the files first");
   const at = new Date(when); if (at.getTime() < Date.now() + 60000) return toast("Pick a time in the future");
@@ -1184,15 +1222,18 @@ $("scGo").onclick = async () => {
 /* preview mode: see exactly what will go live, change the time, publish now or delete */
 async function previewSched(id) {
   const f = byId(id); if (!f) return;
-  const { data: ms } = await sb.from("media").select("id,title,label,type,path,kind_no,preview,access").eq("album_id", id).order("album_order").limit(120);
+  const { data: ms } = await sb.from("media").select("id,title,label,type,path,kind_no,preview,access,created_at").eq("album_id", id).order("album_order").limit(120);
   const urls = await sign((ms || []).map(m => m.path), 3600), d = document.createElement("div"); d.className = "mdl";
   const cat = cats.find(c => c.id === f.category_id), isF = futureAt(f), loc = new Date(f.publish_at), val = `${dayStr(loc)}T${pad2(loc.getHours())}:${pad2(loc.getMinutes())}`;
   d.innerHTML = `<div class="box" style="width:min(860px,100%)"><div class="row between"><div><span class="sn">PREVIEW</span> ${fChip(f)} <b style="font-size:18px">${esc(f.title)}</b></div><button class="btn gh xs x">Close</button></div>
     <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Goes live " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
-    <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
+    ${(ms || []).length > 1 ? spreadBar("pv", (isF ? +loc : Date.now()) - 7 * 864e5, isF ? +loc : Date.now()) : ""}
+    <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
     ${isF ? `<div class="row"><input type="datetime-local" class="w" value="${val}" style="max-width:240px"><button class="btn xs sv">Change time</button><button class="btn xs pn">Publish now</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>` : `<div class="row"><button class="btn dg xs dl">Delete (recycle bin)</button></div>`}</div>`;
   const close = () => d.remove(); d.onclick = e => { if (e.target === d || e.target.closest(".x")) close(); };
   document.body.appendChild(d); const q = s => d.querySelector(s);
+  d.querySelectorAll(".ft").forEach(i => i.onchange = async () => { const iso = toIso(i.value); if (!iso) return; const { error } = await sb.from("media").update({ created_at: iso }).eq("id", i.dataset.id); error ? toast(error.message) : toast("Time saved"); });
+  bindBar(d, "pv", async (a, b, m) => { const n = await applySpread(id, a, b, m); if (n) { toast(`${n} files updated`); close(); previewSched(id); } });
   q(".sv")?.addEventListener("click", async () => { const at = new Date(q(".w").value); if (isNaN(at) || at < Date.now() + 60000) return toast("Pick a time in the future"); const { error } = await sb.from("albums").update({ publish_at: at.toISOString(), created_at: at.toISOString() }).eq("id", id); error ? toast(error.message) : (toast("Time changed"), close(), loadSchedule()); });
   q(".pn")?.addEventListener("click", async () => { if (!confirm("Make this folder visible to members right now?")) return; const now = new Date().toISOString(); const { error } = await sb.from("albums").update({ publish_at: now, created_at: now }).eq("id", id); if (error) return toast(error.message); try { await sb.rpc("release_due"); } catch {} toast("Published"); close(); loadSchedule(); });
   q(".dl").addEventListener("click", async () => { if (!confirm("Move this folder and its files to the recycle bin?")) return; if (await trashFolder(id)) { close(); await loadAlbumsCache(); loadSchedule(); } });
@@ -1673,6 +1714,67 @@ $("stMove").onclick = async () => {
   $("stStop").hidden = true; $("stMsg").textContent += stStop ? "  |  stopped" : "  |  finished"; loadStorageInfo();
 };
 $("gq").addEventListener("keydown", e => { if (e.key !== "Enter") return; const v = e.target.value.trim(); if (!v) return; $("uQ").value = v; $("uF").value = ""; show("users"); e.target.value = ""; });
+/* ---------- a different time for every file (so members do not see them all added at once) ---------- */
+const lcl = d => { d = new Date(d); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`; };
+const toIso = v => { const d = new Date(v); return isNaN(d) ? null : d.toISOString(); };
+function spreadTimes(n, from, to, mode) {
+  let a = +new Date(from), b = +new Date(to); if (isNaN(a) || isNaN(b)) return null; if (b < a) [a, b] = [b, a]; if (b === a) b = a + 60000;
+  const span = b - a, out = [];
+  if (mode === "even") { const step = span / Math.max(1, n); for (let i = 0; i < n; i++) out.push(a + step * (i + .5) + (Math.random() - .5) * step * .8); }
+  else for (let i = 0; i < n; i++) out.push(a + Math.random() * span);
+  return out.map(t => new Date(Math.round(t / 1000) * 1000));
+}
+const spreadBar = (key, from, to, st) => `<div class="spb" data-sp="${key}"><b>✦ Different time for each file</b><div class="row"><label><span class="sm mute">From</span><input type="datetime-local" step="1" class="sf" value="${lcl(st?.f || from)}"></label><label><span class="sm mute">To</span><input type="datetime-local" step="1" class="st" value="${lcl(st?.t || to)}"></label><label><span class="sm mute">Style</span><select class="sm2" style="min-width:150px"><option value="random" ${st?.m === "random" ? "selected" : ""}>Random</option><option value="even" ${st?.m === "even" ? "selected" : ""}>Evenly spread</option></select></label><button type="button" class="btn xs sgo">Apply</button></div></div>`;
+const barVals = bar => ({ f: bar.querySelector(".sf").value, t: bar.querySelector(".st").value, m: bar.querySelector(".sm2").value });
+function bindBar(root, key, fn) { const bar = root.querySelector(`.spb[data-sp="${key}"]`); if (bar) bar.querySelector(".sgo").onclick = () => { const v = barVals(bar); fn(v.f, v.t, v.m, v); }; }
+/* give the files already inside a folder different times */
+async function applySpread(albumId, from, to, mode) {
+  const { data } = await sb.from("media").select("id").eq("album_id", albumId).order("album_order"); if (!data?.length) return 0;
+  const ts = spreadTimes(data.length, from, to, mode); if (!ts) { toast("Pick valid From and To times"); return 0; }
+  await Promise.all(data.map((m, i) => sb.from("media").update({ created_at: ts[i].toISOString() }).eq("id", m.id))); return data.length;
+}
+
+/* ---------- premium dropdowns: every <select> becomes a styled menu ---------- */
+(() => {
+  const vd = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+  Object.defineProperty(HTMLSelectElement.prototype, "value", { get() { return vd.get.call(this); }, set(v) { vd.set.call(this, v); if (this._ps) this._ps(); } });
+  let openMenu = null; const CH = '<svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';
+  const closeAll = () => { if (openMenu) { openMenu.menu.remove(); openMenu.w.classList.remove("open"); openMenu = null; } };
+  addEventListener("scroll", e => { if (openMenu && !openMenu.menu.contains(e.target)) closeAll(); }, true); addEventListener("resize", closeAll);
+  document.addEventListener("mousedown", e => { if (openMenu && !openMenu.menu.contains(e.target) && !openMenu.w.contains(e.target)) closeAll(); });
+  function enhance(sel) {
+    if (sel._ps || sel.multiple || sel.size > 1) return;
+    const w = document.createElement("div"); w.className = "ps"; const st = sel.style;
+    ["width", "minWidth", "maxWidth", "flex", "marginTop", "marginBottom"].forEach(k => { if (st[k]) w.style[k] = st[k]; });
+    if (st.width === "auto") w.style.display = "inline-block";
+    sel.parentNode.insertBefore(w, sel); w.appendChild(sel); sel.classList.add("ps-native");
+    const b = document.createElement("button"); b.type = "button"; b.className = "ps-btn"; w.appendChild(b); let act = -1;
+    const sync = () => { const o = sel.options[sel.selectedIndex]; b.innerHTML = `<span>${o ? o.text.replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c])) : "Select"}</span>${CH}`; w.classList.toggle("dis", sel.disabled); w.hidden = sel.hidden || sel.style.display === "none"; };
+    sel._ps = sync; new MutationObserver(sync).observe(sel, { childList: true, subtree: true, attributes: true, attributeFilter: ["disabled", "hidden", "style"] });
+    const items = () => [...(openMenu?.menu.children || [])];
+    const mark = i => { act = i; items().forEach((el, k) => el.classList.toggle("act", k === i)); items()[i]?.scrollIntoView({ block: "nearest" }); };
+    const pick = i => { sel.selectedIndex = i; sel.dispatchEvent(new Event("change", { bubbles: true })); sync(); closeAll(); };
+    const open = () => {
+      closeAll(); const m = document.createElement("div"); m.className = "ps-menu";
+      m.innerHTML = [...sel.options].map((o, i) => `<div class="ps-o ${i === sel.selectedIndex ? "on" : ""}" data-i="${i}"><span>${o.text.replace(/[<>&]/g, c => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" }[c]))}</span></div>`).join("");
+      document.body.appendChild(m); const r = b.getBoundingClientRect(), h = Math.min(280, m.scrollHeight + 12);
+      m.style.minWidth = r.width + "px"; m.style.left = Math.min(r.left, innerWidth - Math.max(r.width, 180) - 10) + "px";
+      m.style.top = (innerHeight - r.bottom < h + 12 && r.top > h ? r.top - h - 6 : r.bottom + 6) + "px";
+      m.onclick = e => { const o = e.target.closest(".ps-o"); if (o) pick(+o.dataset.i); };
+      openMenu = { menu: m, w }; w.classList.add("open"); mark(sel.selectedIndex); m.querySelector(".on")?.scrollIntoView({ block: "center" });
+    };
+    b.onclick = () => openMenu && openMenu.w === w ? closeAll() : open();
+    b.onkeydown = e => {
+      const n = sel.options.length;
+      if (e.key === "Escape") return closeAll();
+      if (["ArrowDown", "ArrowUp", "Enter", " "].includes(e.key)) { e.preventDefault(); if (!openMenu || openMenu.w !== w) return open(); if (e.key === "ArrowDown") mark(Math.min(n - 1, act + 1)); else if (e.key === "ArrowUp") mark(Math.max(0, act - 1)); else if (act >= 0) pick(act); }
+    };
+    sync();
+  }
+  const scan = root => (root.querySelectorAll ? root.querySelectorAll("select") : []).forEach(enhance);
+  scan(document); new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1) { if (n.tagName === "SELECT") enhance(n); else scan(n); } }))).observe(document.body, { childList: true, subtree: true });
+})();
+
 refreshUI();
 </script>
 </body>
