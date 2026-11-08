@@ -322,9 +322,6 @@
 
 
   /* ===== per-file times ===== */
-  .spb { grid-column: 1 / -1; padding: 12px 14px; margin-bottom: 10px; border: 1px dashed var(--line2); border-radius: 14px; background: var(--bg2); }
-  .spb > b { display: block; margin-bottom: 8px; color: var(--gold); font-size: 13px; letter-spacing: .04em; }
-  .spb .row { align-items: flex-end; } .spb label { flex: 1; min-width: 170px; }
   .pkc .pka { border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; background: transparent !important; padding: 7px 10px !important; font-size: 11.5px; color: var(--mute); }
 
 </style>
@@ -847,7 +844,7 @@ async function drawCatPanel(cid) {
 }
 
 /* ---------- upload: category, folder, sub-folder, then files ---------- */
-let picked = [], upPath = [], upCatSel = "";
+let picked = [], upPath = [], upCatSel = "", upAccTouched = false;
 const dz = $("dz"), fi = $("files");
 dz.onclick = e => { if (e.target !== fi) fi.click(); };
 dz.ondragover = e => { e.preventDefault(); dz.classList.add("on"); }; dz.ondragleave = () => dz.classList.remove("on");
@@ -857,12 +854,10 @@ function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach
 /* a grid of chosen files, each with its own title box (the title is what members see) */
 function pickGrid(el, arr, after, def) {
   el.className = "pk";
-  const [dFrom, dTo] = def ? def() : [Date.now() - 7 * 864e5, Date.now()];
-  el.innerHTML = (arr.length > 1 ? spreadBar("pk", dFrom, dTo, el._sp) : "") + arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
+  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
   el.querySelectorAll(".pkc button").forEach(b => b.onclick = () => { arr.splice(+b.dataset.i, 1); pickGrid(el, arr, after, def); if (after) after(); });
   el.querySelectorAll(".pkt").forEach(i => i.oninput = () => { arr[+i.dataset.i]._title = i.value; });
   el.querySelectorAll(".pka").forEach(i => i.oninput = () => { arr[+i.dataset.i]._at = i.value; });
-  bindBar(el, "pk", (f, t, m, v) => { const ts = spreadTimes(arr.length, f, t, m); if (!ts) return toast("Pick valid From and To times"); ts.forEach((d, i) => arr[i]._at = lcl(d)); el._sp = v; pickGrid(el, arr, after, def); });
 }
 function drawPicked() { pickGrid($("upPrev"), picked); upWhere(); }
 function fillUpload() {
@@ -882,8 +877,9 @@ function upWhere() {
   $("upWhere").innerHTML = t ? `${ic("folder")} <b>${esc(upPath.map(id => byId(id)?.title).join(" › "))}</b> · ${picked.length} file${picked.length === 1 ? "" : "s"} ready${cat ? ` · category <b>${esc(cat.name)}</b>` : ""}` : '<span class="mute">Choose a folder (or create one) to upload into.</span>';
 }
 $("upCat").onchange = () => { upCatSel = $("upCat").value; upWhere(); };
-$("upFold").onchange = () => { const id = $("upFold").value; upPath = id ? [id] : []; const f = byId(id); if (f) { upCatSel = f.category_id || ""; $("upAccess").value = f.access; } fillUpload(); };
-$("upSubs").onchange = e => { const s = e.target.closest("select[data-lv]"); if (!s) return; upPath = upPath.slice(0, +s.dataset.lv); if (s.value) upPath.push(s.value); const f = byId(s.value); if (f) $("upAccess").value = f.access; fillUpload(); };
+$("upAccess").addEventListener("change", () => { upAccTouched = true; });
+$("upFold").onchange = () => { const id = $("upFold").value; upPath = id ? [id] : []; const f = byId(id); if (f) { upCatSel = f.category_id || ""; if (!upAccTouched) $("upAccess").value = f.access; } fillUpload(); };
+$("upSubs").onchange = e => { const s = e.target.closest("select[data-lv]"); if (!s) return; upPath = upPath.slice(0, +s.dataset.lv); if (s.value) upPath.push(s.value); const f = byId(s.value); if (f && !upAccTouched) $("upAccess").value = f.access; fillUpload(); };
 $("upSubs").onclick = async e => {
   const b = e.target.closest("[data-mk]"); if (!b) return; const i = +b.dataset.mk, inp = $("upSubs").querySelector(`[data-new="${i}"]`), t = inp.value.trim(); if (!t) return toast("Type a sub-folder name");
   const { data, error } = await sb.from("albums").insert({ title: t, access: byId(upPath[i]).access, parent_id: upPath[i] }).select("id").single(); if (error) return toast(error.message);
@@ -893,7 +889,16 @@ $("upCatAdd").onclick = async () => { const name = $("upCatNew").value.trim(); i
 $("upFoldAdd").onclick = async () => { const t = $("upFoldNew").value.trim(); if (!t) return toast("Type a folder name"); const { data, error } = await sb.from("albums").insert({ title: t, access: $("upAccess").value, category_id: upCatSel || null, parent_id: null }).select("id").single(); if (error) return toast(error.message); $("upFoldNew").value = ""; upPath = [data.id]; await loadAlbumsCache(); toast("Folder created"); };
 $("upBtn").onclick = async () => {
   const tgt = upPath[upPath.length - 1]; if (!tgt) return toast("Choose or create a folder first"); if (!picked.length) return toast("Choose files first");
-  const album = byId(tgt), root = byId(upPath[0]); $("upBtn").disabled = true; $("log").textContent = ""; $("upProg").style.width = "0";
+  const album = byId(tgt), root = byId(upPath[0]);
+  const AR = { public: 0, lite: 1, expensive: 2 }, NM = { public: "Public", lite: "Rose", expensive: "Royal" }, want = $("upAccess").value;
+  const have = upPath.reduce((m, id) => Math.max(m, AR[byId(id)?.access] ?? 0), 0);
+  if ((AR[want] ?? 0) > have) { // files are more private than the folder: the folder would not show in the Premium tab
+    const hn = Object.keys(AR).find(k => AR[k] === have);
+    if (confirm(`These files are ${NM[want]}, but the folder “${album.title}” is ${NM[hn]}, so it will not appear in the Premium tab.\n\nOK = also make this folder ${NM[want]} (recommended)\nCancel = keep the folder as it is (only these files are locked)`)) {
+      const { error: ae } = await sb.from("albums").update({ access: want }).eq("id", tgt); if (ae) return toast(ae.message); album.access = want;
+    }
+  }
+  $("upBtn").disabled = true; $("log").textContent = `Access: ${NM[want]}\n`; $("upProg").style.width = "0";
   if (root && (root.category_id || "") !== upCatSel) await sb.from("albums").update({ category_id: upCatSel || null }).eq("id", root.id);
   const r = await doUpload([...picked], album, $("upAccess").value, $("log"), $("upProg"));
   $("log").textContent += `\nDone: ${r.ok}/${picked.length} in “${album.title}”`;
@@ -989,8 +994,7 @@ async function toolEdit(f, slot) {
     <div class="row" style="margin-bottom:10px"><input type="text" class="sn2" placeholder="Create a folder inside this one (title)" style="flex:1;min-width:180px"><button class="btn gh xs sa">Create folder</button></div>
     <div class="row" style="margin-bottom:14px;align-items:flex-start"><div style="flex:1;min-width:220px"><input type="file" class="af" accept="image/*,video/*" multiple><div class="apv" style="margin-top:10px"></div><div class="prog"><i class="ap"></i></div><div class="al sm mute" style="white-space:pre-line;margin-top:6px"></div></div><button class="btn gh xs ab">Add files here</button></div>
     <div class="row between" style="margin-bottom:6px"><b>Files in this folder (${(files || []).length})</b><span class="row"><button class="btn gh xs bmv">Move selected…</button><button class="btn dg xs bdl">Delete selected</button></span></div>
-    ${(files || []).length > 1 ? spreadBar("ex", Date.now() - 7 * 864e5, Date.now()) : ""}
-    <div class="fls">${(files || []).map(m => `<div class="fl" data-m="${m.id}" draggable="true"><input type="checkbox" class="sk">${thumb(urls[m.path], m.type)}<div><div class="mute sm">${nChip(m)} ${esc(m.title || "(unnamed)")} · ${m.views} views</div><div class="fs"><label><span class="sm mute">Title (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="Write a title"></label><label><span class="sm mute">Access</span>${accSel(m.access, "fa")}</label><label><span class="sm mute">Time shown to members</span><input type="datetime-local" step="1" class="ft" value="${lcl(m.created_at)}"></label></div>
+        <div class="fls">${(files || []).map(m => `<div class="fl" data-m="${m.id}" draggable="true"><input type="checkbox" class="sk">${thumb(urls[m.path], m.type)}<div><div class="mute sm">${nChip(m)} ${esc(m.title || "(unnamed)")} · ${m.views} views</div><div class="fs"><label><span class="sm mute">Title (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="Write a title"></label><label><span class="sm mute">Access</span>${accSel(m.access, "fa")}</label><label><span class="sm mute">Time shown to members</span><input type="datetime-local" step="1" class="ft" value="${lcl(m.created_at)}"></label></div>
       <div class="mini"><button class="btn xs fsv">Save</button><button class="btn gh xs fcv">Make cover</button><button class="btn gh xs fmv">Move…</button><button class="btn dg xs fdl">Delete</button></div></div></div>`).join("") || '<p class="mute sm">No files directly in this folder.</p>'}</div>
     <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)"><button class="btn dg xs dfa">Delete this folder (${tt.files} files, ${tt.folders} folders inside)</button> <span class="mute sm">goes to the recycle bin</span></div></div>`;
   const q = s => slot.querySelector(s); const ePicked = [];
@@ -1002,7 +1006,6 @@ async function toolEdit(f, slot) {
     const fs = ePicked; if (!fs.length) return toast("Choose files first");
     q(".ab").disabled = true; q(".al").textContent = ""; const r = await doUpload([...fs], f, f.access, q(".al"), q(".ap")); toast(`${r.ok} added`); await loadAlbumsCache(); drawTree();
   };
-  bindBar(slot, "ex", async (a, b, m) => { if (!confirm("Give every file in this folder a different time?")) return; const n = await applySpread(f.id, a, b, m); if (n) toast(`${n} files updated`); renderTool(f.id, "edit"); });
   const picks = () => [...slot.querySelectorAll(".fl")].filter(r => r.querySelector(".sk")?.checked).map(r => r.dataset.m);
   q(".bmv").onclick = () => moveFiles(picks());
   q(".bdl").onclick = async () => { const ids = picks(); if (!ids.length) return toast("Tick files first"); if (!confirm(`Move ${ids.length} file(s) to the recycle bin?`)) return; if (await trashMedia(ids)) { await loadAlbumsCache(); drawTree(); } };
@@ -1113,10 +1116,8 @@ function folderPanel(id) {
   const f = byId(id), card = document.querySelector(`#mFolders [data-fid="${id}"]`); if (!f || !card) return;
   const p = openPanel(card, id, `<div class="cols"><label class="f"><span>Folder title</span><input type="text" class="n" value="${esc(f.title)}"></label><label class="f"><span>Category</span><select class="ct">${catOpts(f.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(f.access)}</label></div>
     <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" class="pin" ${f.pinned ? "checked" : ""}> Pin to Spotlight</label><label class="ck"><input type="checkbox" class="pp"> Apply access to everything inside</label></div>
-    ${f.media_count > 1 ? spreadBar("fp", Date.now() - 7 * 864e5, Date.now()) : ""}
-    <div class="row"><button class="btn xs sv">Save</button><button class="btn gh xs mv">Move…</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
+        <div class="row"><button class="btn xs sv">Save</button><button class="btn gh xs mv">Move…</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
   const q = s => p.querySelector(s);
-  bindBar(p, "fp", async (a, b, m) => { if (!confirm("Give every file directly inside this folder a different time?")) return; const n = await applySpread(id, a, b, m); toast(n ? `${n} files updated` : "No files here"); });
   q(".sv").onclick = async () => {
     const access = q(".ac").value, { error } = await sb.from("albums").update({ title: q(".n").value.trim() || f.title, category_id: q(".ct").value || null, access }).eq("id", id); if (error) return toast(error.message);
     if (q(".pp").checked) { const ids = descIds(id); await sb.from("albums").update({ access }).in("id", ids); await sb.from("media").update({ access }).in("album_id", ids); }
@@ -1227,13 +1228,11 @@ async function previewSched(id) {
   const cat = cats.find(c => c.id === f.category_id), isF = futureAt(f), loc = new Date(f.publish_at), val = `${dayStr(loc)}T${pad2(loc.getHours())}:${pad2(loc.getMinutes())}`;
   d.innerHTML = `<div class="box" style="width:min(860px,100%)"><div class="row between"><div><span class="sn">PREVIEW</span> ${fChip(f)} <b style="font-size:18px">${esc(f.title)}</b></div><button class="btn gh xs x">Close</button></div>
     <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Goes live " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
-    ${(ms || []).length > 1 ? spreadBar("pv", (isF ? +loc : Date.now()) - 7 * 864e5, isF ? +loc : Date.now()) : ""}
-    <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
+        <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
     ${isF ? `<div class="row"><input type="datetime-local" class="w" value="${val}" style="max-width:240px"><button class="btn xs sv">Change time</button><button class="btn xs pn">Publish now</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>` : `<div class="row"><button class="btn dg xs dl">Delete (recycle bin)</button></div>`}</div>`;
   const close = () => d.remove(); d.onclick = e => { if (e.target === d || e.target.closest(".x")) close(); };
   document.body.appendChild(d); const q = s => d.querySelector(s);
   d.querySelectorAll(".ft").forEach(i => i.onchange = async () => { const iso = toIso(i.value); if (!iso) return; const { error } = await sb.from("media").update({ created_at: iso }).eq("id", i.dataset.id); error ? toast(error.message) : toast("Time saved"); });
-  bindBar(d, "pv", async (a, b, m) => { const n = await applySpread(id, a, b, m); if (n) { toast(`${n} files updated`); close(); previewSched(id); } });
   q(".sv")?.addEventListener("click", async () => { const at = new Date(q(".w").value); if (isNaN(at) || at < Date.now() + 60000) return toast("Pick a time in the future"); const { error } = await sb.from("albums").update({ publish_at: at.toISOString(), created_at: at.toISOString() }).eq("id", id); error ? toast(error.message) : (toast("Time changed"), close(), loadSchedule()); });
   q(".pn")?.addEventListener("click", async () => { if (!confirm("Make this folder visible to members right now?")) return; const now = new Date().toISOString(); const { error } = await sb.from("albums").update({ publish_at: now, created_at: now }).eq("id", id); if (error) return toast(error.message); try { await sb.rpc("release_due"); } catch {} toast("Published"); close(); loadSchedule(); });
   q(".dl").addEventListener("click", async () => { if (!confirm("Move this folder and its files to the recycle bin?")) return; if (await trashFolder(id)) { close(); await loadAlbumsCache(); loadSchedule(); } });
@@ -1717,22 +1716,6 @@ $("gq").addEventListener("keydown", e => { if (e.key !== "Enter") return; const 
 /* ---------- a different time for every file (so members do not see them all added at once) ---------- */
 const lcl = d => { d = new Date(d); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`; };
 const toIso = v => { const d = new Date(v); return isNaN(d) ? null : d.toISOString(); };
-function spreadTimes(n, from, to, mode) {
-  let a = +new Date(from), b = +new Date(to); if (isNaN(a) || isNaN(b)) return null; if (b < a) [a, b] = [b, a]; if (b === a) b = a + 60000;
-  const span = b - a, out = [];
-  if (mode === "even") { const step = span / Math.max(1, n); for (let i = 0; i < n; i++) out.push(a + step * (i + .5) + (Math.random() - .5) * step * .8); }
-  else for (let i = 0; i < n; i++) out.push(a + Math.random() * span);
-  return out.map(t => new Date(Math.round(t / 1000) * 1000));
-}
-const spreadBar = (key, from, to, st) => `<div class="spb" data-sp="${key}"><b>✦ Different time for each file</b><div class="row"><label><span class="sm mute">From</span><input type="datetime-local" step="1" class="sf" value="${lcl(st?.f || from)}"></label><label><span class="sm mute">To</span><input type="datetime-local" step="1" class="st" value="${lcl(st?.t || to)}"></label><label><span class="sm mute">Style</span><select class="sm2" style="min-width:150px"><option value="random" ${st?.m === "random" ? "selected" : ""}>Random</option><option value="even" ${st?.m === "even" ? "selected" : ""}>Evenly spread</option></select></label><button type="button" class="btn xs sgo">Apply</button></div></div>`;
-const barVals = bar => ({ f: bar.querySelector(".sf").value, t: bar.querySelector(".st").value, m: bar.querySelector(".sm2").value });
-function bindBar(root, key, fn) { const bar = root.querySelector(`.spb[data-sp="${key}"]`); if (bar) bar.querySelector(".sgo").onclick = () => { const v = barVals(bar); fn(v.f, v.t, v.m, v); }; }
-/* give the files already inside a folder different times */
-async function applySpread(albumId, from, to, mode) {
-  const { data } = await sb.from("media").select("id").eq("album_id", albumId).order("album_order"); if (!data?.length) return 0;
-  const ts = spreadTimes(data.length, from, to, mode); if (!ts) { toast("Pick valid From and To times"); return 0; }
-  await Promise.all(data.map((m, i) => sb.from("media").update({ created_at: ts[i].toISOString() }).eq("id", m.id))); return data.length;
-}
 
 /* ---------- premium dropdowns: every <select> becomes a styled menu ---------- */
 (() => {

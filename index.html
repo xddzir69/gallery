@@ -162,8 +162,8 @@
   .cap b { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cap span { color: var(--mute); font-size: 12px; }
   .g3 .cap b { font-size: 11.5px; } .g3 .cap span { display: none; }
-  /* locked = 80% blur */
-  .th.locked .sl { filter: blur(16px) saturate(1.1); transform: scale(1.3); }
+  /* locked = 50% blur */
+  .th.locked .sl { filter: blur(10px) saturate(1.1); transform: scale(1.2); }
   .th.locked::before { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(6,6,8,.32); }
   .lk { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; pointer-events: none; }
   .lkc { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(8,8,10,.55); border: 1px solid var(--line2); color: var(--hi); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -306,7 +306,7 @@
   .pv4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .pv4 .s { position: relative; aspect-ratio: 3/4; border-radius: 12px; overflow: hidden; background: var(--card2); outline: 1px solid var(--line); outline-offset: -1px; }
   .pv4 .s img, .pv4 .s .bgp { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: center/cover; }
-  .pv4 .s.locked .bgp, .pv4 .s.locked img { filter: blur(10px); transform: scale(1.3); }
+  .pv4 .s.locked .bgp, .pv4 .s.locked img { filter: blur(6px); transform: scale(1.2); }
   .pv4 .s.empty { display: flex; align-items: center; justify-content: center; color: var(--mute); opacity: .5; }
   .pv4 .s.empty .i { width: 18px; height: 18px; }
 
@@ -336,6 +336,24 @@
   .badge .bc code { flex: 1; min-width: 0; padding: 6px 10px; border-radius: 9px; background: var(--bg2); border: 1px dashed var(--line2); font: 700 12px ui-monospace, Menlo, monospace; letter-spacing: .06em; user-select: text; -webkit-user-select: text; overflow: hidden; text-overflow: ellipsis; }
   .lrow { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; } .lrow:last-child { border: 0; }
   .lrow .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* ---------- notice bar (auto-running rules) + explore upload box ---------- */
+  .nbar { display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px 0 9px; margin-bottom: 14px; border-radius: 16px; border: 1px solid var(--line2); background: linear-gradient(100deg, var(--card2), var(--card)); box-shadow: var(--shadow); overflow: hidden; }
+  .nbar .ni { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--metal); color: var(--onmetal); }
+  .nbar .ni .i { width: 15px; height: 15px; }
+  .nview { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+  .ntk { display: inline-block; white-space: nowrap; animation: nmove 46s linear infinite; will-change: transform; }
+  .ntk span { display: inline-block; padding-right: 44px; font-size: 13px; font-weight: 600; color: var(--text); }
+  .ntk span::before { content: "\2726"; color: var(--mid); margin-right: 10px; }
+  @keyframes nmove { to { transform: translateX(-50%); } }
+  .nbar:active .ntk { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .ntk { animation: none !important; } .nview { overflow-x: auto; } }
+  .xup { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 11px 12px; margin-bottom: 14px; border-radius: 18px; border: 1px dashed var(--line2); background: linear-gradient(165deg, var(--card2), var(--card)); cursor: pointer; color: var(--text); }
+  .xup:active { transform: scale(.98); }
+  .xup .xi { flex: none; width: 42px; height: 42px; border-radius: 13px; display: flex; align-items: center; justify-content: center; background: var(--metal); color: var(--onmetal); }
+  .xup .xi .i { width: 20px; height: 20px; }
+  .xup .xt { flex: 1; min-width: 0; } .xup .xt b { display: block; font-size: 14px; font-weight: 700; } .xup .xt small { display: block; color: var(--mute); font-size: 12px; margin-top: 1px; }
+  .xup > .i { flex: none; width: 16px; height: 16px; color: var(--mute); }
 
   /* ---------- my uploads ---------- */
   .uphero { position: relative; padding: 22px 20px; border-radius: 24px; margin-bottom: 16px; text-align: center; overflow: hidden; border: 1px solid var(--line2);
@@ -728,7 +746,7 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- global slideshow (every 3.5s, folder thumbnails) ---------- */
+/* ---------- global slideshow (every 5s, folder thumbnails) ---------- */
 setInterval(() => {
   if (document.hidden) return;
   document.querySelectorAll(".ss").forEach(ss => {
@@ -739,7 +757,7 @@ setInterval(() => {
     sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
     if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
   });
-}, 3500);
+}, 5000);
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -948,7 +966,7 @@ PAGES.explore = async function () {
     const box = $("xres"); if (!box) return;
     if (xq) return mountList(box, { src: "search", grid: "g2", fetch: (p, s) => api("list", { q: xq, sort: "new", page: p, size: s }), empty: "<b>No results</b>Try a different word." });
     box.innerHTML = `<div class="xwrap" ${commOn ? "" : 'style="grid-template-columns:1fr"'}><div class="rail"><h4>Category</h4>${cats.length ? cats.map(c => `<button class="topic" data-act="topic" data-id="${c.id}" data-name="${esc(c.name)}">${ic("folder")}<b>${esc(c.name)}</b></button>`).join("") : '<span class="mute" style="font-size:12px;padding:4px">No topics yet</span>'}</div>
-      ${commOn ? `<div class="xcomm"><h4>Community</h4><div id="cm"></div></div>` : ""}</div>`;
+      ${commOn ? `<div class="xcomm"><h4>Community</h4><button class="xup" data-act="go" data-r="space"><span class="xi">${ic("cloud")}</span><span class="xt"><b>Share your moments</b><small>Upload photos or videos</small></span>${ic("next")}</button><div id="cm"></div></div>` : ""}</div>`;
     if (commOn) mountList($("cm"), { src: "comm", grid: "list", render: commHTML, fetch: (p, s) => api("comm_list", { page: p, size: s }), empty: "<b>Nothing shared yet</b>Member posts appear here after approval." });
   };
   let st; $("xq").addEventListener("input", e => { clearTimeout(st); st = setTimeout(() => { xq = e.target.value.trim(); run(); }, 380); });
@@ -1028,7 +1046,7 @@ PAGES.album = async function (p) {
       ${a.locked ? "" : `<div style="display:flex;gap:8px"><button class="hbtn" data-act="sharealb" data-id="${a.id}" data-t="${esc(a.title)}" aria-label="Share">${ic("share")}</button><button class="hbtn ${favs.has(a.id) ? "on" : ""}" id="alheart" data-act="heart" data-id="${a.id}" data-kind="album" aria-label="Save">${ic("heart")}</button></div>`}</div>
     ${a.locked ? `<button class="btn block" data-act="go" data-r="plans" style="margin-bottom:16px">${ic("crown")}Unlock Premium</button>` : ""}
     ${SRC.alf.length ? gridHTML(SRC.alf, "alf", "g2") : ""}
-    ${SRC.alm.length ? `<div style="height:14px"></div>${gridHTML(SRC.alm, "alm", "g3")}` : ""}
+    ${SRC.alm.length ? `<div style="height:14px"></div>${gridHTML(SRC.alm, "alm", "g2")}` : ""}
     ${!SRC.alf.length && !SRC.alm.length ? `<div class="msg"><b>Empty folder</b>Nothing here yet.</div>` : ""}</div>`;
 };
 ACT.sharealb = d => shareFolder(d.id, d.t);
@@ -1095,8 +1113,19 @@ ACT.redeem = async () => {
 
 /* ---------- my uploads ---------- */
 let UL = null;
+const UPLOAD_RULES = [
+  "Everything you upload can be seen by the Community and other members once it is approved.",
+  "Upload only photos and videos that you own or have the right to share.",
+  "Do not upload anyone under 18, anyone who has not agreed, or any illegal or hateful content.",
+  "Every post is reviewed before it appears in Community.",
+  "Posts that break the rules are removed and uploads can be blocked.",
+];
+function noticeBar() {
+  const g = UPLOAD_RULES.map(t => `<span>${esc(t)}</span>`).join("");
+  return `<div class="nbar" role="note" aria-label="Upload rules"><span class="ni">${ic("notice")}</span><div class="nview"><div class="ntk">${g}${g}</div></div></div>`;
+}
 PAGES.space = async function () {
-  app.innerHTML = `<div class="pad"><div id="uph"><div class="skel" style="aspect-ratio:2/1"></div></div><div id="upl"></div></div>`;
+  app.innerHTML = `<div class="pad">${noticeBar()}<div id="uph"><div class="skel" style="aspect-ratio:2/1"></div></div><div id="upl"></div></div>`;
   UL = await api("my_limits");
   const can = UL.enabled && UL.allowed;
   $("uph").innerHTML = `<div class="uphero"><div class="ui">${ic("cloud")}</div><h3>Share your moments</h3>
