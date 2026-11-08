@@ -446,6 +446,8 @@
   .pop .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--metal); transform-origin: left; animation: drain var(--dur, 5s) linear forwards; }
   @keyframes drain { to { transform: scaleX(0); } }
   #toast { position: fixed; z-index: 300; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--card2); border: 1px solid var(--line2); color: var(--text); box-shadow: var(--shadow); padding: 10px 20px; border-radius: 999px; font-size: 13.5px; font-weight: 600; display: none; max-width: calc(100% - 40px); text-align: center; }
+  #sheet .filerow .fnm{flex:1;width:auto;min-width:0;margin:0;padding:6px 2px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;font-size:13.5px}
+  #sheet .filerow .fnm:focus{border-bottom-color:var(--mid);box-shadow:none}
 </style>
 </head>
 <body>
@@ -559,6 +561,9 @@ const C = window.APP_CONFIG;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const ic = (n, c = "") => `<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
+/* previews go into a CSS background: accept only a plain base64 image, so a member can never inject extra CSS or load an outside picture */
+const SAFE_PV = /^data:image\/(jpeg|png|webp|gif);base64,[A-Za-z0-9+/]+={0,2}$/;
+const pvCss = p => (typeof p === "string" && SAFE_PV.test(p)) ? `background-image:url('${p}')` : "";
 const LS = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
@@ -755,7 +760,7 @@ const thumbsOf = m => (m.thumbs && m.thumbs.length) ? m.thumbs : [{ type: m.type
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
-    const pv = t.preview ? `background-image:url('${esc(t.preview)}')` : "";
+    const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
     if (t.type === "video") return t.preview ? `<div class="sl${on}"${v} style="${pv}"></div>` : `<video class="sl${on}" data-v="1" muted playsinline preload="metadata" ${key}="${esc(t.url)}#t=0.5"></video>`;
@@ -830,7 +835,10 @@ function mountList(el, o) {
       const r = await o.fetch(S.page + 1, 24); if (t !== S.t) return;
       if (!S.page) { box.innerHTML = ""; S.grid = null; }
       S.page++; o.onData?.(r); add(r.items);
-      S.done = !r.items.length || SRC[o.src].length >= r.total;
+      // the server hides empty or not-yet-published folders, so a page can come back empty while more pages still exist
+      const seen = S.page * 24 >= (r.total || 0);
+      S.done = SRC[o.src].length >= r.total || (!r.items.length && seen);
+      if (!S.done && !r.items.length) { S.busy = false; return load(); }
       if (!SRC[o.src].length) { msg.hidden = false; msg.innerHTML = o.empty || "<b>Nothing here yet</b>New posts will appear here."; }
     } catch (e) { if (t !== S.t) return; box.innerHTML = ""; msg.hidden = false; msg.innerHTML = `<b>Couldn't load</b>${esc(e.message)}`; S.done = true; }
     S.busy = false;
@@ -990,7 +998,7 @@ PAGES.library = async function () {
     const r = await api("fav_preview"); if (!$("pv4")) return;
     const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
     const s = (r.items || []).slice(0, 4), cells = [];
-    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${t.url && !t.locked && t.type !== "video" ? `<img src="${esc(t.url)}" alt="">` : `<div class="bgp" style="${t.preview ? `background-image:url('${esc(t.preview)}')` : ""}"></div>`}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
+    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${t.url && !t.locked && t.type !== "video" ? `<img src="${esc(t.url)}" alt="">` : `<div class="bgp" style="${pvCss(t.preview)}"></div>`}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
     $("pv4").innerHTML = cells.join("");
   } catch {}
 };
@@ -1122,20 +1130,20 @@ function composeUpload(files) {
   });
   const total = ok.reduce((a, f) => a + f.size, 0), overGroup = ok.length > 1 && total > gmax;
   openSheet(`<h2>New upload</h2><p>${ok.length > 1 ? `${ok.length} files will be posted together as one folder (${fmtMB(total)}).` : "One file will be posted."}</p>
-    <input id="utitle" maxlength="80" placeholder="Name your post" autocomplete="off">
-    <div style="margin-top:12px;max-height:200px;overflow:auto">${rows.map(([f, s, bad]) => `<div class="filerow"><span class="fi">${ic(f.type.startsWith("video") ? "play" : "image")}</span><span class="fn">${esc(f.name)}</span><span class="fs ${bad ? "bad" : ""}">${esc(s)}</span></div>`).join("")}</div>
+    <input id="utitle" maxlength="80" placeholder="Title (shown on the post)" autocomplete="off">
+    <div style="margin-top:12px;max-height:200px;overflow:auto">${(() => { let k = 0; return rows.map(([f, s, bad]) => `<div class="filerow"><span class="fi">${ic(f.type.startsWith("video") ? "play" : "image")}</span>${bad ? `<span class="fn">${esc(f.name)}</span>` : `<input class="fnm" data-ni="${k++}" maxlength="80" placeholder="Name this ${f.type.startsWith("video") ? "video" : "photo"} (optional)" value="${esc((f.name || "").replace(/\.[^.]+$/, "").slice(0, 80))}" autocomplete="off">`}<span class="fs ${bad ? "bad" : ""}">${esc(s)}</span></div>`).join(""); })()}</div>
     ${overGroup ? `<p style="color:var(--danger);margin-top:10px;font-size:13px">A folder can be ${UL.folder_mb} MB in total. Remove some files and try again.</p>` : ""}
     <div class="uprog" id="uprog" hidden><i></i></div>
     <div class="btns"><button class="btn gh" id="ub0">Cancel</button><button class="btn" id="ub1" ${ok.length && !overGroup ? "" : "disabled"}>Submit for review</button></div>`);
   $("ub0").onclick = closeSheet;
   $("ub1").onclick = async () => {
-    const btn = $("ub1"); btn.disabled = true; $("ub0").disabled = true; $("uprog").hidden = false; const bar = $("uprog").firstElementChild, out = [];
+    const names = [...document.querySelectorAll("#sheet .fnm")].map(i => i.value.trim().slice(0, 80)), btn = $("ub1"); btn.disabled = true; $("ub0").disabled = true; $("uprog").hidden = false; const bar = $("uprog").firstElementChild, out = [];
     try {
       for (const [n, f] of ok.entries()) {
         btn.textContent = `Uploading ${n + 1} of ${ok.length}...`; bar.style.width = Math.round(n / ok.length * 100) + "%";
         const preview = await makeThumb(f), ext = (f.name.split(".").pop() || "").toLowerCase();
         const u = await api("my_upload_url", { size: f.size, mime: f.type, ext }); await uploadSigned(u, f, f.type);
-        out.push({ path: u.path, type: f.type.startsWith("video") ? "video" : "image", size: f.size, preview });
+        out.push({ path: u.path, type: f.type.startsWith("video") ? "video" : "image", size: f.size, preview, label: names[n] || "" });
       }
       bar.style.width = "100%";
       const r = await api("my_post_create", { title: $("utitle").value.trim() || (ok[0].name.replace(/\.[^.]+$/, "") || "My upload"), files: out });
@@ -1331,7 +1339,7 @@ function clampPan() {
   const mx = Math.max(0, (im.clientWidth * V.z - innerWidth) / 2), my = Math.max(0, (im.clientHeight * V.z - innerHeight) / 2);
   V.x = Math.min(mx, Math.max(-mx, V.x)); V.y = Math.min(my, Math.max(-my, V.y));
 }
-const vName = m => m.label || (m.kind === "comm" || m.kind === "mine" ? m.title : "") || "";
+const vName = m => m.kind === "comm" || m.kind === "mine" ? [m.label, m.title].filter(Boolean).join(" · ") : (m.label || "");
 function drawViewer() {
   const m = V.list[V.i]; if (!m) return; V.z = 1; V.x = V.y = 0; vpt.clear();
   const vid = m.type === "video";
