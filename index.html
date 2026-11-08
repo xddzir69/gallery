@@ -728,7 +728,7 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- global slideshow (every 2s, folder thumbnails) ---------- */
+/* ---------- global slideshow (every 3.5s, folder thumbnails) ---------- */
 setInterval(() => {
   if (document.hidden) return;
   document.querySelectorAll(".ss").forEach(ss => {
@@ -739,7 +739,7 @@ setInterval(() => {
     sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
     if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
   });
-}, 2000);
+}, 3500);
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -915,7 +915,7 @@ function autoSlide(tr, per) {
   }, 4200));
 }
 function spcHTML(m, i, on) {
-  const tag = m.pin ? `<span class="stag">FEATURED</span>` : m.tag === "new" ? `<span class="stag">NEW</span>` : m.rank ? `<span class="stag pop">No. ${m.rank}</span>` : "";
+  const tag = m.pin ? `<span class="stag">FEATURED</span>` : m.tag === "new" ? `<span class="stag">NEW</span>` : "";
   return `<div class="spc ${tierCls(m.access)} ${m.locked ? "hasunl" : ""} ${on ? "on" : ""}" data-act="open" data-src="spot" data-i="${i}">
     <div class="th ${m.locked ? "locked" : ""}" data-vid="">${slidesHTML(thumbsOf(m), m.locked)}${m.locked ? lockHTML : ""}</div><div class="shade"></div>${tag}
     <div class="smeta"><b>${esc(m.title || "Folder")}</b><span>${countMeta(m)}</span></div>
