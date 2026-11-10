@@ -324,6 +324,53 @@
   /* ===== per-file times ===== */
   .pkc .pka { border: 0 !important; border-top: 1px solid var(--line) !important; border-radius: 0 !important; background: transparent !important; padding: 7px 10px !important; font-size: 11.5px; color: var(--mute); }
 
+
+  /* ===== V11: dashboard + LIVE ===== */
+  .pk3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; margin-bottom: 18px; }
+  .pm { position: relative; padding: 26px 26px 22px; border-radius: 26px; overflow: hidden; border: 1px solid var(--line2);
+    background: radial-gradient(120% 140% at 0% 0%, rgba(232,197,107,.24), transparent 55%), radial-gradient(90% 120% at 100% 100%, rgba(170,120,40,.16), transparent 60%), linear-gradient(165deg, var(--card2), var(--card));
+    box-shadow: 0 34px 64px -36px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.09); }
+  .pm::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 40%, rgba(255,226,150,.10) 50%, transparent 60%); transform: translateX(-110%); animation: heroShine 8s ease-in-out infinite; }
+  .pm .ico { position: absolute; right: 20px; top: 20px; width: 34px; height: 34px; color: var(--gold); opacity: .35; }
+  .pm .l { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); }
+  .pm .n { font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; font-size: 66px; font-weight: 600; line-height: 1.02; margin: 6px 0 14px; background: linear-gradient(90deg, var(--gold), #FFF2C6 50%, var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .pm .sub { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 8px; }
+  .pm .sub div { padding: 9px 11px; border-radius: 12px; background: color-mix(in srgb, var(--bg2) 70%, transparent); border: 1px solid var(--line); }
+  .pm .sub b { display: block; font-family: Georgia, serif; font-size: 22px; font-weight: 500; color: var(--text); line-height: 1.1; }
+  .pm .sub small { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
+  .pm .bar { height: 8px; border-radius: 8px; background: var(--bg2); overflow: hidden; margin: 2px 0 12px; box-shadow: inset 0 0 0 1px var(--line); } .pm .bar i { display: block; height: 100%; background: var(--metal); border-radius: 8px; }
+  /* LIVE: the big TV */
+  .tv { padding: 12px; border-radius: 32px; margin-bottom: 18px; background: linear-gradient(145deg, #34343c, #0b0b0e 60%, #26262d); box-shadow: 0 50px 90px -34px rgba(0,0,0,.95), 0 0 0 1px rgba(255,255,255,.1), inset 0 1px 0 rgba(255,255,255,.18); }
+  .tvin { position: relative; display: flex; flex-direction: column; min-height: min(78vh, 700px); border-radius: 22px; overflow: hidden; color: #F6F2E9; border: 1px solid rgba(232,197,107,.28);
+    background: radial-gradient(110% 80% at 50% -10%, #1b1a22, #060608 70%); box-shadow: inset 0 0 90px rgba(0,0,0,.7); }
+  .tvin::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(255,255,255,.022) 0 1px, transparent 1px 3px); }
+  .tvbar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,.08); background: rgba(0,0,0,.35); }
+  .onair { display: inline-flex; align-items: center; gap: 8px; padding: 5px 14px 5px 11px; border-radius: 8px; background: #D8322B; color: #fff; font-weight: 800; letter-spacing: .22em; font-size: 13px; box-shadow: 0 0 22px rgba(216,50,43,.6); }
+  .onair i { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: blink 1.2s infinite; } @keyframes blink { 50% { opacity: .2; } }
+  .tvclk { font-family: ui-monospace, Menlo, monospace; font-size: 20px; letter-spacing: .08em; color: #F0DDA6; } .tvcnt { font-size: 13px; color: #B8B4A6; }
+  .tvbtn { padding: 6px 14px; border-radius: 9px; border: 1px solid rgba(255,255,255,.2); color: #F6F2E9; font-size: 12px; font-weight: 600; }
+  .tvbody { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: 0; } @media (max-width: 960px) { .tvbody { grid-template-columns: 1fr; } }
+  .tvmain { padding: 18px 20px; min-width: 0; } .tvside { padding: 18px 16px; border-left: 1px solid rgba(255,255,255,.08); background: rgba(0,0,0,.28); max-height: 640px; overflow: auto; }
+  .tvh { font-size: 11px; letter-spacing: .26em; text-transform: uppercase; color: #CDAA5E; margin-bottom: 12px; }
+  .tvgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .tvt { position: relative; display: grid; grid-template-columns: 60px 1fr; gap: 12px; padding: 14px; border-radius: 16px; background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.1); }
+  .tvt .ua { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 22px; color: #CDAA5E; background: #0b0b0f center/cover; box-shadow: 0 0 0 2px rgba(205,170,94,.5); position: relative; }
+  .tvt .ua::after { content: ""; position: absolute; right: 0; bottom: 0; width: 13px; height: 13px; border-radius: 50%; background: #4CD08A; border: 2px solid #0b0b0f; box-shadow: 0 0 12px #4CD08A; }
+  .tvt b.nm { font-size: 15px; } .tvt .mt { font-size: 11.5px; color: #A9A596; } .tvt .nw { margin-top: 6px; font-size: 13.5px; } .tvt .nw b { color: #F0DDA6; }
+  .tvt .lst { margin-top: 4px; font-size: 12px; color: #8F8C97; } .tvt .ft { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,.12); font-size: 11.5px; color: #B8B4A6; }
+  .tvt .ft b { color: #F6F2E9; } .tvt .ft .btn { margin-left: auto; }
+  .tvin .pill { background: rgba(255,255,255,.08); color: #F6F2E9; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); } .tvin .pill.g { color: #F0DDA6; } .tvin .pill.rose { color: #E88B93; }
+  .tvnone { grid-column: 1 / -1; text-align: center; padding: 70px 10px; color: #8F8C97; } .tvnone .big { font-family: "Cormorant Garamond", Georgia, serif; font-size: 44px; color: #CDAA5E; letter-spacing: .1em; }
+  .tk2 { padding: 9px 2px; border-bottom: 1px solid rgba(255,255,255,.07); font-size: 12.5px; color: #D9D5C7; } .tk2 .t { color: #CDAA5E; font-family: ui-monospace, Menlo, monospace; font-size: 11px; margin-right: 6px; } .tk2 a { color: #F6F2E9; text-decoration: none; font-weight: 700; }
+  .lvk .kt.pr { border-color: var(--line2); box-shadow: 0 0 40px -16px rgba(232,197,107,.45); }
+  .lvg2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } @media (max-width: 860px) { .lvg2 { grid-template-columns: 1fr; } }
+  .upr { display: grid; grid-template-columns: 62px 1fr auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); } .upr:last-child { border: 0; }
+  .upr .pvu { width: 62px; height: 62px; border-radius: 12px; overflow: hidden; background: var(--bg2); display: grid; place-items: center; border: 1px solid var(--line2); } .upr .pvu img, .upr .pvu video { width: 100%; height: 100%; object-fit: cover; }
+  .rchips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; scrollbar-width: thin; }
+  .rch { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 999px; border: 1px solid var(--line2); background: var(--card2); cursor: pointer; font-size: 12.5px; }
+  .rch .ua { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; color: var(--gold); background: var(--bg2) center/cover; }
+  .feed2 { max-height: 640px; overflow: auto; } .fd2 { position: sticky; top: 0; z-index: 2; padding: 8px 4px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); background: var(--card); border-bottom: 1px solid var(--line2); }
+  .fe2 { display: grid; grid-template-columns: 62px 30px 1fr; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); font-size: 13px; } .fe2 .t { color: var(--mute); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; } .fe2 .ua { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; color: var(--gold); background: var(--bg2) center/cover; }
 </style>
 </head>
 <body>
@@ -378,14 +425,14 @@
   </aside>
   <main>
     <!-- DASHBOARD -->
-    <section id="t-dash"><div class="hero"><div class="eb">Overview</div><h2>Dashboard</h2><p>A calm overview of your gallery, members and Premium.</p><span class="orn"></span></div>
+    <section id="t-dash">
       <div class="card attn" id="dAttn" hidden></div>
-      <div class="kts" id="dStats"></div>
-      <div class="two"><div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
+      <div class="pk3" id="dBig"></div>
+      <div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div>
     </section>
 
     <!-- UPLOAD -->
-    <section id="t-upload" hidden><div class="hero"><div class="eb">Content</div><h2>Upload</h2><p>Pick or create the category and folder first, then drop your photos and videos. Everything you create appears in Data straight away.</p><span class="orn"></span></div>
+    <section id="t-upload" hidden>
       <div class="card"><div class="step"><i>1</i><h3>Where should it go?</h3></div>
         <div class="dest">
           <div class="dcol"><label>Category</label><div class="inl"><input type="text" id="upCatNew" placeholder="New category title"><button class="btn xs" id="upCatAdd">Create</button></div><select id="upCat"></select></div>
@@ -404,14 +451,14 @@
     </section>
 
     <!-- STRUCTURE -->
-    <section id="t-structure" hidden><div class="hero"><div class="eb">Content</div><h2>Structure</h2><p>The whole library as a diagram. Drag a folder onto another to move it, or use Move. Every folder has Track (a line diagram of what is inside), Modify and Edit. Numbers like F3, P12 and V7 are for you only: F = folder, P = photo, V = video.</p><span class="orn"></span></div>
+    <section id="t-structure" hidden>
       <div class="card"><div class="row"><input type="search" id="stQ" placeholder="Find a folder or number (F3)" style="flex:1;min-width:180px"><button class="btn gh xs" id="stExp">Expand all</button><button class="btn gh xs" id="stCol">Collapse all</button><button class="btn xs" id="stNew">New top-level folder</button></div><div class="sm mute" id="stSum" style="margin-top:8px"></div></div>
       <div class="card"><div class="topdrop" id="stTop">Drop a folder or a file here to move it to the top level</div><div class="tree" id="stTree"></div></div>
       <div class="card" id="stOrphans" hidden></div>
     </section>
 
     <!-- DATA -->
-    <section id="t-media" hidden><div class="hero"><div class="eb">Content</div><h2>Data</h2><p>Your folders and files. Open a folder to see what is inside, and edit name, category, access (Rose / Royal) and the Spotlight pin.</p><span class="orn"></span></div>
+    <section id="t-media" hidden>
       <div class="card" id="dPins" hidden></div>
       <div class="card"><div class="row"><input type="search" id="mQ" placeholder="Search a name or number (F3, P12, V7)" style="flex:1;min-width:200px"><button class="btn" id="mGo">Search</button><button class="btn gh" id="mClr">Clear</button></div><div class="crumbs" id="mCrumbs" style="margin:12px 0 0"></div></div>
       <div id="mBulk" class="bulk" hidden><b id="mSelN">0 selected</b><button class="btn xs" id="bMove">Move…</button>
@@ -421,19 +468,19 @@
     </section>
 
     <!-- CATEGORIES -->
-    <section id="t-cats" hidden><div class="hero"><div class="eb">Content</div><h2>Category</h2><p>Categories appear in the Category column on Explore. Create one, then add or remove folders in it.</p><span class="orn"></span></div>
+    <section id="t-cats" hidden>
       <div class="card"><div class="row"><input type="text" id="newCat" placeholder="New category name" style="flex:1"><button class="btn" id="addCat">Create category</button></div></div>
       <div class="gr" id="catList"></div>
     </section>
 
     <!-- TRASH -->
-    <section id="t-trash" hidden><div class="hero"><div class="eb">Content</div><h2>Recycle bin</h2><p>Deleted folders and files wait here. Restore them any time. Files stay in storage until you delete them forever.</p><span class="orn"></span></div>
+    <section id="t-trash" hidden>
       <div class="card"><div class="row between"><span class="mute" id="trInfo"></span><button class="btn dg xs" id="trEmpty">Empty recycle bin</button></div></div>
       <div id="trList"></div>
     </section>
 
         <!-- SCHEDULE -->
-    <section id="t-schedule" hidden><div class="hero"><div class="eb">Content</div><h2>Schedule</h2><p>Upload now, publish later. Pick a day on the calendar, add the files, and the folder goes live by itself at the time you choose. Until then members cannot see it, and you can preview it here.</p><span class="orn"></span></div>
+    <section id="t-schedule" hidden>
       <div class="card"><div class="calhd"><button class="btn gh xs" id="calPrev">←</button><h3 id="calTitle"></h3><button class="btn gh xs" id="calNext">→</button><button class="btn xs" id="calToday">Today</button></div>
         <div class="cal" id="calGrid"></div><p class="sm mute" style="margin-top:10px">Gold = waiting to go live. Green = already live. Tap a day to schedule something on it, or tap a folder to preview it.</p></div>
       <div class="card" id="scFormCard"><div class="step"><i>+</i><h3>New scheduled folder</h3></div>
@@ -447,14 +494,22 @@
     </section>
 
     <!-- LIVE -->
-    <section id="t-live" hidden><div class="hero"><div class="eb">People</div><h2>Live screen</h2><p>Who is online right now, which page they are on, and what the bot is doing. Updates every few seconds.</p><span class="orn"></span></div>
-      <div class="kts" id="lvStats"></div>
-      <div class="lvg"><div class="card"><div class="row between"><h3 style="margin:0">Online now</h3><button class="btn gh xs" id="lvPause">Pause</button></div><div id="lvNow" style="margin-top:8px"></div></div>
-        <div class="card"><h3>Activity feed</h3><div class="feed" id="lvFeed"></div></div></div>
+    <section id="t-live" hidden>
+      <div class="tv"><div class="tvin">
+        <div class="tvbar"><span class="onair"><i></i>LIVE</span><span class="tvclk" id="tvClock"></span><span class="tvcnt" id="tvCount"></span><span class="sp"></span><button class="tvbtn" id="lvPause">Pause</button></div>
+        <div class="tvbody"><div class="tvmain"><div class="tvh">On screen now</div><div class="tvgrid" id="lvNow"></div></div>
+          <div class="tvside"><div class="tvh">Where they go</div><div id="lvTicker"></div></div></div>
+      </div></div>
+      <div class="kts lvk" id="lvKpi"></div>
+      <div class="lvg2"><div class="card"><h3>Upcoming</h3><div id="lvUp"></div></div><div class="card"><h3>Waiting for review</h3><div id="lvWait"></div></div></div>
+      <div class="card"><div class="row between" style="margin-bottom:6px"><h3 style="margin:0">Activity feed</h3>
+        <div class="row"><select id="lvPer" style="width:auto"><option value="0">Today</option><option value="1">Yesterday</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select><select id="lvSrc" style="width:auto"><option value="">App and bot</option><option value="app">App only</option><option value="bot">Bot only</option></select><input type="search" id="lvQ" placeholder="Member name or ID" style="width:190px"></div></div>
+        <div class="sm mute" style="margin:10px 0 6px">Recently active</div><div class="rchips" id="lvRecent"></div>
+        <div class="feed2" id="lvFeed"></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn gh xs" id="lvMore" hidden>Load older</button></div></div>
     </section>
 
     <!-- MAINTENANCE -->
-    <section id="t-maintenance" hidden><div class="hero"><div class="eb">System</div><h2>Maintenance</h2><p>Close the bot and the web app while you work. Members on the allowed list can still get in, so you can test as a normal member.</p><span class="orn"></span></div>
+    <section id="t-maintenance" hidden>
       <div class="card"><div class="mbig"><div class="sw" id="mtSw" role="switch" tabindex="0"></div><div><div class="st" id="mtSt">…</div><div class="mute sm" id="mtSub"></div></div></div>
         <label class="f" style="margin-top:16px"><span>Message members will see</span><input type="text" id="mtMsg" placeholder="We are updating the gallery and will be right back."></label><button class="btn" id="mtSave">Save</button></div>
       <div class="card"><h3>Can still open it during maintenance</h3><p class="sm mute" style="margin-bottom:12px">Search a member by Telegram ID, name or @username and tap Allow. You can also type any Telegram ID and press Enter.</p>
@@ -463,13 +518,13 @@
     </section>
 
     <!-- HISTORY -->
-    <section id="t-history" hidden><div class="hero"><div class="eb">System</div><h2>History and undo</h2><p>Every change you make in the admin panel is listed here for 45 days. Tap Undo to put the old value back, or to bring back something you deleted by mistake. Deleted folders and files wait in the Recycle bin.</p><span class="orn"></span></div>
+    <section id="t-history" hidden>
       <div class="card"><div class="row"><select id="hsF" style="width:auto"><option value="">All changes</option><option value="open">Can still be undone</option><option value="delete">Deleted things</option></select><select id="hsT" style="width:auto"><option value="">Everything</option><option value="albums">Folders</option><option value="media">Files</option><option value="categories">Categories</option><option value="plans">Plans</option><option value="banners">Banners</option><option value="promos">Promo codes</option><option value="profiles">Members</option><option value="user_posts">Member posts</option></select><button class="btn gh xs" data-go="trash">Open Recycle bin</button></div></div>
       <div class="card"><div id="hsList"></div><button class="btn gh" id="hsMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- BANNERS -->
-    <section id="t-banners" hidden><div class="hero"><div class="eb">Content</div><h2>Covers and banners</h2><p>Big slides at the top of the Home page. Wide images work best (21:9).</p><span class="orn"></span></div>
+    <section id="t-banners" hidden>
       <div class="card"><div class="cols"><label class="f"><span>Image</span><input type="file" id="bnFile" accept="image/*"></label>
         <label class="f"><span>Title</span><input type="text" id="bnTitle" maxlength="60"></label><label class="f"><span>Subtitle</span><input type="text" id="bnSub" maxlength="90"></label>
         <label class="f"><span>Opens</span><select id="bnKind"><option value="none">Nothing</option><option value="plans">Premium plans</option><option value="category">A category</option><option value="album">An album</option></select></label>
@@ -477,7 +532,7 @@
       <div class="card"><div id="bnList"></div></div>
     </section>
 
-    <section id="t-users" hidden><div class="hero"><div class="eb">People</div><h2>Users</h2><p>Members, their Rose and Royal time, referrals and posts. Usernames and IDs are visible here only.</p><span class="orn"></span></div>
+    <section id="t-users" hidden>
       <div id="uListWrap"><div class="card"><div class="row"><input type="search" id="uQ" placeholder="Name, @username or Telegram ID" style="flex:1;min-width:200px">
         <select id="uF" style="width:auto"><option value="">Everyone</option><option value="rose">Rose members</option><option value="royal">Royal members</option><option value="banned">Banned</option></select>
         <button class="btn" id="uGo">Search</button><button class="btn gh" id="uCsv">Export CSV</button></div><div id="uList" style="margin-top:6px"></div></div></div>
@@ -485,7 +540,7 @@
     </section>
 
         <!-- PAYMENTS -->
-    <section id="t-payments" hidden><div class="hero"><div class="eb">Premium</div><h2>Payments</h2><p>Every Stars and USDT payment, with its transaction reference.</p><span class="orn"></span></div>
+    <section id="t-payments" hidden>
       <div class="stats" id="pyStats"></div>
       <div class="card"><div class="row"><select id="pyM" style="width:auto"><option value="">All methods</option><option value="stars">Stars</option><option value="usdt">USDT</option><option value="manual">Manual</option></select>
         <select id="pyS" style="width:auto"><option value="">All status</option><option value="approved">Paid</option><option value="pending">Pending</option><option value="rejected">Rejected</option><option value="expired">Expired</option></select>
@@ -496,7 +551,7 @@
     </section>
 
     <!-- PREMIUM -->
-    <section id="t-premium" hidden><div class="hero"><div class="eb">Premium</div><h2>Plans and codes</h2><p>Rose (lite) and Royal (expensive). Members see the details and the time, never a price.</p><span class="orn"></span></div>
+    <section id="t-premium" hidden>
       <div class="stats" id="pStats"></div>
       <div class="card"><h3>Plans (shown on the Premium plans page)</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">New plan</button></div>
       <div class="card"><h3>Unlock codes</h3><p class="sm mute" style="margin-bottom:10px">Free Premium time you give out by hand. Invite rewards create their own codes automatically.</p>
@@ -517,7 +572,7 @@
     </section>
 
     <!-- NOTIFY -->
-    <section id="t-notify" hidden><div class="hero"><div class="eb">System</div><h2>Notify</h2><p>In-app popup and Telegram message.</p><span class="orn"></span></div>
+    <section id="t-notify" hidden>
       <div class="card"><div class="chips" id="nTpl"><button data-t="offer">Premium offer</button><button data-t="drop">New collection</button><button data-t="maint">Maintenance</button></div>
         <div class="cols"><label class="f"><span>Type</span><select id="nKind"><option value="custom">Update</option><option value="premium">Premium</option><option value="notice">Notice</option></select></label><label class="f"><span>One user only (Telegram ID, blank = everyone)</span><input type="text" id="nTg"></label></div>
         <label class="f"><span>Title</span><input type="text" id="nTitle" maxlength="120"></label><label class="f"><span>Message</span><textarea id="nBody" maxlength="500"></textarea></label>
@@ -527,20 +582,20 @@
     </section>
 
     <!-- TICKETS -->
-    <section id="t-tickets" hidden><div class="hero"><div class="eb">People</div><h2>Support chats</h2><p>Members chat with you like in a messenger. They cannot delete or close a chat; only you can.</p><span class="orn"></span></div>
+    <section id="t-tickets" hidden>
       <div class="tkw" id="tkWrap"><aside class="tkl"><div class="chips" id="tkF"><button data-v="open" class="on">Needs reply</button><button data-v="answered">Answered</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><input type="search" id="tkQ" placeholder="Search name or subject" style="margin:10px 0"><div id="tkList"></div></aside>
         <div class="tkr" id="tkThread"><div class="empty"><div style="font-size:30px;color:var(--gold)">✦</div>Choose a chat on the left.</div></div></div>
     </section>
 
     <!-- USER UPLOADS -->
-    <section id="t-uploads" hidden><div class="hero"><div class="eb">People</div><h2>Member posts</h2><p>Everything members upload. One tap approves. Use the dropdown to see only Waiting, Approved or Declined posts.</p><span class="orn"></span></div>
+    <section id="t-uploads" hidden>
       <div class="card"><div class="row"><select id="uuS" style="width:auto;min-width:190px"></select><input type="text" id="uuQ" placeholder="Telegram ID (optional)" style="flex:1;min-width:160px"><button class="btn" id="uuGo">Show</button></div><div class="mute sm" id="uuInfo" style="margin-top:8px"></div></div>
       <div id="uuBulk" class="bulk" hidden><b id="uuSelN">0 selected</b><button class="btn xs" id="uuBA">Approve</button><button class="btn dg xs" id="uuBR">Decline</button><button class="btn gh xs" id="uuBC">Clear</button></div>
       <div id="uuList"></div><button class="btn gh" id="uuMore" hidden style="margin-top:12px">Load more</button>
     </section>
 
         <!-- SETTINGS -->
-    <section id="t-settings" hidden><div class="hero"><div class="eb">System</div><h2>Settings</h2><p>Member uploads, invite rewards, storage and general setup.</p><span class="orn"></span></div>
+    <section id="t-settings" hidden>
       <div class="card"><h3>Spotlight rules</h3><p class="sm mute" style="margin-bottom:10px">Pinning is done in Data (the star on any folder or file). These rules decide what else appears in the Home slider.</p>
         <div class="cols"><label class="f"><span>A new folder counts as "new" for (days)</span><input type="number" id="spDays" min="1"></label><label class="f"><span>Each member sees it in their first (app opens)</span><input type="number" id="spOpens" min="1"></label>
           <label class="f"><span>Max new folders</span><input type="number" id="spMax" min="0"></label><label class="f"><span>Popular folders (top N, all time)</span><input type="number" id="spPop" min="0" max="20"></label></div><button class="btn" id="spSave">Save rules</button></div>
@@ -585,6 +640,9 @@ let cats = [], albumsCache = [], plansCache = [];
 const nm = p => p?.display_name || [p?.first_name, p?.last_name].filter(Boolean).join(" ") || "User";
 const num = v => Number(v) || 0;
 
+/* video previews: browsers paint no frame until the video seeks a little */
+document.addEventListener("loadedmetadata", e => { const v = e.target; if (v && v.tagName === "VIDEO" && !v.controls && v.paused && !v.currentTime) { try { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); } catch {} } }, true);
+
 /* theme */
 function setMode(m) { document.documentElement.dataset.mode = m; try { localStorage.setItem("adm_mode", m); } catch {} }
 let m0 = "dark"; try { m0 = localStorage.getItem("adm_mode") || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"); } catch {}
@@ -607,10 +665,10 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "LIVE"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["settings", "sliders", "Settings"]];
 let PAY_ON = false;
 function buildTabs() {
-  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "trash"]], ["People", ["live", "users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "payments"] : ["premium"]], ["System", ["maintenance", "history", "notify", "settings"]]];
+  const GROUPS = [["Overview", ["dash", "live"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "trash"]], ["People", ["users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "payments"] : ["premium"]], ["System", ["maintenance", "history", "notify", "settings"]]];
   const cur = document.querySelector(".tab.on")?.dataset.t;
   $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
@@ -620,8 +678,8 @@ let tkTimer;
 function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
-  clearInterval(tkTimer);
-  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
+  clearInterval(tkTimer); clearInterval(lvClock);
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { fdMore = false; loadLive(true); lvTime(); lvClock = setInterval(lvTime, 1000); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
@@ -677,7 +735,7 @@ async function rmFiles(paths) {
 }
 const catOpts = (sel, all) => (all ? '<option value="">All categories</option><option value="none">(No category)</option>' : '<option value="">(No category)</option>') + cats.map(c => `<option value="${c.id}" ${c.id === sel ? "selected" : ""}>${esc(c.name)}</option>`).join("");
 const albOpts = sel => '<option value="">(None)</option>' + albumsCache.map(a => `<option value="${a.id}" ${a.id === sel ? "selected" : ""}>${esc(a.title)}</option>`).join("");
-const thumb = (u, type) => !u ? '<div class="pv"></div>' : type === "video" ? `<video class="pv" muted preload="metadata" src="${esc(u)}#t=0.5"></video>` : `<img class="pv" loading="lazy" src="${esc(u)}">`;
+const thumb = (u, type) => !u ? '<div class="pv"></div>' : type === "video" ? `<video class="pv" muted playsinline preload="auto" src="${esc(u)}#t=0.5"></video>` : `<img class="pv" loading="lazy" src="${esc(u)}">`;
 function csv(name, rows) { const b = new Blob(["\ufeff" + rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n")], { type: "text/csv" }); const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000); }
 const dayKey = d => { const x = new Date(d); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`; };
 function bars(rows, fmt = v => v) { const mx = Math.max(1, ...rows.map(r => r.v)); return rows.map(r => `<div title="${r.l}: ${fmt(r.v)}"><b>${r.v ? fmt(r.v) : ""}</b><i style="height:${Math.round(r.v / mx * 78)}%"></i><span>${r.l.slice(8)}</span></div>`).join(""); }
@@ -690,40 +748,30 @@ const nTag = m => (m.type === "video" ? "V" : "P") + (m.kind_no ?? "?");
 const nChip = m => `<span class="sn ${m.type === "video" ? "v" : "p"}" title="Admin-only number">${nTag(m)}</span>`;
 const fChip = f => `<span class="sn" title="Admin-only number">F${f.serial_no ?? "?"}</span>`;
 const kt = (cls, label, n, ds, icon) => `<div class="kt ${cls}">${icon ? `<svg class="i ico"><use href="#i-${icon}"/></svg>` : ""}<div class="l">${label}</div><div class="n">${n ?? 0}</div><div class="d">${ds.map(([k, v]) => `<span><b>${v ?? 0}</b>${k}</span>`).join("")}</div></div>`;
+const pm = (label, n, subs, icon, extra = "", id = "") => `<div class="pm" ${id ? `id="${id}"` : ""}><svg class="i ico"><use href="#i-${icon}"/></svg><div class="l">${label}</div><div class="n">${n ?? 0}</div>${extra}<div class="sub">${subs.map(([k, v]) => `<div><b>${v ?? 0}</b><small>${k}</small></div>`).join("")}</div></div>`;
 async function loadDash() {
-  const now = new Date(), iso = now.toISOString(), d7 = new Date(now - 7 * 864e5).toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString();
+  const now = new Date(), iso = now.toISOString(), d7 = new Date(now - 7 * 864e5).toISOString();
   const t0 = new Date(now); t0.setHours(0, 0, 0, 0);
+  const mo = new Date(now.getFullYear(), now.getMonth(), 1);
   const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
-  const [users, new7, newToday, banned, prem, rose, roy, exp7, photos, videos, folders, topF, roseF, royF, pinA, pinM, catN, posts, postP, postA, postR, tkO, tkA, tkC, trashN, pend, top, recent] = await Promise.all([
-    cnt("profiles"), cnt("profiles", q => q.gt("created_at", d7)), cnt("profiles", q => q.gt("created_at", t0.toISOString())), cnt("profiles", q => q.eq("is_banned", true)),
-    cnt("profiles", q => q.or(`lite_until.gt.${iso},expensive_until.gt.${iso}`)), cnt("profiles", q => q.gt("lite_until", iso)), cnt("profiles", q => q.gt("expensive_until", iso)),
-    cnt("profiles", q => q.or(`and(lite_until.gt.${iso},lite_until.lt.${in7}),and(expensive_until.gt.${iso},expensive_until.lt.${in7})`)),
-    cnt("media", q => q.eq("type", "image")), cnt("media", q => q.eq("type", "video")), cnt("albums"), cnt("albums", q => q.is("parent_id", null)),
-    cnt("albums", q => q.eq("access", "lite")), cnt("albums", q => q.eq("access", "expensive")), cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)), cnt("categories"),
-    cnt("user_posts"), cnt("user_posts", q => q.eq("status", "pending")), cnt("user_posts", q => q.eq("status", "approved")), cnt("user_posts", q => q.eq("status", "rejected")),
-    cnt("tickets", q => q.eq("status", "open")), cnt("tickets", q => q.eq("status", "answered")), cnt("tickets", q => q.eq("status", "closed")), cnt("trash"),
+  const [users, newToday, new7, newMonth, banned, catN, pinA, pinM, postP, tkO, pend, top] = await Promise.all([
+    cnt("profiles"), cnt("profiles", q => q.gt("created_at", t0.toISOString())), cnt("profiles", q => q.gt("created_at", d7)), cnt("profiles", q => q.gte("created_at", mo.toISOString())), cnt("profiles", q => q.eq("is_banned", true)),
+    cnt("categories"), cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)),
+    cnt("user_posts", q => q.eq("status", "pending")), cnt("tickets", q => q.eq("status", "open")),
     PAY_ON ? cnt("payments", q => q.eq("status", "pending").gt("expires_at", iso)) : Promise.resolve({ count: 0 }),
     sb.from("media").select("title,label,views,type,kind_no,preview,path,albums(title)").order("views", { ascending: false }).limit(5),
-    sb.from("profiles").select("tg_id,first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(6),
   ]);
   let views = 0; try { const { data } = await sb.rpc("album_tree"); (data || []).forEach(f => views += Number(f.views) || 0); } catch {}
   const mset = await getSettings(["maintenance", "maintenance_on"]), mOn = mset.maintenance_on === "1" || !!mset.maintenance;
   const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"], [pend.count, "payment", "waiting for confirmation", "payments"]].filter(x => x[0]).concat(mOn ? [["", "", "Maintenance mode is ON, members are locked out", "maintenance"]] : []);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
-  $("dStats").innerHTML = [
-    kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count], ["banned", banned.count]], "users"),
-    kt("roy", "Premium now", prem.count, [["Rose", rose.count], ["Royal", roy.count], ["ending in 7 days", exp7.count]], "crown"),
-    kt("", "Files", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count], ["pinned", pinM.count]], "img"),
-    kt("", "Folders", folders.count, [["top level", topF.count], ["inside folders", (folders.count || 0) - (topF.count || 0)], ["Rose", roseF.count], ["Royal", royF.count]], "folder"),
-    kt("rose", "Views", views.toLocaleString(), [["categories", catN.count], ["spotlight pins", (pinA.count || 0) + (pinM.count || 0)]], "chart"),
-    kt("", "Member posts", posts.count, [["waiting", postP.count], ["approved", postA.count], ["declined", postR.count]], "star"),
-    kt("", "Support chats", (tkO.count || 0) + (tkA.count || 0) + (tkC.count || 0), [["need reply", tkO.count], ["answered", tkA.count], ["closed", tkC.count]], "ticket"),
-    kt("", "Recycle bin", trashN.count, [["restore any time", "✓"]], "trash"),
-  ].join("");
+  $("dBig").innerHTML =
+    pm("Members", (users.count || 0).toLocaleString(), [["New today", newToday.count], ["This week", new7.count], ["This month", newMonth.count]], "users", banned.count ? `<div class="sm mute" style="margin:-6px 0 12px">All time · ${banned.count} banned</div>` : `<div class="sm mute" style="margin:-6px 0 12px">All time</div>`) +
+    pm("Views", views.toLocaleString(), [["Categories", catN.count], ["Spotlight pins", (pinA.count || 0) + (pinM.count || 0)]], "chart", '<div class="sm mute" style="margin:-6px 0 12px">Every folder and file, all time</div>') +
+    `<div class="pm" id="dStore"><svg class="i ico"><use href="#i-up"/></svg><div class="l">Storage used</div><div class="n" id="dStoreN">…</div><div id="dStoreBar"></div><div class="sub" id="dStoreSub"></div></div>`;
   storageStat();
   const urls = await sign((top.data || []).filter(m => m.type === "image" && !m.preview).map(m => m.path), 1800);
   $("dTop").innerHTML = (top.data || []).map((m, i) => { const u = m.preview || urls[m.path]; return `<div class="r"><span class="k">${i + 1}</span>${u ? `<img src="${esc(u)}" alt="">` : '<span class="ph"></span>'}<div style="min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nChip(m)} ${esc(m.label || m.title || "File")}</div><div class="mute sm" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.albums?.title || "")}</div></div><span class="pill">${m.views} views</span></div>`; }).join("") || '<p class="mute">No files yet.</p>';
-  $("dPay").innerHTML = (recent.data || []).map(p => `<div class="row between line"><span><a href="#" data-user="${p.tg_id}" style="color:inherit">${esc(nm(p))}</a> <span class="mute sm">${p.username ? "@" + esc(p.username) : ""}</span></span><span class="pill ${active(p.expensive_until) ? "roy" : active(p.lite_until) ? "rose" : ""}">${active(p.expensive_until) ? "Royal" : active(p.lite_until) ? "Rose" : "Free"}</span></div>`).join("") || '<p class="mute">No members yet.</p>';
 }
 
 /* ---------- folder helpers (shared) ---------- */
@@ -854,7 +902,7 @@ function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach
 /* a grid of chosen files, each with its own title box (the title is what members see) */
 function pickGrid(el, arr, after, def) {
   el.className = "pk";
-  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
+  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted playsinline preload="auto" src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
   el.querySelectorAll(".pkc button").forEach(b => b.onclick = () => { arr.splice(+b.dataset.i, 1); pickGrid(el, arr, after, def); if (after) after(); });
   el.querySelectorAll(".pkt").forEach(i => i.oninput = () => { arr[+i.dataset.i]._title = i.value; });
   el.querySelectorAll(".pka").forEach(i => i.oninput = () => { arr[+i.dataset.i]._at = i.value; });
@@ -1067,14 +1115,14 @@ async function folderPreviews(fs) {
   pick.forEach((x, fid) => map.set(fid, { type: x.m.type, url: urls[x.m.path] || vurls[x.m.path] || null, preview: x.m.preview || null }));
   return map;
 }
-const pvHtml = p => !p ? `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>` : p.type === "video" && p.url && !p.preview ? `<video muted preload="metadata" src="${esc(p.url)}#t=0.5"></video>` : (p.url || p.preview) ? `<img loading="lazy" src="${esc(p.url || p.preview)}" alt="">` : `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>`;
+const pvHtml = p => !p ? `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>` : p.type === "video" && p.url && !p.preview ? `<video muted playsinline preload="auto" src="${esc(p.url)}#t=0.5"></video>` : (p.url || p.preview) ? `<img loading="lazy" src="${esc(p.url || p.preview)}" alt="">` : `<svg class="i" style="width:34px;height:34px;opacity:.4"><use href="#i-folder"/></svg>`;
 function folderCard(f, pv) {
   const tt = totals(f.id), cat = cats.find(c => c.id === f.category_id);
   return `<div class="fc ${accCls(f.access)}" data-fid="${f.id}"><div class="pvx" data-open="${f.id}">${pvHtml(pv)}<div class="tl">${fChip(f)}${accPill(f.access)}${schedPill(f)}</div><div class="tr">${f.pinned ? '<span class="pill g">★ Pinned</span>' : ""}</div></div>
     <div class="bd"><b title="${esc(f.title)}">${esc(f.title)}</b><div class="mute sm">${tt.files} files · ${kids(f.id).length} folders · ${tt.views} views${cat ? " · " + esc(cat.name) : ""}</div><div class="row" style="margin-top:8px"><button class="btn xs" data-open="${f.id}">Open</button><button class="btn gh xs" data-edit="${f.id}">Edit</button><button class="btn gh xs" data-fpin="${f.id}">${f.pinned ? "★ Unpin" : "☆ Pin"}</button></div></div></div>`;
 }
 function fileCard(m, url) {
-  const media = m.type === "video" ? (m.preview ? `<img src="${esc(m.preview)}" alt="">` : url ? `<video muted preload="metadata" src="${esc(url)}#t=0.5"></video>` : "") : (url ? `<img loading="lazy" src="${esc(url)}" alt="">` : m.preview ? `<img src="${esc(m.preview)}" alt="">` : "");
+  const media = m.type === "video" ? (m.preview ? `<img src="${esc(m.preview)}" alt="">` : url ? `<video muted playsinline preload="auto" src="${esc(url)}#t=0.5"></video>` : "") : (url ? `<img loading="lazy" src="${esc(url)}" alt="">` : m.preview ? `<img src="${esc(m.preview)}" alt="">` : "");
   return `<div class="fc ${accCls(m.access)}" data-mid2="${m.id}"><div class="pvx" data-view="${esc(url || "")}">${media}<div class="tl">${nChip(m)}${accPill(m.access)}</div><div class="tr">${m.pinned ? '<span class="pill g">★</span>' : ""}</div></div>
     <div class="bd"><b title="${esc(m.title || "")}">${esc(m.label || m.title || "(unnamed)")}</b><div class="mute sm">${m.views} views · ${fdate(m.created_at)}</div><div class="row" style="margin-top:8px"><label class="ck"><input type="checkbox" class="sk" ${sel.has(m.id) ? "checked" : ""}></label><button class="btn gh xs" data-medit="${m.id}">Edit</button><button class="btn gh xs" data-mpin="${m.id}">${m.pinned ? "★ Unpin" : "☆ Pin"}</button></div></div></div>`;
 }
@@ -1228,7 +1276,7 @@ async function previewSched(id) {
   const cat = cats.find(c => c.id === f.category_id), isF = futureAt(f), loc = new Date(f.publish_at), val = `${dayStr(loc)}T${pad2(loc.getHours())}:${pad2(loc.getMinutes())}`;
   d.innerHTML = `<div class="box" style="width:min(860px,100%)"><div class="row between"><div><span class="sn">PREVIEW</span> ${fChip(f)} <b style="font-size:18px">${esc(f.title)}</b></div><button class="btn gh xs x">Close</button></div>
     <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Goes live " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
-        <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
+        <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls playsinline preload="auto" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
     ${isF ? `<div class="row"><input type="datetime-local" class="w" value="${val}" style="max-width:240px"><button class="btn xs sv">Change time</button><button class="btn xs pn">Publish now</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>` : `<div class="row"><button class="btn dg xs dl">Delete (recycle bin)</button></div>`}</div>`;
   const close = () => d.remove(); d.onclick = e => { if (e.target === d || e.target.closest(".x")) close(); };
   document.body.appendChild(d); const q = s => d.querySelector(s);
@@ -1239,21 +1287,98 @@ async function previewSched(id) {
 }
 
 /* ---------- live screen ---------- */
-let lvPaused = false; const lvNames = new Map();
+let lvPaused = false, lvBusy = false, lvSlowAt = 0, lvClock = null, fdRows = [], fdMore = false; const lvNames = new Map();
 $("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; };
-async function loadLive() {
-  if (lvPaused) return;
-  const since = new Date(Date.now() - 3 * 60000).toISOString();
-  const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
-  if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
-  const ids = [...new Set([...(a.data || []), ...(e.data || [])].map(r => r.tg_id))].filter(id => !lvNames.has(id));
-  if (ids.length) { const { data: ps } = await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,photo_url,avatar_path").in("tg_id", ids); const urls = await sign((ps || []).map(p => p.avatar_path)); (ps || []).forEach(p => lvNames.set(p.tg_id, { ...p, av: (p.avatar_path && urls[p.avatar_path]) || p.photo_url })); ids.forEach(id => { if (!lvNames.has(id)) lvNames.set(id, { tg_id: id }); }); }
-  const who = id => lvNames.get(id) || { tg_id: id }, on = a.data || [];
-  const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
-  $("lvStats").innerHTML = kt("roy", "Online now", on.length, [["in the app", nApp], ["in the bot", nBot]], "live") + kt("", "Last hour", new Set((e.data || []).filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size, [["active members", "✓"]], "users");
-  $("lvNow").innerHTML = on.map(r => { const p = who(r.tg_id); return `<div class="lv"><div class="ua" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div><div style="min-width:0"><b>${esc(nm(p))}</b> <span class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</span><div class="now"><span class="pill ${r.source === "bot" ? "rose" : "g"}">${r.source === "bot" ? "Bot" : "App"}</span> <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div></div><div style="text-align:right"><div class="mute sm">${ago(r.at)}</div><button class="btn gh xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("") || '<p class="mute" style="padding:18px 0;text-align:center">Nobody is online right now.</p>';
-  $("lvFeed").innerHTML = (e.data || []).map(r => { const p = who(r.tg_id); return `<div class="fe"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span><span class="pill ${r.source === "bot" ? "rose" : ""}">${r.source === "bot" ? "Bot" : "App"}</span> <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}</div>`; }).join("") || '<p class="mute">No activity yet.</p>';
+const lvTime = () => { const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
+async function lvProfiles(ids) {
+  const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvNames.get(id); return !c || Date.now() - (c._t || 0) > 60000; });
+  if (!need.length) return;
+  const cols = "tg_id,first_name,last_name,display_name,username,photo_url,avatar_path,lite_until,expensive_until,last_seen,created_at,ref_count";
+  let r = await sb.from("profiles").select(cols + ",visit_count").in("tg_id", need);
+  if (r.error) r = await sb.from("profiles").select(cols).in("tg_id", need);
+  const ps = r.data || [], urls = await sign(ps.map(p => p.avatar_path));
+  ps.forEach(p => lvNames.set(p.tg_id, { ...p, av: (p.avatar_path && urls[p.avatar_path]) || p.photo_url, _t: Date.now() }));
+  need.forEach(id => { if (!lvNames.has(id)) lvNames.set(id, { tg_id: id, _t: Date.now() }); });
 }
+const lvWho = id => lvNames.get(id) || { tg_id: id };
+const lvAv = (p, cls = "ua") => `<div class="${cls}" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div>`;
+const srcPill = s => `<span class="pill ${s === "bot" ? "rose" : "g"}">${s === "bot" ? "Bot" : "App"}</span>`;
+const tierMini = p => active(p.expensive_until) ? '<span class="pill roy">Royal</span>' : active(p.lite_until) ? '<span class="pill rose">Rose</span>' : "";
+async function loadLive(force) {
+  if ((lvPaused && !force) || lvBusy) return; lvBusy = true;
+  try {
+    const since = new Date(Date.now() - 3 * 60000).toISOString();
+    const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
+    if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
+    const on = a.data || [], ev = e.data || [];
+    await lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id));
+    const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
+    const hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
+    $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} in the app · ${nBot} in the bot · ${hour} active in the last hour`;
+    const lastEv = new Map(); ev.forEach(r => { if (!lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
+    $("lvNow").innerHTML = on.map(r => { const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id);
+      return `<div class="tvt">${lvAv(p)}<div style="min-width:0"><b class="nm">${esc(nm(p))}</b> ${tierMini(p)}<div class="mt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</div><div class="nw">${srcPill(r.source)} <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div>${l && l.text !== r.screen ? `<div class="lst">Last: ${esc(l.text)} · ${ago(l.at)}</div>` : ""}</div>
+        <div class="ft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("")
+      || '<div class="tvnone"><div class="big">STANDBY</div>Nobody is online right now. The next member who opens the app appears here instantly.</div>';
+    $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>';
+    if (!fdMore) loadFeed(false);
+    if (force || Date.now() - lvSlowAt > 20000) { lvSlowAt = Date.now(); loadLiveSlow(); }
+  } finally { lvBusy = false; }
+}
+async function loadLiveSlow() {
+  const now = new Date(), iso = now.toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString();
+  const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
+  const [photos, videos, folders, topF, pinM, prem, rose, roy, exp7, posts, postP, postA, postR, tkO, tkA, tkC, trashN] = await Promise.all([
+    cnt("media", q => q.eq("type", "image")), cnt("media", q => q.eq("type", "video")), cnt("albums"), cnt("albums", q => q.is("parent_id", null)), cnt("media", q => q.eq("pinned", true)),
+    cnt("profiles", q => q.or(`lite_until.gt.${iso},expensive_until.gt.${iso}`)), cnt("profiles", q => q.gt("lite_until", iso)), cnt("profiles", q => q.gt("expensive_until", iso)),
+    cnt("profiles", q => q.or(`and(lite_until.gt.${iso},lite_until.lt.${in7}),and(expensive_until.gt.${iso},expensive_until.lt.${in7})`)),
+    cnt("user_posts"), cnt("user_posts", q => q.eq("status", "pending")), cnt("user_posts", q => q.eq("status", "approved")), cnt("user_posts", q => q.eq("status", "rejected")),
+    cnt("tickets", q => q.eq("status", "open")), cnt("tickets", q => q.eq("status", "answered")), cnt("tickets", q => q.eq("status", "closed")), cnt("trash"),
+  ]);
+  await loadTree(); let views = 0; tree.forEach(f => views += Number(f.views) || 0);
+  $("lvKpi").innerHTML = [
+    kt("roy pr", "Premium now", prem.count, [["Rose", rose.count], ["Royal", roy.count], ["ending in 7 days", exp7.count]], "crown"),
+    kt("pr", "Files and folders", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count], ["folders", folders.count], ["top level", topF.count], ["pinned files", pinM.count]], "folder"),
+    kt("rose", "Views", views.toLocaleString(), [["all folders and files", "✓"]], "chart"),
+    kt("pr", "Member posts", posts.count, [["waiting", postP.count], ["approved", postA.count], ["declined", postR.count]], "star"),
+    kt("pr", "Support chats", (tkO.count || 0) + (tkA.count || 0) + (tkC.count || 0), [["need reply", tkO.count], ["answered", tkA.count], ["closed", tkC.count]], "ticket"),
+    kt("", "Recycle bin", trashN.count, [["restore any time", "✓"]], "trash"),
+  ].join("");
+  // upcoming scheduled folders, with picture and countdown
+  const up = tree.filter(f => f.publish_at && new Date(f.publish_at) > now).sort((x, y) => new Date(x.publish_at) - new Date(y.publish_at)).slice(0, 8);
+  const pv = up.length ? await folderPreviews(up) : new Map();
+  $("lvUp").innerHTML = up.map(f => { const t = totals(f.id); return `<div class="upr"><div class="pvu">${pvHtml(pv.get(f.id))}</div><div style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(f.title)}</b><div class="mute sm">${ftime(f.publish_at)} · ${tleft(f.publish_at)}</div><div class="row" style="gap:6px;margin-top:4px">${accPill(f.access)}<span class="pill">${t.files} files</span></div></div><span class="pill">${t.views} views</span></div>`; }).join("") || '<p class="mute">Nothing scheduled. Plan a post in <a href="#" class="lk" data-go="schedule">Schedule</a>.</p>';
+  // member posts waiting for review
+  const { data: wp } = await sb.from("user_posts").select("id,title,tg_id,created_at,user_media(path,type,preview)").eq("status", "pending").order("created_at", { ascending: false }).limit(6);
+  const w = wp || [], wu = await sign(w.flatMap(x => (x.user_media || []).slice(0, 1).filter(m => m.type === "image" && !m.preview).map(m => m.path)));
+  await lvProfiles(w.map(x => x.tg_id));
+  $("lvWait").innerHTML = w.map(x => { const m = (x.user_media || [])[0], src = m && (m.preview || wu[m.path]); return `<div class="upr"><div class="pvu">${src ? `<img src="${esc(src)}" alt="">` : ""}</div><div style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.title || "Untitled")}</b><div class="mute sm">${esc(nm(lvWho(x.tg_id)))} · ${ago(x.created_at)} ago · ${(x.user_media || []).length} file(s)</div></div><button class="btn xs" data-go="uploads">Review</button></div>`; }).join("") || '<p class="mute">Nothing waiting. All posts are reviewed.</p>';
+  // recently active members
+  const { data: rc } = await sb.from("profiles").select("tg_id").order("last_seen", { ascending: false, nullsFirst: false }).limit(14);
+  await lvProfiles((rc || []).map(x => x.tg_id));
+  $("lvRecent").innerHTML = (rc || []).map(x => { const p = lvWho(x.tg_id); return `<div class="rch" data-user="${x.tg_id}">${lvAv(p)}<span><b>${esc(nm(p))}</b> <span class="mute">${p.last_seen ? ago(p.last_seen) : ""}</span></span></div>`; }).join("") || '<span class="mute sm">No members yet.</span>';
+}
+async function loadFeed(more) {
+  const per = +$("lvPer").value, st = new Date(); st.setHours(0, 0, 0, 0);
+  const from = per === 0 ? st : per === 1 ? new Date(+st - 864e5) : new Date(+st - (per - 1) * 864e5), to = per === 1 ? st : null;
+  const off = more ? fdRows.length : 0;
+  let q = sb.from("live_events").select("*").gte("at", from.toISOString()).order("at", { ascending: false }).range(off, off + 59);
+  if (to) q = q.lt("at", to.toISOString()); if ($("lvSrc").value) q = q.eq("source", $("lvSrc").value);
+  const s = $("lvQ").value.trim().replace(/[,()%\\]/g, "").replace(/^@/, "");
+  if (s) { if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); else { const { data: ids } = await sb.from("profiles").select("tg_id").or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`).limit(50); q = q.in("tg_id", (ids || []).map(x => x.tg_id).concat([-1])); } }
+  const { data, error } = await q; if (error) return toast(error.message);
+  const rows = data || []; fdMore = more || off > 0; fdRows = more ? fdRows.concat(rows) : rows;
+  await lvProfiles(fdRows.map(r => r.tg_id));
+  const dl = d => { const k = dayKey(d), t = dayKey(new Date()), y = dayKey(new Date(Date.now() - 864e5)); return k === t ? "Today" : k === y ? "Yesterday" : fdate(d); };
+  let last = "", h = "";
+  fdRows.forEach(r => { const d = dl(r.at); if (d !== last) { h += `<div class="fd2">${d}</div>`; last = d; } const p = lvWho(r.tg_id);
+    h += `<div class="fe2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${lvAv(p)}<span>${srcPill(r.source)} <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}</span></div>`; });
+  $("lvFeed").innerHTML = h || '<p class="mute" style="padding:14px 0">No activity in this period.</p>';
+  $("lvMore").hidden = rows.length < 60;
+}
+$("lvPer").onchange = $("lvSrc").onchange = () => { fdMore = false; loadFeed(false); };
+let lvQt; $("lvQ").oninput = () => { clearTimeout(lvQt); lvQt = setTimeout(() => { fdMore = false; loadFeed(false); }, 400); };
+$("lvMore").onclick = () => loadFeed(true);
 
 /* ---------- maintenance mode ---------- */
 let mtOn = false;
@@ -1345,7 +1470,7 @@ function userQuery(limit) {
   const f = $("uF").value, iso = new Date().toISOString(); if (f === "rose") q = q.gt("lite_until", iso); else if (f === "royal") q = q.gt("expensive_until", iso); else if (f === "banned") q = q.eq("is_banned", true);
   return q;
 }
-$("uCsv").onclick = async () => { const { data, error } = await userQuery(5000); if (error) return toast(error.message); csv("users.csv", [["tg_id", "name", "username", "rose_until", "royal_until", "banned", "invites", "joined"], ...data.map(u => [u.tg_id, nm(u), u.username, u.lite_until, u.expensive_until, u.is_banned, u.ref_count, u.created_at])]); };
+$("uCsv").onclick = async () => { const { data, error } = await userQuery(5000); if (error) return toast(error.message); csv("users.csv", [["tg_id", "name", "username", "rose_until", "royal_until", "banned", "invites", "visits", "joined"], ...data.map(u => [u.tg_id, nm(u), u.username, u.lite_until, u.expensive_until, u.is_banned, u.ref_count, u.visit_count, u.created_at])]); };
 const tleft = d => { const ms = new Date(d) - Date.now(); if (ms <= 0) return "ended"; const dd = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `${dd}d ${h}h ${m}m left`; };
 const initial = u => (nm(u) || "?").trim().charAt(0).toUpperCase();
 const avStyle = (u, urls) => { const s = (u.avatar_path && urls[u.avatar_path]) || u.photo_url; return s ? `style="background-image:url('${esc(s)}')"` : ""; };
@@ -1358,7 +1483,7 @@ async function loadUsers() {
   data.forEach(u => {
     const d = document.createElement("div"); d.className = "ur";
     d.innerHTML = `<div class="ua" ${avStyle(u, urls)}>${(u.avatar_path && urls[u.avatar_path]) || u.photo_url ? "" : esc(initial(u))}</div>
-      <div style="min-width:0"><div class="row" style="gap:8px"><b>${esc(nm(u))}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${tierPills(u)}</div><div class="mute sm">ID ${u.tg_id} · Joined ${fdate(u.created_at)}</div></div>
+      <div style="min-width:0"><div class="row" style="gap:8px"><b>${esc(nm(u))}</b>${u.username ? `<span class="mute">@${esc(u.username)}</span>` : ""}${tierPills(u)}</div><div class="mute sm">ID ${u.tg_id} · Joined ${fdate(u.created_at)} · <b>${u.visit_count ?? "-"}</b> visits · <b>${u.ref_count ?? 0}</b> invited</div></div>
       <div class="row"><button class="btn xs" data-user="${u.tg_id}">Details</button><button class="btn ${u.is_banned ? "gh" : "dg"} xs bn">${u.is_banned ? "Unban" : "Ban"}</button></div>`;
     d.querySelector(".bn").onclick = async () => { if (!u.is_banned && !confirm(`Ban ${nm(u)}?`)) return; const { error } = await sb.from("profiles").update({ is_banned: !u.is_banned }).eq("tg_id", u.tg_id); error ? toast(error.message) : (toast(u.is_banned ? "Unbanned" : "Banned"), loadUsers()); };
     box.appendChild(d);
@@ -1371,10 +1496,11 @@ async function openUser(tg) {
   $("uListWrap").hidden = true; const box = $("uDetail"); box.hidden = false; box.innerHTML = '<div class="card mute">Loading…</div>'; scrollTo(0, 0);
   const iso = new Date().toISOString();
   const { data: u, error } = await sb.from("profiles").select("*").eq("tg_id", tg).maybeSingle(); if (error || !u) { box.innerHTML = '<div class="card">Member not found. <button class="btn gh xs" id="uBack0">Back</button></div>'; $("uBack0").onclick = loadUsers; return; }
-  const [posts, refs, by] = await Promise.all([
+  const [posts, refs, by, acts] = await Promise.all([
     sb.from("user_posts").select("id,title,status,created_at,likes,dislikes,views,user_media(path,type,preview)").eq("tg_id", tg).order("created_at", { ascending: false }).limit(12),
     sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,created_at,photo_url,avatar_path,lite_until,expensive_until").eq("referred_by", tg).order("created_at", { ascending: false }).limit(200),
     u.referred_by ? sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,photo_url,avatar_path").eq("tg_id", u.referred_by).maybeSingle() : Promise.resolve({ data: null }),
+    sb.from("live_events").select("text,at,source").eq("tg_id", tg).order("at", { ascending: false }).limit(30),
   ]);
   const pl = posts.data || [], rl = refs.data || [], inv = by.data;
   const urls = await sign([u.avatar_path, u.cover_path, inv?.avatar_path, ...rl.map(r => r.avatar_path), ...pl.flatMap(p => (p.user_media || []).slice(0, 1).filter(m => m.type === "image" && !m.preview).map(m => m.path))]);
@@ -1386,12 +1512,13 @@ async function openUser(tg) {
         <div class="nm2"><h3>${esc(nm(u))}</h3><div class="mute">${u.username ? "@" + esc(u.username) + " · " : ""}ID ${u.tg_id}</div><div class="row" style="margin-top:8px">${tierPills(u) || '<span class="pill">Free</span>'}${u.notify === false ? '<span class="pill">Notifications off</span>' : ""}</div></div>
         <div class="row"><button class="btn xs" id="uMsg">Message</button><button class="btn ${u.is_banned ? "gh" : "dg"} xs" id="uBan">${u.is_banned ? "Unban" : "Ban"}</button></div></div>
       <div class="cols2"><div>
-        <div class="card"><h3>Info</h3><div class="kv" style="grid-template-columns:1fr 1fr"><div><small>Joined</small>${fdate(u.created_at)}</div><div><small>Last seen</small>${u.last_seen ? ago(u.last_seen) + " ago" : "-"}</div><div><small>Invited</small>${u.ref_count ?? rl.length} people</div><div><small>Posts</small>${pl.length}${pl.length === 12 ? "+" : ""}</div></div>
+        <div class="card"><h3>Info</h3><div class="kv" style="grid-template-columns:1fr 1fr"><div><small>Joined</small>${fdate(u.created_at)}</div><div><small>Last seen</small>${u.last_seen ? ago(u.last_seen) + " ago" : "-"}</div><div><small>Visits</small>${u.visit_count ?? "-"} times</div><div><small>Invited</small>${u.ref_count ?? rl.length} people</div><div><small>Posts</small>${pl.length}${pl.length === 12 ? "+" : ""}</div></div>
           <div class="sm mute">Invited by</div>${inv ? `<div class="refrow" data-user="${inv.tg_id}"><div class="ua" style="width:36px;height:36px" ${avStyle(inv, urls)}>${(inv.avatar_path && urls[inv.avatar_path]) || inv.photo_url ? "" : esc(initial(inv))}</div><div><b>${esc(nm(inv))}</b><div class="mute sm">${inv.username ? "@" + esc(inv.username) + " · " : ""}ID ${inv.tg_id}</div></div></div>` : '<div class="mute sm" style="padding:6px 0">Joined directly, no inviter.</div>'}</div>
         <div class="card"><h3>Premium</h3><div class="row" style="margin-bottom:10px"><span class="pill ${rose ? "rose" : ""}">Rose ${rose ? "ON · " + tleft(u.lite_until) : "off"}</span><span class="pill ${roy ? "roy" : ""}">Royal ${roy ? "ON · " + tleft(u.expensive_until) : "off"}</span></div>
           <div class="row" style="margin-bottom:10px"><select class="tr" style="width:auto"><option value="lite">Rose</option><option value="expensive">Royal</option></select><input type="number" id="uDays" placeholder="days" value="7" style="width:90px"><button class="btn xs" id="uOn">Turn on / add days</button><button class="btn gh xs" id="uCut">Cut days</button></div>
           <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><button class="btn dg xs" id="uOff">Turn all off</button></div></div></div>
       <div><div class="card"><div class="row between"><h3 style="margin:0">Posts (${pl.length}${pl.length === 12 ? "+" : ""})</h3>${pl.length ? '<button class="btn gh xs" id="uPosts">Open in Member posts</button>' : ""}</div><div class="pg" style="margin-top:12px">${pl.map(p => { const m = (p.user_media || [])[0], src = m && (m.preview || urls[m.path]); return `<div class="po" title="${esc(p.title || "")}">${src ? `<img src="${esc(src)}" alt="">` : ""}<span class="pill ${p.status === "approved" ? "g" : p.status === "rejected" ? "r" : ""}">${stl[p.status] || p.status}</span></div>`; }).join("") || '<p class="mute sm" style="grid-column:1/-1">No posts yet.</p>'}</div></div>
+        <div class="card"><h3>Recent activity</h3><div class="feed" style="max-height:300px">${(acts.data || []).map(r => `<div class="fe"><span class="t">${ftime(r.at)}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}${esc(r.text)}</div>`).join("") || '<p class="mute sm">No activity recorded yet.</p>'}</div></div>
         <div class="card"><h3>Referrals (${rl.length})</h3>${rl.map(r => `<div class="refrow" data-user="${r.tg_id}"><div class="ua" style="width:36px;height:36px" ${avStyle(r, urls)}>${(r.avatar_path && urls[r.avatar_path]) || r.photo_url ? "" : esc(initial(r))}</div><div style="flex:1;min-width:0"><b>${esc(nm(r))}</b><div class="mute sm">${r.username ? "@" + esc(r.username) + " · " : ""}Joined ${fdate(r.created_at)}</div></div>${active(r.expensive_until) ? '<span class="pill roy">Royal</span>' : active(r.lite_until) ? '<span class="pill rose">Rose</span>' : ""}<span class="mute">›</span></div>`).join("") || '<p class="mute sm">Nobody invited yet.</p>'}</div></div></div></div>`;
   $("uBack").onclick = loadUsers;
   const grant = async days => { if (!days) return toast("Enter days"); const { error } = await sb.rpc("admin_grant_tier", { p_tg: tg, p_tier: box.querySelector(".tr").value, p_days: days }); error ? toast(error.message) : (toast("Updated"), openUser(tg)); };
@@ -1594,7 +1721,7 @@ async function loadUU(reset) {
   (data || []).forEach(p => {
     const fl = p.user_media || [], bytes = fl.reduce((n, m) => n + (m.size_bytes || 0), 0), d = document.createElement("div"); d.className = "pcard " + (p.status === "pending" ? "pend" : "");
     d.innerHTML = `<div class="row between" style="margin-bottom:10px"><div class="row"><input type="checkbox" class="usk" ${uuSel.has(p.id) ? "checked" : ""}><a href="#" data-user="${p.tg_id}" style="color:inherit"><b>${esc(nm(p.profiles))}</b></a><span class="mute sm">${p.profiles?.username ? "@" + esc(p.profiles.username) + " · " : ""}ID ${p.tg_id}</span></div><span class="pill ${p.status === "approved" ? "g" : p.status === "rejected" ? "r" : ""}">${UU_ST[p.status] || p.status}</span></div>
-      <div class="pgrid">${fl.slice(0, 8).map(m => `<div class="t">${urls[m.path] ? (m.type === "video" ? `<video muted preload="metadata" src="${esc(urls[m.path])}#t=0.5" controls></video>` : `<a href="${esc(urls[m.path])}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[m.path])}"></a>`) : (m.preview ? `<img src="${esc(m.preview)}">` : "")}</div>`).join("")}</div>
+      <div class="pgrid">${fl.slice(0, 8).map(m => `<div class="t">${urls[m.path] ? (m.type === "video" ? `<video muted playsinline preload="auto" src="${esc(urls[m.path])}#t=0.5" controls></video>` : `<a href="${esc(urls[m.path])}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[m.path])}"></a>`) : (m.preview ? `<img src="${esc(m.preview)}">` : "")}</div>`).join("")}</div>
       <input type="text" class="t" value="${esc(p.title || "")}" placeholder="Title" style="margin-bottom:6px"><div class="mute sm" style="margin-bottom:10px">${fl.length} file${fl.length === 1 ? "" : "s"} · ${(bytes / 1048576).toFixed(1)} MB · ${fdate(p.created_at)} · 👍 ${p.likes} 👎 ${p.dislikes} · ${p.views} views${p.note ? " · note: " + esc(p.note) : ""}</div>
       <div class="row">${p.status !== "approved" ? '<button class="btn bigap ap">✓ Approve</button>' : ""}${p.status !== "rejected" ? '<button class="btn dg xs rj">Decline</button>' : ""}<button class="btn gh xs sv">Save title</button><button class="btn dg xs dl">Delete</button></div>
       <div class="dc" hidden><div class="reasons">${REASONS.map(r => `<button>${esc(r)}</button>`).join("")}</div><div class="row" style="margin-top:8px"><input type="text" class="nt" placeholder="Reason for the member (optional)" style="flex:1;min-width:180px"><button class="btn dg xs dcf">Confirm decline</button></div></div>`;
@@ -1669,8 +1796,13 @@ async function loadUsage(force) {
 }
 $("stUseBtn").onclick = () => loadUsage(true);
 async function storageStat() {
-  const u = await getUsage(false); const total = (u.r2 ? u.r2.bytes : 0) + (u.sb ? Number(u.sb.bytes) : 0);
-  if ((u.r2 || u.sb) && $("dStats")) $("dStats").insertAdjacentHTML("beforeend", kt("", "Storage used", fmtBytes(total), [["R2", u.r2 ? fmtBytes(u.r2.bytes) : "-"], ["Supabase", u.sb ? fmtBytes(Number(u.sb.bytes)) : "-"]], "up"));
+  const u = await getUsage(false); if (!$("dStoreN")) return;
+  const total = (u.r2 ? u.r2.bytes : 0) + (u.sb ? Number(u.sb.bytes) : 0);
+  if (!u.r2 && !u.sb) { $("dStoreN").textContent = "-"; $("dStoreSub").innerHTML = '<div><b>-</b><small>No data yet</small></div>'; return; }
+  const cap = ((u.r2 ? 10 : 0) + (u.sb ? 1 : 0)) * 1073741824, pct = Math.min(100, total / cap * 100);
+  $("dStoreN").textContent = fmtBytes(total);
+  $("dStoreBar").innerHTML = `<div class="bar"><i style="width:${Math.max(1.5, pct).toFixed(1)}%"></i></div><div class="sm mute" style="margin:-6px 0 12px">${pct.toFixed(1)}% of the free ${cap / 1073741824} GB</div>`;
+  $("dStoreSub").innerHTML = `<div><b>${u.r2 ? fmtBytes(u.r2.bytes) : "-"}</b><small>R2</small></div><div><b>${u.sb ? fmtBytes(Number(u.sb.bytes)) : "-"}</b><small>Supabase</small></div>`;
 }
 async function loadStorageInfo() {
   loadUsage(false);

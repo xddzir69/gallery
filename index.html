@@ -145,7 +145,7 @@
   .ss { position: absolute; inset: 0; }
   .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; background: center/cover no-repeat; }
   .sl.on { opacity: 1; }
-  video.sl { background: #000; }
+  video.sl { background-color: #000; }
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
   .th .pl { position: absolute; z-index: 2; left: 8px; bottom: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(6,6,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; display: none; align-items: center; justify-content: center; }
   .th[data-vid="1"] .pl { display: flex; }
@@ -746,18 +746,44 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- global slideshow (every 5s, folder thumbnails) ---------- */
+/* ---------- folder preview flow ----------
+   Every folder changes its picture every 5 seconds, but one after another: the 1st visible folder at second 0,
+   the 2nd one second later, the 3rd one second after that... (a wave, not everything at once).
+   All pictures of a folder are loaded in the background first, so a flip never waits for the network. */
+let ssTick = 0;
+const ssPrime = ss => { [...ss.children].forEach(c => { if (c.dataset.src && c.tagName === "IMG") { c.src = c.dataset.src; c.removeAttribute("data-src"); } }); };
+const ssReady = el => !el || el.tagName === "DIV" || (el.tagName === "IMG" ? (el.complete && el.naturalWidth > 0) : (el.readyState >= 2));
+function ssPlay(ss) {
+  const cur = ss.children[+ss.dataset.i];
+  [...ss.children].forEach(c => { if (c.tagName === "VIDEO" && c !== cur && !c.paused) c.pause(); });
+  if (cur && cur.tagName === "VIDEO" && cur.paused) { const p = cur.play(); if (p && p.catch) p.catch(() => {}); }
+}
+function ssFlip(ss) {
+  const n = +ss.dataset.n; if (n < 2) return;
+  const sl = ss.children, i = +ss.dataset.i;
+  for (let step = 1; step < n; step++) {
+    const j = (i + step) % n, nx = sl[j]; if (!nx) continue;
+    if (nx.dataset.src) { nx.src = nx.dataset.src; nx.removeAttribute("data-src"); if (nx.tagName === "VIDEO") nx.preload = "auto"; }
+    if (!ssReady(nx)) { if (nx.tagName === "VIDEO" && nx.readyState < 2 && step === 1 && (ss._w = (ss._w || 0) + 1) < 3) return; continue; }
+    ss._w = 0; sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
+    if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
+    return;
+  }
+}
 setInterval(() => {
   if (document.hidden) return;
+  ssTick++;
+  const vis = [];
   document.querySelectorAll(".ss").forEach(ss => {
-    const n = +ss.dataset.n; if (n < 2) return;
-    const r = ss.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;
-    const sl = ss.children, i = +ss.dataset.i, j = (i + 1) % n, nx = sl[j]; if (!nx) return;
-    if (nx.dataset.src) { nx.src = nx.dataset.src; nx.removeAttribute("data-src"); }
-    sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
-    if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
+    const r = ss.getBoundingClientRect();
+    if (r.bottom > -700 && r.top < innerHeight + 900) ssPrime(ss);
+    if (r.bottom > -40 && r.top < innerHeight + 40) vis.push(ss);
+    else { const c = ss.children[+ss.dataset.i]; if (c && c.tagName === "VIDEO" && !c.paused) c.pause(); }
   });
-}, 5000);
+  vis.forEach((ss, k) => { ssPlay(ss); if (k % 5 === ssTick % 5) ssFlip(ss); });
+}, 1000);
+/* a video shows no picture until it seeks a little */
+document.addEventListener("loadedmetadata", e => { const v = e.target; if (v && v.tagName === "VIDEO" && !v.controls && v.paused && !v.currentTime) { try { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); } catch {} } }, true);
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -781,8 +807,9 @@ function slidesHTML(list, locked) {
     const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
-    if (t.type === "video") return t.preview ? `<div class="sl${on}"${v} style="${pv}"></div>` : `<video class="sl${on}" data-v="1" muted playsinline preload="metadata" ${key}="${esc(t.url)}#t=0.5"></video>`;
-    return `<img class="sl${on}" draggable="false" alt="" style="${pv}" ${key}="${esc(t.url)}">`;
+    /* videos always play as a real muted preview (the small stored picture is only the backdrop until the first frame shows) */
+    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline webkit-playsinline preload="${k ? "none" : "auto"}" style="${pv}" ${key}="${esc(t.url)}#t=0.5"></video>`;
+    return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
 const lockHTML = `<div class="lk"><span class="lkc">${ic("lock")}</span></div>`;
