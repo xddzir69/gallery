@@ -371,6 +371,17 @@
   .rch .ua { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; color: var(--gold); background: var(--bg2) center/cover; }
   .feed2 { max-height: 640px; overflow: auto; } .fd2 { position: sticky; top: 0; z-index: 2; padding: 8px 4px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); background: var(--card); border-bottom: 1px solid var(--line2); }
   .fe2 { display: grid; grid-template-columns: 62px 30px 1fr; gap: 10px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); font-size: 13px; } .fe2 .t { color: var(--mute); font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; } .fe2 .ua { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 12px; color: var(--gold); background: var(--bg2) center/cover; }
+
+  /* ===== V12: LIVE shows the file ===== */
+  .tvt { transition: box-shadow .3s, border-color .3s; } .tvt.new { animation: tvIn .7s ease-out; } @keyframes tvIn { from { opacity: 0; transform: scale(.94); box-shadow: 0 0 0 2px #CDAA5E, 0 0 40px rgba(205,170,94,.7); } to { opacity: 1; transform: none; } }
+  .tvgrid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .tvm { position: relative; grid-column: 1 / -1; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: #000 center/cover; cursor: pointer; border: 1px solid rgba(205,170,94,.35); }
+  .tvm video, .tvm img { width: 100%; height: 100%; object-fit: cover; display: block; background: center/cover; }
+  .tvb { position: absolute; left: 8px; bottom: 8px; padding: 3px 9px; border-radius: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; color: #fff; background: rgba(216,50,43,.85); backdrop-filter: blur(6px); }
+  .tvlnk { font-size: 12px; } .tvt .ago { color: #CDAA5E; }
+  .tk2 .tkth, .fe2 .fth { display: inline-block; vertical-align: middle; width: 54px; height: 54px; border-radius: 9px; overflow: hidden; margin: 6px 0 0 0; cursor: pointer; border: 1px solid rgba(205,170,94,.4); background: #000; }
+  .tk2 .tkth { display: block; width: 100%; height: 110px; } .fe2 .fth { margin-left: 10px; margin-top: 0; }
+  .tkth video, .tkth img, .fth video, .fth img { width: 100%; height: 100%; object-fit: cover; display: block; }
 </style>
 </head>
 <body>
@@ -496,7 +507,7 @@
     <!-- LIVE -->
     <section id="t-live" hidden>
       <div class="tv"><div class="tvin">
-        <div class="tvbar"><span class="onair"><i></i>LIVE</span><span class="tvclk" id="tvClock"></span><span class="tvcnt" id="tvCount"></span><span class="sp"></span><button class="tvbtn" id="lvPause">Pause</button></div>
+        <div class="tvbar"><span class="onair"><i></i>LIVE</span><span class="tvclk" id="tvClock"></span><span class="tvcnt" id="tvCount"></span><span class="tvlnk" id="tvLink"></span><span class="sp"></span><button class="tvbtn" id="lvPause">Pause</button></div>
         <div class="tvbody"><div class="tvmain"><div class="tvh">On screen now</div><div class="tvgrid" id="lvNow"></div></div>
           <div class="tvside"><div class="tvh">Where they go</div><div id="lvTicker"></div></div></div>
       </div></div>
@@ -678,8 +689,8 @@ let tkTimer;
 function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
-  clearInterval(tkTimer); clearInterval(lvClock);
-  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { fdMore = false; loadLive(true); lvTime(); lvClock = setInterval(lvTime, 1000); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
+  clearInterval(tkTimer); clearInterval(lvClock); if (t !== "live") lvUnsub();
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { fdMore = false; lvSubscribe(); loadLive(true); lvTime(); lvClock = setInterval(lvTime, 1000); tkTimer = setInterval(() => { lvN++; if (!lvLiveOk || lvN % 4 === 0) loadLive(); }, 2500); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
@@ -1288,8 +1299,8 @@ async function previewSched(id) {
 
 /* ---------- live screen ---------- */
 let lvPaused = false, lvBusy = false, lvSlowAt = 0, lvClock = null, fdRows = [], fdMore = false; const lvNames = new Map();
-$("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; };
-const lvTime = () => { const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
+$("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; lvLinkDraw(); if (!lvPaused) loadLive(true); };
+const lvTime = () => { document.querySelectorAll("#lvNow .ago").forEach(x => x.textContent = agoS(x.dataset.at)); const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
 async function lvProfiles(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvNames.get(id); return !c || Date.now() - (c._t || 0) > 60000; });
   if (!need.length) return;
@@ -1304,27 +1315,77 @@ const lvWho = id => lvNames.get(id) || { tg_id: id };
 const lvAv = (p, cls = "ua") => `<div class="${cls}" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div>`;
 const srcPill = s => `<span class="pill ${s === "bot" ? "rose" : "g"}">${s === "bot" ? "Bot" : "App"}</span>`;
 const tierMini = p => active(p.expensive_until) ? '<span class="pill roy">Royal</span>' : active(p.lite_until) ? '<span class="pill rose">Rose</span>' : "";
+/* pictures and videos of the files members are looking at (cached, links renewed every 50 minutes) */
+const lvMed = new Map();
+async function lvMediaLoad(ids) {
+  const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvMed.get(id); return !c || Date.now() - c.at > 3000000; });
+  if (!need.length) return;
+  const { data } = await sb.from("media").select("id,type,path,preview,label,title").in("id", need); const rows = data || [];
+  const urls = await sign(rows.filter(m => !(m.type === "image" && m.preview && false)).map(m => m.path), 3600);
+  rows.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
+}
+const lvPv = id => { const e = id && lvMed.get(id); return e && (e.url || e.preview) ? e : null; };
+const lvMediaEl = (id, big) => { const e = lvPv(id); if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
+  return e.type === "video" && e.url ? `<video src="${esc(e.url)}#t=0.1" muted loop playsinline autoplay preload="auto" ${bg}></video>` : `<img src="${esc(e.url || e.preview)}" alt="" ${bg}>`; };
+const agoS = at => { const sec = Math.max(0, Math.floor((Date.now() - new Date(at)) / 1000)); return sec < 60 ? sec + "s ago" : ago(at) + " ago"; };
+function lvReconcile(box, items, emptyHtml) {
+  const old = new Map([...box.children].filter(c => c.dataset.k).map(c => [c.dataset.k, c])), keep = new Set(items.map(i => i.k)), mk = h => { const t = document.createElement("div"); t.innerHTML = h; return t.firstElementChild; };
+  old.forEach((c, k) => { if (!keep.has(k)) c.remove(); });
+  box.querySelectorAll(".tvnone").forEach(n => n.remove());
+  const fresh = [];
+  items.forEach(it => { const c = old.get(it.k); if (!c) fresh.push(it); else if (c.dataset.sig !== it.sig) c.replaceWith(mk(it.html)); });
+  fresh.reverse().forEach(it => { const n = mk(it.html); n.classList.add("new"); box.prepend(n); });   // newcomers go first; nobody else is moved, so playing videos never restart
+  if (!box.children.length) box.innerHTML = emptyHtml;
+}
+let lvCh = null, lvLiveOk = false, lvAgain = false, lvN = 0, lvSigT = "", lvSigF = "";
+function lvSubscribe() {
+  if (lvCh) return; let t; const kick = () => { clearTimeout(t); t = setTimeout(() => loadLive(), 120); };
+  lvCh = sb.channel("lv-" + Date.now()).on("postgres_changes", { event: "*", schema: "public", table: "live_activity" }, kick).on("postgres_changes", { event: "INSERT", schema: "public", table: "live_events" }, kick)
+    .subscribe(st => { lvLiveOk = st === "SUBSCRIBED"; lvLinkDraw(); });
+}
+function lvUnsub() { if (lvCh) { sb.removeChannel(lvCh); lvCh = null; lvLiveOk = false; } }
+const lvLinkDraw = () => { const e = $("tvLink"); if (e) e.innerHTML = lvPaused ? '<span style="color:#CDAA5E">⏸ paused</span>' : lvLiveOk ? '<span style="color:#4CD08A">● instant updates</span>' : '<span style="color:#CDAA5E">● refreshing every 2.5s</span>'; };
 async function loadLive(force) {
-  if ((lvPaused && !force) || lvBusy) return; lvBusy = true;
+  if (lvPaused && !force) return; if (lvBusy) { lvAgain = true; return; } lvBusy = true;
   try {
     const since = new Date(Date.now() - 3 * 60000).toISOString();
     const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
     if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
     const on = a.data || [], ev = e.data || [];
-    await lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id));
+    const coverOf = r => r.media_id || (r.album_id && byId(r.album_id)?.cover_media_id) || null;
+    await Promise.all([lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id)), lvMediaLoad([...on.map(coverOf), ...ev.slice(0, 30).map(r => r.media_id)])]);
     const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
-    const hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
-    $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} in the app · ${nBot} in the bot · ${hour} active in the last hour`;
-    const lastEv = new Map(); ev.forEach(r => { if (!lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
-    $("lvNow").innerHTML = on.map(r => { const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id);
-      return `<div class="tvt">${lvAv(p)}<div style="min-width:0"><b class="nm">${esc(nm(p))}</b> ${tierMini(p)}<div class="mt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</div><div class="nw">${srcPill(r.source)} <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div>${l && l.text !== r.screen ? `<div class="lst">Last: ${esc(l.text)} · ${ago(l.at)}</div>` : ""}</div>
-        <div class="ft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("")
-      || '<div class="tvnone"><div class="big">STANDBY</div>Nobody is online right now. The next member who opens the app appears here instantly.</div>';
-    $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>';
+    const watching = on.filter(r => r.media_id).length, hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
+    $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} app · ${nBot} bot · <b style="color:#F6F2E9">${watching}</b> watching a file · ${hour} active in the last hour`;
+    lvLinkDraw();
+    const lastEv = new Map(); ev.forEach(r => { if (!lvLastSkip(r) && !lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
+    const items = on.map(r => {
+      const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id), pid = coverOf(r), pe = lvPv(pid), isVid = pe && pe.type === "video", wf = !!r.media_id;
+      const sig = [r.screen, r.detail, r.media_id, r.album_id, r.album_title, pe ? 1 : 0, p.visit_count, p.ref_count, p.av ? 1 : 0, p.expensive_until, p.lite_until, l?.id].join("|");
+      const trail = [r.album_title ? `<span class="pill">Folder</span> <b>${esc(r.album_title)}</b>` : "", wf ? `<span class="pill ${r.media_type === "video" ? "g" : ""}">${r.media_type === "video" ? "Video" : "Photo"}</span> <b>${esc(r.media_title || "File")}</b>` : ""].filter(Boolean).join(" › ");
+      const html = `<div class="tvt" data-k="${r.tg_id}" data-sig="${esc(sig)}">
+        ${pe ? `<div class="tvm" data-big="${esc(pid)}">${lvMediaEl(pid)}<span class="tvb">${wf ? "● WATCHING NOW" : "Folder cover"}${isVid ? " · VIDEO" : ""}</span></div>` : ""}
+        ${lvAv(p)}<div style="min-width:0"><b class="nm">${esc(nm(p))}</b> ${tierMini(p)}<div class="mt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id} · <span class="ago" data-at="${esc(r.at)}">${agoS(r.at)}</span></div>
+        <div class="nw">${srcPill(r.source)} <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen && !trail ? " · " + esc(r.detail) : ""}</div>${trail ? `<div class="nw">${trail}</div>` : ""}${l && l.text !== r.screen ? `<div class="lst">Before: ${esc(l.text)} · <span class="ago" data-at="${esc(l.at)}">${agoS(l.at)}</span></div>` : ""}</div>
+        <div class="ft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`;
+      return { k: String(r.tg_id), sig, html };
+    });
+    lvReconcile($("lvNow"), items, '<div class="tvnone"><div class="big">STANDBY</div>Nobody is online right now. The next member who opens the app appears here instantly.</div>');
+    const sigT = ev.slice(0, 30).map(r => r.id).join(",") + lvMed.size;
+    if (sigT !== lvSigT) { lvSigT = sigT;
+      $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id), pe = lvPv(r.media_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}${pe ? `<div class="tkth" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>` : ""}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>'; }
     if (!fdMore) loadFeed(false);
     if (force || Date.now() - lvSlowAt > 20000) { lvSlowAt = Date.now(); loadLiveSlow(); }
-  } finally { lvBusy = false; }
+  } finally { lvBusy = false; if (lvAgain) { lvAgain = false; setTimeout(() => loadLive(), 50); } }
 }
+const lvLastSkip = r => false;
+/* tap a picture or video on the LIVE screen to see it big */
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-big]"); if (!t) return; const m = lvMed.get(t.dataset.big); if (!m || !(m.url || m.preview)) return;
+  const d = document.createElement("div"); d.className = "mdl"; d.onclick = ev => { if (ev.target === d || ev.target.closest("[data-x]")) d.remove(); };
+  d.innerHTML = `<div class="box" style="width:min(900px,100%);align-items:center"><div class="row between" style="width:100%"><b>${esc(m.title || "File")}</b><button class="btn gh xs" data-x>Close</button></div><div style="margin-top:12px;width:100%;display:grid;place-items:center">${m.type === "video" && m.url ? `<video src="${esc(m.url)}" controls autoplay playsinline style="max-width:100%;max-height:68vh;border-radius:12px"></video>` : `<img src="${esc(m.url || m.preview)}" style="max-width:100%;max-height:68vh;border-radius:12px" alt="">`}</div></div>`;
+  document.body.appendChild(d);
+});
 async function loadLiveSlow() {
   const now = new Date(), iso = now.toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString();
   const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
@@ -1368,11 +1429,11 @@ async function loadFeed(more) {
   if (s) { if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); else { const { data: ids } = await sb.from("profiles").select("tg_id").or(`first_name.ilike.%${s}%,last_name.ilike.%${s}%,username.ilike.%${s}%,display_name.ilike.%${s}%`).limit(50); q = q.in("tg_id", (ids || []).map(x => x.tg_id).concat([-1])); } }
   const { data, error } = await q; if (error) return toast(error.message);
   const rows = data || []; fdMore = more || off > 0; fdRows = more ? fdRows.concat(rows) : rows;
-  await lvProfiles(fdRows.map(r => r.tg_id));
+  await Promise.all([lvProfiles(fdRows.map(r => r.tg_id)), lvMediaLoad(fdRows.map(r => r.media_id))]);
   const dl = d => { const k = dayKey(d), t = dayKey(new Date()), y = dayKey(new Date(Date.now() - 864e5)); return k === t ? "Today" : k === y ? "Yesterday" : fdate(d); };
   let last = "", h = "";
   fdRows.forEach(r => { const d = dl(r.at); if (d !== last) { h += `<div class="fd2">${d}</div>`; last = d; } const p = lvWho(r.tg_id);
-    h += `<div class="fe2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${lvAv(p)}<span>${srcPill(r.source)} <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}</span></div>`; });
+    h += `<div class="fe2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${lvAv(p)}<span>${srcPill(r.source)} <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}${lvPv(r.media_id) ? `<span class="fth" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</span>` : ""}</span></div>`; });
   $("lvFeed").innerHTML = h || '<p class="mute" style="padding:14px 0">No activity in this period.</p>';
   $("lvMore").hidden = rows.length < 60;
 }

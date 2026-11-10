@@ -661,10 +661,16 @@ const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
 const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
 function pingScreen(ev) {
-  if (!me) return; const t = stack[stack.length - 1]; if (!t || t.r === "album") return;
-  api("ping", { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 }).catch(() => {});
+  if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
+  const body = { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 };
+  if (t.r === "album") { body.screen = "Folder"; body.album_id = t.p.id; body.detail = t.p.title || ""; }
+  if ($("viewer").classList.contains("open")) {          // a file is open: tell the admin exactly which one
+    const m = V.list[V.i];
+    if (m) { body.screen = m.type === "video" ? "Watching a video" : "Viewing a photo"; if (m.kind === "media") body.media_id = m.id; body.detail = vName(m) || ""; }
+  }
+  api("ping", body).catch(() => {});
 }
-setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
+setInterval(() => { if (!document.hidden) pingScreen(false); }, 15000);
 
 /* ---------- router ---------- */
 function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
@@ -1412,6 +1418,7 @@ function drawViewer() {
   $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
   if (m.kind === "media") api("view", { media_id: m.id }).catch(() => {});
+  pingScreen(true);
   if ($("vsheet").classList.contains("on")) drawInfo();
 }
 function drawInfo() {
@@ -1421,7 +1428,7 @@ function drawInfo() {
 }
 function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); }
 function closeViewer() {
-  $("viewer").classList.remove("open"); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
+  $("viewer").classList.remove("open"); setTimeout(() => pingScreen(true), 0); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
   if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; } syncBack();
 }
