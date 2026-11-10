@@ -382,6 +382,23 @@
   .tk2 .tkth, .fe2 .fth { display: inline-block; vertical-align: middle; width: 54px; height: 54px; border-radius: 9px; overflow: hidden; margin: 6px 0 0 0; cursor: pointer; border: 1px solid rgba(205,170,94,.4); background: #000; }
   .tk2 .tkth { display: block; width: 100%; height: 110px; } .fe2 .fth { margin-left: 10px; margin-top: 0; }
   .tkth video, .tkth img, .fth video, .fth img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* ===== V13: CCTV wall ===== */
+  .tvgrid { grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 14px; } @media (max-width: 520px) { .tvgrid { grid-template-columns: 1fr; } }
+  .cam { border-radius: 14px; overflow: hidden; background: #000; border: 1px solid rgba(255,255,255,.14); box-shadow: 0 18px 40px -22px #000; } .cam.new { animation: tvIn .7s ease-out; } .cam.big { grid-column: 1 / -1; }
+  .camv { position: relative; aspect-ratio: 16 / 10; background: #050507; overflow: hidden; } .cam.big .camv { aspect-ratio: 21 / 9; min-height: 340px; }
+  .camv::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px), radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(0,0,0,.55)); }
+  .cf { position: absolute; inset: 0; } .cf.one, .cf.mos > div { cursor: pointer; } .cf video, .cf img { width: 100%; height: 100%; object-fit: cover; display: block; background: center/cover; filter: contrast(1.05) saturate(.95); }
+  .cf.mos { display: grid; gap: 2px; } .cf.mos.m1 { grid-template: 1fr / 1fr; } .cf.mos.m2 { grid-template: 1fr / 1fr 1fr; } .cf.mos.m3, .cf.mos.m4 { grid-template: 1fr 1fr / 1fr 1fr; } .cf.mos.m3 > div:first-child { grid-row: 1 / 3; } .cf.mos > div { overflow: hidden; min-width: 0; min-height: 0; }
+  .cf.pg { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(80% 80% at 50% 40%, #1c1b24, #07070a); } .cf.pg span { font-family: "Cormorant Garamond", Georgia, serif; font-size: 44px; letter-spacing: .14em; text-transform: uppercase; color: #CDAA5E; } .cf.pg small { color: #8F8C97; margin-top: 4px; }
+  .camid { position: absolute; z-index: 3; left: 10px; top: 9px; display: flex; align-items: center; gap: 7px; font: 700 11px ui-monospace, Menlo, monospace; letter-spacing: .12em; color: #fff; text-shadow: 0 1px 3px #000; } .camid i { width: 9px; height: 9px; border-radius: 50%; background: #FF3B30; box-shadow: 0 0 10px #FF3B30; animation: blink 1.2s infinite; }
+  .camts { position: absolute; z-index: 3; right: 44px; top: 9px; font: 11px ui-monospace, Menlo, monospace; color: #fff; text-shadow: 0 1px 3px #000; }
+  .camfs { position: absolute; z-index: 4; right: 8px; top: 5px; width: 28px; height: 26px; border-radius: 7px; background: rgba(0,0,0,.55); color: #fff; font-size: 14px; border: 1px solid rgba(255,255,255,.25); }
+  .camtag { position: absolute; z-index: 3; left: 10px; top: 32px; padding: 2px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; letter-spacing: .14em; color: #fff; background: rgba(216,50,43,.88); }
+  .camov { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 11px; padding: 34px 12px 10px; background: linear-gradient(0deg, rgba(0,0,0,.88), transparent); pointer-events: none; }
+  .camov .ua { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #CDAA5E; background: #0b0b0f center/cover; box-shadow: 0 0 0 2px rgba(205,170,94,.6); flex: none; }
+  .camov .nm { font-size: 14px; } .cmw { font-size: 12.5px; color: #F0DDA6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cmt { font-size: 11px; color: #B8B4A6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cam .ago { color: #CDAA5E; }
+  .camft { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 9px 12px; font-size: 11.5px; color: #B8B4A6; background: #0a0a0d; } .camft b { color: #F6F2E9; } .camft .btn { margin-left: auto; }
 </style>
 </head>
 <body>
@@ -508,7 +525,7 @@
     <section id="t-live" hidden>
       <div class="tv"><div class="tvin">
         <div class="tvbar"><span class="onair"><i></i>LIVE</span><span class="tvclk" id="tvClock"></span><span class="tvcnt" id="tvCount"></span><span class="tvlnk" id="tvLink"></span><span class="sp"></span><button class="tvbtn" id="lvPause">Pause</button></div>
-        <div class="tvbody"><div class="tvmain"><div class="tvh">On screen now</div><div class="tvgrid" id="lvNow"></div></div>
+        <div class="tvbody"><div class="tvmain"><div class="tvh">Cameras</div><div class="tvgrid" id="lvNow"></div></div>
           <div class="tvside"><div class="tvh">Where they go</div><div id="lvTicker"></div></div></div>
       </div></div>
       <div class="kts lvk" id="lvKpi"></div>
@@ -1300,7 +1317,7 @@ async function previewSched(id) {
 /* ---------- live screen ---------- */
 let lvPaused = false, lvBusy = false, lvSlowAt = 0, lvClock = null, fdRows = [], fdMore = false; const lvNames = new Map();
 $("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; lvLinkDraw(); if (!lvPaused) loadLive(true); };
-const lvTime = () => { document.querySelectorAll("#lvNow .ago").forEach(x => x.textContent = agoS(x.dataset.at)); const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
+const lvTime = () => { const ts = new Date().toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }); document.querySelectorAll("#lvNow .ago").forEach(x => x.textContent = agoS(x.dataset.at)); document.querySelectorAll("#lvNow .camts").forEach(x => x.textContent = ts); const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
 async function lvProfiles(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvNames.get(id); return !c || Date.now() - (c._t || 0) > 60000; });
   if (!need.length) return;
@@ -1324,9 +1341,21 @@ async function lvMediaLoad(ids) {
   const urls = await sign(rows.filter(m => !(m.type === "image" && m.preview && false)).map(m => m.path), 3600);
   rows.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
 }
+const lvAlb = new Map();   /* folder id -> first files inside it (for folders that have no cover) */
+async function lvAlbumLoad(ids) {
+  const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvAlb.get(id); return !c || Date.now() - c.at > 120000; });
+  if (!need.length) return;
+  const owner = new Map(), all = []; need.forEach(id => descIds(id).forEach(d => { if (!owner.has(d)) { owner.set(d, id); all.push(d); } }));
+  const { data } = await sb.from("media").select("id,album_id,type,path,preview,label,title,album_order").in("album_id", all.slice(0, 200)).order("album_order").limit(400); const rows = data || [];
+  const got = new Map(); need.forEach(id => got.set(id, []));
+  rows.forEach(m => { const o = owner.get(m.album_id), l = got.get(o); if (l && l.length < 4) l.push(m); });
+  const pick = [...got.values()].flat(), urls = await sign(pick.map(m => m.path), 3600);
+  pick.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
+  need.forEach(id => lvAlb.set(id, { ids: got.get(id).map(m => m.id), at: Date.now() }));
+}
 const lvPv = id => { const e = id && lvMed.get(id); return e && (e.url || e.preview) ? e : null; };
-const lvMediaEl = (id, big) => { const e = lvPv(id); if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
-  return e.type === "video" && e.url ? `<video src="${esc(e.url)}#t=0.1" muted loop playsinline autoplay preload="auto" ${bg}></video>` : `<img src="${esc(e.url || e.preview)}" alt="" ${bg}>`; };
+const lvMediaEl = (id, still) => { const e = lvPv(id); if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
+  return e.type === "video" && e.url ? `<video src="${esc(e.url)}#t=0.1" muted loop playsinline ${still ? "" : "autoplay"} preload="${still ? "metadata" : "auto"}" ${bg}></video>` : `<img src="${esc(e.url || e.preview)}" alt="" ${bg}>`; };
 const agoS = at => { const sec = Math.max(0, Math.floor((Date.now() - new Date(at)) / 1000)); return sec < 60 ? sec + "s ago" : ago(at) + " ago"; };
 function lvReconcile(box, items, emptyHtml) {
   const old = new Map([...box.children].filter(c => c.dataset.k).map(c => [c.dataset.k, c])), keep = new Set(items.map(i => i.k)), mk = h => { const t = document.createElement("div"); t.innerHTML = h; return t.firstElementChild; };
@@ -1337,6 +1366,7 @@ function lvReconcile(box, items, emptyHtml) {
   fresh.reverse().forEach(it => { const n = mk(it.html); n.classList.add("new"); box.prepend(n); });   // newcomers go first; nobody else is moved, so playing videos never restart
   if (!box.children.length) box.innerHTML = emptyHtml;
 }
+const lvCam = new Map(), lvFocus = new Set();
 let lvCh = null, lvLiveOk = false, lvAgain = false, lvN = 0, lvSigT = "", lvSigF = "";
 function lvSubscribe() {
   if (lvCh) return; let t; const kick = () => { clearTimeout(t); t = setTimeout(() => loadLive(), 120); };
@@ -1353,24 +1383,30 @@ async function loadLive(force) {
     if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
     const on = a.data || [], ev = e.data || [];
     const coverOf = r => r.media_id || (r.album_id && byId(r.album_id)?.cover_media_id) || null;
-    await Promise.all([lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id)), lvMediaLoad([...on.map(coverOf), ...ev.slice(0, 30).map(r => r.media_id)])]);
+    await Promise.all([lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id)), lvMediaLoad([...on.map(r => r.media_id), ...ev.slice(0, 30).map(r => r.media_id)]), lvAlbumLoad(on.filter(r => r.album_id && !r.media_id).map(r => r.album_id))]);
     const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
     const watching = on.filter(r => r.media_id).length, hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
     $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} app · ${nBot} bot · <b style="color:#F6F2E9">${watching}</b> watching a file · ${hour} active in the last hour`;
     lvLinkDraw();
     const lastEv = new Map(); ev.forEach(r => { if (!lvLastSkip(r) && !lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
     const items = on.map(r => {
-      const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id), pid = coverOf(r), pe = lvPv(pid), isVid = pe && pe.type === "video", wf = !!r.media_id;
-      const sig = [r.screen, r.detail, r.media_id, r.album_id, r.album_title, pe ? 1 : 0, p.visit_count, p.ref_count, p.av ? 1 : 0, p.expensive_until, p.lite_until, l?.id].join("|");
-      const trail = [r.album_title ? `<span class="pill">Folder</span> <b>${esc(r.album_title)}</b>` : "", wf ? `<span class="pill ${r.media_type === "video" ? "g" : ""}">${r.media_type === "video" ? "Video" : "Photo"}</span> <b>${esc(r.media_title || "File")}</b>` : ""].filter(Boolean).join(" › ");
-      const html = `<div class="tvt" data-k="${r.tg_id}" data-sig="${esc(sig)}">
-        ${pe ? `<div class="tvm" data-big="${esc(pid)}">${lvMediaEl(pid)}<span class="tvb">${wf ? "● WATCHING NOW" : "Folder cover"}${isVid ? " · VIDEO" : ""}</span></div>` : ""}
-        ${lvAv(p)}<div style="min-width:0"><b class="nm">${esc(nm(p))}</b> ${tierMini(p)}<div class="mt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id} · <span class="ago" data-at="${esc(r.at)}">${agoS(r.at)}</span></div>
-        <div class="nw">${srcPill(r.source)} <b>${esc(r.screen || "Idle")}</b>${r.detail && r.detail !== r.screen && !trail ? " · " + esc(r.detail) : ""}</div>${trail ? `<div class="nw">${trail}</div>` : ""}${l && l.text !== r.screen ? `<div class="lst">Before: ${esc(l.text)} · <span class="ago" data-at="${esc(l.at)}">${agoS(l.at)}</span></div>` : ""}</div>
-        <div class="ft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`;
+      const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id), wf = !!r.media_id && !!lvPv(r.media_id), big = lvFocus.has(r.tg_id);
+      if (!lvCam.has(r.tg_id)) lvCam.set(r.tg_id, lvCam.size + 1);
+      const mos = !wf && r.album_id ? ((lvAlb.get(r.album_id) || {}).ids || []).filter(lvPv).slice(0, 4) : [];
+      const feed = wf ? `<div class="cf one" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>`
+        : mos.length ? `<div class="cf mos m${mos.length}">${mos.map((id, i) => `<div data-big="${esc(id)}">${lvMediaEl(id, i > 0)}</div>`).join("")}</div>`
+        : `<div class="cf pg"><span>${esc(r.screen || "Idle")}</span><small>${esc(r.detail || "")}</small></div>`;
+      const sig = [r.screen, r.detail, r.media_id, r.album_id, r.album_title, wf ? 1 : 0, mos.join(","), p.visit_count, p.ref_count, p.av ? 1 : 0, p.expensive_until, p.lite_until, l?.id, big].join("|");
+      const trail = [r.album_title ? `Folder <b>${esc(r.album_title)}</b>` : "", r.media_id ? `${r.media_type === "video" ? "Video" : "Photo"} <b>${esc(r.media_title || "File")}</b>` : ""].filter(Boolean).join(" › ");
+      const tag = wf ? (r.media_type === "video" ? "WATCHING VIDEO" : "VIEWING PHOTO") : r.album_id ? "BROWSING FOLDER" : String(r.screen || "IDLE").toUpperCase();
+      const html = `<div class="cam ${big ? "big" : ""}" data-k="${r.tg_id}" data-sig="${esc(sig)}">
+        <div class="camv">${feed}<span class="camid"><i></i>REC · CAM ${String(lvCam.get(r.tg_id)).padStart(2, "0")}</span><span class="camts"></span><button class="camfs" data-focus="${r.tg_id}" title="Enlarge">${big ? "✕" : "⤢"}</button>
+          <span class="camtag">${esc(tag)}</span>
+          <div class="camov">${lvAv(p)}<div style="min-width:0"><div><b class="nm">${esc(nm(p))}</b> ${tierMini(p)} ${srcPill(r.source)}</div><div class="cmw">${esc(r.screen || "Idle")}${trail ? " › " + trail : r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div><div class="cmt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id} · <span class="ago" data-at="${esc(r.at)}">${agoS(r.at)}</span>${l && l.text !== r.screen ? " · before: " + esc(l.text) : ""}</div></div></div></div>
+        <div class="camft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`;
       return { k: String(r.tg_id), sig, html };
     });
-    lvReconcile($("lvNow"), items, '<div class="tvnone"><div class="big">STANDBY</div>Nobody is online right now. The next member who opens the app appears here instantly.</div>');
+    lvReconcile($("lvNow"), items, '<div class="tvnone"><div class="big">NO SIGNAL</div>Every camera is off. The moment a member opens the app, their camera switches on here.</div>');
     const sigT = ev.slice(0, 30).map(r => r.id).join(",") + lvMed.size;
     if (sigT !== lvSigT) { lvSigT = sigT;
       $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id), pe = lvPv(r.media_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}${pe ? `<div class="tkth" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>` : ""}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>'; }
@@ -1379,6 +1415,7 @@ async function loadLive(force) {
   } finally { lvBusy = false; if (lvAgain) { lvAgain = false; setTimeout(() => loadLive(), 50); } }
 }
 const lvLastSkip = r => false;
+document.addEventListener("click", e => { const f = e.target.closest("[data-focus]"); if (!f) return; e.stopPropagation(); const id = Number(f.dataset.focus); lvFocus.has(id) ? lvFocus.delete(id) : lvFocus.add(id); loadLive(true); }, true);
 /* tap a picture or video on the LIVE screen to see it big */
 document.addEventListener("click", e => {
   const t = e.target.closest("[data-big]"); if (!t) return; const m = lvMed.get(t.dataset.big); if (!m || !(m.url || m.preview)) return;
