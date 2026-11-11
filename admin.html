@@ -399,6 +399,37 @@
   .camov .ua { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #CDAA5E; background: #0b0b0f center/cover; box-shadow: 0 0 0 2px rgba(205,170,94,.6); flex: none; }
   .camov .nm { font-size: 14px; } .cmw { font-size: 12.5px; color: #F0DDA6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cmt { font-size: 11px; color: #B8B4A6; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cam .ago { color: #CDAA5E; }
   .camft { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 9px 12px; font-size: 11.5px; color: #B8B4A6; background: #0a0a0d; } .camft b { color: #F6F2E9; } .camft .btn { margin-left: auto; }
+
+  /* ===== V14: phone mirror + Telegram window ===== */
+  .tvgrid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+  .camv { cursor: pointer; background: #050507; aspect-ratio: auto; min-height: 0; } .camv::after { display: none; }
+  .camv .mir { border-radius: 0; } .camts { right: 8px; top: 9px; z-index: 9; } .camid { z-index: 9; } .camtag { z-index: 9; top: 28px; }
+  .camid, .camts, .camtag { text-shadow: 0 1px 3px #000, 0 0 8px #000; }
+  .camin { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #0a0a0d; border-top: 1px solid rgba(255,255,255,.08); }
+  .camin .ua { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #CDAA5E; background: #0b0b0f center/cover; box-shadow: 0 0 0 2px rgba(205,170,94,.6); flex: none; }
+  .camft { border-top: 1px solid rgba(255,255,255,.06); } .camft .btn { margin-left: 0; } .camft .btn:first-of-type { margin-left: auto; }
+  .mir { position: relative; container-type: inline-size; overflow: hidden; width: 100%; background: #0b0b0f; color: #F6F2E9; font-family: system-ui, sans-serif; }
+  .mir.light { background: #F8F5EE; color: #17140E; } .mir.fit { height: 100%; }
+  .mbody { position: absolute; inset: 0; }
+  .mc { position: absolute; overflow: hidden; border-radius: 2.6cqw; background: #1a1a22; box-shadow: 0 0 0 1px rgba(255,255,255,.07); }
+  .mc img, .mc video { width: 100%; height: 100%; object-fit: cover; display: block; background: center/cover; }
+  .mc .mt { position: absolute; left: 0; right: 0; bottom: 0; padding: 4cqw 2cqw 1.8cqw; font-size: 2.7cqw; font-weight: 600; color: #fff; background: linear-gradient(0deg, rgba(0,0,0,.82), transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mc.lk img, .mc.lk video { filter: blur(2.4cqw) saturate(1.1); transform: scale(1.15); }
+  .mtop { position: absolute; z-index: 5; left: 0; right: 0; top: 0; height: 13cqw; display: flex; align-items: center; padding: 0 4cqw; font-size: 3.2cqw; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #E8C56B; background: rgba(10,10,14,.9); border-bottom: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(6px); }
+  .mir.light .mtop, .mir.light .mnav { background: rgba(248,245,238,.92); border-color: rgba(0,0,0,.08); }
+  .mnav { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 17cqw; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 3cqw; font-size: 2.5cqw; color: #8F8C97; background: rgba(10,10,14,.92); border-top: 1px solid rgba(255,255,255,.08); }
+  .mnav span.on { color: #E8C56B; font-weight: 700; } .mir.vw .mtop, .mir.vw .mnav { display: none; }
+  .msb { position: absolute; z-index: 6; right: .9cqw; top: 14cqw; bottom: 19cqw; width: .9cqw; border-radius: 1cqw; background: rgba(255,255,255,.14); } .msb i { position: absolute; left: 0; right: 0; height: 18%; border-radius: 1cqw; background: #E8C56B; }
+  .mpg { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8cqw; background: radial-gradient(80% 60% at 50% 40%, #1c1b24, #07070a); } .mpg b { font-family: "Cormorant Garamond", Georgia, serif; font-size: 11cqw; letter-spacing: .12em; text-transform: uppercase; color: #CDAA5E; } .mpg small { color: #8F8C97; font-size: 3.2cqw; margin-top: 1cqw; }
+  .mfile { position: absolute; inset: 0; background: #000; display: grid; place-items: center; } .mfile video, .mfile img { width: 100%; height: 100%; object-fit: contain; background: center/cover; } .mfl { position: absolute; left: 3cqw; bottom: 4cqw; padding: 1cqw 2.6cqw; border-radius: 1.4cqw; font-size: 2.6cqw; font-weight: 800; letter-spacing: .14em; color: #fff; background: rgba(216,50,43,.88); }
+  .tgm { z-index: 300; } .tgwin { display: flex; gap: 18px; align-items: flex-start; justify-content: center; max-width: 100%; max-height: 96vh; overflow: auto; padding: 4px; }
+  .tgph { flex: none; padding: 9px; border-radius: 38px; background: #0e1621; border: 1px solid rgba(255,255,255,.2); box-shadow: 0 50px 100px -30px #000, inset 0 1px 0 rgba(255,255,255,.14); }
+  .tgbar { height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-radius: 28px 28px 0 0; background: #17212b; color: #fff; font-size: 13px; }
+  .tgbar .tgt { text-align: center; line-height: 1.15; } .tgbar .tgt b { display: block; font-size: 13.5px; } .tgbar .tgt small { font-size: 10px; color: #6ab3f3; }
+  #tgScr { border-radius: 0 0 28px 28px; overflow: hidden; background: #000; }
+  .tgside { flex: none; width: min(350px, 100%); max-height: min(92vh, 940px); overflow: auto; padding: 18px; border-radius: 22px; background: var(--card); border: 1px solid var(--line2); box-shadow: 0 40px 80px -30px #000; }
+  .ua.big { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 22px; color: var(--gold); background: var(--bg2) center/cover; box-shadow: 0 0 0 2px var(--line2); flex: none; }
+  @media (max-width: 860px) { .tgwin { flex-direction: column; align-items: center; } }
 </style>
 </head>
 <body>
@@ -1317,7 +1348,7 @@ async function previewSched(id) {
 /* ---------- live screen ---------- */
 let lvPaused = false, lvBusy = false, lvSlowAt = 0, lvClock = null, fdRows = [], fdMore = false; const lvNames = new Map();
 $("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; lvLinkDraw(); if (!lvPaused) loadLive(true); };
-const lvTime = () => { const ts = new Date().toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }); document.querySelectorAll("#lvNow .ago").forEach(x => x.textContent = agoS(x.dataset.at)); document.querySelectorAll("#lvNow .camts").forEach(x => x.textContent = ts); const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
+const lvTime = () => { const ts = new Date().toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }); document.querySelectorAll("#lvNow .ago, #lvTgm .ago").forEach(x => x.textContent = agoS(x.dataset.at)); document.querySelectorAll("#lvNow .camts").forEach(x => x.textContent = ts); if (lvTg) lvDrawModal(); const d = new Date(); $("tvClock").textContent = d.toLocaleTimeString("en-GB") + "  ·  " + d.toLocaleDateString("en-GB", { weekday: "short", day: "2-digit", month: "short" }); };
 async function lvProfiles(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvNames.get(id); return !c || Date.now() - (c._t || 0) > 60000; });
   if (!need.length) return;
@@ -1333,25 +1364,26 @@ const lvAv = (p, cls = "ua") => `<div class="${cls}" ${p.av ? `style="background
 const srcPill = s => `<span class="pill ${s === "bot" ? "rose" : "g"}">${s === "bot" ? "Bot" : "App"}</span>`;
 const tierMini = p => active(p.expensive_until) ? '<span class="pill roy">Royal</span>' : active(p.lite_until) ? '<span class="pill rose">Rose</span>' : "";
 /* pictures and videos of the files members are looking at (cached, links renewed every 50 minutes) */
-const lvMed = new Map();
+let lvVer = 0; const lvMed = new Map();
 async function lvMediaLoad(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvMed.get(id); return !c || Date.now() - c.at > 3000000; });
   if (!need.length) return;
   const { data } = await sb.from("media").select("id,type,path,preview,label,title").in("id", need); const rows = data || [];
   const urls = await sign(rows.filter(m => !(m.type === "image" && m.preview && false)).map(m => m.path), 3600);
-  rows.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
+  rows.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() })); lvVer++;
 }
 const lvAlb = new Map();   /* folder id -> first files inside it (for folders that have no cover) */
 async function lvAlbumLoad(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvAlb.get(id); return !c || Date.now() - c.at > 120000; });
-  if (!need.length) return;
-  const owner = new Map(), all = []; need.forEach(id => descIds(id).forEach(d => { if (!owner.has(d)) { owner.set(d, id); all.push(d); } }));
-  const { data } = await sb.from("media").select("id,album_id,type,path,preview,label,title,album_order").in("album_id", all.slice(0, 200)).order("album_order").limit(400); const rows = data || [];
-  const got = new Map(); need.forEach(id => got.set(id, []));
-  rows.forEach(m => { const o = owner.get(m.album_id), l = got.get(o); if (l && l.length < 4) l.push(m); });
-  const pick = [...got.values()].flat(), urls = await sign(pick.map(m => m.path), 3600);
-  pick.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
-  need.forEach(id => lvAlb.set(id, { ids: got.get(id).map(m => m.id), at: Date.now() }));
+  for (let i = 0; i < need.length; i += 12) {
+    const part = need.slice(i, i + 12), owner = new Map(), all = []; part.forEach(id => descIds(id).forEach(d => { if (!owner.has(d)) { owner.set(d, id); all.push(d); } }));
+    const { data } = await sb.from("media").select("id,album_id,type,path,preview,label,title,album_order").in("album_id", all.slice(0, 150)).order("album_order").limit(300); const rows = data || [];
+    const got = new Map(); part.forEach(id => got.set(id, []));
+    rows.forEach(m => { const o = owner.get(m.album_id), l = got.get(o); if (l && l.length < 4) l.push(m); });
+    const pick = [...got.values()].flat(), urls = await sign(pick.map(m => m.path), 3600);
+    pick.forEach(m => lvMed.set(m.id, { type: m.type, url: urls[m.path] || null, preview: m.preview || null, title: m.label || m.title || "", at: Date.now() }));
+    part.forEach(id => lvAlb.set(id, { ids: got.get(id).map(m => m.id), at: Date.now() })); lvVer++;
+  }
 }
 const lvPv = id => { const e = id && lvMed.get(id); return e && (e.url || e.preview) ? e : null; };
 const lvMediaEl = (id, still) => { const e = lvPv(id); if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
@@ -1366,15 +1398,65 @@ function lvReconcile(box, items, emptyHtml) {
   fresh.reverse().forEach(it => { const n = mk(it.html); n.classList.add("new"); box.prepend(n); });   // newcomers go first; nobody else is moved, so playing videos never restart
   if (!box.children.length) box.innerHTML = emptyHtml;
 }
-const lvCam = new Map(), lvFocus = new Set();
-let lvCh = null, lvLiveOk = false, lvAgain = false, lvN = 0, lvSigT = "", lvSigF = "";
+const lvCam = new Map(), lvPost = new Map(), lvInt = new Map(), lvAct = new Map();
+let lvCh = null, lvLiveOk = false, lvAgain = false, lvN = 0, lvSigT = "", lvEv = [], lvRaf = 0, lvTg = null, lvUev = [], lvUevAt = 0, lvKick = () => {};
+async function lvPostLoad(ids) {
+  const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvPost.get(id); return !c || Date.now() - c.at > 600000; });
+  if (!need.length) return;
+  const [a, b] = await Promise.all([sb.from("user_posts").select("id,title").in("id", need), sb.from("user_media").select("post_id,path,type,preview,created_at").in("post_id", need).order("created_at").limit(400)]);
+  const first = new Map(); (b.data || []).forEach(m => { if (!first.has(m.post_id)) first.set(m.post_id, m); });
+  const urls = await sign([...first.values()].map(m => m.path), 3600);
+  (a.data || []).forEach(x => { const m = first.get(x.id); lvPost.set(x.id, { title: x.title || "", type: m?.type || "image", url: m ? urls[m.path] || null : null, preview: m?.preview || null, at: Date.now() }); });
+  need.forEach(id => { if (!lvPost.has(id)) lvPost.set(id, { title: "", type: "image", url: null, preview: null, at: Date.now() }); }); lvVer++;
+}
+/* load pictures for everything that is on the given members' screens */
+async function lvSnapLoad(rows) {
+  const A = [], M = [], P = [];
+  rows.forEach(r => { const v = r.snap?.v || []; v.forEach(([k, id]) => (k === "a" ? A : k === "m" ? M : P).push(id)); if (r.media_id) M.push(r.media_id); if (r.album_id && !r.media_id && !v.length) A.push(r.album_id); });
+  await Promise.all([lvAlbumLoad(A), lvMediaLoad(M), lvPostLoad(P)]);
+}
+function lvCard(k, id) {
+  let e = null, title = "";
+  if (k === "m") { e = lvPv(id); title = lvMed.get(id)?.title || ""; }
+  else if (k === "a") { title = byId(id)?.title || ""; for (const x of (lvAlb.get(id)?.ids || [])) { if (lvPv(x)) { e = lvPv(x); break; } } }
+  else { const pp = lvPost.get(id); if (pp) { title = pp.title; e = pp.url || pp.preview ? pp : null; } }
+  const bgp = e && e.preview ? ` style="background-image:url('${esc(e.preview)}')"` : "";
+  const el = !e ? "" : e.type === "video" && e.url ? `<video src="${esc(e.url)}#t=0.1" muted playsinline preload="metadata"${bgp}></video>` : `<img src="${esc(e.url || e.preview)}" alt=""${bgp}>`;
+  return [el, title];
+}
+const MTABS = [["home", "Home"], ["explore", "Explore"], ["premium", "Premium"], ["library", "Library"], ["profile", "Profile"]];
+/* the member's screen, redrawn: every card in the same place they see it, with its real picture */
+function lvMirror(r, fit) {
+  const sn = r.snap || {}, W = sn.w || 390, H = sn.h || 780, asp = Math.min(1.8, Math.max(.45, W / H)), th = sn.th === "light" ? "light" : "";
+  const wf = r.media_id && lvPv(r.media_id), cards = sn.v || [];
+  let body;
+  if (wf) body = `<div class="mfile">${lvMediaEl(r.media_id)}<span class="mfl">${r.media_type === "video" ? "WATCHING VIDEO" : "VIEWING PHOTO"}</span></div>`;
+  else if (cards.length) body = cards.map(([k, id, x, y, w, h, lk]) => { const [el, t] = lvCard(k, id); return `<div class="mc ${lk ? "lk" : ""}" style="left:${x / 10}%;top:${y / 10}%;width:${w / 10}%;height:${h / 10}%">${el}<span class="mt">${esc(t)}</span></div>`; }).join("");
+  else { const ids = r.album_id ? (lvAlb.get(r.album_id)?.ids || []).filter(lvPv).slice(0, 4) : [];
+    body = ids.length ? `<div class="cf mos m${ids.length}">${ids.map((id, i) => `<div>${lvMediaEl(id, i > 0)}</div>`).join("")}</div>` : `<div class="mpg"><b>${esc(r.screen || "Idle")}</b><small>${esc(r.detail || "")}</small></div>`; }
+  const pct = sn.ph > sn.h ? Math.min(1, (sn.y || 0) / (sn.ph - sn.h)) : 0;
+  return `<div class="mir ${th} ${wf ? "vw" : ""} ${fit ? "fit" : ""}" ${fit ? "" : `style="aspect-ratio:${asp}"`}><div class="mbody">${body}</div><div class="mtop"><span>${esc((C.APP_TITLE || "Gallery"))}</span></div>${cards.length && !wf ? `<div class="msb"><i style="top:${(pct * 82).toFixed(1)}%"></i></div>` : ""}<div class="mnav">${MTABS.map(([k, l]) => `<span class="${sn.t === k ? "on" : ""}">${l}</span>`).join("")}</div></div>`;
+}
+const lvSnapSig = r => { const sn = r.snap || {}; return [sn.t, sn.y, sn.th, (sn.v || []).map(c => c.join(".")).join(";"), r.media_id, r.album_id].join("|"); };
+const lvScroll = r => { const sn = r.snap || {}; return sn.ph > sn.h ? Math.round(Math.min(1, (sn.y || 0) / (sn.ph - sn.h)) * 100) : 0; };
+const lvTrail = r => [r.album_title ? `Folder <b>${esc(r.album_title)}</b>` : "", r.media_id ? `${r.media_type === "video" ? "Video" : "Photo"} <b>${esc(r.media_title || "File")}</b>` : ""].filter(Boolean).join(" › ");
+
 function lvSubscribe() {
-  if (lvCh) return; let t; const kick = () => { clearTimeout(t); t = setTimeout(() => loadLive(), 120); };
-  lvCh = sb.channel("lv-" + Date.now()).on("postgres_changes", { event: "*", schema: "public", table: "live_activity" }, kick).on("postgres_changes", { event: "INSERT", schema: "public", table: "live_events" }, kick)
+  if (lvCh) return; let t; lvKick = () => { clearTimeout(t); t = setTimeout(() => loadLive(), 120); };
+  lvCh = sb.channel("lv-" + Date.now())
+    .on("postgres_changes", { event: "*", schema: "public", table: "live_activity" }, pl => lvActIn(pl.new))
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "live_events" }, () => lvKick())
     .subscribe(st => { lvLiveOk = st === "SUBSCRIBED"; lvLinkDraw(); });
 }
 function lvUnsub() { if (lvCh) { sb.removeChannel(lvCh); lvCh = null; lvLiveOk = false; } }
 const lvLinkDraw = () => { const e = $("tvLink"); if (e) e.innerHTML = lvPaused ? '<span style="color:#CDAA5E">⏸ paused</span>' : lvLiveOk ? '<span style="color:#4CD08A">● instant updates</span>' : '<span style="color:#CDAA5E">● refreshing every 2.5s</span>'; };
+/* a member's screen changed: redraw only that camera, straight from the realtime message (no waiting for a reload) */
+async function lvActIn(row) {
+  if (lvPaused || !row || !row.tg_id) return;
+  const known = lvAct.has(row.tg_id); lvAct.set(row.tg_id, row);
+  if (!known || !lvNames.has(row.tg_id)) { lvKick(); return; }
+  await lvSnapLoad([row]); lvRender();
+}
 async function loadLive(force) {
   if (lvPaused && !force) return; if (lvBusy) { lvAgain = true; return; } lvBusy = true;
   try {
@@ -1382,44 +1464,100 @@ async function loadLive(force) {
     const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
     if (a.error) return toast(a.error.message + " (run supabase_v8.sql)");
     const on = a.data || [], ev = e.data || [];
-    const coverOf = r => r.media_id || (r.album_id && byId(r.album_id)?.cover_media_id) || null;
-    await Promise.all([lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id)), lvMediaLoad([...on.map(r => r.media_id), ...ev.slice(0, 30).map(r => r.media_id)]), lvAlbumLoad(on.filter(r => r.album_id && !r.media_id).map(r => r.album_id))]);
-    const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
-    const watching = on.filter(r => r.media_id).length, hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
-    $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} app · ${nBot} bot · <b style="color:#F6F2E9">${watching}</b> watching a file · ${hour} active in the last hour`;
-    lvLinkDraw();
-    const lastEv = new Map(); ev.forEach(r => { if (!lvLastSkip(r) && !lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
-    const items = on.map(r => {
-      const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id), wf = !!r.media_id && !!lvPv(r.media_id), big = lvFocus.has(r.tg_id);
-      if (!lvCam.has(r.tg_id)) lvCam.set(r.tg_id, lvCam.size + 1);
-      const mos = !wf && r.album_id ? ((lvAlb.get(r.album_id) || {}).ids || []).filter(lvPv).slice(0, 4) : [];
-      const feed = wf ? `<div class="cf one" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>`
-        : mos.length ? `<div class="cf mos m${mos.length}">${mos.map((id, i) => `<div data-big="${esc(id)}">${lvMediaEl(id, i > 0)}</div>`).join("")}</div>`
-        : `<div class="cf pg"><span>${esc(r.screen || "Idle")}</span><small>${esc(r.detail || "")}</small></div>`;
-      const sig = [r.screen, r.detail, r.media_id, r.album_id, r.album_title, wf ? 1 : 0, mos.join(","), p.visit_count, p.ref_count, p.av ? 1 : 0, p.expensive_until, p.lite_until, l?.id, big].join("|");
-      const trail = [r.album_title ? `Folder <b>${esc(r.album_title)}</b>` : "", r.media_id ? `${r.media_type === "video" ? "Video" : "Photo"} <b>${esc(r.media_title || "File")}</b>` : ""].filter(Boolean).join(" › ");
-      const tag = wf ? (r.media_type === "video" ? "WATCHING VIDEO" : "VIEWING PHOTO") : r.album_id ? "BROWSING FOLDER" : String(r.screen || "IDLE").toUpperCase();
-      const html = `<div class="cam ${big ? "big" : ""}" data-k="${r.tg_id}" data-sig="${esc(sig)}">
-        <div class="camv">${feed}<span class="camid"><i></i>REC · CAM ${String(lvCam.get(r.tg_id)).padStart(2, "0")}</span><span class="camts"></span><button class="camfs" data-focus="${r.tg_id}" title="Enlarge">${big ? "✕" : "⤢"}</button>
-          <span class="camtag">${esc(tag)}</span>
-          <div class="camov">${lvAv(p)}<div style="min-width:0"><div><b class="nm">${esc(nm(p))}</b> ${tierMini(p)} ${srcPill(r.source)}</div><div class="cmw">${esc(r.screen || "Idle")}${trail ? " › " + trail : r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div><div class="cmt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id} · <span class="ago" data-at="${esc(r.at)}">${agoS(r.at)}</span>${l && l.text !== r.screen ? " · before: " + esc(l.text) : ""}</div></div></div></div>
-        <div class="camft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span>${p.created_at ? `<span>Joined ${fdate(p.created_at)}</span>` : ""}<button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`;
-      return { k: String(r.tg_id), sig, html };
-    });
-    lvReconcile($("lvNow"), items, '<div class="tvnone"><div class="big">NO SIGNAL</div>Every camera is off. The moment a member opens the app, their camera switches on here.</div>');
-    const sigT = ev.slice(0, 30).map(r => r.id).join(",") + lvMed.size;
-    if (sigT !== lvSigT) { lvSigT = sigT;
-      $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id), pe = lvPv(r.media_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}${pe ? `<div class="tkth" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>` : ""}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>'; }
+    await Promise.all([lvProfiles([...on, ...ev.slice(0, 30)].map(r => r.tg_id)), lvSnapLoad(on), lvMediaLoad(ev.slice(0, 30).map(r => r.media_id))]);
+    lvAct.clear(); on.forEach(r => lvAct.set(r.tg_id, r)); lvEv = ev;
+    lvDraw();
     if (!fdMore) loadFeed(false);
     if (force || Date.now() - lvSlowAt > 20000) { lvSlowAt = Date.now(); loadLiveSlow(); }
   } finally { lvBusy = false; if (lvAgain) { lvAgain = false; setTimeout(() => loadLive(), 50); } }
 }
-const lvLastSkip = r => false;
-document.addEventListener("click", e => { const f = e.target.closest("[data-focus]"); if (!f) return; e.stopPropagation(); const id = Number(f.dataset.focus); lvFocus.has(id) ? lvFocus.delete(id) : lvFocus.add(id); loadLive(true); }, true);
+const lvRender = () => { if (lvRaf) return; lvRaf = requestAnimationFrame(() => { lvRaf = 0; lvDraw(); }); };
+function lvDraw() {
+  const on = [...lvAct.values()].filter(r => Date.now() - new Date(r.at) < 180000).sort((x, y) => new Date(y.at) - new Date(x.at)), ev = lvEv;
+  const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
+  const watching = on.filter(r => r.media_id).length, hour = new Set(ev.filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size;
+  $("tvCount").innerHTML = `<b style="color:#F6F2E9">${on.length}</b> online · ${nApp} app · ${nBot} bot · <b style="color:#F6F2E9">${watching}</b> watching a file · ${hour} active in the last hour`;
+  lvLinkDraw();
+  const lastEv = new Map(); ev.forEach(r => { if (!lastEv.has(r.tg_id)) lastEv.set(r.tg_id, r); });
+  const items = on.map(r => {
+    const p = lvWho(r.tg_id), l = lastEv.get(r.tg_id), wf = !!r.media_id && !!lvPv(r.media_id);
+    if (!lvCam.has(r.tg_id)) lvCam.set(r.tg_id, lvCam.size + 1);
+    const sig = [lvSnapSig(r), lvVer, r.screen, r.detail, r.album_title, r.media_title, p.visit_count, p.ref_count, p.av ? 1 : 0, p.expensive_until, p.lite_until, l?.id].join("|");
+    const trail = lvTrail(r), tag = wf ? (r.media_type === "video" ? "WATCHING VIDEO" : "VIEWING PHOTO") : String(r.screen || "IDLE").toUpperCase();
+    const html = `<div class="cam" data-k="${r.tg_id}" data-sig="${esc(sig)}">
+      <div class="camv" data-tgm="${r.tg_id}">${lvMirror(r)}<span class="camid"><i></i>REC · CAM ${String(lvCam.get(r.tg_id)).padStart(2, "0")}</span><span class="camts"></span><span class="camtag">${esc(tag)}</span></div>
+      <div class="camin">${lvAv(p)}<div style="min-width:0"><div><b class="nm">${esc(nm(p))}</b> ${tierMini(p)} ${srcPill(r.source)}</div><div class="cmw">${esc(r.screen || "Idle")}${trail ? " › " + trail : r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div><div class="cmt">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id} · <span class="ago" data-at="${esc(r.at)}">${agoS(r.at)}</span>${r.snap?.ph ? " · scrolled " + lvScroll(r) + "%" : ""}</div></div></div>
+      <div class="camft"><span><b>${p.visit_count ?? "-"}</b> visits</span><span><b>${p.ref_count ?? 0}</b> invited</span><button class="btn gh xs" data-tgm="${r.tg_id}">Full size</button><button class="btn xs" data-user="${r.tg_id}">Details</button></div></div>`;
+    return { k: String(r.tg_id), sig, html };
+  });
+  lvReconcile($("lvNow"), items, '<div class="tvnone"><div class="big">NO SIGNAL</div>Every camera is off. The moment a member opens the app, their camera switches on here.</div>');
+  const sigT = ev.slice(0, 30).map(r => r.id).join(",") + lvMed.size;
+  if (sigT !== lvSigT) { lvSigT = sigT;
+    $("lvTicker").innerHTML = ev.slice(0, 30).map(r => { const p = lvWho(r.tg_id), pe = lvPv(r.media_id); return `<div class="tk2"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}<a href="#" data-user="${r.tg_id}">${esc(nm(p))}</a> ${esc(r.text)}${pe ? `<div class="tkth" data-big="${esc(r.media_id)}">${lvMediaEl(r.media_id)}</div>` : ""}</div>`; }).join("") || '<p style="color:#8F8C97">No activity yet.</p>'; }
+  lvDrawModal();
+}
+
+/* ---- member interests: what they open and how long they stay on it ---- */
+async function lvInterest(tg) {
+  const c = lvInt.get(tg); if (c && Date.now() - c.at < 60000) return c;
+  const since = new Date(Date.now() - 30 * 864e5).toISOString();
+  const { data } = await sb.from("live_events").select("text,album_id,media_id,secs,at").eq("tg_id", tg).not("album_id", "is", null).gte("at", since).order("at", { ascending: false }).limit(1500);
+  const m = new Map();
+  (data || []).forEach(e => { const o = m.get(e.album_id) || { id: e.album_id, secs: 0, opens: 0, files: 0 };
+    if (e.secs) o.secs += ({ 5: 5, 15: 10, 40: 25 })[e.secs] || e.secs; else if (/^Opened folder/.test(e.text)) o.opens++; else if (e.media_id) o.files++; m.set(e.album_id, o); });
+  const rows = [...m.values()].map(o => ({ ...o, score: o.secs + o.opens * 10 + o.files * 6 })).sort((x, y) => y.score - x.score);
+  const catm = new Map(); rows.forEach(o => { const cid = byId(o.id)?.category_id; if (cid) catm.set(cid, (catm.get(cid) || 0) + o.score); });
+  const cat = [...catm].sort((x, y) => y[1] - x[1]).slice(0, 6).map(([id, sc]) => ({ name: cats.find(c => c.id === id)?.name || "Other", score: sc }));
+  const res = { rows: rows.slice(0, 8), cat, at: Date.now() }; lvInt.set(tg, res); await lvAlbumLoad(res.rows.map(r => r.id)); return res;
+}
+const fmtSecs = n => n >= 60 ? Math.floor(n / 60) + "m " + (n % 60) + "s" : n + "s";
+function lvIntHTML(res) {
+  if (!res || !res.rows.length) return '<p class="mute sm">Nothing recorded yet. Interests build up as the member opens and stays on folders.</p>';
+  return (res.cat.length ? `<div class="row" style="gap:6px;margin-bottom:8px">${res.cat.map(c => `<span class="pill g">${esc(c.name)}</span>`).join("")}</div>` : "") +
+    res.rows.map(o => { const id = (lvAlb.get(o.id)?.ids || []).find(x => lvPv(x)); return `<div class="upr"><div class="pvu">${id ? lvMediaEl(id, true) : ""}</div><div style="min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(byId(o.id)?.title || "Folder")}</b><div class="mute sm">${o.opens} opens · ${o.files} files · ${fmtSecs(o.secs)} looking</div></div><span class="pill g">${Math.round(o.score)}</span></div>`; }).join("");
+}
+
+/* ---- full size: the member's phone, Telegram shaped, with the details beside it ---- */
+async function lvOpenTgm(tg) {
+  lvTg = tg; lvUev = []; lvUevAt = 0; $("lvTgm")?.remove();
+  const d = document.createElement("div"); d.className = "mdl tgm"; d.id = "lvTgm";
+  d.onclick = e => { if (e.target === d || e.target.closest("[data-x]")) lvCloseTgm(); };
+  d.innerHTML = `<div class="tgwin"><div class="tgph"><div class="tgbar"><span data-x style="cursor:pointer">Close</span><div class="tgt"><b>${esc((C.APP_TITLE || "Gallery"))}</b><small>mini app · LIVE</small></div><span>⋯</span></div><div id="tgScr"></div></div><div class="tgside" id="tgSide"></div></div>`;
+  document.body.appendChild(d); lvDrawModal();
+  lvInterest(tg).then(() => lvDrawModal()); lvUserEv();
+}
+function lvCloseTgm() { lvTg = null; $("lvTgm")?.remove(); }
+async function lvUserEv() {
+  if (!lvTg || Date.now() - lvUevAt < 2500) return; lvUevAt = Date.now(); const tg = lvTg;
+  const { data } = await sb.from("live_events").select("*").eq("tg_id", tg).order("at", { ascending: false }).limit(40);
+  if (tg !== lvTg) return; await lvMediaLoad((data || []).map(x => x.media_id)); lvUev = data || []; lvDrawModal();
+}
+addEventListener("keydown", e => { if (e.key === "Escape" && lvTg) lvCloseTgm(); });
+addEventListener("resize", () => { if (lvTg) { const b = $("lvTgm"); if (b) b.dataset.sig = ""; lvDrawModal(); } });
+function lvDrawModal() {
+  const box = $("lvTgm"); if (!box || !lvTg) return;
+  const tg = lvTg, r = lvAct.get(tg), on = r && Date.now() - new Date(r.at) < 180000, p = lvWho(tg), scr = $("tgScr"), side = $("tgSide");
+  const W = on ? r.snap?.w || 390 : 390, H = on ? r.snap?.h || 780 : 780;
+  const Hs = Math.max(320, Math.min(innerHeight * .88, 900) - 46), Ws = Math.max(240, Math.min(Hs * Math.min(1.8, Math.max(.45, W / H)), innerWidth - 36));
+  scr.style.height = Hs + "px"; scr.style.width = Ws + "px";
+  const sig = on ? lvSnapSig(r) + "|" + lvVer : "off|" + lvVer;
+  if (box.dataset.sig !== sig) { box.dataset.sig = sig; scr.innerHTML = on ? lvMirror(r, true) : '<div class="mir fit"><div class="mpg"><b>OFFLINE</b><small>This member is not online right now</small></div></div>'; }
+  const it = lvInt.get(tg), sig2 = [on ? [r.screen, r.detail, r.media_id, r.album_title] : "off", lvUev[0]?.id, lvUev.length, it?.at, p.visit_count].join("|");
+  if (side.dataset.sig !== sig2) { side.dataset.sig = sig2;
+    const trail = on ? lvTrail(r) : "";
+    side.innerHTML = `<div class="row" style="gap:12px;align-items:center">${lvAv(p, "ua big")}<div style="min-width:0"><b style="font-size:17px">${esc(nm(p))}</b> ${tierMini(p)}<div class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${tg}</div></div></div>
+      <div class="kv" style="margin:14px 0"><div><small>Status</small>${on ? '<span style="color:#4CD08A">● Online</span> · <span class="ago" data-at="' + esc(r.at) + '">' + agoS(r.at) + "</span>" : "Offline"}</div><div><small>Visits</small>${p.visit_count ?? "-"} times</div><div><small>Invited</small>${p.ref_count ?? 0} people</div><div><small>Joined</small>${p.created_at ? fdate(p.created_at) : "-"}</div></div>
+      ${on ? `<div class="sm mute">Now</div><div style="margin:4px 0 12px">${srcPill(r.source)} <b>${esc(r.screen || "Idle")}</b>${trail ? " › " + trail : ""}${r.snap?.ph ? `<div class="mute sm">Scrolled ${lvScroll(r)}% of the page · ${(r.snap.v || []).length} cards in view</div>` : ""}</div>` : ""}
+      <div class="row" style="gap:8px;margin-bottom:14px"><button class="btn xs" data-user="${tg}" data-closetgm>Details</button>${on && r.media_id && lvPv(r.media_id) ? `<button class="btn gh xs" data-big="${esc(r.media_id)}">Open file full size</button>` : ""}<button class="btn gh xs" data-x>Close</button></div>
+      <h3 style="margin:0 0 8px">Interests</h3>${lvIntHTML(it)}
+      <h3 style="margin:16px 0 8px">Movements</h3><div class="feed" style="max-height:340px">${lvUev.map(x => `<div class="fe"><span class="t">${new Date(x.at).toLocaleTimeString("en-GB")}</span>${esc(x.text)}${lvPv(x.media_id) ? `<span class="fth" data-big="${esc(x.media_id)}">${lvMediaEl(x.media_id, true)}</span>` : ""}</div>`).join("") || '<p class="mute sm">Loading...</p>'}</div>`; }
+  lvUserEv();
+}
+document.addEventListener("click", e => { const t = e.target.closest("[data-tgm]"); if (t && !e.target.closest("[data-user]")) { lvOpenTgm(Number(t.dataset.tgm)); } if (e.target.closest("[data-closetgm]")) lvCloseTgm(); });
 /* tap a picture or video on the LIVE screen to see it big */
 document.addEventListener("click", e => {
   const t = e.target.closest("[data-big]"); if (!t) return; const m = lvMed.get(t.dataset.big); if (!m || !(m.url || m.preview)) return;
-  const d = document.createElement("div"); d.className = "mdl"; d.onclick = ev => { if (ev.target === d || ev.target.closest("[data-x]")) d.remove(); };
+  const d = document.createElement("div"); d.className = "mdl"; d.style.zIndex = 400; d.onclick = ev => { if (ev.target === d || ev.target.closest("[data-x]")) d.remove(); };
   d.innerHTML = `<div class="box" style="width:min(900px,100%);align-items:center"><div class="row between" style="width:100%"><b>${esc(m.title || "File")}</b><button class="btn gh xs" data-x>Close</button></div><div style="margin-top:12px;width:100%;display:grid;place-items:center">${m.type === "video" && m.url ? `<video src="${esc(m.url)}" controls autoplay playsinline style="max-width:100%;max-height:68vh;border-radius:12px"></video>` : `<img src="${esc(m.url || m.preview)}" style="max-width:100%;max-height:68vh;border-radius:12px" alt="">`}</div></div>`;
   document.body.appendChild(d);
 });
@@ -1616,6 +1754,7 @@ async function openUser(tg) {
           <div class="row" style="margin-bottom:10px"><select class="tr" style="width:auto"><option value="lite">Rose</option><option value="expensive">Royal</option></select><input type="number" id="uDays" placeholder="days" value="7" style="width:90px"><button class="btn xs" id="uOn">Turn on / add days</button><button class="btn gh xs" id="uCut">Cut days</button></div>
           <div class="row"><button class="btn xs" data-d="1">+1d</button><button class="btn xs" data-d="7">+7d</button><button class="btn xs" data-d="30">+30d</button><button class="btn dg xs" id="uOff">Turn all off</button></div></div></div>
       <div><div class="card"><div class="row between"><h3 style="margin:0">Posts (${pl.length}${pl.length === 12 ? "+" : ""})</h3>${pl.length ? '<button class="btn gh xs" id="uPosts">Open in Member posts</button>' : ""}</div><div class="pg" style="margin-top:12px">${pl.map(p => { const m = (p.user_media || [])[0], src = m && (m.preview || urls[m.path]); return `<div class="po" title="${esc(p.title || "")}">${src ? `<img src="${esc(src)}" alt="">` : ""}<span class="pill ${p.status === "approved" ? "g" : p.status === "rejected" ? "r" : ""}">${stl[p.status] || p.status}</span></div>`; }).join("") || '<p class="mute sm" style="grid-column:1/-1">No posts yet.</p>'}</div></div>
+        <div class="card"><h3>Interests</h3><div id="uInt"><p class="mute sm">Loading...</p></div></div>
         <div class="card"><h3>Recent activity</h3><div class="feed" style="max-height:300px">${(acts.data || []).map(r => `<div class="fe"><span class="t">${ftime(r.at)}</span>${r.source === "bot" ? '<span class="pill rose">Bot</span> ' : ""}${esc(r.text)}</div>`).join("") || '<p class="mute sm">No activity recorded yet.</p>'}</div></div>
         <div class="card"><h3>Referrals (${rl.length})</h3>${rl.map(r => `<div class="refrow" data-user="${r.tg_id}"><div class="ua" style="width:36px;height:36px" ${avStyle(r, urls)}>${(r.avatar_path && urls[r.avatar_path]) || r.photo_url ? "" : esc(initial(r))}</div><div style="flex:1;min-width:0"><b>${esc(nm(r))}</b><div class="mute sm">${r.username ? "@" + esc(r.username) + " · " : ""}Joined ${fdate(r.created_at)}</div></div>${active(r.expensive_until) ? '<span class="pill roy">Royal</span>' : active(r.lite_until) ? '<span class="pill rose">Rose</span>' : ""}<span class="mute">›</span></div>`).join("") || '<p class="mute sm">Nobody invited yet.</p>'}</div></div></div></div>`;
   $("uBack").onclick = loadUsers;
@@ -1626,6 +1765,7 @@ async function openUser(tg) {
   $("uBan").onclick = async () => { if (!u.is_banned && !confirm(`Ban ${nm(u)}?`)) return; const { error } = await sb.from("profiles").update({ is_banned: !u.is_banned }).eq("tg_id", tg); error ? toast(error.message) : openUser(tg); };
   $("uMsg").onclick = async () => { const t = prompt("Message to " + nm(u) + ":"); if (!t) return; const { error } = await sb.from("notifications").insert({ kind: "custom", title: "Message from admin", body: t, tg_id: tg, popup: true }); error ? toast(error.message) : toast("Sent"); };
   $("uPosts")?.addEventListener("click", () => { $("uuQ").value = String(tg); $("uuS").value = ""; show("uploads"); });
+  lvInterest(tg).then(res => { const b = $("uInt"); if (b) b.innerHTML = lvIntHTML(res); }).catch(() => { const b = $("uInt"); if (b) b.innerHTML = '<p class="mute sm">Could not load.</p>'; });
 }
 
 /* ---------- payments ---------- */

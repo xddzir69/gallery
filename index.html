@@ -660,16 +660,46 @@ const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
 const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
+/* what is on the member's screen right now: every card in view with its position, plus the scroll. The admin LIVE page redraws it. */
+const SNAP = { sig: "", at: 0, seen: new Map(), dw: [] };
+const KIND_CODE = { album: "a", media: "m", post: "p", mypost: "k" };
+const pmil = n => Math.round(n * 1000);
+function snapCards() {
+  const W = innerWidth || 1, H = innerHeight || 1, out = [], vis = [];
+  document.querySelectorAll("#app .it[data-src], #app .cc[data-src], #app .mp[data-src], #app .spc[data-src]").forEach(el => {
+    const r = el.getBoundingClientRect(); if (r.width < 30 || r.height < 30) return;
+    const ix = Math.min(W, r.right) - Math.max(0, r.left), iy = Math.min(H, r.bottom) - Math.max(0, r.top); if (ix < 24 || iy < 24) return;
+    const m = SRC[el.dataset.src]?.[+el.dataset.i]; if (!m || !m.id) return;
+    const k = KIND_CODE[m.kind] || "a";
+    out.push([k, m.id, pmil(r.left / W), pmil(r.top / H), pmil(r.width / W), pmil(r.height / H), m.locked ? 1 : 0]);
+    if (ix * iy >= r.width * r.height * 0.5) vis.push(k + m.id);
+  });
+  return { out: out.slice(0, 40), vis };
+}
 function pingScreen(ev) {
   if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
   const body = { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 };
   if (t.r === "album") { body.screen = "Folder"; body.album_id = t.p.id; body.detail = t.p.title || ""; }
-  if ($("viewer").classList.contains("open")) {          // a file is open: tell the admin exactly which one
+  const open = $("viewer").classList.contains("open");
+  if (open) {          // a file is open: tell the admin exactly which one
     const m = V.list[V.i];
     if (m) { body.screen = m.type === "video" ? "Watching a video" : "Viewing a photo"; if (m.kind === "media") body.media_id = m.id; body.detail = vName(m) || ""; }
   }
+  const { out } = snapCards();
+  body.snap = { w: innerWidth, h: innerHeight, y: Math.round(scrollY), ph: document.documentElement.scrollHeight, t: t.r, th: resolvedMode(), v: open ? [] : out };
+  if (SNAP.dw.length) body.dw = SNAP.dw.splice(0, 5);
+  SNAP.sig = snapSig(out, open, t.r); SNAP.at = Date.now();
   api("ping", body).catch(() => {});
 }
+const snapSig = (out, open, r) => out.map(c => c.join(".")).join(";") + "|" + Math.round(scrollY / 12) + "|" + open + r;
+/* every half second: note what changed (scroll, new cards) and how long each card has been in view (member interests) */
+setInterval(() => {
+  if (!me || document.hidden) return; const t = stack[stack.length - 1]; if (!t) return;
+  const { out, vis } = snapCards(), open = $("viewer").classList.contains("open");
+  if (!open) vis.forEach(key => { const a = SNAP.seen.get(key) || 0, n = a + 0.5; SNAP.seen.set(key, n); [5, 15, 40].forEach(th => { if (a < th && n >= th) SNAP.dw.push([key[0], key.slice(1), th]); }); });
+  const changed = snapSig(out, open, t.r) !== SNAP.sig;
+  if ((changed && Date.now() - SNAP.at >= 900) || (SNAP.dw.length && Date.now() - SNAP.at >= 900)) pingScreen(false);
+}, 500);
 setInterval(() => { if (!document.hidden) pingScreen(false); }, 15000);
 
 /* ---------- router ---------- */
