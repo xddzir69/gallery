@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4"></script>
 <script src="config.js?v=7"></script>
 <style>
@@ -411,18 +412,18 @@
   .mir { position: relative; container-type: inline-size; overflow: hidden; width: 100%; background: #0b0b0f; color: #F6F2E9; font-family: system-ui, sans-serif; }
   .mir.light { background: #F8F5EE; color: #17140E; } .mir.fit { height: 100%; }
   .mbody { position: absolute; inset: 0; }
-  .mc { position: absolute; overflow: hidden; border-radius: 2.6cqw; background: #1a1a22; box-shadow: 0 0 0 1px rgba(255,255,255,.07); }
+  .mc { position: absolute; overflow: hidden; border-radius: calc(var(--cq,1cqw)*2.6); background: #1a1a22; box-shadow: 0 0 0 1px rgba(255,255,255,.07); }
   .mc img, .mc video { width: 100%; height: 100%; object-fit: cover; display: block; background: center/cover; }
-  .mc .mt { position: absolute; left: 0; right: 0; bottom: 0; padding: 4cqw 2cqw 1.8cqw; font-size: 2.7cqw; font-weight: 600; color: #fff; background: linear-gradient(0deg, rgba(0,0,0,.82), transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .mc.lk img, .mc.lk video { filter: blur(2.4cqw) saturate(1.1); transform: scale(1.15); }
-  .mtop { position: absolute; z-index: 5; left: 0; right: 0; top: 0; height: 13cqw; display: flex; align-items: center; padding: 0 4cqw; font-size: 3.2cqw; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #E8C56B; background: rgba(10,10,14,.9); border-bottom: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(6px); }
+  .mc .mt { position: absolute; left: 0; right: 0; bottom: 0; padding: calc(var(--cq,1cqw)*4) calc(var(--cq,1cqw)*2) calc(var(--cq,1cqw)*1.8); font-size: calc(var(--cq,1cqw)*2.7); font-weight: 600; color: #fff; background: linear-gradient(0deg, rgba(0,0,0,.82), transparent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mc.lk img, .mc.lk video { filter: blur(calc(var(--cq,1cqw)*2.4)) saturate(1.1); transform: scale(1.15); }
+  .mtop { position: absolute; z-index: 5; left: 0; right: 0; top: 0; height: calc(var(--cq,1cqw)*13); display: flex; align-items: center; padding: 0 calc(var(--cq,1cqw)*4); font-size: calc(var(--cq,1cqw)*3.2); font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: #E8C56B; background: rgba(10,10,14,.9); border-bottom: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(6px); }
   .mir.light .mtop, .mir.light .mnav { background: rgba(248,245,238,.92); border-color: rgba(0,0,0,.08); }
-  .mnav { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: 17cqw; display: flex; justify-content: space-around; align-items: flex-start; padding-top: 3cqw; font-size: 2.5cqw; color: #8F8C97; background: rgba(10,10,14,.92); border-top: 1px solid rgba(255,255,255,.08); }
+  .mnav { position: absolute; z-index: 5; left: 0; right: 0; bottom: 0; height: calc(var(--cq,1cqw)*17); display: flex; justify-content: space-around; align-items: flex-start; padding-top: calc(var(--cq,1cqw)*3); font-size: calc(var(--cq,1cqw)*2.5); color: #8F8C97; background: rgba(10,10,14,.92); border-top: 1px solid rgba(255,255,255,.08); }
   .mnav span.on { color: #E8C56B; font-weight: 700; } .mir.vw .mtop, .mir.vw .mnav { display: none; }
-  .msb { position: absolute; z-index: 6; right: .9cqw; top: 14cqw; bottom: 19cqw; width: .9cqw; border-radius: 1cqw; background: rgba(255,255,255,.14); } .msb i { position: absolute; left: 0; right: 0; height: 18%; border-radius: 1cqw; background: #E8C56B; }
-  .mpg { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 8cqw; background: radial-gradient(80% 60% at 50% 40%, #1c1b24, #07070a); } .mpg b { font-family: "Cormorant Garamond", Georgia, serif; font-size: 11cqw; letter-spacing: .12em; text-transform: uppercase; color: #CDAA5E; } .mpg small { color: #8F8C97; font-size: 3.2cqw; margin-top: 1cqw; }
-  .mfile { position: absolute; inset: 0; background: #000; display: grid; place-items: center; } .mfile video, .mfile img { width: 100%; height: 100%; object-fit: contain; background: center/cover; } .mfl { position: absolute; left: 3cqw; bottom: 4cqw; padding: 1cqw 2.6cqw; border-radius: 1.4cqw; font-size: 2.6cqw; font-weight: 800; letter-spacing: .14em; color: #fff; background: rgba(216,50,43,.88); }
-  .tgm { z-index: 300; } .tgwin { display: flex; gap: 18px; align-items: flex-start; justify-content: center; max-width: 100%; max-height: 96vh; overflow: auto; padding: 4px; }
+  .msb { position: absolute; z-index: 6; right: .calc(var(--cq,1cqw)*9); top: calc(var(--cq,1cqw)*14); bottom: calc(var(--cq,1cqw)*19); width: .calc(var(--cq,1cqw)*9); border-radius: calc(var(--cq,1cqw)*1); background: rgba(255,255,255,.14); } .msb i { position: absolute; left: 0; right: 0; height: 18%; border-radius: calc(var(--cq,1cqw)*1); background: #E8C56B; }
+  .mpg { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 calc(var(--cq,1cqw)*8); background: radial-gradient(80% 60% at 50% 40%, #1c1b24, #07070a); } .mpg b { font-family: "Cormorant Garamond", Georgia, serif; font-size: calc(var(--cq,1cqw)*11); letter-spacing: .12em; text-transform: uppercase; color: #CDAA5E; } .mpg small { color: #8F8C97; font-size: calc(var(--cq,1cqw)*3.2); margin-top: calc(var(--cq,1cqw)*1); }
+  .mfile { position: absolute; inset: 0; background: #000; display: grid; place-items: center; } .mfile video, .mfile img { width: 100%; height: 100%; object-fit: contain; background: center/cover; } .mfl { position: absolute; left: calc(var(--cq,1cqw)*3); bottom: calc(var(--cq,1cqw)*4); padding: calc(var(--cq,1cqw)*1) calc(var(--cq,1cqw)*2.6); border-radius: calc(var(--cq,1cqw)*1.4); font-size: calc(var(--cq,1cqw)*2.6); font-weight: 800; letter-spacing: .14em; color: #fff; background: rgba(216,50,43,.88); }
+  .tgm { z-index: 300; } .tgwin { display: flex; gap: 18px; align-items: flex-start; justify-content: center; max-width: 100%; max-height: calc(var(--tg-viewport-stable-height, 100vh) * .96); overflow: auto; padding: 4px; }
   .tgph { flex: none; padding: 9px; border-radius: 38px; background: #0e1621; border: 1px solid rgba(255,255,255,.2); box-shadow: 0 50px 100px -30px #000, inset 0 1px 0 rgba(255,255,255,.14); }
   .tgbar { height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; border-radius: 28px 28px 0 0; background: #17212b; color: #fff; font-size: 13px; }
   .tgbar .tgt { text-align: center; line-height: 1.15; } .tgbar .tgt b { display: block; font-size: 13.5px; } .tgbar .tgt small { font-size: 10px; color: #6ab3f3; }
@@ -430,6 +431,28 @@
   .tgside { flex: none; width: min(350px, 100%); max-height: min(92vh, 940px); overflow: auto; padding: 18px; border-radius: 22px; background: var(--card); border: 1px solid var(--line2); box-shadow: 0 40px 80px -30px #000; }
   .ua.big { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 22px; color: var(--gold); background: var(--bg2) center/cover; box-shadow: 0 0 0 2px var(--line2); flex: none; }
   @media (max-width: 860px) { .tgwin { flex-direction: column; align-items: center; } }
+
+  /* ===== V15: Telegram WebView (Mini App) mode ===== */
+  html.tgw body { padding-bottom: env(safe-area-inset-bottom); -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+  html.tgw .shell { min-height: var(--tg-viewport-stable-height, 100vh); grid-template-columns: minmax(0, 1fr); }
+  html.tgw main { min-width: 0; padding: 14px 10px 60px; }
+  html.tgw aside { padding-top: max(10px, env(safe-area-inset-top)); }
+  html.tgw .mdl, html.tgw .mtop, html.tgw .tvb, html.tgw .ps-menu { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  html.tgw .pm::after, html.tgw .tvt.new, html.tgw .cam.new { animation: none; }
+  html.tgw .tv { padding: 5px; border-radius: 20px; box-shadow: none; }
+  html.tgw .tvin { min-height: 0; border-radius: 16px; box-shadow: none; }
+  html.tgw .tvin::after { display: none; }
+  html.tgw .tvbar { padding: 10px 12px; gap: 10px; }
+  html.tgw .tvclk { font-size: 15px; }
+  html.tgw .tvmain { padding: 12px; } html.tgw .tvside { max-height: 320px; border-left: 0; border-top: 1px solid rgba(255,255,255,.08); }
+  html.tgw .tvbody { grid-template-columns: minmax(0, 1fr); }
+  html.tgw .tvgrid { grid-template-columns: minmax(0, 1fr); }
+  html.tgw .cam { box-shadow: none; }
+  html.tgw .camft { gap: 8px; } html.tgw .camft .btn:first-of-type { margin-left: 0; }
+  html.tgw .lvg2 { grid-template-columns: minmax(0, 1fr); }
+  html.tgw .card { padding: 14px; }
+  html.tgw .tgwin { flex-direction: column; align-items: center; }
+  html.tgw .tgside { width: 100%; }
 </style>
 </head>
 <body>
@@ -701,6 +724,19 @@ const num = v => Number(v) || 0;
 
 /* video previews: browsers paint no frame until the video seeks a little */
 document.addEventListener("loadedmetadata", e => { const v = e.target; if (v && v.tagName === "VIDEO" && !v.controls && v.paused && !v.currentTime) { try { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); } catch {} } }, true);
+
+/* Telegram WebView (Mini App): full height, no swipe-to-close, theme colours, lite mode */
+const TG = window.Telegram && window.Telegram.WebApp;
+const TGW = !!(TG && (TG.initData || (TG.platform && TG.platform !== "unknown"))) || /Telegram/i.test(navigator.userAgent);
+if (TGW) {
+  document.documentElement.classList.add("tgw");
+  try { TG.ready(); TG.expand(); TG.disableVerticalSwipes && TG.disableVerticalSwipes(); TG.setHeaderColor && TG.setHeaderColor("#080C0A"); TG.setBackgroundColor && TG.setBackgroundColor("#080C0A"); } catch {}
+}
+/* old WebViews have no container-query units: measure the phone mirrors with JS instead */
+if (!(window.CSS && CSS.supports && CSS.supports("width", "1cqw"))) {
+  const fit = () => document.querySelectorAll(".mir").forEach(m => { const w = m.clientWidth; if (w && m._w !== w) { m._w = w; m.style.setProperty("--cq", (w / 100) + "px"); } });
+  setInterval(fit, 400); addEventListener("resize", fit);
+}
 
 /* theme */
 function setMode(m) { document.documentElement.dataset.mode = m; try { localStorage.setItem("adm_mode", m); } catch {} }
@@ -1364,7 +1400,7 @@ const lvAv = (p, cls = "ua") => `<div class="${cls}" ${p.av ? `style="background
 const srcPill = s => `<span class="pill ${s === "bot" ? "rose" : "g"}">${s === "bot" ? "Bot" : "App"}</span>`;
 const tierMini = p => active(p.expensive_until) ? '<span class="pill roy">Royal</span>' : active(p.lite_until) ? '<span class="pill rose">Rose</span>' : "";
 /* pictures and videos of the files members are looking at (cached, links renewed every 50 minutes) */
-let lvVer = 0; const lvMed = new Map();
+let lvBig = false, lvVer = 0; const lvMed = new Map();
 async function lvMediaLoad(ids) {
   const need = [...new Set(ids.filter(Boolean))].filter(id => { const c = lvMed.get(id); return !c || Date.now() - c.at > 3000000; });
   if (!need.length) return;
@@ -1386,7 +1422,7 @@ async function lvAlbumLoad(ids) {
   }
 }
 const lvPv = id => { const e = id && lvMed.get(id); return e && (e.url || e.preview) ? e : null; };
-const lvMediaEl = (id, still) => { const e = lvPv(id); if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
+const lvMediaEl = (id, still) => { const e = lvPv(id); if (TGW && !lvBig) still = true; if (!e) return ""; const bg = e.preview ? `style="background-image:url('${esc(e.preview)}')"` : "";
   return e.type === "video" && e.url ? `<video src="${esc(e.url)}#t=0.1" muted loop playsinline ${still ? "" : "autoplay"} preload="${still ? "metadata" : "auto"}" ${bg}></video>` : `<img src="${esc(e.url || e.preview)}" alt="" ${bg}>`; };
 const agoS = at => { const sec = Math.max(0, Math.floor((Date.now() - new Date(at)) / 1000)); return sec < 60 ? sec + "s ago" : ago(at) + " ago"; };
 function lvReconcile(box, items, emptyHtml) {
@@ -1427,6 +1463,7 @@ function lvCard(k, id) {
 const MTABS = [["home", "Home"], ["explore", "Explore"], ["premium", "Premium"], ["library", "Library"], ["profile", "Profile"]];
 /* the member's screen, redrawn: every card in the same place they see it, with its real picture */
 function lvMirror(r, fit) {
+  lvBig = !!fit;
   const sn = r.snap || {}, W = sn.w || 390, H = sn.h || 780, asp = Math.min(1.8, Math.max(.45, W / H)), th = sn.th === "light" ? "light" : "";
   const wf = r.media_id && lvPv(r.media_id), cards = sn.v || [];
   let body;
