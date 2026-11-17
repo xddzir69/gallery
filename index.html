@@ -145,7 +145,7 @@
   .ss { position: absolute; inset: 0; }
   .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; background: center/cover no-repeat; }
   .sl.on { opacity: 1; }
-  video.sl { background-color: #000; }
+  video.sl { background: #000; }
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
   .th .pl { position: absolute; z-index: 2; left: 8px; bottom: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(6,6,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; display: none; align-items: center; justify-content: center; }
   .th[data-vid="1"] .pl { display: flex; }
@@ -162,8 +162,8 @@
   .cap b { display: block; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cap span { color: var(--mute); font-size: 12px; }
   .g3 .cap b { font-size: 11.5px; } .g3 .cap span { display: none; }
-  /* locked = 50% blur */
-  .th.locked .sl { filter: blur(10px) saturate(1.1); transform: scale(1.2); }
+  /* locked blur: strength comes from the admin setting lock_blur (0-100, default 50) */
+  .th.locked .sl { filter: blur(var(--lb, 10px)) saturate(1.1); transform: scale(var(--lbs, 1.2)); }
   .th.locked::before { content: ""; position: absolute; inset: 0; z-index: 1; background: rgba(6,6,8,.32); }
   .lk { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; pointer-events: none; }
   .lkc { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(8,8,10,.55); border: 1px solid var(--line2); color: var(--hi); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -306,7 +306,7 @@
   .pv4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .pv4 .s { position: relative; aspect-ratio: 3/4; border-radius: 12px; overflow: hidden; background: var(--card2); outline: 1px solid var(--line); outline-offset: -1px; }
   .pv4 .s img, .pv4 .s .bgp { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: center/cover; }
-  .pv4 .s.locked .bgp, .pv4 .s.locked img { filter: blur(6px); transform: scale(1.2); }
+  .pv4 .s.locked .bgp, .pv4 .s.locked img, .pv4 .s.locked .sl { filter: blur(var(--lb4, 6px)); transform: scale(var(--lbs, 1.2)); }
   .pv4 .s.empty { display: flex; align-items: center; justify-content: center; color: var(--mute); opacity: .5; }
   .pv4 .s.empty .i { width: 18px; height: 18px; }
 
@@ -452,9 +452,14 @@
   #sheet .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px 6px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 15px; } #sheet .opt:last-of-type { border: 0; } #sheet .opt .i { color: var(--gold); width: 20px; height: 20px; } #sheet .opt.dg { color: var(--danger); } #sheet .opt.dg .i { color: var(--danger); }
   #sheet .sheadr { text-align: left; font-family: var(--serif); font-size: 19px; margin-bottom: 8px; }
   #popup { position: fixed; left: 50%; top: calc(68px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 150; width: min(600px, calc(100% - 24px)); display: none; pointer-events: none; } #popup.open { display: block; }
-  .pop { pointer-events: auto; position: relative; display: flex; align-items: stretch; width: 100%; text-align: left; min-height: 92px; border-radius: 22px; overflow: hidden; cursor: pointer; background: linear-gradient(135deg, var(--card2), var(--card)); border: 1px solid var(--line2); box-shadow: 0 0 0 1px rgba(205,170,94,.16), 0 20px 56px rgba(0,0,0,.55); animation: drop .55s cubic-bezier(.2,1.15,.3,1); }
+  .pop { pointer-events: auto; position: relative; display: flex; align-items: stretch; width: 100%; text-align: left; min-height: 104px; border-radius: 24px; overflow: hidden; cursor: pointer; border: 1.5px solid transparent; background: linear-gradient(135deg, var(--card2), var(--card)) padding-box, var(--metal) border-box; box-shadow: 0 0 0 1px rgba(205,170,94,.14), 0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(205,170,94,.2); animation: drop .6s cubic-bezier(.2,1.15,.3,1); }
+  .pop::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 38%, rgba(255,236,190,.2) 50%, transparent 62%); transform: translateX(-130%); animation: pshine 2.2s .6s ease-out 1 forwards; }
+  @keyframes pshine { to { transform: translateX(130%); } }
   @keyframes drop { from { transform: translateY(-26px) scale(.95); opacity: 0; } }
-  .pop .pi2 { width: 92px; flex: none; background: var(--metal); display: flex; align-items: center; justify-content: center; color: var(--onmetal); } .pop .pi2 .i { width: 32px; height: 32px; stroke-width: 1.6; }
+  .pop .pi2 { width: 84px; flex: none; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--mid) 26%, transparent), transparent 72%); }
+  .pop .pi2 > span { width: 52px; height: 52px; border-radius: 50%; background: var(--metal); color: var(--onmetal); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 26px -8px var(--mid), inset 0 1px 0 rgba(255,255,255,.35); }
+  .pop .pi2 .i { width: 24px; height: 24px; stroke-width: 1.7; }
+  .pop .go { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 6px 14px; border-radius: 999px; background: var(--metal); color: var(--onmetal); font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; } .pop .go .i { width: 12px; height: 12px; }
   .pop .pb2 { flex: 1; min-width: 0; padding: 13px 44px 17px 16px; }
   .pop .kd { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
   .pop h3 { font-family: var(--serif); font-weight: 500; font-size: 18px; line-height: 1.15; margin: 4px 0 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -660,47 +665,11 @@ const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
 const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
-/* what is on the member's screen right now: every card in view with its position, plus the scroll. The admin LIVE page redraws it. */
-const SNAP = { sig: "", at: 0, seen: new Map(), dw: [] };
-const KIND_CODE = { album: "a", media: "m", post: "p", mypost: "k" };
-const pmil = n => Math.round(n * 1000);
-function snapCards() {
-  const W = innerWidth || 1, H = innerHeight || 1, out = [], vis = [];
-  document.querySelectorAll("#app .it[data-src], #app .cc[data-src], #app .mp[data-src], #app .spc[data-src]").forEach(el => {
-    const r = el.getBoundingClientRect(); if (r.width < 30 || r.height < 30) return;
-    const ix = Math.min(W, r.right) - Math.max(0, r.left), iy = Math.min(H, r.bottom) - Math.max(0, r.top); if (ix < 24 || iy < 24) return;
-    const m = SRC[el.dataset.src]?.[+el.dataset.i]; if (!m || !m.id) return;
-    const k = KIND_CODE[m.kind] || "a";
-    out.push([k, m.id, pmil(r.left / W), pmil(r.top / H), pmil(r.width / W), pmil(r.height / H), m.locked ? 1 : 0]);
-    if (ix * iy >= r.width * r.height * 0.5) vis.push(k + m.id);
-  });
-  return { out: out.slice(0, 40), vis };
-}
 function pingScreen(ev) {
-  if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
-  const body = { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 };
-  if (t.r === "album") { body.screen = "Folder"; body.album_id = t.p.id; body.detail = t.p.title || ""; }
-  const open = $("viewer").classList.contains("open");
-  if (open) {          // a file is open: tell the admin exactly which one
-    const m = V.list[V.i];
-    if (m) { body.screen = m.type === "video" ? "Watching a video" : "Viewing a photo"; if (m.kind === "media") body.media_id = m.id; body.detail = vName(m) || ""; }
-  }
-  const { out } = snapCards();
-  body.snap = { w: innerWidth, h: innerHeight, y: Math.round(scrollY), ph: document.documentElement.scrollHeight, t: t.r, th: resolvedMode(), v: open ? [] : out };
-  if (SNAP.dw.length) body.dw = SNAP.dw.splice(0, 5);
-  SNAP.sig = snapSig(out, open, t.r); SNAP.at = Date.now();
-  api("ping", body).catch(() => {});
+  if (!me) return; const t = stack[stack.length - 1]; if (!t || t.r === "album") return;
+  api("ping", { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 }).catch(() => {});
 }
-const snapSig = (out, open, r) => out.map(c => c.join(".")).join(";") + "|" + Math.round(scrollY / 12) + "|" + open + r;
-/* every half second: note what changed (scroll, new cards) and how long each card has been in view (member interests) */
-setInterval(() => {
-  if (!me || document.hidden) return; const t = stack[stack.length - 1]; if (!t) return;
-  const { out, vis } = snapCards(), open = $("viewer").classList.contains("open");
-  if (!open) vis.forEach(key => { const a = SNAP.seen.get(key) || 0, n = a + 0.5; SNAP.seen.set(key, n); [5, 15, 40].forEach(th => { if (a < th && n >= th) SNAP.dw.push([key[0], key.slice(1), th]); }); });
-  const changed = snapSig(out, open, t.r) !== SNAP.sig;
-  if ((changed && Date.now() - SNAP.at >= 900) || (SNAP.dw.length && Date.now() - SNAP.at >= 900)) pingScreen(false);
-}, 500);
-setInterval(() => { if (!document.hidden) pingScreen(false); }, 15000);
+setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
 
 /* ---------- router ---------- */
 function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
@@ -782,44 +751,18 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- folder preview flow ----------
-   Every folder changes its picture every 5 seconds, but one after another: the 1st visible folder at second 0,
-   the 2nd one second later, the 3rd one second after that... (a wave, not everything at once).
-   All pictures of a folder are loaded in the background first, so a flip never waits for the network. */
-let ssTick = 0;
-const ssPrime = ss => { [...ss.children].forEach(c => { if (c.dataset.src && c.tagName === "IMG") { c.src = c.dataset.src; c.removeAttribute("data-src"); } }); };
-const ssReady = el => !el || el.tagName === "DIV" || (el.tagName === "IMG" ? (el.complete && el.naturalWidth > 0) : (el.readyState >= 2));
-function ssPlay(ss) {
-  const cur = ss.children[+ss.dataset.i];
-  [...ss.children].forEach(c => { if (c.tagName === "VIDEO" && c !== cur && !c.paused) c.pause(); });
-  if (cur && cur.tagName === "VIDEO" && cur.paused) { const p = cur.play(); if (p && p.catch) p.catch(() => {}); }
-}
-function ssFlip(ss) {
-  const n = +ss.dataset.n; if (n < 2) return;
-  const sl = ss.children, i = +ss.dataset.i;
-  for (let step = 1; step < n; step++) {
-    const j = (i + step) % n, nx = sl[j]; if (!nx) continue;
-    if (nx.dataset.src) { nx.src = nx.dataset.src; nx.removeAttribute("data-src"); if (nx.tagName === "VIDEO") nx.preload = "auto"; }
-    if (!ssReady(nx)) { if (nx.tagName === "VIDEO" && nx.readyState < 2 && step === 1 && (ss._w = (ss._w || 0) + 1) < 3) return; continue; }
-    ss._w = 0; sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
-    if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
-    return;
-  }
-}
+/* ---------- global slideshow (every 5s, folder thumbnails) ---------- */
 setInterval(() => {
   if (document.hidden) return;
-  ssTick++;
-  const vis = [];
   document.querySelectorAll(".ss").forEach(ss => {
-    const r = ss.getBoundingClientRect();
-    if (r.bottom > -700 && r.top < innerHeight + 900) ssPrime(ss);
-    if (r.bottom > -40 && r.top < innerHeight + 40) vis.push(ss);
-    else { const c = ss.children[+ss.dataset.i]; if (c && c.tagName === "VIDEO" && !c.paused) c.pause(); }
+    const n = +ss.dataset.n; if (n < 2) return;
+    const r = ss.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;
+    const sl = ss.children, i = +ss.dataset.i, j = (i + 1) % n, nx = sl[j]; if (!nx) return;
+    if (nx.dataset.src) { nx.src = nx.dataset.src; nx.removeAttribute("data-src"); }
+    sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
+    if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
   });
-  vis.forEach((ss, k) => { ssPlay(ss); if (k % 5 === ssTick % 5) ssFlip(ss); });
-}, 1000);
-/* a video shows no picture until it seeks a little */
-document.addEventListener("loadedmetadata", e => { const v = e.target; if (v && v.tagName === "VIDEO" && !v.controls && v.paused && !v.currentTime) { try { v.currentTime = Math.min(0.5, (v.duration || 1) / 2); } catch {} } }, true);
+}, 5000);
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -843,9 +786,8 @@ function slidesHTML(list, locked) {
     const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
-    /* videos always play as a real muted preview (the small stored picture is only the backdrop until the first frame shows) */
-    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline webkit-playsinline preload="${k ? "none" : "auto"}" style="${pv}" ${key}="${esc(t.url)}#t=0.5"></video>`;
-    return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
+    if (t.type === "video") return t.preview ? `<div class="sl${on}"${v} style="${pv}"></div>` : `<video class="sl${on}" data-v="1" muted playsinline preload="metadata" ${key}="${esc(t.url)}#t=0.5"></video>`;
+    return `<img class="sl${on}" draggable="false" alt="" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
 const lockHTML = `<div class="lk"><span class="lkc">${ic("lock")}</span></div>`;
@@ -1016,7 +958,7 @@ function drawSpot(sp) {
 }
 PAGES.home = async function () {
   app.innerHTML = `<div class="pad"><div id="spot"></div><div class="sec">Latest</div><div id="hl2"></div></div>`;
-  mountList($("hl2"), { src: "feed", grid: "g2", fetch: (p, s) => api("list", { sort: "new", page: p, size: s }), empty: "<b>Nothing here yet</b>New folders will appear here." });
+  mountList($("hl2"), { src: "feed", grid: "g2", fetch: (p, s) => api("list", { sort: "new", deep: true, page: p, size: s }), empty: "<b>Nothing here yet</b>New folders will appear here." });
   try { if (!HOME) HOME = await api("home"); if (stack[stack.length - 1].r === "home") drawSpot(HOME.spot); } catch { HOME = null; }
 };
 
@@ -1039,6 +981,11 @@ PAGES.topic = async function (p) {
   app.innerHTML = `<div class="pad"><div id="tl"></div></div>`;
   mountList($("tl"), { src: "topic", grid: "g2", fetch: (pg, s) => api("list", { category_id: p.id, sort: "new", page: pg, size: s }), empty: "<b>No folders yet</b>Folders added to this topic will show up here." });
 };
+function applyBlur() {
+  const raw = settings.lock_blur, v = raw === undefined || raw === null || raw === "" ? 50 : Number(raw), p = Math.min(100, Math.max(0, isNaN(v) ? 50 : v)), px = p / 5;
+  const st = document.documentElement.style;
+  st.setProperty("--lb", px + "px"); st.setProperty("--lb4", (px * .6).toFixed(1) + "px"); st.setProperty("--lbs", (1 + px / 50).toFixed(2));
+}
 async function openPost(id) {
   try {
     const r = await api("comm_get", { id }), p = r.post;
@@ -1079,7 +1026,7 @@ PAGES.library = async function () {
     const r = await api("fav_preview"); if (!$("pv4")) return;
     const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
     const s = (r.items || []).slice(0, 4), cells = [];
-    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${t.url && !t.locked && t.type !== "video" ? `<img src="${esc(t.url)}" alt="">` : `<div class="bgp" style="${pvCss(t.preview)}"></div>`}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
+    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? t.thumbs : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
     $("pv4").innerHTML = cells.join("");
   } catch {}
 };
@@ -1408,7 +1355,8 @@ PAGES.notifs = async function () {
 ACT.nfopen = d => {
   const n = nfItems.find(x => x.id === d.id); if (!n) return; haptic("light");
   if (n.kind === "premium") return nav("plans", n.code ? { code: 1, prefill: n.code } : {});
-  if (n.kind === "ticket") return nav("tickets"); if (n.kind === "post") return nav("home");
+  if (n.kind === "ticket") return nav("tickets");
+  if (n.kind === "post") return n.album_id ? nav("album", { id: n.album_id, title: n.album_title }) : nav("home");
 };
 
 /* ---------- viewer (pinch zoom, swipe, no download) ---------- */
@@ -1448,7 +1396,6 @@ function drawViewer() {
   $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
   if (m.kind === "media") api("view", { media_id: m.id }).catch(() => {});
-  pingScreen(true);
   if ($("vsheet").classList.contains("on")) drawInfo();
 }
 function drawInfo() {
@@ -1458,7 +1405,7 @@ function drawInfo() {
 }
 function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); }
 function closeViewer() {
-  $("viewer").classList.remove("open"); setTimeout(() => pingScreen(true), 0); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
+  $("viewer").classList.remove("open"); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
   if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; } syncBack();
 }
@@ -1506,8 +1453,9 @@ let popN = null, popT = 0;
 function showPopup(n) {
   popN = n; const k = KIND[n.kind] || KIND.custom, sec = Math.min(10, Math.max(3, Number(settings.popup_seconds) || 5));
   const box = $("popbox"); box.style.setProperty("--dur", sec + "s");
-  box.innerHTML = `<div class="pi2">${ic(k[0])}</div>
-    <div class="pb2"><div class="kd">${ic("crown", "")}${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? `<div class="pcode"><code>${esc(n.code)}</code><button class="btn xs" data-act="copy" data-t="${esc(n.code)}">${ic("copy")}Copy</button></div>` : ""}</div>
+  const cta = n.kind === "premium" ? "See plans" : n.kind === "ticket" ? "Open chat" : n.kind === "post" && n.album_id ? "View post" : "Open";
+  box.innerHTML = `<div class="pi2"><span>${ic(k[0])}</span></div>
+    <div class="pb2"><div class="kd">${ic("crown", "")}${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? `<div class="pcode"><code>${esc(n.code)}</code><button class="btn xs" data-act="copy" data-t="${esc(n.code)}">${ic("copy")}Copy</button></div>` : ""}<span class="go">${cta}${ic("next")}</span></div>
     <button class="x" data-act="popclose" aria-label="Close">${ic("close")}</button><i class="bar"></i>`;
   $("popup").classList.add("open"); haptic("medium"); clearTimeout(popT); popT = setTimeout(closePopup, sec * 1000);
 }
@@ -1516,7 +1464,7 @@ function closePopup() {
   if (popN && unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); } popN = null;
 }
 ACT.popclose = () => closePopup();
-ACT.popgo = () => { const n = popN; closePopup(); if (!n) return; if (n.kind === "premium") nav("plans", n.code ? { code: 1, prefill: n.code } : {}); else if (n.kind === "ticket") nav("tickets"); else nav("notifs"); };
+ACT.popgo = () => { const n = popN; closePopup(); if (!n) return; if (n.kind === "premium") nav("plans", n.code ? { code: 1, prefill: n.code } : {}); else if (n.kind === "ticket") nav("tickets"); else if (n.kind === "post" && n.album_id) nav("album", { id: n.album_id, title: n.album_title }); else nav("notifs"); };
 
 /* ---------- start ---------- */
 function endSplash() { setTimeout(() => $("splash").classList.add("done"), 1500); }
@@ -1541,7 +1489,7 @@ function ageCheck() {
   if (!inTg && !webAuth) { landing(); return endSplash(); }
   try {
     const r = await api("init");
-    me = r.me; cats = r.categories || []; plans = r.plans || []; settings = r.settings || {}; unread = r.unread || 0; favs = new Set(r.favs || []);
+    me = r.me; cats = r.categories || []; plans = r.plans || []; settings = r.settings || {}; applyBlur(); unread = r.unread || 0; favs = new Set(r.favs || []);
     const st = Date.parse(r.server_time); if (!isNaN(st)) clockSkew = st - Date.now();
     render(); openDeepLink();
     if (r.popup) setTimeout(() => showPopup(r.popup), 1500);
