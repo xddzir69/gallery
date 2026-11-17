@@ -143,7 +143,7 @@
   .th { position: relative; aspect-ratio: 4/5; border-radius: 18px; overflow: hidden; background: linear-gradient(150deg, var(--card2), var(--bg2)); outline: 1px solid var(--line); outline-offset: -1px; box-shadow: 0 16px 30px -18px rgba(0,0,0,.7); isolation: isolate; }
   .g3 .th { aspect-ratio: 1; border-radius: 12px; }
   .ss { position: absolute; inset: 0; }
-  .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; background: center/cover no-repeat; }
+  .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .45s ease; background: center/cover no-repeat; }
   .sl.on { opacity: 1; }
   video.sl { background: #000; }
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
@@ -751,18 +751,27 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- global slideshow (every 5s, folder thumbnails) ---------- */
+/* ---------- preview flow: 1st file 3s, then every next file 1s (4s, 5s, 6s ...), then it starts again ---------- */
+const FLOW_FIRST = 3000, FLOW_STEP = 1000;
+const flowIndex = (n, ms) => { const p = ms % (FLOW_FIRST + (n - 1) * FLOW_STEP); return p < FLOW_FIRST ? 0 : 1 + Math.floor((p - FLOW_FIRST) / FLOW_STEP); };
+function flowLoad(ss, from, count) { // load the next pictures a little early so a 1 second slide is never empty
+  const sl = ss.children, n = sl.length;
+  for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
+}
 setInterval(() => {
   if (document.hidden) return;
+  const now = performance.now();
   document.querySelectorAll(".ss").forEach(ss => {
-    const n = +ss.dataset.n; if (n < 2) return;
-    const r = ss.getBoundingClientRect(); if (r.bottom < -50 || r.top > innerHeight + 50) return;
-    const sl = ss.children, i = +ss.dataset.i, j = (i + 1) % n, nx = sl[j]; if (!nx) return;
-    if (nx.dataset.src) { nx.src = nx.dataset.src; nx.removeAttribute("data-src"); }
-    sl[i]?.classList.remove("on"); nx.classList.add("on"); ss.dataset.i = j;
-    if (ss.parentElement) ss.parentElement.dataset.vid = nx.dataset.v ? "1" : "";
+    const n = ss.children.length; if (n < 2) return;
+    const r = ss.getBoundingClientRect();
+    if (r.bottom < -50 || r.top > innerHeight + 50) { ss._t0 = undefined; return; } // off screen: wait, and start from the 1st file again when it comes back
+    if (ss._t0 === undefined) { ss._t0 = now; flowLoad(ss, 1, 2); }
+    const j = flowIndex(n, now - ss._t0), i = +ss.dataset.i; if (j === i) return;
+    flowLoad(ss, j, 3);
+    ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
+    if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
   });
-}, 5000);
+}, 250);
 
 /* ---------- click delegation ---------- */
 const ACT = {};
