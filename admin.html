@@ -1309,20 +1309,60 @@ async function previewSched(id) {
 }
 
 /* ---------- live screen ---------- */
-let lvPaused = false; const lvNames = new Map();
+let lvPaused = false, lvRows = []; const lvNames = new Map();
 $("lvPause").onclick = () => { lvPaused = !lvPaused; $("lvPause").textContent = lvPaused ? "Resume" : "Pause"; };
 async function loadLive() {
   if (lvPaused) return;
   const since = new Date(Date.now() - 3 * 60000).toISOString();
   const [a, e] = await Promise.all([sb.from("live_activity").select("*").gt("at", since).order("at", { ascending: false }).limit(80), sb.from("live_events").select("*").order("at", { ascending: false }).limit(70)]);
   if (a.error || e.error) { const m = (a.error || e.error).message + " (run supabase_v8.sql)"; $("lvNow").innerHTML = `<p class="mute" style="padding:18px 0;text-align:center">Live screen could not load: ${esc(m)}</p>`; return; }
+  lvRows = a.data || [];
   const ids = [...new Set([...(a.data || []), ...(e.data || [])].map(r => r.tg_id))].filter(id => !lvNames.has(id));
   if (ids.length) { const { data: ps } = await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,photo_url,avatar_path").in("tg_id", ids); const urls = await sign((ps || []).map(p => p.avatar_path)); (ps || []).forEach(p => lvNames.set(p.tg_id, { ...p, av: (p.avatar_path && urls[p.avatar_path]) || p.photo_url })); ids.forEach(id => { if (!lvNames.has(id)) lvNames.set(id, { tg_id: id }); }); }
   const who = id => lvNames.get(id) || { tg_id: id }, on = a.data || [];
   const nApp = on.filter(r => r.source === "app").length, nBot = on.filter(r => r.source === "bot").length;
   $("lvStats").innerHTML = kt("roy", "Online now", on.length, [["in the app", nApp], ["in the bot", nBot]], "live") + kt("", "Last hour", new Set((e.data || []).filter(x => Date.now() - new Date(x.at) < 36e5).map(x => x.tg_id)).size, [["active members", "✓"]], "users");
-  $("lvNow").innerHTML = on.map(r => { const p = who(r.tg_id); return `<div class="lv"><div class="ua" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div><div style="min-width:0"><b>${esc(nm(p))}</b> <span class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</span><div class="now"><span class="pill ${r.source === "bot" ? "rose" : "g"}">${r.source === "bot" ? "Bot" : "App"}</span> <b>${esc(r.screen || r.detail || "Idle")}</b>${r.screen && r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div></div><div style="text-align:right"><div class="mute sm">${ago(r.at)}</div><button class="btn gh xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("") || '<p class="mute" style="padding:18px 0;text-align:center">Nobody is online right now.</p>';
+  $("lvNow").innerHTML = on.map(r => { const p = who(r.tg_id); return `<div class="lv"><div class="ua" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div><div style="min-width:0"><b>${esc(nm(p))}</b> <span class="mute sm">${p.username ? "@" + esc(p.username) + " · " : ""}ID ${r.tg_id}</span><div class="now"><span class="pill ${r.source === "bot" ? "rose" : "g"}">${r.source === "bot" ? "Bot" : "App"}</span> <b>${esc(r.screen || r.detail || "Idle")}</b>${r.screen && r.detail && r.detail !== r.screen ? " · " + esc(r.detail) : ""}</div></div><div style="text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end"><div class="mute sm">${ago(r.at)}</div><button class="btn xs" data-mirror="${r.tg_id}">Mirror</button><button class="btn gh xs" data-user="${r.tg_id}">Details</button></div></div>`; }).join("") || '<p class="mute" style="padding:18px 0;text-align:center">Nobody is online right now.</p>';
+  if (mirrorTg) { const row = on.find(x => x.tg_id === mirrorTg); drawMirror(row || null, who(mirrorTg)); }
   $("lvFeed").innerHTML = (e.data || []).map(r => { const p = who(r.tg_id); return `<div class="fe"><span class="t">${new Date(r.at).toLocaleTimeString("en-GB")}</span><span class="pill ${r.source === "bot" ? "rose" : ""}">${r.source === "bot" ? "Bot" : "App"}</span> <a href="#" data-user="${r.tg_id}" style="color:inherit"><b>${esc(nm(p))}</b></a> ${esc(r.text)}</div>`; }).join("") || '<p class="mute">No activity yet.</p>';
+}
+
+/* ---------- live mirror: a read-only, real-time look at what one member is seeing right now ---------- */
+let mirrorTg = null, mirrorEl = null; const mirrorCache = new Map(); // media_id -> {title,type,access,preview} | {missing:true}
+document.addEventListener("click", e => { const b = e.target.closest("[data-mirror]"); if (b) openMirror(Number(b.dataset.mirror)); });
+function openMirror(tg) {
+  mirrorTg = tg;
+  mirrorEl = document.createElement("div"); mirrorEl.className = "mdl";
+  mirrorEl.innerHTML = `<div class="box" style="width:min(380px,100%)"><div class="row between"><b>Live mirror</b><button class="btn gh xs x">Close</button></div><div id="mirBody" style="margin-top:12px"></div></div>`;
+  mirrorEl.onclick = e => { if (e.target === mirrorEl || e.target.closest(".x")) closeMirror(); };
+  document.body.appendChild(mirrorEl);
+  const row = (lvRows || []).find(x => x.tg_id === tg);
+  drawMirror(row || null, lvNames.get(tg) || { tg_id: tg });
+}
+function closeMirror() { mirrorTg = null; mirrorEl?.remove(); mirrorEl = null; }
+async function drawMirror(row, who) {
+  if (!mirrorEl) return; const body = mirrorEl.querySelector("#mirBody"); if (!body) return;
+  if (!row) { body.innerHTML = `<p class="mute" style="text-align:center;padding:30px 0">This member just went offline.</p>`; return; }
+  const st = row.state || {};
+  let fileHtml = "";
+  if (st.viewer?.id) {
+    let m = mirrorCache.get(st.viewer.id);
+    if (!m) {
+      const { data } = await sb.from("media").select("id,title,label,type,preview,access").eq("id", st.viewer.id).maybeSingle();
+      m = data || { missing: true }; mirrorCache.set(st.viewer.id, m);
+    }
+    if (mirrorTg !== row.tg_id || !mirrorEl) return; // the admin closed or switched while this was loading
+    fileHtml = m.missing ? `<div class="mute sm" style="padding:8px 0">That file was removed.</div>`
+      : `<div class="pvx" style="aspect-ratio:1;border-radius:12px;overflow:hidden">${m.preview ? `<img src="${esc(m.preview)}" alt="">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--mute)">${m.type === "video" ? "▶" : "🖼"}</div>`}</div>
+         <div class="mute sm" style="margin-top:6px">${esc(m.label || m.title || (m.type === "video" ? "Video" : "Photo"))}${accPill(m.access)}</div>`;
+  }
+  body.innerHTML = `<div class="row" style="gap:10px;margin-bottom:12px"><div class="ua" ${who.av ? `style="background-image:url('${esc(who.av)}')"` : ""}>${who.av ? "" : esc(initial(who))}</div>
+      <div><b>${esc(nm(who))}</b><div class="mute sm">${who.username ? "@" + esc(who.username) + " · " : ""}ID ${row.tg_id}</div></div></div>
+    <div class="card" style="padding:12px"><div class="mute sm" style="text-transform:uppercase;letter-spacing:.08em;font-size:10.5px">Current page</div>
+      <b style="font-size:15px">${esc(row.screen || row.detail || "Idle")}</b>
+      ${st.album?.title ? `<div class="mute sm" style="margin-top:4px">📁 ${esc(st.album.title)}</div>` : ""}
+      ${fileHtml ? `<div style="margin-top:10px">${fileHtml}</div>` : ""}
+    </div><p class="mute sm" style="text-align:center;margin-top:10px">Updates automatically every few seconds.</p>`;
 }
 
 /* ---------- maintenance mode ---------- */

@@ -692,12 +692,22 @@ const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
 const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
+/* ---------- live mirror: a small snapshot of what this member is looking at, for the admin's Live screen ---------- */
+function liveState() {
+  const t = stack[stack.length - 1]; if (!t) return null;
+  const s = {};
+  if (t.r === "album" && t.p?.id) s.album = { id: t.p.id, title: t.p.title || "" };
+  if ($("viewer").classList.contains("open")) { const m = V.list[V.i]; if (m && m.kind === "media") s.viewer = { id: m.id, type: m.type, kind: m.kind }; }
+  return Object.keys(s).length ? s : null;
+}
 function pingScreen(ev) {
   if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
   const inFolder = t.r === "album"; // inside a folder: still online (the "Opened folder" line is written by the server when it opens)
-  api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", ev: ev && !inFolder ? 1 : 0 }).catch(() => {});
+  api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", state: liveState(), ev: ev && !inFolder ? 1 : 0 }).catch(() => {});
 }
 setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
+let mirrorHb = 0; // while the viewer is open, send the live mirror snapshot more often
+function mirrorTick() { clearInterval(mirrorHb); if ($("viewer").classList.contains("open")) mirrorHb = setInterval(() => { if (!document.hidden) pingScreen(false); }, 4000); }
 
 /* ---------- router ---------- */
 function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
@@ -1490,7 +1500,7 @@ function openViewer(list, idx) {
   V.list = list.filter(x => !x.locked && x.url);
   V.i = Math.max(0, V.list.findIndex(x => x.id === id));
   if (!V.list.length) return;
-  $("viewer").classList.add("open"); $("viewer").classList.remove("bare"); $("vsheet").classList.remove("on"); syncBack(); drawViewer();
+  $("viewer").classList.add("open"); $("viewer").classList.remove("bare"); $("vsheet").classList.remove("on"); syncBack(); drawViewer(); pingScreen(false); mirrorTick();
 }
 function setT(anim) { const im = $("vimg"); if (!im) return; im.style.transition = anim ? "transform .25s ease" : "none"; im.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; }
 function clampPan() {
@@ -1522,11 +1532,11 @@ function drawInfo() {
   const row = (a, b) => `<div class="ir"><span>${a}</span><span>${b}</span></div>`;
   $("vsheet").innerHTML = `${vName(m) ? `<h3>${esc(vName(m))}</h3>` : `<h3>Details</h3>`}${row("Type", m.type === "video" ? "Video" : "Photo")}${m.created_at ? row("Added", fmtDate(m.created_at)) : ""}${m.kind === "media" ? row("Views", short(m.views)) : ""}`;
 }
-function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); }
+function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); pingScreen(false); }
 function closeViewer() {
   $("viewer").classList.remove("open"); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
-  if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; } syncBack();
+  if (V.fs) { try { tg?.exitFullscreen?.(); } catch {} V.fs = false; } syncBack(); pingScreen(false); mirrorTick();
 }
 $("vclose").onclick = closeViewer; $("vp").onclick = () => step(-1); $("vn").onclick = () => step(1);
 $("vheart").onclick = () => { const m = V.list[V.i]; if (m) toggleFav(m.id, "media"); };
