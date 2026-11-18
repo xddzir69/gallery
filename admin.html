@@ -328,6 +328,11 @@
   .cam.off .cimg, .cam.off .cpg { filter: grayscale(1) brightness(.35); } .cam.off .rec { color: #8a8a8a; } .cam.off .livedot { background: #777; box-shadow: none; animation: none; }
   .cam.off .cpg b, .cam.off .cpg small { opacity: 0; }
   .cam.off::before { content: "NO SIGNAL"; position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; font-size: clamp(13px, 2vw, 22px); letter-spacing: .3em; color: #cfd6d1; background: repeating-linear-gradient(90deg, #ffffff10 0 2px, #0000 2px 5px); }
+  .cam .lf { position: absolute; inset: 0; z-index: 1; background: #000; } .cam .lf iframe { position: absolute; border: 0; pointer-events: none; background: #000; transform-origin: 0 0; }
+  .cam.hasfr .cimg, .cam.hasfr .cpg { display: none; }
+  .wallov.live .cam { aspect-ratio: 3 / 4; }
+  .wallov.live.focus .cam { aspect-ratio: auto; height: calc(100vh - 110px); max-height: none; }
+  @media (max-width: 860px) { .wallov.live .cam { aspect-ratio: 3 / 4; } .wallov.live.focus .cam { aspect-ratio: auto; height: 72vh; } }
   .wside h4 { margin: 0 0 8px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: #8fa196; }
   .wside .urow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; } .wside .urow .av { width: 44px; height: 44px; border-radius: 50%; background: #1b2620 center/cover; display: grid; place-items: center; font-weight: 700; color: var(--gold); }
   .wside .kv { padding: 10px; border: 1px solid rgba(255,255,255,.09); border-radius: 10px; margin-bottom: 12px; font-size: 13px; } .wside .kv b { color: #f1d98e; display: inline; }
@@ -1369,6 +1374,7 @@ async function loadLive() {
 }
 
 /* ---------- TV wall: every online member as a CCTV tile (what the app reports: page, folder, open file, last action) ---------- */
+let wallMode = "live", wallFrames = new Map(), wallWatchIds = "", wallWatchAt = 0, wallCssText = "";
 let wallEl = null, wallTimer = 0, wallClock = 0, wallFocus = null, wallRows = [], wallEv = [], wallBusy = false, wallColsPref = "auto";
 const wallMedia = new Map(), wallSig = new Map(), wallCh = new Map(); // media_id -> info | {missing}; tg -> signature; tg -> channel number
 const wallKey = e => { if (e.key === "Escape") { wallFocus ? (wallFocus = null, wallDraw()) : closeWall(); } };
@@ -1380,6 +1386,7 @@ function openWall(focus) {
   wallEl = document.createElement("div"); wallEl.className = "wallov";
   wallEl.innerHTML = `<div class="wh"><div class="tt"><i class="livedot"></i>LIVE WALL</div><span class="clk" id="wCount"></span><span class="sp"></span><span class="clk" id="wClock"></span>
       <button class="btn gh xs" id="wBack" hidden>← All cameras</button>
+      <select id="wMode" title="Tile content"><option value="live">Live screens</option><option value="info">Info cards</option></select>
       <select id="wCols" title="Grid size"><option value="auto">Auto grid</option><option value="1">1 / row</option><option value="2">2 / row</option><option value="3">3 / row</option><option value="4">4 / row</option><option value="5">5 / row</option></select>
       <button class="btn gh xs" id="wFs">Full screen</button><button class="btn dg xs" id="wX">Close</button></div>
     <div class="wb"><div class="wgrid" id="wGrid"><div class="wempty">Connecting to cameras…</div></div><div class="wside" id="wSide"></div></div>`;
@@ -1387,6 +1394,7 @@ function openWall(focus) {
   const g = id => wallEl.querySelector("#" + id);
   g("wX").onclick = closeWall; g("wBack").onclick = () => { wallFocus = null; wallDraw(); };
   g("wFs").onclick = () => { try { document.fullscreenElement ? document.exitFullscreen() : wallEl.requestFullscreen(); } catch {} };
+  g("wMode").value = wallMode; g("wMode").onchange = e => { wallMode = e.target.value; wallSig.clear(); wallEl.querySelectorAll(".cam").forEach(c => c.remove()); wallDraw(); wallTick(); };
   g("wCols").value = wallColsPref; g("wCols").onchange = e => { wallColsPref = e.target.value; wallDraw(); };
   wallEl.addEventListener("click", e => {
     if (e.target.closest("[data-user]")) { closeWall(); return; }
@@ -1396,6 +1404,7 @@ function openWall(focus) {
   wallTick(); wallTimer = setInterval(wallTick, 3000); wallClock = setInterval(wallAges, 1000);
 }
 function closeWall() {
+  if (wallWatchIds) { try { sb.from("live_watch").upsert(wallWatchIds.split(",").map(id => ({ tg_id: Number(id), until: new Date(Date.now() - 1000).toISOString() }))).then(() => {}); } catch {} } wallWatchIds = ""; wallFrames.clear();
   clearInterval(wallTimer); clearInterval(wallClock); document.removeEventListener("keydown", wallKey);
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
   wallEl?.remove(); wallEl = null; wallFocus = null; wallSig.clear();
@@ -1412,6 +1421,13 @@ async function wallTick() {
     if (ids.length) { const { data: ps } = await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username,photo_url,avatar_path").in("tg_id", ids); const urls = await sign((ps || []).map(p => p.avatar_path)); (ps || []).forEach(p => lvNames.set(p.tg_id, { ...p, av: (p.avatar_path && urls[p.avatar_path]) || p.photo_url })); ids.forEach(id => { if (!lvNames.has(id)) lvNames.set(id, { tg_id: id }); }); }
     const mids = [...new Set(wallRows.map(r => r.state?.viewer?.id).filter(id => id && !wallMedia.has(id)))];
     if (mids.length) { const { data: ms } = await sb.from("media").select("id,title,label,type,preview,access").in("id", mids); const got = new Map((ms || []).map(m => [m.id, m])); mids.forEach(id => wallMedia.set(id, got.get(id) || { missing: true })); }
+    if (wallMode === "live") {
+      if (!wallCssText) wallCssText = await wallLoadCss();
+      const targets = (wallFocus ? [wallFocus] : wallRows.slice(0, 12).map(r => r.tg_id)).sort((x, y) => x - y).filter(id => wallRows.some(r => r.tg_id === id));
+      const key = targets.join(",");
+      if (targets.length && (key !== wallWatchIds || Date.now() - wallWatchAt > 15000)) { wallWatchIds = key; wallWatchAt = Date.now(); await sb.from("live_watch").upsert(targets.map(id => ({ tg_id: id, until: new Date(Date.now() + 45000).toISOString() }))); }
+      if (targets.length) { const { data: fr } = await sb.from("live_frames").select("*").in("tg_id", targets); wallFrames = new Map((fr || []).map(f => [f.tg_id, f])); }
+    }
     if (wallEl) wallDraw();
   } finally { wallBusy = false; }
 }
@@ -1436,33 +1452,65 @@ function camInner(r) {
     <div class="ov t"><span class="rec"><i class="livedot"></i>LIVE · CH ${ch} · ${src}</span><span data-age="${r.at}">${wallAgo(r.at)}</span></div>
     <div class="ov b"><div class="who"><div class="av" ${p.av ? `style="background-image:url('${esc(p.av)}')"` : ""}>${p.av ? "" : esc(initial(p))}</div><div><b>${esc(nm(p))}</b><span>${esc(page)}${folder && r.screen !== "Folder" ? " · 📁 " + esc(folder) : ""}${r.screen === "Folder" && r.detail ? " · " + esc(r.detail) : ""}${fileLine ? " · " + esc(fileLine) : ""}</span></div></div><span class="act">${last ? "⚡ " + esc(last.text) : ""}</span></div>`;
 }
+async function wallLoadCss() {
+  try { const t = await (await fetch(new URL("index.html", location.href), { cache: "no-store" })).text(); const out = []; (t.match(/<link[^>]+stylesheet[^>]*>/gi) || []).forEach(x => out.push(x)); (t.match(/<style[\s\S]*?<\/style>/gi) || []).forEach(x => out.push(x)); return out.join("\n") || " "; } catch { return " "; }
+}
+const wallDoc = () => `<!doctype html><html><head><meta charset="utf-8"><base href="${location.href.replace(/[^/]*$/, "")}">${wallCssText}<style>html,body{overflow:hidden!important}</style></head><body></body></html>`;
+function wallScale(c, ifr, f) {
+  const cw = c.clientWidth, ch = c.clientHeight, sc = Math.min(cw / (f.w || 390), ch / (f.h || 800));
+  ifr.style.width = (f.w || 390) + "px"; ifr.style.height = (f.h || 800) + "px"; ifr.style.transform = `scale(${sc})`;
+  ifr.style.left = Math.max(0, (cw - (f.w || 390) * sc) / 2) + "px"; ifr.style.top = Math.max(0, (ch - (f.h || 800) * sc) / 2) + "px";
+}
+function wallPaint(c, ifr, f) {
+  try {
+    const d = ifr.contentDocument, root = d.documentElement; if (!d?.body) return;
+    for (const a of [...root.attributes]) if (a.name !== "style") root.removeAttribute(a.name);
+    Object.entries(f.ra || {}).forEach(([k, v]) => root.setAttribute(k, v));
+    root.setAttribute("style", (f.root || "") + ";overflow:hidden");
+    d.body.className = f.bc || ""; d.body.innerHTML = f.html || ""; d.defaultView.scrollTo(0, f.sy || 0);
+    ifr._at = f.at; wallScale(c, ifr, f);
+  } catch {}
+}
+function wallApplyFrame(c, tg) {
+  const f = wallMode === "live" ? wallFrames.get(tg) : null, fresh = !!f && f.html != null && Date.now() - new Date(f.at) < 20000;
+  c.classList.toggle("hasfr", fresh);
+  const lf = c.querySelector(".lf"); if (!fresh) { if (lf.firstChild) lf.innerHTML = ""; return; }
+  let ifr = lf.querySelector("iframe");
+  if (!ifr) { ifr = document.createElement("iframe"); ifr.setAttribute("sandbox", "allow-same-origin"); ifr.srcdoc = wallDoc(); ifr.onload = () => { ifr._ready = true; const ff = wallFrames.get(tg); if (ff) wallPaint(c, ifr, ff); }; lf.appendChild(ifr); }
+  else if (ifr._ready && ifr._at !== f.at) wallPaint(c, ifr, f);
+  else if (ifr._ready) wallScale(c, ifr, f);
+}
 function wallDraw() {
   if (!wallEl) return;
   wallRows.forEach(r => { if (!wallCh.has(r.tg_id)) wallCh.set(r.tg_id, wallCh.size + 1); });
   const rows = wallRows.slice().sort((x, y) => wallCh.get(x.tg_id) - wallCh.get(y.tg_id));
   const g = wallEl.querySelector("#wGrid"), side = wallEl.querySelector("#wSide");
   const focusRow = wallFocus ? rows.find(r => r.tg_id === wallFocus) : null;
-  wallEl.classList.toggle("focus", !!wallFocus);
+  wallEl.classList.toggle("focus", !!wallFocus); wallEl.classList.toggle("live", wallMode === "live");
   wallEl.querySelector("#wBack").hidden = !wallFocus; wallEl.querySelector("#wCols").hidden = !!wallFocus;
   wallEl.querySelector("#wCount").textContent = `${rows.length} online · ${rows.filter(r => r.source === "app").length} app · ${rows.filter(r => r.source === "bot").length} bot`;
   const show = wallFocus ? (focusRow ? [focusRow] : []) : rows;
   const n = show.length, narrow = innerWidth < 600;
   let cols = wallColsPref === "auto" ? (n <= 1 ? 1 : n <= 4 ? 2 : n <= 9 ? 3 : n <= 16 ? 4 : 5) : Number(wallColsPref);
+  if (wallColsPref === "auto" && wallMode === "live" && !wallFocus && n > 1 && !narrow) { /* tall phone tiles: pick the column count that makes them biggest while fitting the screen */
+    const W = innerWidth - 24, H = innerHeight - 70; let best = 0; for (let c = 1; c <= Math.min(n, 8); c++) { const sc = Math.min(W / c / 3, H / Math.ceil(n / c) / 4); if (sc > best) { best = sc; cols = c; } }
+  }
   g.style.setProperty("--cols", narrow ? Math.min(cols, 2) : cols);
   g.querySelectorAll(".wempty").forEach(x => x.remove());
   const keep = new Set(show.map(r => r.tg_id));
   g.querySelectorAll(".cam").forEach(c => { if (!keep.has(Number(c.dataset.cam))) { wallSig.delete(Number(c.dataset.cam)); c.remove(); } });
   show.forEach((r, i) => {
     let c = g.querySelector(`.cam[data-cam="${r.tg_id}"]`);
-    if (!c) { c = document.createElement("div"); c.className = "cam"; c.dataset.cam = r.tg_id; }
+    if (!c) { c = document.createElement("div"); c.className = "cam"; c.dataset.cam = r.tg_id; c.innerHTML = '<div class="lf"></div><div class="inf"></div>'; }
     const p = lvNames.get(r.tg_id) || {}, st = r.state || {}, last = wallEv.find(x => x.tg_id === r.tg_id);
     const sig = [r.screen, r.detail, r.source, st.album?.id, st.viewer?.id, last?.id || last?.text, p.av, wallFocus ? "f" : "g"].join("|");
     c.dataset.at = r.at;
     if (wallSig.get(r.tg_id) !== sig) {
-      const had = wallSig.has(r.tg_id); wallSig.set(r.tg_id, sig); c.innerHTML = camInner(r);
+      const had = wallSig.has(r.tg_id); wallSig.set(r.tg_id, sig); c.querySelector(".inf").innerHTML = camInner(r);
       if (had) { c.classList.remove("chg"); void c.offsetWidth; c.classList.add("chg"); }
     } else { const ag = c.querySelector("[data-age]"); if (ag) ag.dataset.age = r.at; }
     if (g.children[i] !== c) g.insertBefore(c, g.children[i] || null);
+    wallApplyFrame(c, r.tg_id);
   });
   if (!n) g.insertAdjacentHTML("beforeend", `<div class="wempty">${wallFocus ? "This member just went offline." : "Nobody is online right now."}</div>`);
   if (wallFocus && focusRow) {

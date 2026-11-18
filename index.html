@@ -574,6 +574,7 @@
 <main id="app"></main>
 <button class="fab" id="fab" aria-label="Top"><svg class="i"><use href="#i-up"/></svg></button>
 <nav id="nav" hidden></nav>
+<div id="lvNote" hidden style="position:fixed;left:12px;right:12px;bottom:calc(90px + env(safe-area-inset-bottom));z-index:60;padding:12px 14px;border-radius:16px;background:var(--card2);box-shadow:0 0 0 1px var(--line2),var(--shadow);font-size:12.5px;display:flex;gap:10px;align-items:center"><span style="flex:1">For support and safety, the team can see which page you are on while you use this app. Typed text, support chats and payments are never shown.</span><button class="hbtn" id="lvNoteOk" style="width:auto;padding:6px 12px">OK</button></div>
 
 <div id="viewer">
   <div class="vtop">
@@ -703,7 +704,29 @@ function liveState() {
 function pingScreen(ev) {
   if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
   const inFolder = t.r === "album"; // inside a folder: still online (the "Opened folder" line is written by the server when it opens)
-  api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", state: liveState(), ev: ev && !inFolder ? 1 : 0 }).catch(() => {});
+  api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", state: liveState(), ev: ev && !inFolder ? 1 : 0 }).then(r => setWatch(!!r?.watch)).catch(() => {});
+}
+/* V15 live screen view: only while an admin is watching this member, send a copy of this app's own page every 2s.
+   Typed text, support chats, payments and profile edit are never sent. */
+let watching = false, frameT = 0, frameBusy = false;
+try { if (!localStorage.getItem("gv_lvnote")) { setTimeout(() => { const n = $("lvNote"); if (n) { n.hidden = false; $("lvNoteOk").onclick = () => { n.hidden = true; try { localStorage.setItem("gv_lvnote", "1"); } catch {} }; } }, 4000); } } catch {}
+const PRIVATE_ROUTES = ["ticket", "ticketnew", "tickets", "plans", "edit"];
+function setWatch(on) { if (on === watching) return; watching = on; clearInterval(frameT); if (on) { sendFrame(); frameT = setInterval(sendFrame, 2000); } }
+function snapFrame() {
+  const t = stack[stack.length - 1], root = document.documentElement, ra = {};
+  for (const a of root.attributes) if (a.name === "class" || a.name.startsWith("data-")) ra[a.name] = a.value;
+  const out = { w: innerWidth, h: innerHeight, sy: Math.round(scrollY), ra, bc: document.body.className, root: root.getAttribute("style") || "", html: "" };
+  if (t && PRIVATE_ROUTES.includes(t.r)) { out.html = '<div style="display:grid;place-items:center;height:100vh;color:#999;font:600 16px sans-serif;background:#000">🔒 Private page (hidden)</div>'; out.sy = 0; return out; }
+  const c = document.body.cloneNode(true);
+  c.querySelectorAll("script,noscript,canvas,iframe,audio,link,style,[data-private]").forEach(e => e.remove());
+  c.querySelectorAll("video").forEach(v => { const d = document.createElement("div"); d.className = v.className; d.setAttribute("style", (v.getAttribute("style") || "") + ";background:#111;display:grid;place-items:center;color:#888"); d.textContent = "▶"; v.replaceWith(d); });
+  c.querySelectorAll("input,textarea,select").forEach(e => { e.removeAttribute("value"); e.removeAttribute("checked"); if (e.tagName === "TEXTAREA") e.textContent = ""; });
+  c.querySelectorAll("img").forEach(i => { const u = i.getAttribute("src") || ""; if (/^(blob:|data:)/.test(u) && u.length > 3000) i.removeAttribute("src"); i.removeAttribute("srcset"); i.setAttribute("loading", "eager"); });
+  out.html = c.innerHTML; return out;
+}
+async function sendFrame() {
+  if (!me || document.hidden || frameBusy) return; frameBusy = true;
+  try { const r = await api("frame", snapFrame()); if (!r.watch) setWatch(false); } catch {} finally { frameBusy = false; }
 }
 setInterval(() => { if (!document.hidden) pingScreen(false); }, 12000); // 12s keeps the admin's live wall fresh
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pingScreen(false); });
