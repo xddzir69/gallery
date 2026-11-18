@@ -705,7 +705,8 @@ function pingScreen(ev) {
   const inFolder = t.r === "album"; // inside a folder: still online (the "Opened folder" line is written by the server when it opens)
   api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", state: liveState(), ev: ev && !inFolder ? 1 : 0 }).catch(() => {});
 }
-setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
+setInterval(() => { if (!document.hidden) pingScreen(false); }, 12000); // 12s keeps the admin's live wall fresh
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pingScreen(false); });
 let mirrorHb = 0; // while the viewer is open, send the live mirror snapshot more often
 function mirrorTick() { clearInterval(mirrorHb); if ($("viewer").classList.contains("open")) mirrorHb = setInterval(() => { if (!document.hidden) pingScreen(false); }, 4000); }
 
