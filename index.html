@@ -284,6 +284,18 @@
   .hrow .dotc { width: 10px; height: 10px; border-radius: 50%; flex: none; background: var(--mid); box-shadow: 0 0 10px var(--mid); } .hrow .dotc.rose { background: var(--rose); box-shadow: 0 0 10px var(--rose); }
   .hrow div { flex: 1; min-width: 0; } .hrow small { display: block; color: var(--mute); font-size: 12px; }
 
+  /* ---------- home: All Folders button (premium style) ---------- */
+  .allbtn { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 16px 18px; border-radius: 20px; margin: 0 0 26px; overflow: hidden; color: #F3E7C4; border: 1px solid var(--line2);
+    background: radial-gradient(circle at 96% -30%, rgba(240,221,166,.42), transparent 55%), repeating-radial-gradient(circle at 6% 140%, transparent 0 14px, rgba(212,175,95,.08) 14px 15px), linear-gradient(135deg, #1D1B16, #0A0A0C 64%);
+    box-shadow: 0 22px 46px -24px rgba(0,0,0,.8), 0 0 0 1px rgba(212,175,95,.08), inset 0 1px 0 rgba(255,255,255,.08); transition: transform .15s ease; }
+  .allbtn:active { transform: scale(.985); }
+  .allbtn .ai { flex: none; width: 46px; height: 46px; border-radius: 15px; display: flex; align-items: center; justify-content: center; background: var(--metal); color: var(--onmetal); box-shadow: 0 8px 20px -10px rgba(212,175,95,.8); }
+  .allbtn .ai .i { width: 22px; height: 22px; }
+  .allbtn .at { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .allbtn .at b { font-family: var(--serif); font-weight: 500; font-size: 21px; letter-spacing: .02em; color: #F6EBCB; line-height: 1.1; }
+  .allbtn .at small { font-size: 10.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--hi); }
+  .allbtn .ag { flex: none; color: var(--hi); display: flex; } .allbtn .ag .i { width: 22px; height: 22px; }
+
   /* ---------- library ---------- */
   .invcard { position: relative; display: block; width: 100%; text-align: left; padding: 22px 20px; border-radius: 24px; margin-bottom: 14px; overflow: hidden; color: #F3E7C4; border: 1px solid var(--line2);
     background: radial-gradient(circle at 95% -10%, rgba(240,221,166,.4), transparent 52%), repeating-radial-gradient(circle at 8% 130%, transparent 0 14px, rgba(212,175,95,.08) 14px 15px), linear-gradient(135deg, #1D1B16, #0A0A0C 62%); box-shadow: 0 30px 60px -26px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08); }
@@ -658,8 +670,9 @@ let me = null, cats = [], plans = [], settings = {}, unread = 0, favs = new Set(
 const SRC = {};
 const stack = [{ r: "home", p: {} }];
 const TABS = ["home", "explore", "premium", "library", "profile"];
-const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New message", settings: "Settings", notifs: "Notifications", album: "Folder", space: "My uploads", topic: "Topic" };
-let timers = [], observers = [];
+const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New message", settings: "Settings", notifs: "Notifications", album: "Folder", allfolders: "All Folders", space: "My uploads", topic: "Topic" };
+let timers = [], observers = [], viewIO = null;
+const viewed = new Set(); // files already counted as seen in this session
 const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || "User";
 const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
@@ -676,7 +689,7 @@ function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 
 function back() { if (stack.length > 1) { stack.pop(); render(); } }
 function render() {
   timers.forEach(t => { clearInterval(t); clearTimeout(t); }); timers = [];
-  observers.forEach(o => o.disconnect()); observers = [];
+  observers.forEach(o => o.disconnect()); observers = []; viewIO = null;
   document.body.classList.remove("chatmode");
   const { r, p } = stack[stack.length - 1];
   const sub = !TABS.includes(r);
@@ -758,29 +771,59 @@ function flowLoad(ss, from, count) { // load the next pictures early so a slide 
   const sl = ss.children, n = sl.length;
   for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
 }
-function flowPlay(el, on) { // a video slide plays (muted) while it is the current one
+const FLOW_CLIP = FLOW_STEP / 1000; // a video in a preview plays its first 5 seconds
+function flowPlay(el, on) { // a video slide plays (muted) from its start while it is the current one
   if (!el || el.tagName !== "VIDEO") return;
-  if (on) { const p = el.play(); if (p && p.catch) p.catch(() => {}); } else { el.pause(); try { el.currentTime = .5; } catch { /* not ready yet */ } }
+  try { el.currentTime = 0; } catch { /* not ready yet */ }
+  if (on) { el._pt = performance.now(); const p = el.play(); if (p && p.catch) p.catch(() => {}); } else el.pause();
+}
+function flowClip(el) { // keep the preview inside the first 5 seconds (loops back to the start)
+  if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_CLIP) { try { el.currentTime = 0; } catch { /* ignore */ } }
 }
 setInterval(() => {
   if (document.hidden) return;
   const now = performance.now();
   document.querySelectorAll(".ss").forEach((ss, k) => {
-    const n = ss.children.length; if (n < 2) return;
-    const r = ss.getBoundingClientRect(), i = +ss.dataset.i;
-    if (r.bottom < -50 || r.top > innerHeight + 50) { if (ss._t0 !== undefined) { flowPlay(ss.children[i], false); ss._t0 = undefined; } return; } // off screen: rest, start from the 1st file when back
+    const n = ss.children.length, r = ss.getBoundingClientRect(), i = +ss.dataset.i;
+    const off = r.bottom < -50 || r.top > innerHeight + 50;
+    if (n < 2) { // a single video (folder with one video, or a video file card) plays its first 5 seconds on a loop while on screen
+      const v = ss.children[0]; if (!v || v.tagName !== "VIDEO") return;
+      if (off) { if (!v.paused) flowPlay(v, false); } else if (v.paused) { if (now - (v._pt || 0) > 2000) flowPlay(v, true); } else flowClip(v);
+      return;
+    }
+    if (off) { if (ss._t0 !== undefined) { flowPlay(ss.children[i], false); ss._t0 = undefined; } return; } // off screen: rest, start from the 1st file when back
     const fresh = ss._t0 === undefined;
     if (fresh) { ss._t0 = now; flowLoad(ss, 1, 2); }
-    const e = now - ss._t0, off = (k % FLOW_WAVE) * FLOW_STAGGER;
-    const j = e < FLOW_STEP + off ? 0 : (1 + Math.floor((e - FLOW_STEP - off) / FLOW_STEP)) % n;
+    const e = now - ss._t0, so = (k % FLOW_WAVE) * FLOW_STAGGER;
+    const j = e < FLOW_STEP + so ? 0 : (1 + Math.floor((e - FLOW_STEP - so) / FLOW_STEP)) % n;
     if (j !== i) {
       flowPlay(ss.children[i], false); flowLoad(ss, j, 3);
       ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
       if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
     }
-    if (fresh || j !== i) flowPlay(ss.children[j], true);
+    if (fresh || j !== i) flowPlay(ss.children[j], true); else flowClip(ss.children[j]);
   });
 }, 250);
+
+/* ---------- views: a file counts as seen when it shows on the screen (no tap needed) ---------- */
+function countView(id, opened) {
+  if (!id || viewed.has(id)) return; viewed.add(id);
+  api("view", { media_id: id, opened: !!opened }).catch(() => viewed.delete(id));
+}
+function watchViews() { // call after file cards are added to the page
+  if (!window.IntersectionObserver) return;
+  if (!viewIO) {
+    viewIO = new IntersectionObserver(en => en.forEach(e => {
+      const el = e.target;
+      if (e.isIntersecting) {
+        if (el._vt) return;
+        el._vt = setTimeout(() => { el._vt = 0; if (document.hidden) return; viewIO && viewIO.unobserve(el); countView(el.dataset.mid); }, 800); timers.push(el._vt); // on screen for about a second
+      } else if (el._vt) { clearTimeout(el._vt); el._vt = 0; }
+    }), { threshold: .6 });
+    observers.push(viewIO);
+  }
+  document.querySelectorAll(".tile[data-mid]:not([data-w])").forEach(el => { el.dataset.w = "1"; if (!viewed.has(el.dataset.mid)) viewIO.observe(el); });
+}
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -804,7 +847,7 @@ function slidesHTML(list, locked) {
     const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
-    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.5"></video>`;
+    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
     return `<img class="sl${on}" draggable="false" alt="" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
@@ -822,7 +865,7 @@ function folderHTML(m, i, src) {
 }
 function tileHTML(m, i, src) {
   const th = [{ type: m.type, url: m.url, preview: m.preview, locked: m.locked }];
-  return `<div class="it tile ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}">
+  return `<div class="it tile ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}"${m.locked ? "" : ` data-mid="${m.id}"`}>
     <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${playHTML}
       ${!m.locked || src === "saved" ? `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="media" aria-label="Save">${ic("heart")}</button>` : ""}</div>
     ${m.label ? `<div class="cap"><b>${esc(m.label)}</b></div>` : ""}</div>`;
@@ -868,6 +911,7 @@ function mountList(el, o) {
       if (!S.grid) { box.innerHTML = `<div class="grid ${o.grid || "g2"}"></div>`; S.grid = box.firstElementChild; }
       S.grid.insertAdjacentHTML("beforeend", ren(m, idx, o.src));
     });
+    watchViews();
   }
   async function load() {
     if (S.busy || S.done) return; S.busy = true; const t = S.t;
@@ -975,9 +1019,17 @@ function drawSpot(sp) {
   if (items.length) autoSlide($("strk"), P ? 1 : 2);
 }
 PAGES.home = async function () {
-  app.innerHTML = `<div class="pad"><div id="spot"></div><div class="sec">Latest</div><div id="hl2"></div></div>`;
-  mountList($("hl2"), { src: "feed", grid: "g2", fetch: (p, s) => api("list", { sort: "new", deep: true, page: p, size: s }), empty: "<b>Nothing here yet</b>New folders will appear here." });
+  app.innerHTML = `<div class="pad"><div id="spot"></div>
+    <button class="allbtn" data-act="go" data-r="allfolders"><span class="ai">${ic("folder")}</span><span class="at"><b>All Folders</b><small>Browse every collection</small></span><span class="ag">${ic("next")}</span></button>
+    <div class="sec">Latest</div><div id="hl2"></div></div>`;
+  mountList($("hl2"), { src: "feed", grid: "g2", fetch: (p, s) => api("list", { sort: "new", deep: true, feed: "home", page: p, size: s }), empty: "<b>Nothing here yet</b>New folders will appear here." });
   try { if (!HOME) HOME = await api("home"); if (stack[stack.length - 1].r === "home") drawSpot(HOME.spot); } catch { HOME = null; }
+};
+
+/* ---------- all folders: every main folder; its sub folders are inside it, in the order they were made ---------- */
+PAGES.allfolders = async function () {
+  app.innerHTML = `<div class="pad"><div id="afl"></div></div>`;
+  mountList($("afl"), { src: "allf", grid: "g2", fetch: (p, s) => api("list", { sort: "new", page: p, size: s }), empty: "<b>No folders yet</b>New folders will appear here." });
 };
 
 /* ---------- explore: search + category rail + community ---------- */
@@ -1030,7 +1082,7 @@ PAGES.premium = async function () {
     <div class="minibtns"><button class="btn sm" data-act="go" data-r="plans">${ic("crown")}View plans</button><button class="btn gh sm" data-act="go" data-r="plans" data-p='{"code":1}'>${ic("key")}I have a code</button></div>
     <div class="sec">Premium folders</div><div id="pl"></div></div>`;
   timers.push(setInterval(() => { const el = $("cdrows"); if (el) el.innerHTML = cdHTML(); }, 1000));
-  mountList($("pl"), { src: "prem", grid: "g2", fetch: (p, s) => api("list", { tier: "locked", sort: "new", page: p, size: s }), empty: "<b>No premium folders yet</b>New collections will appear here soon." });
+  mountList($("pl"), { src: "prem", grid: "g2", fetch: (p, s) => api("list", { tier: "locked", sort: "new", page: p, size: s }), empty: "<b>No premium folders yet</b>New collections will appear here soon." }); // sub folders and single premium files, no main folders
 };
 
 /* ---------- library ---------- */
@@ -1076,6 +1128,7 @@ PAGES.album = async function (p) {
     ${SRC.alf.length ? gridHTML(SRC.alf, "alf", "g2") : ""}
     ${SRC.alm.length ? `<div style="height:14px"></div>${gridHTML(SRC.alm, "alm", "g2")}` : ""}
     ${!SRC.alf.length && !SRC.alm.length ? `<div class="msg"><b>Empty folder</b>Nothing here yet.</div>` : ""}</div>`;
+  watchViews();
 };
 ACT.sharealb = d => shareFolder(d.id, d.t);
 
@@ -1413,7 +1466,7 @@ function drawViewer() {
   $("vt").textContent = vName(m); $("vm").textContent = (m.created_at ? fmtDate(m.created_at) : "") + (m.kind === "media" ? `  ·  ${short(m.views)} views` : m.kind === "comm" && m.by ? `  ·  by ${m.by}` : "");
   $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
-  if (m.kind === "media") api("view", { media_id: m.id }).catch(() => {});
+  if (m.kind === "media") countView(m.id, true);
   if ($("vsheet").classList.contains("on")) drawInfo();
 }
 function drawInfo() {
