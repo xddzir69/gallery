@@ -664,9 +664,40 @@ function makePreview(src, type) {
     else { const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.crossOrigin = "anonymous"; v.preload = "auto"; v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); }; v.onseeked = () => draw(v); v.onerror = () => fin(null); v.src = src; setTimeout(() => fin(null), 15000); }
   });
 }
-async function pushTG(title, body, tg_id, dry, albumId) {
+/* small square thumbnail (160 px JPEG, about 6-10 KB) for notifications; blur=true gives a soft version for premium folders */
+function makeThumb(src, blur) {
+  return new Promise(res => {
+    const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => {
+      try {
+        const S = 160, w = im.naturalWidth, h = im.naturalHeight, s = Math.min(w, h), sx = (w - s) / 2, sy = (h - s) / 2;
+        const c = document.createElement("canvas"); c.width = c.height = S; const x = c.getContext("2d"); x.imageSmoothingQuality = "high";
+        if (blur) { const t = document.createElement("canvas"); t.width = t.height = 14; t.getContext("2d").drawImage(im, sx, sy, s, s, 0, 0, 14, 14); x.drawImage(t, 0, 0, 14, 14, 0, 0, S, S); }
+        else x.drawImage(im, sx, sy, s, s, 0, 0, S, S);
+        res(c.toDataURL("image/jpeg", blur ? .6 : .8));
+      } catch { res(null); }
+    };
+    im.onerror = () => res(null); im.src = src;
+  });
+}
+/* the folder's thumbnail: its first photo (never a video). Saved on the folder so notifications and scheduled posts can use it. */
+async function folderThumb(album, okFiles) {
+  try {
+    const { data: cur } = await sb.from("albums").select("notify_thumb").eq("id", album.id).maybeSingle();
+    if (cur?.notify_thumb) return cur.notify_thumb;
+    let t = null;
+    if (Number(album.media_count) > 0) { // the folder already had files: use its own first photo
+      const { data: m } = await sb.from("media").select("path").eq("album_id", album.id).eq("type", "image").order("album_order").order("created_at").limit(1);
+      if (m?.[0]) { const u = (await sign([m[0].path]))[m[0].path]; if (u) t = await makeThumb(u); }
+    }
+    if (!t) { const f = (okFiles || []).find(x => (x.type || "").startsWith("image")); if (f) { const u = URL.createObjectURL(f); t = await makeThumb(u); URL.revokeObjectURL(u); } }
+    if (t) await sb.from("albums").update({ notify_thumb: t }).eq("id", album.id);
+    return t;
+  } catch { return null; } // run supabase_v13.sql if the column is missing
+}
+async function pushTG(title, body, tg_id, dry, albumId, thumb) {
   const { data: { session } } = await sb.auth.getSession();
-  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/notify`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY }, body: JSON.stringify({ title, body, tg_id: tg_id ? Number(tg_id) : undefined, open_url: `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}${albumId ? "?startapp=a_" + albumId : ""}`, dry_run: !!dry }) });
+  const r = await fetch(`${C.SUPABASE_URL}/functions/v1/notify`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + session.access_token, apikey: C.SUPABASE_ANON_KEY }, body: JSON.stringify({ title, body, thumb: thumb || undefined, tg_id: tg_id ? Number(tg_id) : undefined, open_url: `https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}${albumId ? "?startapp=a_" + albumId : ""}`, dry_run: !!dry }) });
   return r.json();
 }
 const setSetting = (k, v) => sb.from("settings").upsert({ key: k, value: String(v ?? "") });
@@ -810,7 +841,7 @@ async function refreshContent() {
 /* shared uploader: puts files into one folder (used by Upload and by Structure > Edit) */
 async function doUpload(files, album, access, log, prog) {
   const { data: top } = await sb.from("media").select("serial_no").order("serial_no", { ascending: false }).limit(1);
-  let serial = top?.[0]?.serial_no || 0, ok = 0, firstId = null; const base = Number(album.media_count) || 0;
+  let serial = top?.[0]?.serial_no || 0, ok = 0, firstId = null; const base = Number(album.media_count) || 0; const okFiles = [];
   for (const [i, f] of files.entries()) {
     const type = f.type.startsWith("video") ? "video" : "image", ext = (f.name.split(".").pop() || "bin").toLowerCase();
     const path = newKey(`${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`);
@@ -822,11 +853,12 @@ async function doUpload(files, album, access, log, prog) {
     const own = String(f._title || "").trim();
     const { data: row, error: de } = await sb.from("media").insert({ title: own || f.name, label: own || null, type, path, access, serial_no: serial, preview, album_id: album.id, album_order: base + i, ...(toIso(f._at) ? { created_at: toIso(f._at) } : {}) }).select("id,kind_no").single();
     if (de) { log.textContent += `  failed: ${de.message}\n`; await rmFiles([path]); serial--; continue; }
-    ok++; firstId = firstId || row.id; prog.style.width = Math.round(((i + 1) / files.length) * 100) + "%";
+    ok++; okFiles.push(f); firstId = firstId || row.id; prog.style.width = Math.round(((i + 1) / files.length) * 100) + "%";
     log.textContent += `  saved as ${type === "video" ? "V" : "P"}${row.kind_no ?? "?"}\n`;
   }
   if (firstId && !album.cover_media_id) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id);
-  return { ok, firstId };
+  const thumb = ok ? await folderThumb(album, okFiles) : null;
+  return { ok, firstId, thumb };
 }
 
 /* ---------- categories ---------- */
@@ -928,8 +960,11 @@ $("upBtn").onclick = async () => {
   $("log").textContent += `\nDone: ${r.ok}/${picked.length} in “${album.title}”`;
   if (r.ok && $("upNotif").checked) {
     const body = `${album.title} (${r.ok} ${r.ok > 1 ? "files" : "file"})`;
-    await sb.from("notifications").insert({ kind: "post", title: "New post added", body, media_id: r.firstId, popup: true });
-    if ($("upPush").checked) { try { const x = await pushTG("New post added", body, undefined, false, tgt); $("log").textContent += `\nTelegram push: ${x.sent ?? 0} sent, ${x.failed ?? 0} failed${x.error ? " (" + x.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
+    const nrow = { kind: "post", title: "New post added", body, media_id: r.firstId, popup: true };
+    let ne = (await sb.from("notifications").insert({ ...nrow, album_id: tgt, thumb: r.thumb || null })).error;
+    if (ne) await sb.from("notifications").insert(nrow); // before supabase_v13.sql: no folder link or thumbnail
+    const premium = have > 0 || (AR[want] ?? 0) > 0, tgThumb = r.thumb ? (premium ? await makeThumb(r.thumb, true) : r.thumb) : null;
+    if ($("upPush").checked) { try { const x = await pushTG("New post added", body, undefined, false, tgt, tgThumb); $("log").textContent += `\nTelegram push: ${x.sent ?? 0} sent, ${x.failed ?? 0} failed${x.error ? " (" + x.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
   }
   picked = []; drawPicked(); $("upBtn").disabled = false; await loadAlbumsCache(); if (r.ok) toast(`${r.ok} uploaded`);
 };

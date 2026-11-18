@@ -118,6 +118,10 @@
   .pill.ok { color: var(--ok); } .pill.warn { color: var(--gold); } .pill.bad { color: var(--danger); }
   .code { display: flex; gap: 10px; }
   .code input { flex: 1; min-width: 0; padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg2); color: var(--text); font: 600 16px var(--body); letter-spacing: .08em; text-transform: uppercase; outline: none; }
+  .rpk { margin-top: 12px; display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-radius: 14px; border: 1px solid var(--line2); background: color-mix(in srgb, var(--mid) 9%, var(--card)); font-size: 13px; }
+  .rpk b { font-family: var(--serif); font-weight: 500; font-size: 16px; } .rpk span { color: var(--mute); margin-left: auto; text-align: right; }
+  .rpk.t-lite { border-color: rgba(229,138,152,.55); background: rgba(229,138,152,.09); } .rpk.bad { border-color: var(--line); background: var(--card); } .rpk.bad span { margin: 0; color: var(--danger); }
+  .code .btn.pulse { animation: rpulse 1.3s ease-in-out 3; } @keyframes rpulse { 50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--mid) 30%, transparent); } }
   .chipline { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .chipline button { padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); font-size: 13.5px; font-weight: 600; color: var(--mute); }
   .chipline button.on { background: var(--metal); color: var(--onmetal); border-color: transparent; }
@@ -337,6 +341,7 @@
   .badges { display: grid; gap: 12px; }
   .badge { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); opacity: .6; }
   .badge.got { opacity: 1; }
+  .badge.got.spent { opacity: .72; }
   .badge .m { width: 54px; height: 54px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 21px; font-weight: 600; background: var(--card2); box-shadow: inset 0 0 0 1px var(--line); color: var(--mute); position: relative; }
   .badge.rose.got { border-color: rgba(229,138,152,.6); background: linear-gradient(135deg, rgba(229,138,152,.16), var(--card)); }
   .badge.rose.got .m { background: linear-gradient(135deg, var(--rose2), var(--rose)); color: #3A0F18; box-shadow: 0 8px 20px -8px var(--rose); }
@@ -430,10 +435,21 @@
   /* ---------- settings + notifications ---------- */
   .srow { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 15px 0; border-bottom: 1px solid var(--line); width: 100%; text-align: left; }
   .srow:last-child { border: 0; } .srow small { display: block; color: var(--mute); font-size: 12.5px; }
-  .nf { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; padding: 14px; border-radius: 18px; background: linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line); margin-bottom: 10px; }
-  .nf .ic { width: 40px; height: 40px; border-radius: 13px; background: color-mix(in srgb, var(--mid) 12%, transparent); border: 1px solid var(--line2); display: flex; align-items: center; justify-content: center; color: var(--gold); flex: none; }
-  .nf.un { border-color: var(--line2); } .nf b { display: block; font-size: 14.5px; font-weight: 600; } .nf p { font-size: 13.5px; color: var(--mute); margin-top: 2px; } .nf small { color: var(--mute); font-size: 12px; margin-left: auto; flex: none; }
-  .nf .bc { display: flex; align-items: center; gap: 8px; margin-top: 8px; } .nf .bc code { padding: 5px 10px; border-radius: 9px; background: var(--bg2); border: 1px dashed var(--line2); font: 700 12.5px ui-monospace, Menlo, monospace; letter-spacing: .06em; user-select: text; -webkit-user-select: text; }
+  .nf { --a1: var(--mid); --a2: var(--lo); position: relative; display: flex; gap: 11px; align-items: center; width: 100%; text-align: left; padding: 9px 12px 9px 11px; border-radius: 16px; margin-bottom: 8px; overflow: hidden;
+    background: linear-gradient(115deg, color-mix(in srgb, var(--a1) 15%, var(--card)), var(--card) 64%); border: 1px solid color-mix(in srgb, var(--a1) 26%, var(--line)); box-shadow: 0 12px 26px -20px var(--a1); }
+  .nf::before { content: ""; position: absolute; left: 0; top: 11px; bottom: 11px; width: 3px; border-radius: 0 3px 3px 0; background: linear-gradient(var(--a1), var(--a2)); }
+  .nf.un { border-color: color-mix(in srgb, var(--a1) 58%, var(--line)); } .nf.un::after { content: ""; position: absolute; right: 10px; top: 10px; width: 7px; height: 7px; border-radius: 50%; background: var(--a1); box-shadow: 0 0 10px var(--a1); }
+  .k-post { --a1: #7FA6FF; --a2: #B28CFF; } .k-premium { --a1: #F0DDA6; --a2: #D4AF5F; } .k-premium.rose, .pop.rose { --a1: #F6BCC6; --a2: #E58A98; } .k-notice { --a1: #FFC074; --a2: #FF8F5E; } .k-ticket { --a1: #62D8BC; --a2: #3FA9DB; } .k-custom { --a1: #EE8FD6; --a2: #9D8FFF; }
+  .nth { position: relative; flex: none; width: 44px; height: 44px; border-radius: 13px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--a1), var(--a2)); color: #1B1405; box-shadow: 0 8px 18px -10px var(--a1), inset 0 1px 0 rgba(255,255,255,.35); }
+  .nth .i { width: 20px; height: 20px; stroke-width: 1.8; } .nth img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; } .nth.lk img { filter: blur(5px); transform: scale(1.25); } .nth.lk::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.28); }
+  .nf .nb { flex: 1; min-width: 0; } .nf .nt { display: flex; align-items: baseline; gap: 8px; padding-right: 12px; }
+  .nf .nt b { flex: 1; min-width: 0; font-size: 13.5px; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .nf .nt small { flex: none; font-size: 11px; color: var(--mute); }
+  .nf p { margin: 2px 0 0; font-size: 12.5px; line-height: 1.35; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ncode { display: flex; align-items: center; gap: 6px; margin-top: 7px; flex-wrap: wrap; }
+  .ncode code { padding: 4px 9px; border-radius: 9px; font: 700 12px ui-monospace, Menlo, monospace; letter-spacing: .08em; color: var(--text); background: color-mix(in srgb, var(--a1) 12%, var(--bg2)); border: 1px solid color-mix(in srgb, var(--a1) 40%, transparent); user-select: text; -webkit-user-select: text; }
+  .ncode .cb { padding: 5px 11px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text); background: color-mix(in srgb, var(--a1) 14%, transparent); border: 1px solid color-mix(in srgb, var(--a1) 45%, transparent); }
+  .ncode .cb.go { color: #1B1405; border-color: transparent; background: linear-gradient(135deg, var(--a1), var(--a2)); }
+  .ncode.used code { text-decoration: line-through; opacity: .5; } .ncode .ust { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--mute); }
 
   /* ---------- viewer ---------- */
   #viewer { position: fixed; inset: 0; z-index: 100; background: #030504; display: none; } #viewer.open { display: block; }
@@ -464,21 +480,19 @@
   #sheet .opt { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 14px 6px; border-bottom: 1px solid var(--line); font-weight: 600; font-size: 15px; } #sheet .opt:last-of-type { border: 0; } #sheet .opt .i { color: var(--gold); width: 20px; height: 20px; } #sheet .opt.dg { color: var(--danger); } #sheet .opt.dg .i { color: var(--danger); }
   #sheet .sheadr { text-align: left; font-family: var(--serif); font-size: 19px; margin-bottom: 8px; }
   #popup { position: fixed; left: 50%; top: calc(68px + env(safe-area-inset-top)); transform: translateX(-50%); z-index: 150; width: min(600px, calc(100% - 24px)); display: none; pointer-events: none; } #popup.open { display: block; }
-  .pop { pointer-events: auto; position: relative; display: flex; align-items: stretch; width: 100%; text-align: left; min-height: 104px; border-radius: 24px; overflow: hidden; cursor: pointer; border: 1.5px solid transparent; background: linear-gradient(135deg, var(--card2), var(--card)) padding-box, var(--metal) border-box; box-shadow: 0 0 0 1px rgba(205,170,94,.14), 0 24px 60px rgba(0,0,0,.6), 0 0 40px rgba(205,170,94,.2); animation: drop .6s cubic-bezier(.2,1.15,.3,1); }
-  .pop::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 38%, rgba(255,236,190,.2) 50%, transparent 62%); transform: translateX(-130%); animation: pshine 2.2s .6s ease-out 1 forwards; }
+  .pop { --a1: var(--mid); --a2: var(--lo); pointer-events: auto; position: relative; display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 11px 40px 14px 12px; border-radius: 20px; overflow: hidden; cursor: pointer; border: 1.5px solid transparent;
+    background: linear-gradient(120deg, color-mix(in srgb, var(--a1) 20%, var(--card2)), var(--card) 70%) padding-box, linear-gradient(135deg, var(--a1), var(--a2)) border-box; box-shadow: 0 20px 48px rgba(0,0,0,.55), 0 0 34px color-mix(in srgb, var(--a1) 28%, transparent); animation: drop .6s cubic-bezier(.2,1.15,.3,1); }
+  .pop::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 38%, rgba(255,255,255,.18) 50%, transparent 62%); transform: translateX(-130%); animation: pshine 2.2s .6s ease-out 1 forwards; }
   @keyframes pshine { to { transform: translateX(130%); } }
   @keyframes drop { from { transform: translateY(-26px) scale(.95); opacity: 0; } }
-  .pop .pi2 { width: 84px; flex: none; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--mid) 26%, transparent), transparent 72%); }
-  .pop .pi2 > span { width: 52px; height: 52px; border-radius: 50%; background: var(--metal); color: var(--onmetal); display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 26px -8px var(--mid), inset 0 1px 0 rgba(255,255,255,.35); }
-  .pop .pi2 .i { width: 24px; height: 24px; stroke-width: 1.7; }
-  .pop .go { display: inline-flex; align-items: center; gap: 6px; margin-top: 9px; padding: 6px 14px; border-radius: 999px; background: var(--metal); color: var(--onmetal); font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; } .pop .go .i { width: 12px; height: 12px; }
-  .pop .pb2 { flex: 1; min-width: 0; padding: 13px 44px 17px 16px; }
-  .pop .kd { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); }
-  .pop h3 { font-family: var(--serif); font-weight: 500; font-size: 18px; line-height: 1.15; margin: 4px 0 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .pop p { margin: 0; font-size: 13px; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .pop .pcode { display: flex; align-items: center; gap: 8px; margin-top: 8px; } .pop .pcode code { padding: 4px 10px; border-radius: 9px; background: var(--bg2); border: 1px dashed var(--line2); font: 700 12.5px ui-monospace, Menlo, monospace; letter-spacing: .06em; }
-  .pop .x { position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--mute); background: rgba(128,128,128,.14); } .pop .x .i { width: 14px; height: 14px; }
-  .pop .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: var(--metal); transform-origin: left; animation: drain var(--dur, 5s) linear forwards; }
+  .pop .nth { width: 58px; height: 58px; border-radius: 16px; } .pop .nth .i { width: 24px; height: 24px; }
+  .pop .pb2 { flex: 1; min-width: 0; }
+  .pop .kd { font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--a1); }
+  .pop h3 { font-family: var(--serif); font-weight: 500; font-size: 17px; line-height: 1.15; margin: 2px 0 2px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop p { margin: 0; font-size: 12.5px; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop .go { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; padding: 5px 12px; border-radius: 999px; background: linear-gradient(135deg, var(--a1), var(--a2)); color: #1B1405; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; } .pop .go .i { width: 12px; height: 12px; }
+  .pop .x { position: absolute; right: 8px; top: 8px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--mute); background: rgba(128,128,128,.14); } .pop .x .i { width: 13px; height: 13px; }
+  .pop .bar { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: linear-gradient(90deg, var(--a1), var(--a2)); transform-origin: left; animation: drain var(--dur, 5s) linear forwards; }
   @keyframes drain { to { transform: scaleX(0); } }
   #toast { position: fixed; z-index: 300; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--card2); border: 1px solid var(--line2); color: var(--text); box-shadow: var(--shadow); padding: 10px 20px; border-radius: 999px; font-size: 13.5px; font-weight: 600; display: none; max-width: calc(100% - 40px); text-align: center; }
   #sheet .filerow .fnm{flex:1;width:auto;min-width:0;margin:0;padding:6px 2px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;font-size:13.5px}
@@ -1139,8 +1153,21 @@ const INVITE_TEXT = "Come and see this gallery.";
 ACT.shareTg = () => tgShare(refLink(), INVITE_TEXT);
 ACT.shareWeb = () => { const u = webLink(); if (navigator.share) navigator.share({ title: C.APP_TITLE, text: INVITE_TEXT, url: u }).catch(() => {}); else tgShare(u, INVITE_TEXT + " Open in your browser and log in with Telegram."); };
 ACT.shareBoth = () => tgShare(refLink(), INVITE_TEXT + "\nIf it doesn't open the app, use the browser link: " + webLink());
-ACT.usecode = d => nav("plans", { code: 1, prefill: d.code });
-const rewardLabel = m => (m.tier === "expensive" ? "Rose + Royal" : "Premium Rose") + " · " + plural(m.days, "day");
+ACT.usecode = d => { if ($("popup").classList.contains("open")) closePopup(); haptic("light"); nav("plans", { code: 1, prefill: d.code }); };
+const rewardLabel = m => (m.tier === "expensive" ? "Premium Royal" : "Premium Rose") + " · " + plural(m.days, "day");
+/* a reward code row: Copy + Use while it is ready, "Used" once it has been unlocked (the code expires after one use) */
+function codeRow(code, state, tier, cls) {
+  if (!code) return "";
+  const c = esc(code);
+  return state && state !== "ready"
+    ? `<div class="${cls || "ncode"} used"><code>${c}</code><span class="ust">Used · expired</span></div>`
+    : `<div class="${cls || "ncode"}"><code>${c}</code><button class="cb" data-act="copy" data-t="${c}">Copy</button><button class="cb go" data-act="usecode" data-code="${c}">Use</button></div>`;
+}
+/* codes look like YI8D-9PO4-A3WK: upper case, dashes added for a pasted 12-character code */
+function fmtCode(v) {
+  const c = String(v || "").toUpperCase().replace(/[^A-Z0-9-]/g, ""), raw = c.replace(/-/g, "");
+  return /^[A-Z0-9]{12}$/.test(raw) ? raw.replace(/^(.{4})(.{4})(.{4})$/, "$1-$2-$3") : c;
+}
 PAGES.referral = async function () {
   app.innerHTML = `<div class="pad"><div class="skel" style="aspect-ratio:2/1"></div></div>`;
   const r = await api("referrals"), n = r.count ?? me.ref_count ?? 0, ms = r.milestones || [];
@@ -1154,8 +1181,8 @@ PAGES.referral = async function () {
       <div class="btns"><button class="btn sm" data-act="shareWeb">${ic("share")}Share</button><button class="btn gh sm" data-act="copy" data-t="${esc(webLink())}">${ic("copy")}Copy</button></div></div>
     <button class="btn gh block" data-act="shareBoth" style="margin-bottom:8px">${ic("users")}Share both links in one message</button>
     <div class="sec" style="margin-top:22px">Rewards</div>
-    <div class="badges">${ms.map(m => `<div class="badge ${m.tier === "expensive" ? "royal" : "rose"} ${m.reached ? "got" : ""}"><div class="m">${m.n}</div><div class="bt"><b>${m.n} friends</b><span>${rewardLabel(m)}</span>
-      ${m.reached && m.code ? `<div class="bc"><code>${esc(m.code)}</code><button class="btn gh xs" data-act="copy" data-t="${esc(m.code)}">${ic("copy")}Copy</button><button class="btn xs" data-act="usecode" data-code="${esc(m.code)}">Use</button></div>` : m.reached ? "" : `<span style="display:block;margin-top:2px">${m.n - n} to go</span>`}</div></div>`).join("")}</div>
+    <div class="badges">${ms.map(m => `<div class="badge ${m.tier === "expensive" ? "royal" : "rose"} ${m.reached ? "got" : ""} ${m.reached && m.code_state && m.code_state !== "ready" ? "spent" : ""}" style="--a1:${m.tier === "expensive" ? "#F0DDA6" : "#F6BCC6"};--a2:${m.tier === "expensive" ? "#D4AF5F" : "#E58A98"}"><div class="m">${m.n}</div><div class="bt"><b>${m.n} friends</b><span>${rewardLabel(m)}</span>
+      ${m.reached && m.code ? codeRow(m.code, m.code_state, m.tier, "ncode") : m.reached ? `<span style="display:block;margin-top:2px">Preparing your code…</span>` : `<span style="display:block;margin-top:2px">${m.n - n} to go</span>`}</div></div>`).join("")}</div>
     ${(r.invited || []).length ? `<div class="sec" style="margin-top:24px">You invited</div><div class="box">${r.invited.map(t => `<div class="lrow"><span class="av">${t.avatar_url ? `<img src="${esc(t.avatar_url)}" alt="">` : esc(initial(t.name))}</span><span class="nm">${esc(t.name)}</span><span class="mute" style="font-size:12.5px">${fmtDate(t.created_at)}</span></div>`).join("")}</div>` : ""}</div>`;
 };
 
@@ -1169,10 +1196,23 @@ PAGES.plans = async function (p) {
   }).join("")}
     <button class="inv-mini" data-act="go" data-r="referral"><span class="ui">${ic("gift")}</span><div class="t"><b>Invite and earn</b><span class="s">${me.ref_count || 0} friends joined. Reach 5, 10, 20 or 50 to unlock Premium for free.</span></div>${ic("next", "mute")}</button>
     <div class="sec" id="codeAnchor">Premium unlock code</div>
-    <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Have a code from a referral reward or from us? Enter it here.</p>
-      <div class="code"><input id="cd" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocapitalize="characters" autocomplete="off" value="${esc(p?.prefill || "")}"><button class="btn" data-act="redeem">Unlock</button></div><div id="rdet"></div></div>
+    <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Have a code from a referral reward or from us? Paste it here. A Rose code opens Rose, a Royal code opens Royal.</p>
+      <div class="code"><input id="cd" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(fmtCode(p?.prefill || ""))}"><button class="btn${p?.prefill ? " pulse" : ""}" data-act="redeem">Unlock</button></div><div id="rpk"></div><div id="rdet"></div></div>
     <div class="sec" style="margin-top:22px">Unlock history</div><div class="box" id="rhist"><div class="skel" style="aspect-ratio:5/1"></div></div></div>`;
-  if (p?.code) setTimeout(() => { $("codeAnchor")?.scrollIntoView({ behavior: "smooth", block: "center" }); $("cd")?.focus(); }, 250);
+  if (p?.code) setTimeout(() => { $("codeAnchor")?.scrollIntoView({ behavior: "smooth", block: "center" }); if (!p.prefill) $("cd")?.focus(); }, 250);
+  const cd = $("cd"); let pkT = 0, pkSeq = 0;
+  const peek = async () => { // which plan does this code open? (nothing is used up)
+    const v = fmtCode(cd.value), box = $("rpk"); if (!box) return; const seq = ++pkSeq;
+    if (v.replace(/-/g, "").length < 8) { box.innerHTML = ""; return; }
+    box.innerHTML = `<div class="rpk bad"><span style="color:var(--mute)">Checking…</span></div>`;
+    try {
+      const r = await api("redeem_peek", { code: v }); if (seq !== pkSeq || !$("rpk")) return;
+      box.innerHTML = r.ok ? `<div class="rpk ${TIER[r.tier]?.cls || ""}"><b>${esc(TIER[r.tier]?.full || "Premium")}</b><span>${plural(r.days, "day")} · ready to unlock</span></div>` : `<div class="rpk bad"><span>${esc(r.message || "That code is not valid.")}</span></div>`;
+    } catch (e) { if (seq === pkSeq && $("rpk")) $("rpk").innerHTML = `<div class="rpk bad"><span>${esc(e.message)}</span></div>`; }
+  };
+  cd.addEventListener("input", () => { const f = fmtCode(cd.value); if (f !== cd.value) cd.value = f; clearTimeout(pkT); pkT = setTimeout(peek, 400); });
+  cd.addEventListener("keydown", e => { if (e.key === "Enter") ACT.redeem(); });
+  if (p?.prefill) peek();
   loadRHist();
 };
 async function loadRHist() {
@@ -1182,10 +1222,10 @@ async function loadRHist() {
   } catch { const el = $("rhist"); if (el) el.innerHTML = ""; }
 }
 ACT.redeem = async () => {
-  const code = $("cd").value.trim(); if (!code) return toast("Enter your code");
+  const code = fmtCode($("cd").value.trim()); if (!code) return toast("Enter your code");
   const btn = document.querySelector("[data-act=redeem]"); btn.disabled = true;
   try {
-    const r = await api("redeem", { code }); me = r.me; haptic("heavy"); $("cd").value = "";
+    const r = await api("redeem", { code }); me = r.me; haptic("heavy"); $("cd").value = ""; if ($("rpk")) $("rpk").innerHTML = "";
     $("rdet").innerHTML = `<div class="rdet ${TIER[r.tier]?.cls || ""}"><b>${TIER[r.tier]?.full || "Premium"} unlocked</b><div class="rw"><span>Plan</span><span>${esc(r.plan || TIER[r.tier]?.name || "")}</span></div><div class="rw"><span>Time added</span><span>${plural(r.days, "day")}</span></div><div class="rw"><span>Starts</span><span>${r.from ? fmtFull(r.from) : "Now"}</span></div><div class="rw"><span>Valid until</span><span>${r.until ? fmtFull(r.until) : ""}</span></div></div>`;
     toast("Premium unlocked"); loadRHist();
   } catch (e) { toast(e.message); haptic("heavy"); }
@@ -1416,19 +1456,23 @@ ACT.notify = async () => {
 /* ---------- notifications ---------- */
 const KIND = { post: ["image", "New post"], premium: ["crown", "Premium"], notice: ["notice", "Notice"], ticket: ["ticket", "Support"], custom: ["bell", "Update"] };
 let nfItems = [];
+const nfThumb = n => `<span class="nth${n.thumb_locked ? " lk" : ""}">${n.thumb ? `<img src="${esc(n.thumb)}" alt="">` : ic(KIND[n.kind]?.[0] || "bell")}</span>`;
+const nfCls = n => "k-" + (KIND[n.kind] ? n.kind : "custom") + (n.kind === "premium" && n.code_tier === "lite" ? " rose" : "");
 PAGES.notifs = async function () {
   app.innerHTML = `<div class="pad"><div id="nfl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
   const r = await api("notif_list"); nfItems = r.items;
-  $("nfl").innerHTML = r.items.length ? r.items.map(n => `<div class="nf ${n.unread ? "un" : ""}" data-act="nfopen" data-id="${n.id}"><span class="ic">${ic(KIND[n.kind]?.[0] || "bell")}</span><div style="flex:1;min-width:0"><b>${esc(n.title)}</b>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? `<div class="bc"><code>${esc(n.code)}</code><button class="btn gh xs" data-act="copy" data-t="${esc(n.code)}">${ic("copy")}Copy</button></div>` : ""}</div><small>${ago(n.created_at)}</small></div>`).join("")
+  $("nfl").innerHTML = r.items.length ? r.items.map(n => `<div class="nf ${nfCls(n)} ${n.unread ? "un" : ""}" data-act="nfopen" data-id="${n.id}">${nfThumb(n)}<div class="nb"><div class="nt"><b>${esc(n.title)}</b><small>${ago(n.created_at)}</small></div>${n.body ? `<p>${esc(n.body)}</p>` : ""}${codeRow(n.code, n.code_state, n.code_tier)}</div></div>`).join("")
     : `<div class="msg"><b>No notifications</b>New posts and rewards will show up here.</div>`;
   if (unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); }
 };
-ACT.nfopen = d => {
-  const n = nfItems.find(x => x.id === d.id); if (!n) return; haptic("light");
-  if (n.kind === "premium") return nav("plans", n.code ? { code: 1, prefill: n.code } : {});
+/* a tap goes straight to what the notification is about: a new post opens that folder, a reward opens the unlock box with the code in it */
+function nfGo(n) {
+  if (n.kind === "premium") return nav("plans", n.code && n.code_state !== "used" && n.code_state !== "expired" ? { code: 1, prefill: n.code } : {});
   if (n.kind === "ticket") return nav("tickets");
-  if (n.kind === "post") return n.album_id ? nav("album", { id: n.album_id, title: n.album_title }) : nav("home");
-};
+  if (n.album_id) return nav("album", { id: n.album_id, title: n.album_title });
+  return n.kind === "post" ? nav("home") : null;
+}
+ACT.nfopen = d => { const n = nfItems.find(x => x.id === d.id); if (!n) return; haptic("light"); nfGo(n); };
 
 /* ---------- viewer (pinch zoom, swipe, no download) ---------- */
 const V = { list: [], i: 0, fs: false, z: 1, x: 0, y: 0 };
@@ -1522,11 +1566,11 @@ document.addEventListener("keydown", e => { if (!$("viewer").classList.contains(
 /* ---------- landscape popup (5 seconds, Copy button for codes) ---------- */
 let popN = null, popT = 0;
 function showPopup(n) {
-  popN = n; const k = KIND[n.kind] || KIND.custom, sec = Math.min(10, Math.max(3, Number(settings.popup_seconds) || 5));
-  const box = $("popbox"); box.style.setProperty("--dur", sec + "s");
-  const cta = n.kind === "premium" ? "See plans" : n.kind === "ticket" ? "Open chat" : n.kind === "post" && n.album_id ? "View post" : "Open";
-  box.innerHTML = `<div class="pi2"><span>${ic(k[0])}</span></div>
-    <div class="pb2"><div class="kd">${ic("crown", "")}${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? `<div class="pcode"><code>${esc(n.code)}</code><button class="btn xs" data-act="copy" data-t="${esc(n.code)}">${ic("copy")}Copy</button></div>` : ""}<span class="go">${cta}${ic("next")}</span></div>
+  popN = n; const k = KIND[n.kind] || KIND.custom, base = Math.min(10, Math.max(3, Number(settings.popup_seconds) || 5));
+  const sec = n.code ? Math.max(base, 12) : base; // a reward needs time for Copy / Use
+  const box = $("popbox"); box.style.setProperty("--dur", sec + "s"); box.className = "pop " + nfCls(n);
+  const cta = n.kind === "ticket" ? "Open chat" : n.kind === "post" && n.album_id ? "View post" : n.kind === "premium" ? "See plans" : "Open";
+  box.innerHTML = `${nfThumb(n)}<div class="pb2"><div class="kd">${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? codeRow(n.code, n.code_state, n.code_tier) : `<span class="go">${cta}${ic("next")}</span>`}</div>
     <button class="x" data-act="popclose" aria-label="Close">${ic("close")}</button><i class="bar"></i>`;
   $("popup").classList.add("open"); haptic("medium"); clearTimeout(popT); popT = setTimeout(closePopup, sec * 1000);
 }
@@ -1535,7 +1579,7 @@ function closePopup() {
   if (popN && unread) { unread = 0; drawBell(); api("notif_seen").catch(() => {}); } popN = null;
 }
 ACT.popclose = () => closePopup();
-ACT.popgo = () => { const n = popN; closePopup(); if (!n) return; if (n.kind === "premium") nav("plans", n.code ? { code: 1, prefill: n.code } : {}); else if (n.kind === "ticket") nav("tickets"); else if (n.kind === "post" && n.album_id) nav("album", { id: n.album_id, title: n.album_title }); else nav("notifs"); };
+ACT.popgo = () => { const n = popN; closePopup(); if (!n) return; if (["premium", "ticket"].includes(n.kind) || n.album_id) nfGo(n); else nav("notifs"); };
 
 /* ---------- start ---------- */
 function endSplash() { setTimeout(() => $("splash").classList.add("done"), 1500); }
