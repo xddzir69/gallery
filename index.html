@@ -143,7 +143,7 @@
   .th { position: relative; aspect-ratio: 4/5; border-radius: 18px; overflow: hidden; background: linear-gradient(150deg, var(--card2), var(--bg2)); outline: 1px solid var(--line); outline-offset: -1px; box-shadow: 0 16px 30px -18px rgba(0,0,0,.7); isolation: isolate; }
   .g3 .th { aspect-ratio: 1; border-radius: 12px; }
   .ss { position: absolute; inset: 0; }
-  .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .45s ease; background: center/cover no-repeat; }
+  .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; background: center/cover no-repeat; }
   .sl.on { opacity: 1; }
   video.sl { background: #000; }
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
@@ -751,25 +751,34 @@ function openDeepLink() {
   if (m) nav("album", { id: m[1] });
 }
 
-/* ---------- preview flow: 1st file 3s, then every next file 1s (4s, 5s, 6s ...), then it starts again ---------- */
-const FLOW_FIRST = 3000, FLOW_STEP = 1000;
-const flowIndex = (n, ms) => { const p = ms % (FLOW_FIRST + (n - 1) * FLOW_STEP); return p < FLOW_FIRST ? 0 : 1 + Math.floor((p - FLOW_FIRST) / FLOW_STEP); };
-function flowLoad(ss, from, count) { // load the next pictures a little early so a 1 second slide is never empty
+/* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
+   Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
+const FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10;
+function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
   for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
+}
+function flowPlay(el, on) { // a video slide plays (muted) while it is the current one
+  if (!el || el.tagName !== "VIDEO") return;
+  if (on) { const p = el.play(); if (p && p.catch) p.catch(() => {}); } else { el.pause(); try { el.currentTime = .5; } catch { /* not ready yet */ } }
 }
 setInterval(() => {
   if (document.hidden) return;
   const now = performance.now();
-  document.querySelectorAll(".ss").forEach(ss => {
+  document.querySelectorAll(".ss").forEach((ss, k) => {
     const n = ss.children.length; if (n < 2) return;
-    const r = ss.getBoundingClientRect();
-    if (r.bottom < -50 || r.top > innerHeight + 50) { ss._t0 = undefined; return; } // off screen: wait, and start from the 1st file again when it comes back
-    if (ss._t0 === undefined) { ss._t0 = now; flowLoad(ss, 1, 2); }
-    const j = flowIndex(n, now - ss._t0), i = +ss.dataset.i; if (j === i) return;
-    flowLoad(ss, j, 3);
-    ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
-    if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
+    const r = ss.getBoundingClientRect(), i = +ss.dataset.i;
+    if (r.bottom < -50 || r.top > innerHeight + 50) { if (ss._t0 !== undefined) { flowPlay(ss.children[i], false); ss._t0 = undefined; } return; } // off screen: rest, start from the 1st file when back
+    const fresh = ss._t0 === undefined;
+    if (fresh) { ss._t0 = now; flowLoad(ss, 1, 2); }
+    const e = now - ss._t0, off = (k % FLOW_WAVE) * FLOW_STAGGER;
+    const j = e < FLOW_STEP + off ? 0 : (1 + Math.floor((e - FLOW_STEP - off) / FLOW_STEP)) % n;
+    if (j !== i) {
+      flowPlay(ss.children[i], false); flowLoad(ss, j, 3);
+      ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
+      if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
+    }
+    if (fresh || j !== i) flowPlay(ss.children[j], true);
   });
 }, 250);
 
@@ -795,7 +804,7 @@ function slidesHTML(list, locked) {
     const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
-    if (t.type === "video") return t.preview ? `<div class="sl${on}"${v} style="${pv}"></div>` : `<video class="sl${on}" data-v="1" muted playsinline preload="metadata" ${key}="${esc(t.url)}#t=0.5"></video>`;
+    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.5"></video>`;
     return `<img class="sl${on}" draggable="false" alt="" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
