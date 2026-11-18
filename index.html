@@ -780,19 +780,22 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-const FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10;
+let FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+function applyFlow() {
+  const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
+  FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+}
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
   for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
 }
-const FLOW_CLIP = FLOW_STEP / 1000; // a video in a preview plays its first 5 seconds
 function flowPlay(el, on) { // a video slide plays (muted) from its start while it is the current one
   if (!el || el.tagName !== "VIDEO") return;
   try { el.currentTime = 0; } catch { /* not ready yet */ }
   if (on) { el._pt = performance.now(); const p = el.play(); if (p && p.catch) p.catch(() => {}); } else el.pause();
 }
 function flowClip(el) { // keep the preview inside the first 5 seconds (loops back to the start)
-  if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_CLIP) { try { el.currentTime = 0; } catch { /* ignore */ } }
+  if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_STEP / 1000) { try { el.currentTime = 0; } catch { /* ignore */ } }
 }
 setInterval(() => {
   if (document.hidden) return;
@@ -1604,7 +1607,7 @@ function ageCheck() {
   if (!inTg && !webAuth) { landing(); return endSplash(); }
   try {
     const r = await api("init");
-    me = r.me; cats = r.categories || []; plans = r.plans || []; settings = r.settings || {}; applyBlur(); unread = r.unread || 0; favs = new Set(r.favs || []);
+    me = r.me; cats = r.categories || []; plans = r.plans || []; settings = r.settings || {}; applyBlur(); applyFlow(); unread = r.unread || 0; favs = new Set(r.favs || []);
     const st = Date.parse(r.server_time); if (!isNaN(st)) clockSkew = st - Date.now();
     render(); openDeepLink();
     if (r.popup) setTimeout(() => showPopup(r.popup), 1500);
