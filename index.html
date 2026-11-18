@@ -693,8 +693,9 @@ const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
 const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
 function pingScreen(ev) {
-  if (!me) return; const t = stack[stack.length - 1]; if (!t || t.r === "album") return;
-  api("ping", { screen: SCREEN_NAME[t.r] || t.r, ev: ev ? 1 : 0 }).catch(() => {});
+  if (!me) return; const t = stack[stack.length - 1]; if (!t) return;
+  const inFolder = t.r === "album"; // inside a folder: still online (the "Opened folder" line is written by the server when it opens)
+  api("ping", { screen: inFolder ? "Folder" : (SCREEN_NAME[t.r] || t.r), detail: inFolder ? String(t.p?.title || "") : "", ev: ev && !inFolder ? 1 : 0 }).catch(() => {});
 }
 setInterval(() => { if (!document.hidden) pingScreen(false); }, 45000);
 
