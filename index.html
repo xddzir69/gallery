@@ -149,6 +149,11 @@
   .ss { position: absolute; inset: 0; }
   .sl { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .9s ease; background: center/cover no-repeat; }
   .sl.on { opacity: 1; }
+  /* V19: tiny blurred preview shows first, the thumbnail fades in sharp when it arrives */
+  img.sl.ld, img.cmi.ld, #vimg.ld { animation: blurIn .5s ease-out; }
+  @keyframes blurIn { from { filter: blur(9px); } to { filter: blur(0); } }
+  .cmi.sk { background: linear-gradient(100deg, var(--card2) 30%, var(--card) 50%, var(--card2) 70%); background-size: 200% 100%; animation: skm 1.3s linear infinite; }
+  @keyframes skm { to { background-position: -200% 0; } }
   video.sl { background: #000; }
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
   .th .pl { position: absolute; z-index: 2; left: 8px; bottom: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(6,6,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; display: none; align-items: center; justify-content: center; }
@@ -930,6 +935,7 @@ function slidesHTML(list, locked) {
     return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
+document.addEventListener("load", e => { const t = e.target; if (t && t.tagName === "IMG" && (t.classList.contains("sl") || t.classList.contains("cmi"))) { t.classList.add("ld"); t.classList.remove("sk"); } }, true);
 /* a card thumbnail that is missing (older files) falls back to the original file */
 function thumbFail(i) {
   const f = i.dataset.full; if (!f) return; i.removeAttribute("onerror"); i.removeAttribute("data-full");
@@ -1513,7 +1519,7 @@ function chRow(m, prev) {
   const cont = prev && sameDay && prev.u === m.u;
   const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi" src="${esc(m.image)}" alt="Photo" loading="lazy" data-act="chimg" data-src="${esc(m.image)}" onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1584,9 +1590,17 @@ function chShrink(f) {
     im.onerror = () => { URL.revokeObjectURL(u); res(f); }; im.src = u;
   });
 }
+/* small preview of a chat photo (about 320 px, 8-15 KB): everyone else loads this first, the full photo only when tapped */
+function chThumb(f) {
+  return new Promise(res => {
+    const u = URL.createObjectURL(f), im = new Image();
+    im.onload = () => { try { const k = Math.min(1, 320 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement("canvas"); c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k)); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); c.toBlob(b => { URL.revokeObjectURL(u); res(b); }, "image/jpeg", .6); } catch { URL.revokeObjectURL(u); res(null); } };
+    im.onerror = () => { URL.revokeObjectURL(u); res(null); }; im.src = u;
+  });
+}
 ACT.chpick = () => $("chFile")?.click();
 ACT.chnophoto = () => { if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; chBar(); };
-ACT.chimg = d => { const o = document.createElement("div"); o.className = "chlb"; o.innerHTML = `<img src="${esc(d.src)}" alt="">`; o.onclick = () => o.remove(); document.body.appendChild(o); };
+ACT.chimg = d => { const o = document.createElement("div"); o.className = "chlb"; o.innerHTML = `<img src="${esc(d.th || d.src)}" alt="">`; if (d.th) { const f = new Image(); f.onload = () => { const im = o.querySelector("img"); if (im) { im.src = d.src; im.classList.add("ld"); } }; f.src = d.src; } o.onclick = () => o.remove(); document.body.appendChild(o); };
 ACT.chdown = () => { window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); };
 ACT.chunreply = () => { CH.reply = null; chBar(); };
 ACT.chmore = async () => {
@@ -1597,7 +1611,7 @@ ACT.chsend = async () => {
   const ta = $("chT"), text = ta.value.trim(); if ((!text && !CH.photo) || ta.disabled) return; $("chSend").disabled = true; $("chAtt").disabled = true;
   try {
     let image = null;
-    if (CH.photo) { toast("Sending photo…"); const f = await chShrink(CH.photo), u = await api("chat_upload_url", { size: f.size, mime: f.type || CH.photo.type }); await uploadSigned(u, f, f.type || CH.photo.type); image = { path: u.path }; }
+    if (CH.photo) { toast("Sending photo…"); const f = await chShrink(CH.photo), u = await api("chat_upload_url", { size: f.size, mime: f.type || CH.photo.type }); const tb = u.thumb ? await chThumb(f) : null; await Promise.all([uploadSigned(u, f, f.type || CH.photo.type), tb ? uploadSigned(u.thumb, tb, "image/jpeg").catch(() => {}) : null]); image = { path: u.path }; }
     const r = await api("chat_send", { text, image, reply_to: CH.reply?.id || null });
     ta.value = ""; ta.style.height = "auto"; CH.reply = null; if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; haptic("light"); chMerge([r.message]); chDraw(true);
   } catch (e) { toast(e.message); }
@@ -1691,8 +1705,9 @@ function drawViewer() {
     const v = $("stage").firstElementChild; v.oncontextmenu = e => e.preventDefault();
     v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); v.play?.().catch(() => {});
   } else {
-    $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.thumb || m.url)}" alt="">`; // the small picture shows at once, the full one replaces it when ready
-    if (m.thumb && m.url) { const f = new Image(); f.onload = () => { const el = $("vimg"); if (el && V.list[V.i] === m) el.src = m.url; }; f.src = m.url; }
+    const pv = pvCss(m.preview); // 1) tiny blurred preview (instant) 2) small thumbnail 3) full photo swaps in without a flash
+    $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.thumb || m.url)}" alt="" style="${pv ? pv + ";background-size:contain;background-position:center;background-repeat:no-repeat" : ""}">`;
+    if (m.thumb && m.url) { const f = new Image(); f.onload = () => { const el = $("vimg"); if (el && V.list[V.i] === m) { el.src = m.url; el.classList.add("ld"); } }; f.src = m.url; }
     const nx = V.list[V.i + 1]; if (nx && nx.type !== "video" && nx.url) new Image().src = nx.url; // next picture loads in the background
   }
   $("vcnt").textContent = `${V.i + 1} / ${V.list.length}`;

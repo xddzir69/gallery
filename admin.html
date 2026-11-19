@@ -609,6 +609,11 @@
       <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Latest messages</h3><span class="row"><button class="btn gh xs" id="chRef">Refresh</button><button class="btn dg xs" id="chClear">Delete all</button></span></div><div id="chList" style="margin-top:10px"></div></div></section>
     <section id="t-flow" hidden><div class="hero"><div class="eb">Content</div><h2>Preview flow</h2><p>How fast the pictures and videos change inside every folder card on Home, Premium and the folder pages.</p><span class="orn"></span></div>
+      <div class="card"><h3>Folders: preview on / off and cover</h3>
+        <p class="hint" style="margin:0 0 12px">Preview <b>on</b>: the folder card plays its pictures one after another (timing below). Preview <b>off</b>: the card shows one still picture, the <b>cover</b> you choose from the files inside. With no cover chosen it uses the first file. Everything else (access, order, counts) works as before.</p>
+        <div class="row" style="margin-bottom:10px"><input type="search" id="flQ" placeholder="Find a folder or F-number" style="flex:1;min-width:160px"><select id="flMode" style="width:auto"><option value="">All folders</option><option value="on">Preview on</option><option value="off">Preview off</option></select></div>
+        <div class="row between" style="margin-bottom:10px"><span class="sm mute" id="flSum"></span><span class="row"><button class="btn gh xs" id="flAllOn">All shown: on</button><button class="btn gh xs" id="flAllOff">All shown: off</button></span></div>
+        <div id="flFolders"></div></div>
       <div class="card"><h3>Videos on cards</h3>
         <label class="ck"><input type="checkbox" id="flVid"> Play videos inside the cards</label>
         <p class="hint" style="margin-top:10px">Off (recommended): a video card shows its picture and a play icon, and the video only loads when a member opens it. The app stays fast. On: the first seconds of each video play inside the card, but every card downloads video data.</p></div>
@@ -1988,7 +1993,76 @@ function setFlow(step, gap, wave) {
     const e = Date.now() - t0; d.querySelectorAll("[data-i]").forEach(c => { const so = (+c.dataset.i % wave) * gap * 1000, st = step * 1000; c.textContent = e < st + so ? 1 : ((1 + Math.floor((e - st - so) / st)) % 5) + 1; });
   }, 250);
 }
+
+/* ---------- V19: per-folder preview on/off + cover ---------- */
+const flCov = new Map(); let flLim = 40, flTok = 0;
+async function loadFlowFolders() { $("flFolders").innerHTML = '<p class="mute sm">Loading folders…</p>'; await loadTree(); drawFlowFolders(); }
+function flRows() {
+  const qv = $("flQ").value.trim().toLowerCase(), mode = $("flMode").value;
+  return tree.map(f => ({ f, p: folderPath(f.id) })).sort((a, b) => a.p.localeCompare(b.p))
+    .filter(({ f, p }) => (!mode || (mode === "off") === (f.preview_on === false)) && (!qv || p.toLowerCase().includes(qv) || ("f" + f.serial_no) === qv));
+}
+async function drawFlowFolders() {
+  const box = $("flFolders"); if (!box) return; const tok = ++flTok;
+  const all = flRows(), rows = all.slice(0, flLim), offN = tree.filter(f => f.preview_on === false).length;
+  $("flSum").textContent = `${tree.length} folders · ${tree.length - offN} preview on · ${offN} off · showing ${rows.length} of ${all.length}`;
+  const need = rows.map(r => r.f.cover_media_id).filter(id => id && !flCov.has(id));
+  if (need.length) {
+    const { data: ms } = await sb.from("media").select("id,path,type,thumb_ok").in("id", need);
+    const paths = (ms || []).flatMap(m => m.thumb_ok ? [m.path + ".t.jpg"] : [m.path]), urls = await sign(paths, 3600);
+    (ms || []).forEach(m => flCov.set(m.id, { u: urls[m.thumb_ok ? m.path + ".t.jpg" : m.path], type: m.type, th: !!m.thumb_ok }));
+    need.forEach(id => { if (!flCov.has(id)) flCov.set(id, null); });
+    if (tok !== flTok) return;
+  }
+  box.innerHTML = rows.map(({ f, p }) => {
+    const off = f.preview_on === false, c = f.cover_media_id ? flCov.get(f.cover_media_id) : null;
+    const img = c && c.u ? (c.type === "video" && !c.th ? `<video class="pv" muted preload="metadata" src="${esc(c.u)}#t=0.5"></video>` : `<img class="pv" loading="lazy" src="${esc(c.u)}" alt="">`) : `<div class="pv" style="display:grid;place-items:center;font-size:11px;color:var(--mute)">${f.cover_media_id ? "?" : "auto"}</div>`;
+    return `<div class="row line" data-fid="${f.id}" style="gap:12px;flex-wrap:nowrap;padding:8px 0;align-items:center"><div style="width:56px;height:56px;border-radius:10px;overflow:hidden;flex:none;background:var(--bg2);border:1px solid var(--line)">${img}</div>
+      <div style="flex:1;min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><span class="sn">F${f.serial_no ?? "?"}</span> ${esc(p)}</div><div class="sm mute">${f.media_count} files${off ? ` · still picture: ${f.cover_media_id ? "your cover" : "first file (no cover chosen)"}` : " · slideshow"}</div></div>
+      <button class="btn gh xs" data-cv="${f.id}">${f.cover_media_id ? "Change cover" : "Set cover"}</button>
+      <label class="ck" style="margin:0;flex:none"><input type="checkbox" data-pv="${f.id}" ${off ? "" : "checked"}> Preview</label></div>`;
+  }).join("") || '<p class="mute sm">No folders match.</p>';
+  if (all.length > rows.length) box.insertAdjacentHTML("beforeend", `<div style="text-align:center;padding:12px"><button class="btn gh xs" id="flMoreF">Show more (${all.length - rows.length} left)</button></div>`);
+}
+async function setPreviewOn(ids, on) {
+  const { error } = await sb.from("albums").update({ preview_on: on }).in("id", ids);
+  if (error) { toast(error.message + " (run supabase_v19.sql)"); return false; }
+  tree.forEach(f => { if (ids.includes(f.id)) f.preview_on = on; }); return true;
+}
+$("flFolders").onchange = async e => {
+  const cb = e.target.closest("[data-pv]"); if (!cb) return;
+  if (await setPreviewOn([cb.dataset.pv], cb.checked)) toast(cb.checked ? "Preview on" : "Preview off: the card shows the cover"); else cb.checked = !cb.checked;
+  drawFlowFolders();
+};
+$("flFolders").onclick = e => {
+  if (e.target.closest("#flMoreF")) { flLim += 40; return drawFlowFolders(); }
+  const b = e.target.closest("[data-cv]"); if (b) pickCover(b.dataset.cv);
+};
+$("flQ").oninput = () => { flLim = 40; drawFlowFolders(); }; $("flMode").onchange = () => { flLim = 40; drawFlowFolders(); };
+[["flAllOn", true], ["flAllOff", false]].forEach(([id, on]) => $(id).onclick = async () => {
+  const ids = flRows().map(r => r.f.id); if (!ids.length) return;
+  if (!confirm(`Turn preview ${on ? "ON" : "OFF"} for ${ids.length} folder${ids.length > 1 ? "s" : ""}?`)) return;
+  if (await setPreviewOn(ids, on)) { toast("Saved"); drawFlowFolders(); }
+});
+/* choose the cover: any file inside the folder or its sub-folders */
+async function pickCover(fid) {
+  const f = byId(fid); if (!f) return;
+  const { data: ms, error } = await sb.from("media").select("id,path,type,thumb_ok,album_id").in("album_id", descIds(fid)).order("album_order").limit(150);
+  if (error) return toast(error.message);
+  const paths = (ms || []).flatMap(m => m.thumb_ok ? [m.path + ".t.jpg"] : [m.path]), urls = await sign(paths, 1800);
+  const d = document.createElement("div"); d.className = "mdl";
+  d.innerHTML = `<div class="box"><h3 style="margin:0 0 4px">Cover for “${esc(f.title)}”</h3><p class="sm mute" style="margin:0">Tap a file to use it as the cover.${(ms || []).length >= 150 ? " Showing the first 150 files." : ""}</p>
+    <div class="lst" style="padding:10px"><div class="cvr" style="margin:0">${(ms || []).map(m => { const u = urls[m.thumb_ok ? m.path + ".t.jpg" : m.path]; return `<div class="t ${m.id === f.cover_media_id ? "on" : ""}" data-id="${m.id}">${m.type === "video" && !m.thumb_ok ? thumb(u, "video").replace('class="pv"', "") : u ? `<img loading="lazy" src="${esc(u)}" alt="">` : ""}</div>`; }).join("") || '<span class="mute sm">No files in this folder yet.</span>'}</div></div>
+    <div class="row" style="justify-content:space-between"><button class="btn gh xs" data-auto="1">Use first file (auto)</button><button class="btn gh xs" data-x="1">Cancel</button></div></div>`;
+  const save = async id => {
+    const { error: er } = await sb.from("albums").update({ cover_media_id: id }).eq("id", fid);
+    if (er) return toast(er.message); f.cover_media_id = id; d.remove(); toast(id ? "Cover saved" : "Cover cleared (first file is used)"); drawFlowFolders();
+  };
+  d.onclick = e => { if (e.target === d || e.target.closest("[data-x]")) return d.remove(); if (e.target.closest("[data-auto]")) return save(null); const t = e.target.closest(".t"); if (t) save(t.dataset.id); };
+  document.body.appendChild(d);
+}
 async function loadFlow() {
+  loadFlowFolders();
   $("flMsg").textContent = "";
   const s = await getSettings(["flow_step", "flow_stagger", "flow_wave"]), n = (v, d) => (v === undefined || v === "" || isNaN(Number(v)) ? d : Number(v));
   setFlow(n(s.flow_step, 5), n(s.flow_stagger, 1), n(s.flow_wave, 10));
