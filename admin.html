@@ -603,6 +603,7 @@
     <section id="t-chat" hidden><div class="hero"><div class="eb">People</div><h2>Community chat</h2><p>The group chat every member is in (Chat tab). Delete messages, pin one, mute people, or switch the chat off.</p><span class="orn"></span></div>
       <div class="card"><h3>Chat settings</h3>
         <label class="ck"><input type="checkbox" id="chOnS"> Chat is on</label>
+        <label class="ck" style="margin-top:8px"><input type="checkbox" id="chPhotosS"> Members can send photos (up to 10 MB, never video)</label>
         <label class="ck" style="margin-top:8px"><input type="checkbox" id="chLinksS"> Allow links in messages (off blocks links and spam ads)</label>
         <div class="row" style="margin-top:10px"><span class="sm">Slow mode</span><select id="chSlowS" style="width:auto"><option value="0">Off</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option></select><span class="mute sm" id="chSetMsg"></span></div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
@@ -642,7 +643,12 @@
         <p class="hint">Keep "Publish without my review" off. Anything members upload then waits for your approval.</p>
         <button class="btn" id="setUpSave">Save</button></div>
       <div class="card"><h3>Invite rewards</h3><p class="sm mute" style="margin-bottom:10px">When a member reaches a number of invites, a one-use unlock code is created and sent to them as a notification.</p>
-        <div id="msRows"></div><div class="row"><button class="btn gh xs" id="msAdd">Add reward</button><button class="btn" id="msSave">Save rewards</button></div></div>
+        <div id="msRows"></div><div class="row"><button class="btn gh xs" id="msAdd">Add reward</button><button class="btn" id="msSave">Save rewards</button></div>
+        <h3 style="margin-top:18px">After the last reward above</h3><p class="sm mute" style="margin-bottom:10px">The rewards then continue forever by themselves. A member who reaches many invites at once gets every reward they passed, each as its own code (all the days add up).</p>
+        <div class="cols"><label class="f"><span>Every how many friends</span><input type="number" id="rfStep" min="1" max="100"></label><label class="f"><span>Rose days for each step</span><input type="number" id="rfStepD" min="1" max="365"></label>
+          <label class="f"><span>Big reward every how many friends</span><input type="number" id="rfBig" min="5" max="1000"></label><label class="f"><span>Rose + Royal days for a big reward</span><input type="number" id="rfBigD" min="1" max="365"></label></div>
+        <p class="hint">Example: step 5 / 3 days, big every 50 / 14 days gives Rose 3 days at 55, 60, 65 ... and Rose + Royal 14 days at 100, 150, 200 ... (the big reward must be a multiple of the step). A big reward is one Royal code, and Royal always includes Rose.</p>
+        <div class="row"><button class="btn" id="rfSave">Save</button></div></div>
       <div class="card"><h3>General</h3>
         <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="setPayOn"> Show the payments module (hidden and off by default)</label><br>
         <button class="btn" id="refSave">Save</button></div>
@@ -1574,27 +1580,29 @@ $("thGo").onclick = async () => {
 
 /* ---------- V17 community chat moderation ---------- */
 async function loadChatAdmin() {
-  const s = await getSettings(["chat_on", "chat_slow", "chat_links"]);
+  const s = await getSettings(["chat_on", "chat_slow", "chat_links", "chat_photos"]);
+  $("chPhotosS").checked = s.chat_photos !== "0";
   $("chOnS").checked = s.chat_on !== "0"; $("chLinksS").checked = s.chat_links === "1"; $("chSlowS").value = ["0", "2", "5", "10", "30", "60"].includes(s.chat_slow) ? s.chat_slow : "2";
   drawChatAdmin();
 }
 const chSave = async (k, v) => { const r = await setSetting(k, v); $("chSetMsg").textContent = r.error ? "Could not save" : "Saved"; setTimeout(() => $("chSetMsg").textContent = "", 1500); };
-$("chOnS").onchange = () => chSave("chat_on", $("chOnS").checked ? "1" : "0"); $("chLinksS").onchange = () => chSave("chat_links", $("chLinksS").checked ? "1" : "0"); $("chSlowS").onchange = () => chSave("chat_slow", $("chSlowS").value);
+$("chOnS").onchange = () => chSave("chat_on", $("chOnS").checked ? "1" : "0"); $("chLinksS").onchange = () => chSave("chat_links", $("chLinksS").checked ? "1" : "0"); $("chPhotosS").onchange = () => chSave("chat_photos", $("chPhotosS").checked ? "1" : "0"); $("chSlowS").onchange = () => chSave("chat_slow", $("chSlowS").value);
 $("chRef").onclick = drawChatAdmin;
 async function drawChatAdmin() {
   const [{ data: ms, error }, { data: mu }] = await Promise.all([sb.from("chat_messages").select("*").eq("deleted", false).order("id", { ascending: false }).limit(100), sb.from("chat_mutes").select("*").gt("until", new Date().toISOString())]);
   if (error) { $("chList").innerHTML = `<div class="mute">${esc(error.message)} (run supabase_v17.sql)</div>`; return; }
   const ids = [...new Set([...(ms || []).map(m => m.tg_id), ...(mu || []).map(m => m.tg_id)])];
   const { data: ps } = ids.length ? await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username").in("tg_id", ids) : { data: [] };
+  const imgs = await sign((ms || []).map(m => m.image_path).filter(Boolean), 1800);
   const pm = new Map((ps || []).map(p => [p.tg_id, p])), nmOf = id => { const p = pm.get(id); return p ? nm(p) : "User " + id; };
   $("chMuted").innerHTML = (mu || []).length ? mu.map(m => `<div class="row between" style="padding:4px 0"><span>${esc(nmOf(m.tg_id))} <span class="mute sm">until ${esc(fmtDT(m.until))}</span></span><button class="btn xs" data-cunmute="${m.tg_id}">Unmute</button></div>`).join("") : "None";
   $("chList").innerHTML = (ms || []).map(m => `<div style="padding:9px 0;border-top:1px solid var(--line)"><div class="row between" style="gap:8px"><b>${esc(nmOf(m.tg_id))}${m.pinned ? ' <span class="pill g">Pinned</span>' : ""}</b><span class="mute sm">${esc(fmtDT(m.created_at))}</span></div>
-    <div style="margin:3px 0 7px;white-space:pre-wrap;word-break:break-word">${esc(m.body)}</div>
+    <div style="margin:3px 0 7px;white-space:pre-wrap;word-break:break-word">${m.image_path ? (imgs[m.image_path] ? `<a href="${esc(imgs[m.image_path])}" target="_blank" rel="noopener"><img src="${esc(imgs[m.image_path])}" alt="" style="display:block;max-width:180px;max-height:180px;border-radius:10px;margin-bottom:6px"></a>` : "[photo]") : ""}${esc(m.body)}</div>
     <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn dg xs" data-cdel="${m.id}">Delete</button><button class="btn xs" data-cpin="${m.id}" data-on="${m.pinned ? 0 : 1}">${m.pinned ? "Unpin" : "Pin"}</button><span class="mute sm">Mute:</span><button class="btn xs" data-cmute="${m.tg_id}" data-h="1">1 h</button><button class="btn xs" data-cmute="${m.tg_id}" data-h="24">1 day</button><button class="btn xs" data-cmute="${m.tg_id}" data-h="168">7 days</button><button class="btn dg xs" data-cmute="${m.tg_id}" data-h="87600">Forever</button></div></div>`).join("") || '<div class="mute">No messages yet.</div>';
 }
 $("t-chat").onclick = async e => {
   const b = e.target.closest("button"); if (!b) return; let r;
-  if (b.dataset.cdel) r = await sb.from("chat_messages").update({ deleted: true }).eq("id", b.dataset.cdel);
+  if (b.dataset.cdel) { const { data: dm } = await sb.from("chat_messages").select("image_path").eq("id", b.dataset.cdel).maybeSingle(); r = await sb.from("chat_messages").update({ deleted: true, image_path: null }).eq("id", b.dataset.cdel); if (!r.error && dm?.image_path) await rmFiles([dm.image_path]); }
   else if (b.dataset.cpin) { if (b.dataset.on === "1") await sb.from("chat_messages").update({ pinned: false }).eq("pinned", true); r = await sb.from("chat_messages").update({ pinned: b.dataset.on === "1" }).eq("id", b.dataset.cpin); }
   else if (b.dataset.cmute) r = await sb.from("chat_mutes").upsert({ tg_id: Number(b.dataset.cmute), until: new Date(Date.now() + Number(b.dataset.h) * 3600000).toISOString() });
   else if (b.dataset.cunmute) r = await sb.from("chat_mutes").delete().eq("tg_id", b.dataset.cunmute);
@@ -2008,7 +2016,7 @@ $("blSave").onclick = async () => {
 };
 async function loadSettings() {
   loadStorageInfo();
-  const s = await getSettings(["maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "payments_on", "ref_milestones", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
+  const s = await getSettings(["maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "payments_on", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
   $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
   $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
   $("setUp").checked = s.user_upload_on !== "0"; $("setUpPrem").value = ["lite", "expensive"].includes(s.user_upload_premium_only) ? s.user_upload_premium_only : "none";
@@ -2017,9 +2025,16 @@ async function loadSettings() {
   $("setUsdt").checked = s.pay_usdt_on !== "0"; $("setStars").checked = s.pay_stars_on !== "0"; $("setAddr").value = s.usdt_address || ""; $("setConf").value = s.usdt_min_conf || "3"; $("setRpc").value = s.bsc_rpc || "";
   let ms = []; try { ms = JSON.parse(s.ref_milestones || "[]"); } catch {} if (!ms.length) ms = [{ n: 5, tier: "lite", days: 3 }, { n: 10, tier: "lite", days: 7 }, { n: 20, tier: "lite", days: 10 }, { n: 50, tier: "expensive", days: 7 }];
   $("msRows").innerHTML = ms.map(msRow).join(""); msBind();
+  $("rfStep").value = s.ref_step || "5"; $("rfStepD").value = s.ref_step_days || "3"; $("rfBig").value = s.ref_big_every || "50"; $("rfBigD").value = s.ref_big_days || "14";
   $("chkInfo").textContent = `Bot: @${C.BOT_USERNAME}  ·  Mini app short name: ${C.APP_SHORT_NAME}  ·  Open link: https://t.me/${C.BOT_USERNAME}/${C.APP_SHORT_NAME}`;
 }
 $("msAdd").onclick = () => { $("msRows").insertAdjacentHTML("beforeend", msRow({ n: 100, tier: "expensive", days: 7 })); msBind(); };
+$("rfSave").onclick = async () => {
+  const st = Math.min(100, Math.max(1, Math.round(num($("rfStep").value)) || 5)), bg = Math.max(st, Math.round(num($("rfBig").value)) || 50);
+  if (bg % st) return toast("The big reward number must be a multiple of the step (for example step 5, big 50)");
+  const r = await Promise.all([setSetting("ref_step", st), setSetting("ref_step_days", Math.max(1, Math.round(num($("rfStepD").value)) || 3)), setSetting("ref_big_every", bg), setSetting("ref_big_days", Math.max(1, Math.round(num($("rfBigD").value)) || 14))]);
+  toast(r.some(x => x.error) ? "Error saving" : "Saved");
+};
 $("msSave").onclick = async () => {
   const list = [...$("msRows").querySelectorAll(".mrow")].map(r => ({ n: Math.max(1, Math.round(num(r.querySelector(".mn").value))), tier: r.querySelector(".mt").value, days: Math.max(1, Math.round(num(r.querySelector(".md").value))) })).sort((a, b) => a.n - b.n);
   const { error } = await setSetting("ref_milestones", JSON.stringify(list)); toast(error ? error.message : "Saved. New rewards apply to future invites.");

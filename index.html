@@ -442,6 +442,10 @@
   .cmb .nm { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cmb .rq { border-left: 3px solid var(--gold); background: rgba(128,128,128,.13); border-radius: 8px; padding: 4px 8px; margin: 2px 0 5px; font-size: 12.5px; white-space: normal; opacity: .95; } .cmb .rq b { display: block; font-size: 11.5px; }
   .cmb small { float: right; margin: 7px 0 0 12px; font-size: 10.5px; opacity: .55; line-height: 1; }
+  .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
+  .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
+  .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
+  .chlb { position: fixed; inset: 0; z-index: 130; background: rgba(0,0,0,.94); display: grid; place-items: center; } .chlb img { max-width: 100%; max-height: 100%; object-fit: contain; }
   .chatbar.tab { bottom: calc(86px + env(safe-area-inset-bottom)); padding-bottom: 8px; }
   .chrep { max-width: 700px; margin: 0 auto 6px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-left: 3px solid var(--gold); background: var(--card); border-radius: 12px; font-size: 12.5px; } .chrep div { flex: 1; min-width: 0; } .chrep b { display: block; font-size: 11.5px; } .chrep span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--mute); } .chrep button { color: var(--mute); font-size: 18px; padding: 0 4px; }
   .chpin { display: flex; gap: 10px; align-items: center; padding: 8px 12px; margin-bottom: 8px; border: 1px solid var(--line2); border-radius: 14px; background: var(--card); font-size: 13px; } .chpin b { color: var(--gold); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; display: block; } .chpin span { display: block; }
@@ -1220,7 +1224,7 @@ ACT.shareTg = () => tgShare(refLink(), INVITE_TEXT);
 ACT.shareWeb = () => { const u = webLink(); if (navigator.share) navigator.share({ title: C.APP_TITLE, text: INVITE_TEXT, url: u }).catch(() => {}); else tgShare(u, INVITE_TEXT + " Open in your browser and log in with Telegram."); };
 ACT.shareBoth = () => tgShare(refLink(), INVITE_TEXT + "\nIf it doesn't open the app, use the browser link: " + webLink());
 ACT.usecode = d => { if ($("popup").classList.contains("open")) closePopup(); haptic("light"); nav("plans", { code: 1, prefill: d.code }); };
-const rewardLabel = m => (m.tier === "expensive" ? "Premium Royal" : "Premium Rose") + " · " + plural(m.days, "day");
+const rewardLabel = m => (m.big ? "Premium Rose + Royal" : m.tier === "expensive" ? "Premium Royal" : "Premium Rose") + " · " + plural(m.days, "day");
 /* a reward code row: Copy + Use while it is ready, "Used" once it has been unlocked (the code expires after one use) */
 function codeRow(code, state, tier, cls) {
   if (!code) return "";
@@ -1239,7 +1243,7 @@ PAGES.referral = async function () {
   const r = await api("referrals"), n = r.count ?? me.ref_count ?? 0, ms = r.milestones || [];
   const prev = [...ms].reverse().find(m => m.reached), nx = ms.find(m => !m.reached);
   const pct = nx ? Math.round(((n - (prev ? prev.n : 0)) / (nx.n - (prev ? prev.n : 0))) * 100) : 100;
-  app.innerHTML = `<div class="pad"><div class="rhero"><small>Friends joined</small><b class="n">${n}</b><div class="prog"><i style="width:${Math.max(4, pct)}%"></i></div><p>${nx ? `${nx.n - n} more to earn ${rewardLabel(nx)}` : "Every reward unlocked. Thank you!"}</p></div>
+  app.innerHTML = `<div class="pad"><div class="rhero"><small>Friends joined</small><b class="n">${n}</b><div class="prog"><i style="width:${Math.max(4, pct)}%"></i></div><p>${nx ? `${nx.n - n} more to earn ${rewardLabel(nx)}` : "Every reward unlocked. Thank you!"}</p>${r.total_days ? `<p style="margin-top:6px;opacity:.8">${plural(r.total_days, "day")} of Premium earned so far</p>` : ""}</div>
     <div class="sec">Your links</div>
     <div class="lcard"><div class="lh"><span class="ic">${ic("send")}</span><b>Telegram link</b></div><div class="ld">Opens the gallery right inside Telegram. Best for friends who already use it.</div><div class="reflink">${esc(refLink())}</div>
       <div class="btns"><button class="btn sm" data-act="shareTg">${ic("share")}Share</button><button class="btn gh sm" data-act="copy" data-t="${esc(refLink())}">${ic("copy")}Copy</button></div></div>
@@ -1260,7 +1264,7 @@ PAGES.plans = async function (p) {
     return `<div class="tcard ${TIER[k].cls}">${bd ? `<span class="pill g badge">${esc(bd)}</span>` : ""}<div class="ts">${k === "lite" ? "Lite" : "Expensive"}</div><div class="tn">${TIER[k].name}</div><p class="mute" style="font-size:13.5px;margin-top:4px">${TIER[k].sub}</p>
       <ul>${(perks.length ? perks : DEF_PERKS[k]).map(x => `<li>${ic("check")}${esc(x)}</li>`).join("")}</ul>${days.length ? `<div class="tdur">${days.map(d => `<span>${plural(d, "day")}</span>`).join("")}</div>` : ""}</div>`;
   }).join("")}
-    <button class="inv-mini" data-act="go" data-r="referral"><span class="ui">${ic("gift")}</span><div class="t"><b>Invite and earn</b><span class="s">${me.ref_count || 0} friends joined. Reach 5, 10, 20 or 50 to unlock Premium for free.</span></div>${ic("next", "mute")}</button>
+    <button class="inv-mini" data-act="go" data-r="referral"><span class="ui">${ic("gift")}</span><div class="t"><b>Invite and earn</b><span class="s">${me.ref_count || 0} friends joined. Keep inviting: every few friends unlocks free Premium.</span></div>${ic("next", "mute")}</button>
     <div class="sec" id="codeAnchor">Premium unlock code</div>
     <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Have a code from a referral reward or from us? Paste it here. A Rose code opens Rose, a Royal code opens Royal.</p>
       <div class="code"><input id="cd" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(fmtCode(p?.prefill || ""))}"><button class="btn${p?.prefill ? " pulse" : ""}" data-act="redeem">Unlock</button></div><div id="rpk"></div><div id="rdet"></div></div>
@@ -1500,7 +1504,7 @@ ACT.tkreply = async () => {
 
 
 /* ---------- community chat: one group for every member (V17) ---------- */
-const CH = { msgs: [], users: new Map(), reply: null, muted: 0, more: false, pinned: null, off: false, busy: false };
+const CH = { photo: null, photoUrl: "", stick: true, msgs: [], users: new Map(), reply: null, muted: 0, more: false, pinned: null, off: false, busy: false };
 const chHue = u => { let h = 7; for (const c of String(u)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
 const chTime = s => new Date(s).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 const chDay = s => { const d = new Date(s), t = new Date(), y = new Date(Date.now() - 864e5); return d.toDateString() === t.toDateString() ? "Today" : d.toDateString() === y.toDateString() ? "Yesterday" : d.toLocaleDateString([], { day: "numeric", month: "short", year: d.getFullYear() === t.getFullYear() ? undefined : "numeric" }); };
@@ -1509,7 +1513,7 @@ function chRow(m, prev) {
   const cont = prev && sameDay && prev.u === m.u;
   const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${esc(m.text)}<small>${chTime(m.at)}</small></div></div>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi" src="${esc(m.image)}" alt="Photo" loading="lazy" data-act="chimg" data-src="${esc(m.image)}" onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1517,6 +1521,7 @@ function chDraw(scroll) {
   box.innerHTML = CH.msgs.map((m, i) => chRow(m, CH.msgs[i - 1])).join("") || `<div class="msg" style="padding:40px 0"><b>No messages yet</b>Say hello to everyone.</div>`;
   $("chMore").hidden = !CH.more;
   $("chPin").innerHTML = CH.pinned ? `<div class="chpin">${ic("notice")}<div><b>Pinned</b><span>${esc(CH.pinned.text)}</span></div></div>` : "";
+  CH.stick = scroll || atEnd;
   if (scroll || atEnd) { window.scrollTo(0, document.body.scrollHeight); $("chNew").hidden = true; } else if (CH.fresh) $("chNew").hidden = false;
   CH.fresh = false;
 }
@@ -1524,7 +1529,9 @@ function chBar() {
   const m = CH.muted && new Date(CH.muted) > new Date(), ta = $("chT"); if (!ta) return;
   ta.disabled = !!m || CH.off; ta.placeholder = CH.off ? "Chat is paused" : m ? "You are muted until " + new Date(CH.muted).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Message everyone…";
   $("chSend").disabled = !!m || CH.off;
-  const r = CH.reply; $("chRep").innerHTML = r ? `<div class="chrep"><div><b>Reply to ${esc(r.name)}</b><span>${esc(r.text)}</span></div><button data-act="chunreply" aria-label="Cancel">✕</button></div>` : "";
+  const r = CH.reply, ph = CH.photo;
+  $("chRep").innerHTML = (ph ? `<div class="chrep"><img src="${CH.photoUrl}" alt=""><div><b>Photo</b><span>${esc(ph.name)} · ${fmtMB(ph.size)}</span></div><button data-act="chnophoto" aria-label="Remove">✕</button></div>` : "") + (r ? `<div class="chrep"><div><b>Reply to ${esc(r.name)}</b><span>${esc(r.text)}</span></div><button data-act="chunreply" aria-label="Cancel">✕</button></div>` : "");
+  $("chAtt").hidden = !!m || CH.off;
 }
 function chMerge(list) {
   let added = false; const have = new Set(CH.msgs.map(m => m.id));
@@ -1551,15 +1558,35 @@ PAGES.chat = async function () {
   CH.msgs = []; CH.reply = null; CH.pinned = null;
   app.innerHTML = `<div class="pad"><div class="chhd"><b>Community chat</b><span id="chOn"></span></div><div id="chPin"></div><div class="chmore" id="chMore" hidden><button class="btn gh" data-act="chmore">Earlier messages</button></div><div class="chat cm" id="chat"><div class="msg" style="padding:40px 0">Loading…</div></div></div>
     <button class="newpill" id="chNew" data-act="chdown" hidden>New messages ↓</button>
-    <div class="chatbar tab"><div id="chRep"></div><div class="in"><textarea id="chT" rows="1" maxlength="500" placeholder="Message everyone…"></textarea><button class="btn" id="chSend" data-act="chsend" aria-label="Send">${ic("send")}</button></div></div>`;
+    <div class="chatbar tab"><div id="chRep"></div><div class="in"><button class="att" id="chAtt" data-act="chpick" aria-label="Add photo">${ic("image")}</button><input type="file" id="chFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden><textarea id="chT" rows="1" maxlength="500" placeholder="Message everyone…"></textarea><button class="btn" id="chSend" data-act="chsend" aria-label="Send">${ic("send")}</button></div></div>`;
   const ta = $("chT");
   ta.oninput = () => { ta.style.height = "auto"; ta.style.height = Math.min(120, ta.scrollHeight) + "px"; };
   ta.onkeydown = e => { if (e.key === "Enter" && !e.shiftKey && !/Android|iPhone|iPad/i.test(navigator.userAgent)) { e.preventDefault(); ACT.chsend(); } };
+  $("chFile").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) chPhoto(f); };
   window.addEventListener("scroll", chScrollHide, { passive: true });
   await chPoll(true); chBar();
   timers.push(setInterval(() => { if (!document.hidden && stack[stack.length - 1].r === "chat") chPoll(false); }, 3000));
 };
-function chScrollHide() { if (innerHeight + scrollY >= document.body.scrollHeight - 160) $("chNew") && ($("chNew").hidden = true); }
+function chScrollHide() { const near = innerHeight + scrollY >= document.body.scrollHeight - 160; CH.stick = near; if (near && $("chNew")) $("chNew").hidden = true; }
+function chImgLoad() { if (CH.stick) window.scrollTo(0, document.body.scrollHeight); }
+function chPhoto(f) {
+  if (/^video\//.test(f.type)) return toast("Videos are not allowed in the chat. Photos only.");
+  if (!/^image\/(jpeg|png|webp|gif)$/.test(f.type)) return toast("Only photos (JPG, PNG, WebP, GIF) are allowed.");
+  if (f.size > 10 * 1048576) return toast("A photo must be 10 MB or smaller.");
+  if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = f; CH.photoUrl = URL.createObjectURL(f); chBar();
+}
+/* big photos are shrunk before sending (max 1920 px): the upload is much faster on a phone connection */
+function chShrink(f) {
+  return new Promise(res => {
+    if (f.type === "image/gif" || f.size < 900 * 1024) return res(f);
+    const im = new Image(), u = URL.createObjectURL(f);
+    im.onload = () => { try { const k = Math.min(1, 1920 / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement("canvas"); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k); c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); c.toBlob(b => { URL.revokeObjectURL(u); res(b && b.size < f.size ? b : f); }, "image/jpeg", .84); } catch { URL.revokeObjectURL(u); res(f); } };
+    im.onerror = () => { URL.revokeObjectURL(u); res(f); }; im.src = u;
+  });
+}
+ACT.chpick = () => $("chFile")?.click();
+ACT.chnophoto = () => { if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; chBar(); };
+ACT.chimg = d => { const o = document.createElement("div"); o.className = "chlb"; o.innerHTML = `<img src="${esc(d.src)}" alt="">`; o.onclick = () => o.remove(); document.body.appendChild(o); };
 ACT.chdown = () => { window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); };
 ACT.chunreply = () => { CH.reply = null; chBar(); };
 ACT.chmore = async () => {
@@ -1567,19 +1594,23 @@ ACT.chmore = async () => {
   try { const r = await api("chat_list", { before: first.id }); CH.more = !!r.more; chMerge(r.messages || []); chDraw(false); window.scrollTo(0, scrollY + document.body.scrollHeight - h0); } catch (e) { toast(e.message); }
 };
 ACT.chsend = async () => {
-  const ta = $("chT"), text = ta.value.trim(); if (!text || ta.disabled) return; $("chSend").disabled = true;
-  try { const r = await api("chat_send", { text, reply_to: CH.reply?.id || null }); ta.value = ""; ta.style.height = "auto"; CH.reply = null; haptic("light"); chMerge([r.message]); chDraw(true); }
-  catch (e) { toast(e.message); }
-  $("chSend").disabled = false; chBar(); if (!ta.disabled) ta.focus();
+  const ta = $("chT"), text = ta.value.trim(); if ((!text && !CH.photo) || ta.disabled) return; $("chSend").disabled = true; $("chAtt").disabled = true;
+  try {
+    let image = null;
+    if (CH.photo) { toast("Sending photo…"); const f = await chShrink(CH.photo), u = await api("chat_upload_url", { size: f.size, mime: f.type || CH.photo.type }); await uploadSigned(u, f, f.type || CH.photo.type); image = { path: u.path }; }
+    const r = await api("chat_send", { text, image, reply_to: CH.reply?.id || null });
+    ta.value = ""; ta.style.height = "auto"; CH.reply = null; if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; haptic("light"); chMerge([r.message]); chDraw(true);
+  } catch (e) { toast(e.message); }
+  $("chSend").disabled = false; $("chAtt").disabled = false; chBar(); if (!ta.disabled) ta.focus();
 };
 ACT.chmenu = d => {
   const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return; haptic("light");
-  openSheet(`<div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80))}</small></div></div>
+  openSheet(`<div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80) || "Photo")}</small></div></div>
     <button class="srow" data-act="chreply" data-id="${m.id}"><span>Reply</span>${ic("back")}</button>
-    <button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>
+    ${m.text ? `<button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>` : ""}
     ${m.mine ? `<button class="srow" data-act="chdel" data-id="${m.id}"><span style="color:var(--bad,#E5484D)">Delete message</span>${ic("trash")}</button>` : ""}`);
 };
-ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; CH.reply = { id: m.id, name: m.name, text: m.text.slice(0, 90) }; chBar(); $("chT")?.focus(); };
+ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; CH.reply = { id: m.id, name: m.name, text: m.text.slice(0, 90) || "Photo" }; chBar(); $("chT")?.focus(); };
 ACT.chcopy = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (m) copyText(m.text); };
 ACT.chdel = async d => {
   closeSheet(); const id = Number(d.id);
