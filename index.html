@@ -846,10 +846,10 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-let FLOW_VIDEO = false, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+let FLOW_VIDEO = false, FLOW_FIRST = 7000, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
 function applyFlow() {
   const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
-  FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+  FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_FIRST = n("flow_first", 7, 2, 30) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
 }
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
@@ -878,7 +878,8 @@ setInterval(() => {
     const fresh = ss._t0 === undefined;
     if (fresh) { ss._t0 = now; flowLoad(ss, 1, 2); }
     const e = now - ss._t0, so = (k % FLOW_WAVE) * FLOW_STAGGER;
-    const j = e < FLOW_STEP + so ? 0 : (1 + Math.floor((e - FLOW_STEP - so) / FLOW_STEP)) % n;
+    const L = FLOW_FIRST + (n - 1) * FLOW_STEP, t = Math.max(0, e - so) % L; // 1st picture FLOW_FIRST (7 s), every other one FLOW_STEP (5 s), then loop
+    const j = t < FLOW_FIRST ? 0 : 1 + Math.floor((t - FLOW_FIRST) / FLOW_STEP);
     if (j !== i) {
       flowPlay(ss.children[i], false); flowLoad(ss, j, 3);
       ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
@@ -923,7 +924,9 @@ document.addEventListener("contextmenu", e => { if (e.target.closest("#viewer, .
 document.addEventListener("dragstart", e => e.preventDefault());
 
 /* ---------- cards: folder / file / community / my post ---------- */
-const thumbsOf = m => (m.thumbs && m.thumbs.length) ? m.thumbs : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
+/* the preview flow is pictures only: videos are skipped (a folder that has only videos shows one still) */
+const picsOnly = l => { const p = l.filter(t => t.type !== "video"); return p.length ? p : l.slice(0, 1); };
+const thumbsOf = m => (m.thumbs && m.thumbs.length) ? picsOnly(m.thumbs) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
@@ -1190,7 +1193,7 @@ PAGES.library = async function () {
     const r = await api("fav_preview"); if (!$("pv4")) return;
     const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
     const s = (r.items || []).slice(0, 4), cells = [];
-    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? t.thumbs : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
+    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? picsOnly(t.thumbs) : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
     $("pv4").innerHTML = cells.join("");
   } catch {}
 };
