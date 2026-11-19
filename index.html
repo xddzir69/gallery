@@ -451,6 +451,22 @@
   .cmw .sw { position: absolute; left: 10px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; display: grid; place-items: center; background: var(--card2); color: var(--gold); opacity: 0; transform: scale(.4); pointer-events: none; z-index: 0; } .cmw .sw.on { opacity: 1; transform: scale(1); } .cmw .sw svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
   .cmw { position: relative; } .cmw.hl .cmb { animation: hlb 1.2s ease; } @keyframes hlb { 0%,60% { box-shadow: 0 0 0 3px var(--gold); } 100% { box-shadow: 0 0 0 0 transparent; } }
   .cmb .rq { cursor: pointer; }
+  .cmw .cmb { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+  .cmw.hasrx { margin-bottom: 15px; }
+  .rxs { position: absolute; bottom: -14px; right: 10px; display: inline-flex; align-items: center; gap: 1px; padding: 1px 7px 1px 6px; border-radius: 13px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,.25); font-size: 14px; line-height: 1.45; white-space: nowrap; color: var(--ink, inherit); cursor: pointer; z-index: 1; animation: rxin .25s cubic-bezier(.3,1.6,.5,1); }
+  .cmw:not(.me) .rxs { right: auto; left: 10px; } .rxs.mine { border-color: var(--gold); } .rxs i { font-style: normal; font-size: 11px; margin-left: 3px; opacity: .75; }
+  @keyframes rxin { from { transform: scale(.3); opacity: 0; } }
+  .rxo { position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,.4); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: rxfade .16s ease; } @keyframes rxfade { from { opacity: 0; } }
+  .rxbox { position: absolute; width: min(340px, calc(100vw - 16px)); }
+  .rxp { display: flex; flex-wrap: wrap; justify-content: center; gap: 1px; padding: 8px 6px; border-radius: 28px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 14px 44px rgba(0,0,0,.5); }
+  .rxp button, .rxrow button { width: 44px; height: 44px; font-size: 27px; line-height: 1; border: 0; background: none; border-radius: 50%; cursor: pointer; padding: 0; }
+  .rxp button { transform: scale(0); animation: rxpop .34s cubic-bezier(.3,1.7,.5,1) forwards; animation-delay: calc(var(--i) * 24ms); transition: scale .12s; }
+  @keyframes rxpop { to { transform: scale(1); } } .rxp button:active, .rxrow button:active { scale: 1.4; } @media (hover: hover) { .rxp button:hover { scale: 1.3; } }
+  .rxp button.on, .rxrow button.on { background: var(--card2); box-shadow: inset 0 0 0 2px var(--gold); }
+  .rxa { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
+  .rxa button { padding: 9px 16px; border-radius: 20px; border: 1px solid var(--line); background: var(--card); color: inherit; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.35); } .rxa button.bad { color: var(--bad, #E5484D); }
+  .rxrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; padding: 4px 0 10px; }
+  .rxfly { position: fixed; z-index: 410; font-size: 34px; pointer-events: none; animation: rxfly .9s ease-out forwards; } @keyframes rxfly { 0% { transform: translateY(0) scale(.5); opacity: 0; } 20% { opacity: 1; transform: translateY(-14px) scale(1.4); } 100% { transform: translateY(-90px) scale(1); opacity: 0; } }
   .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
   .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
   .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
@@ -605,7 +621,6 @@
 <main id="app"></main>
 <button class="fab" id="fab" aria-label="Top"><svg class="i"><use href="#i-up"/></svg></button>
 <nav id="nav" hidden></nav>
-<div id="lvNote" hidden style="position:fixed;left:12px;right:12px;bottom:calc(90px + env(safe-area-inset-bottom));z-index:60;padding:12px 14px;border-radius:16px;background:var(--card2);box-shadow:0 0 0 1px var(--line2),var(--shadow);font-size:12.5px;display:flex;gap:10px;align-items:center"><span style="flex:1">For support and safety, the team can see which page you are on while you use this app. Typed text, support chats and payments are never shown.</span><button class="hbtn" id="lvNoteOk" style="width:auto;padding:6px 12px">OK</button></div>
 
 <div id="viewer">
   <div class="vtop">
@@ -740,7 +755,6 @@ function pingScreen(ev) {
 /* V15 live screen view: only while an admin is watching this member, send a copy of this app's own page every 2s.
    Typed text, support chats, payments and profile edit are never sent. */
 let watching = false, frameT = 0, frameBusy = false;
-try { if (!localStorage.getItem("gv_lvnote")) { setTimeout(() => { const n = $("lvNote"); if (n) { n.hidden = false; $("lvNoteOk").onclick = () => { n.hidden = true; try { localStorage.setItem("gv_lvnote", "1"); } catch {} }; } }, 4000); } } catch {}
 const PRIVATE_ROUTES = ["ticket", "ticketnew", "tickets", "plans", "edit"];
 function setWatch(on) { if (on === watching) return; watching = on; clearInterval(frameT); if (on) { sendFrame(); frameT = setInterval(sendFrame, 2000); } }
 function snapFrame() {
@@ -846,10 +860,10 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-let FLOW_VIDEO = false, FLOW_FIRST = 7000, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+let FLOW_ON = true, FLOW_VIDEO = false, FLOW_FIRST = 7000, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
 function applyFlow() {
   const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
-  FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_FIRST = n("flow_first", 7, 2, 30) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+  FLOW_ON = settings.flow_on !== "0"; FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_FIRST = n("flow_first", 7, 2, 30) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
 }
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
@@ -926,7 +940,7 @@ document.addEventListener("dragstart", e => e.preventDefault());
 /* ---------- cards: folder / file / community / my post ---------- */
 /* the preview flow is pictures only: videos are skipped (a folder that has only videos shows one still) */
 const picsOnly = l => { const p = l.filter(t => t.type !== "video"); return p.length ? p : l.slice(0, 1); };
-const thumbsOf = m => (m.thumbs && m.thumbs.length) ? picsOnly(m.thumbs) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
+const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? picsOnly(m.thumbs) : picsOnly(m.thumbs).slice(0, 1)) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
@@ -1193,7 +1207,7 @@ PAGES.library = async function () {
     const r = await api("fav_preview"); if (!$("pv4")) return;
     const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
     const s = (r.items || []).slice(0, 4), cells = [];
-    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? picsOnly(t.thumbs) : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
+    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? (FLOW_ON ? picsOnly(t.thumbs) : picsOnly(t.thumbs).slice(0, 1)) : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
     $("pv4").innerHTML = cells.join("");
   } catch {}
 };
@@ -1526,7 +1540,7 @@ function chRow(m, prev) {
   const cont = prev && sameDay && prev.u === m.u;
   const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${rxHTML(m)}</div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1560,11 +1574,13 @@ async function chPoll(first) {
     CH.off = !!r.off; CH.muted = r.muted_until || 0;
     if (r.off) { $("chat").innerHTML = `<div class="msg" style="padding:40px 0"><b>Chat is paused</b>The team has turned the chat off for now.</div>`; chBar(); return; }
     if (first) { CH.msgs = []; CH.more = !!r.more; CH.pinned = r.pinned || null; if (r.members != null) CH.members = r.members; }
+    let rxChanged = false;
+    if (r.reacts) { const lo = CH.msgs[0]?.id || 0; for (const m of CH.msgs) if (m.id >= lo) { const n = r.reacts[m.id], rx = n ? n.rx : {}, my = n ? n.my : null; if (JSON.stringify(m.rx || {}) !== JSON.stringify(rx) || (m.my || null) !== my) { m.rx = rx; m.my = my; rxChanged = true; } } }
     const added = chMerge(r.messages || []), gone = new Set(r.gone || []);
     const before = CH.msgs.length; if (gone.size) CH.msgs = CH.msgs.filter(m => !gone.has(m.id));
     if (!first && r.messages?.some(m => !m.mine)) CH.fresh = true;
     $("chOn").innerHTML = `<i></i>${r.online} online${CH.members ? " · " + CH.members + " members" : ""}`;
-    chBar(); if (first || added || before !== CH.msgs.length) chDraw(first);
+    chBar(); if (first || added || rxChanged || before !== CH.msgs.length) chDraw(first);
   } catch (e) { if (first) throw e; } finally { CH.busy = false; }
 }
 PAGES.chat = async function () {
@@ -1626,7 +1642,7 @@ ACT.chsend = async () => {
 };
 ACT.chmenu = d => {
   const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return; haptic("light");
-  openSheet(`<div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80) || "Photo")}</small></div></div>
+  openSheet(`<div class="rxrow">${RX.map(e => `<button class="${m.my === e ? "on" : ""}" data-act="chrx" data-id="${m.id}" data-e="${e}">${e}</button>`).join("")}</div><div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80) || "Photo")}</small></div></div>
     <button class="srow" data-act="chreply" data-id="${m.id}"><span>Reply</span>${ic("back")}</button>
     ${m.text ? `<button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>` : ""}
     ${m.mine ? `<button class="srow" data-act="chdel" data-id="${m.id}"><span style="color:var(--bad,#E5484D)">Delete message</span>${ic("trash")}</button>` : ""}`);
@@ -1638,10 +1654,12 @@ function chStartReply(m) { CH.reply = { id: m.id, name: m.name, text: m.text.sli
   const arrow = '<svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg>';
   function start(e, x, y) {
     const b = e.target.closest && e.target.closest(".cmw .cmb"); if (!b || e.target.closest("a,button,textarea")) return;
-    g = { b, x, y, dx: 0, lock: 0, fired: false, id: Number(b.dataset.id) }; b.classList.remove("rel");
+    g = { b, x, y, dx: 0, lock: 0, fired: false, long: false, id: Number(b.dataset.id) }; b.classList.remove("rel");
+    const me = g; g.tm = setTimeout(() => { if (g === me && !me.lock) { me.long = true; chPicker(me.id); } }, 380);
   }
   function move(e, x, y) {
-    if (!g) return; const dx = x - g.x, dy = y - g.y;
+    if (!g || g.long) return; const dx = x - g.x, dy = y - g.y;
+    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) clearTimeout(g.tm);
     if (!g.lock) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; g.lock = Math.abs(dx) > Math.abs(dy) * 1.4 && dx > 0 ? 1 : -1; if (g.lock === 1) { window.getSelection?.().removeAllRanges(); const w = g.b.parentElement; if (!w.querySelector(".sw")) w.insertAdjacentHTML("afterbegin", `<span class="sw">${arrow}</span>`); g.sw = w.querySelector(".sw"); } }
     if (g.lock !== 1) { if (g.lock === -1) g = null; return; }
     if (e.cancelable) e.preventDefault();
@@ -1650,7 +1668,7 @@ function chStartReply(m) { CH.reply = { id: m.id, name: m.name, text: m.text.sli
     if (hit && !g.fired) { g.fired = true; haptic("light"); } else if (!hit) g.fired = false;
   }
   function end() {
-    if (!g) return; const o = g; g = null; o.b.classList.add("rel"); o.b.style.transform = "";
+    if (!g) return; const o = g; g = null; clearTimeout(o.tm); if (o.long) { window.__chSwiped = Date.now(); return; } o.b.classList.add("rel"); o.b.style.transform = "";
     if (o.sw) o.sw.classList.remove("on");
     if (o.lock === 1) { window.__chSwiped = Date.now(); if (o.dx >= TRIG) { const m = CH.msgs.find(x => x.id === o.id); if (m) chStartReply(m); } }
   }
@@ -1663,6 +1681,57 @@ function chStartReply(m) { CH.reply = { id: m.id, name: m.name, text: m.text.sli
   document.addEventListener("click", e => { if (Date.now() - (window.__chSwiped || 0) < 350 && e.target.closest(".cmb")) { e.stopPropagation(); e.preventDefault(); } }, true);
 })();
 /* tap the quoted part of a reply: jump to the original message (if it is loaded) */
+
+/* ---------- V19 chat reactions (hold a message or photo, pick an emoji) ---------- */
+const RX = ["❤️", "🔥", "😍", "👀", "🍌", "🤍", "🥵", "🫦", "🍆", "🗿", "😘", "💦", "😁"];
+function rxHTML(m) {
+  const e = Object.entries(m.rx || {}).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]); if (!e.length) return "";
+  const tot = e.reduce((n, x) => n + x[1], 0);
+  return `<span class="rxs ${m.my ? "mine" : ""}" data-act="chreact" data-id="${m.id}">${e.slice(0, 3).map(x => x[0]).join("")}${tot > 1 ? `<i>${tot}</i>` : ""}</span>`;
+}
+function rxApply(m, e) {
+  const rx = { ...(m.rx || {}) };
+  if (m.my) { rx[m.my] = (rx[m.my] || 1) - 1; if (rx[m.my] <= 0) delete rx[m.my]; }
+  if (e) rx[e] = (rx[e] || 0) + 1;
+  m.rx = rx; m.my = e || null;
+}
+function rxFly(e, id) {
+  const b = document.querySelector(`.cmw[data-id="${id}"] .cmb`); if (!b) return; const r = b.getBoundingClientRect();
+  const f = document.createElement("div"); f.className = "rxfly"; f.textContent = e; f.style.left = (r.left + r.width / 2 - 17) + "px"; f.style.top = (r.top + r.height / 2 - 17) + "px";
+  document.body.appendChild(f); setTimeout(() => f.remove(), 950);
+}
+async function chReactSet(id, e) {
+  const m = CH.msgs.find(x => x.id === Number(id)); if (!m) return;
+  const next = m.my === e ? "" : e; // same emoji again takes it back
+  rxApply(m, next); chDraw(false); if (next) { haptic("light"); rxFly(next, m.id); }
+  try { await api("chat_react", { id: m.id, emoji: next }); } catch (er) { toast(er.message || "Could not react"); chPoll(false); }
+}
+function rxClose() { document.getElementById("rxo")?.remove(); }
+function chPicker(id) {
+  const m = CH.msgs.find(x => x.id === Number(id)), el = document.querySelector(`.cmw[data-id="${id}"] .cmb`); if (!m || !el) return;
+  rxClose(); haptic("medium");
+  const o = document.createElement("div"); o.id = "rxo"; o.className = "rxo"; const t0 = Date.now();
+  o.innerHTML = `<div class="rxbox"><div class="rxp">${RX.map((e, i) => `<button style="--i:${i}" class="${m.my === e ? "on" : ""}" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</div>
+    <div class="rxa"><button data-do="reply">Reply</button>${m.text ? '<button data-do="copy">Copy</button>' : ""}${m.mine ? '<button class="bad" data-do="del">Delete</button>' : ""}</div></div>`;
+  o.onclick = ev => {
+    if (Date.now() - t0 < 450 || Date.now() - (window.__chSwiped || 0) < 400) return; // the release of the long press must not pick anything
+    const b = ev.target.closest("button"); if (!b) return rxClose();
+    if (b.dataset.e) { rxClose(); chReactSet(m.id, b.dataset.e); }
+    else if (b.dataset.do === "reply") { rxClose(); chStartReply(m); }
+    else if (b.dataset.do === "copy") { rxClose(); ACT.chcopy({ id: m.id }); }
+    else if (b.dataset.do === "del") { rxClose(); ACT.chdel({ id: m.id }); }
+  };
+  document.body.appendChild(o);
+  const box = o.firstElementChild, r = el.getBoundingClientRect(), bh = box.offsetHeight, bw = box.offsetWidth;
+  let top = r.top - bh - 10; if (top < 70) top = Math.min(innerHeight - bh - 12, r.bottom + 10);
+  let left = r.left + r.width / 2 - bw / 2; left = Math.max(8, Math.min(innerWidth - bw - 8, left));
+  box.style.top = Math.max(8, top) + "px"; box.style.left = left + "px";
+}
+ACT.chreact = d => chPicker(d.id);
+ACT.chrx = d => { closeSheet(); chReactSet(d.id, d.e); };
+addEventListener("keydown", e => { if (e.key === "Escape") rxClose(); });
+addEventListener("scroll", () => { if (document.getElementById("rxo") && Date.now() - (window.__chSwiped || 0) > 600) rxClose(); }, { passive: true });
+document.addEventListener("contextmenu", e => { const b = e.target.closest && e.target.closest(".cmw .cmb"); if (b) { e.preventDefault(); if (!document.getElementById("rxo")) chPicker(b.dataset.id); } });
 ACT.chquote = d => { const el = document.querySelector(`.cmw[data-id="${d.id}"]`); if (!el) return toast("That message is older. Tap Earlier messages."); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl"); };
 ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; chStartReply(m); };
 ACT.chcopy = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (m) copyText(m.text); };
