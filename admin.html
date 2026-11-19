@@ -395,6 +395,7 @@
   <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></symbol>
   <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></symbol>
   <symbol id="i-notice" viewBox="0 0 24 24"><path d="M4 10v4h3l7 4V6L7 10zM17.5 9a4 4 0 0 1 0 6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H9l-4 3v-3a3 3 0 0 1-2-3z"/><path d="M19 9a2 2 0 0 1 2 2v6l-3-2h-5a2 2 0 0 1-2-1.5"/></symbol>
   <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2.4"/></symbol>
   <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h9M19 7h1M4 17h1M11 17h9"/><circle cx="16" cy="7" r="2.4"/><circle cx="8" cy="17" r="2.4"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
@@ -514,6 +515,8 @@
     <section id="t-maintenance" hidden><div class="hero"><div class="eb">System</div><h2>Maintenance</h2><p>Close the bot and the web app while you work. Members on the allowed list can still get in, so you can test as a normal member.</p><span class="orn"></span></div>
       <div class="card"><div class="mbig"><div class="sw" id="mtSw" role="switch" tabindex="0"></div><div><div class="st" id="mtSt">…</div><div class="mute sm" id="mtSub"></div></div></div>
         <label class="f" style="margin-top:16px"><span>Message members will see</span><input type="text" id="mtMsg" placeholder="We are updating the gallery and will be right back."></label><button class="btn" id="mtSave">Save</button></div>
+      <div class="card"><h3>Fast thumbnails</h3><p class="sm mute" style="margin-bottom:12px">Makes a small picture (about 30 KB) of every photo and video so the app opens fast. New uploads get one automatically; press the button once for the files you already have. You can close this page and continue later, it picks up where it stopped.</p>
+        <div class="row"><button class="btn" id="thGo">Make thumbnails for old files</button><span class="mute sm" id="thSt"></span></div></div>
       <div class="card"><h3>Can still open it during maintenance</h3><p class="sm mute" style="margin-bottom:12px">Search a member by Telegram ID, name or @username and tap Allow. You can also type any Telegram ID and press Enter.</p>
         <div class="row"><input type="search" id="mtQ" placeholder="Telegram ID, name or @username" style="flex:1;min-width:200px"><button class="btn" id="mtGo">Search</button></div><div id="mtRes" style="margin:8px 0 14px"></div>
         <div id="mtList"></div></div>
@@ -597,7 +600,17 @@
     </section>
 
         <!-- SETTINGS -->
+    <section id="t-chat" hidden><div class="hero"><div class="eb">People</div><h2>Community chat</h2><p>The group chat every member is in (Chat tab). Delete messages, pin one, mute people, or switch the chat off.</p><span class="orn"></span></div>
+      <div class="card"><h3>Chat settings</h3>
+        <label class="ck"><input type="checkbox" id="chOnS"> Chat is on</label>
+        <label class="ck" style="margin-top:8px"><input type="checkbox" id="chLinksS"> Allow links in messages (off blocks links and spam ads)</label>
+        <div class="row" style="margin-top:10px"><span class="sm">Slow mode</span><select id="chSlowS" style="width:auto"><option value="0">Off</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option></select><span class="mute sm" id="chSetMsg"></span></div></div>
+      <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
+      <div class="card"><div class="row between"><h3 style="margin:0">Latest messages</h3><span class="row"><button class="btn gh xs" id="chRef">Refresh</button><button class="btn dg xs" id="chClear">Delete all</button></span></div><div id="chList" style="margin-top:10px"></div></div></section>
     <section id="t-flow" hidden><div class="hero"><div class="eb">Content</div><h2>Preview flow</h2><p>How fast the pictures and videos change inside every folder card on Home, Premium and the folder pages.</p><span class="orn"></span></div>
+      <div class="card"><h3>Videos on cards</h3>
+        <label class="ck"><input type="checkbox" id="flVid"> Play videos inside the cards</label>
+        <p class="hint" style="margin-top:10px">Off (recommended): a video card shows its picture and a play icon, and the video only loads when a member opens it. The app stays fast. On: the first seconds of each video play inside the card, but every card downloads video data.</p></div>
       <div class="card"><h3>Slide time</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="flStep" min="2" max="20" step="1" style="flex:1;min-width:0"><b class="stat" id="flStepV" style="min-width:68px;text-align:right;font-size:26px">5 s</b></div>
         <p class="hint" style="margin-top:10px">How long each file stays on a card. A video plays its first seconds for this long. Default 5 seconds.</p></div>
@@ -684,10 +697,10 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["flow", "sliders", "Preview flow"], ["blur", "sliders", "Premium blur"], ["settings", "sliders", "Settings"]];
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["flow", "sliders", "Preview flow"], ["chat", "chat", "Community chat"], ["blur", "sliders", "Premium blur"], ["settings", "sliders", "Settings"]];
 let PAY_ON = false;
 function buildTabs() {
-  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "flow", "trash"]], ["People", ["live", "users", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "blur", "payments"] : ["premium", "blur"]], ["System", ["maintenance", "history", "notify", "settings"]]];
+  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "flow", "trash"]], ["People", ["live", "users", "chat", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "blur", "payments"] : ["premium", "blur"]], ["System", ["maintenance", "history", "notify", "settings"]]];
   const cur = document.querySelector(".tab.on")?.dataset.t;
   $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
@@ -703,7 +716,7 @@ function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
   clearInterval(tkTimer);
-  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), blur: loadBlur, flow: loadFlow, settings: loadSettings }[t] || (() => {}))();
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), blur: loadBlur, flow: loadFlow, chat: () => { loadChatAdmin(); tkTimer = setInterval(drawChatAdmin, 6000); }, settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
@@ -722,6 +735,15 @@ function makePreview(src, type) {
     else { const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.crossOrigin = "anonymous"; v.preload = "auto"; v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); }; v.onseeked = () => draw(v); v.onerror = () => fin(null); v.src = src; setTimeout(() => fin(null), 15000); }
   });
 }
+/* V16: card thumbnail, 480 px on the long side, JPEG (about 20-40 KB). Works for photos and for the first frame of a video. */
+function makeCardThumb(src, type) {
+  return new Promise(res => {
+    const draw = el => { try { const w = el.videoWidth || el.naturalWidth, h = el.videoHeight || el.naturalHeight; if (!w || !h) return res(null); const k = Math.min(1, 480 / Math.max(w, h)), c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(h * k); const x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(el, 0, 0, c.width, c.height); c.toBlob(b => res(b), "image/jpeg", .74); } catch { res(null); } };
+    if (type === "image") { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => draw(im); im.onerror = () => res(null); im.src = src; }
+    else { const v = document.createElement("video"); v.muted = true; v.playsInline = true; v.crossOrigin = "anonymous"; v.preload = "auto"; v.onloadeddata = () => { v.currentTime = Math.min(1, (v.duration || 2) / 2); }; v.onseeked = () => draw(v); v.onerror = () => res(null); v.src = src; setTimeout(() => res(null), 20000); }
+  });
+}
+const putThumb = (path, blob) => putFile(path + ".t.jpg", new File([blob], "t.jpg", { type: "image/jpeg" }));
 /* small square thumbnail (160 px JPEG, about 6-10 KB) for notifications; blur=true gives a soft version for premium folders */
 function makeThumb(src, blur) {
   return new Promise(res => {
@@ -784,7 +806,7 @@ async function putFile(path, file) {
   return sb.storage.from(C.BUCKET).upload(path, file, { contentType: file.type, cacheControl: "3600" });
 }
 async function rmFiles(paths) {
-  const l = (paths || []).filter(Boolean), sbp = l.filter(p => !isR2(p)), r2p = l.filter(isR2);
+  const l0 = (paths || []).filter(Boolean), l = [...l0, ...l0.filter(p => !p.endsWith(".t.jpg")).map(p => p + ".t.jpg")], sbp = l.filter(p => !isR2(p)), r2p = l.filter(isR2);
   if (sbp.length) await sb.storage.from(C.BUCKET).remove(sbp);
   if (r2p.length) { try { await r2call("del", { paths: r2p }); } catch {} }
 }
@@ -906,11 +928,13 @@ async function doUpload(files, album, access, log, prog) {
     log.textContent += `(${i + 1}/${files.length}) ${f.name}\n`;
     const { error: ue } = await putFile(path, f);
     if (ue) { log.textContent += `  failed: ${ue.message}\n`; continue; }
-    const u = URL.createObjectURL(f); const preview = await makePreview(u, type); URL.revokeObjectURL(u);
+    const u = URL.createObjectURL(f); const preview = await makePreview(u, type); const tb = await makeCardThumb(u, type); URL.revokeObjectURL(u);
+    const thOk = tb ? !(await putThumb(path, tb)).error : false;
     serial++;
     const own = String(f._title || "").trim();
     const { data: row, error: de } = await sb.from("media").insert({ title: own || f.name, label: own || null, type, path, access, serial_no: serial, preview, album_id: album.id, album_order: base + i, ...(toIso(f._at) ? { created_at: toIso(f._at) } : {}) }).select("id,kind_no").single();
     if (de) { log.textContent += `  failed: ${de.message}\n`; await rmFiles([path]); serial--; continue; }
+    if (thOk) sb.from("media").update({ thumb_ok: true }).eq("id", row.id).then(() => {}, () => {});
     ok++; okFiles.push(f); firstId = firstId || row.id; prog.style.width = Math.round(((i + 1) / files.length) * 100) + "%";
     log.textContent += `  saved as ${type === "video" ? "V" : "P"}${row.kind_no ?? "?"}\n`;
   }
@@ -1524,6 +1548,61 @@ function wallDraw() {
   wallAges();
 }
 
+/* ---------- V16: thumbnails for files that were uploaded before this version ---------- */
+let thRun = false;
+$("thGo").onclick = async () => {
+  if (thRun) { thRun = false; $("thGo").textContent = "Stopping…"; return; }
+  thRun = true; $("thGo").textContent = "Stop"; const st = $("thSt"); let done = 0, bad = 0; const skip = [];
+  try {
+    while (thRun) {
+      let q = sb.from("media").select("id,type,path").eq("thumb_ok", false).order("created_at", { ascending: false }).limit(12);
+      if (skip.length) q = q.not("id", "in", `(${skip.join(",")})`);
+      const { data: rows, error } = await q;
+      if (error) { toast(error.message + " (run supabase_v16.sql)"); break; }
+      if (!rows.length) { st.textContent = `Finished: ${done} made${bad ? `, ${bad} could not be made (check the storage CORS settings)` : ""}.`; break; }
+      const urls = await sign(rows.map(r => r.path), 1800);
+      await Promise.all(rows.map(async r => {
+        const blob = urls[r.path] ? await makeCardThumb(urls[r.path], r.type) : null;
+        const ok = blob ? !(await putThumb(r.path, blob)).error : false;
+        if (ok) { await sb.from("media").update({ thumb_ok: true }).eq("id", r.id); done++; } else { bad++; skip.push(r.id); }
+        st.textContent = `Working… ${done} done${bad ? ", " + bad + " failed" : ""}`;
+      }));
+    }
+  } finally { thRun = false; $("thGo").textContent = "Make thumbnails for old files"; }
+};
+
+
+/* ---------- V17 community chat moderation ---------- */
+async function loadChatAdmin() {
+  const s = await getSettings(["chat_on", "chat_slow", "chat_links"]);
+  $("chOnS").checked = s.chat_on !== "0"; $("chLinksS").checked = s.chat_links === "1"; $("chSlowS").value = ["0", "2", "5", "10", "30", "60"].includes(s.chat_slow) ? s.chat_slow : "2";
+  drawChatAdmin();
+}
+const chSave = async (k, v) => { const r = await setSetting(k, v); $("chSetMsg").textContent = r.error ? "Could not save" : "Saved"; setTimeout(() => $("chSetMsg").textContent = "", 1500); };
+$("chOnS").onchange = () => chSave("chat_on", $("chOnS").checked ? "1" : "0"); $("chLinksS").onchange = () => chSave("chat_links", $("chLinksS").checked ? "1" : "0"); $("chSlowS").onchange = () => chSave("chat_slow", $("chSlowS").value);
+$("chRef").onclick = drawChatAdmin;
+async function drawChatAdmin() {
+  const [{ data: ms, error }, { data: mu }] = await Promise.all([sb.from("chat_messages").select("*").eq("deleted", false).order("id", { ascending: false }).limit(100), sb.from("chat_mutes").select("*").gt("until", new Date().toISOString())]);
+  if (error) { $("chList").innerHTML = `<div class="mute">${esc(error.message)} (run supabase_v17.sql)</div>`; return; }
+  const ids = [...new Set([...(ms || []).map(m => m.tg_id), ...(mu || []).map(m => m.tg_id)])];
+  const { data: ps } = ids.length ? await sb.from("profiles").select("tg_id,first_name,last_name,display_name,username").in("tg_id", ids) : { data: [] };
+  const pm = new Map((ps || []).map(p => [p.tg_id, p])), nmOf = id => { const p = pm.get(id); return p ? nm(p) : "User " + id; };
+  $("chMuted").innerHTML = (mu || []).length ? mu.map(m => `<div class="row between" style="padding:4px 0"><span>${esc(nmOf(m.tg_id))} <span class="mute sm">until ${esc(fmtDT(m.until))}</span></span><button class="btn xs" data-cunmute="${m.tg_id}">Unmute</button></div>`).join("") : "None";
+  $("chList").innerHTML = (ms || []).map(m => `<div style="padding:9px 0;border-top:1px solid var(--line)"><div class="row between" style="gap:8px"><b>${esc(nmOf(m.tg_id))}${m.pinned ? ' <span class="pill g">Pinned</span>' : ""}</b><span class="mute sm">${esc(fmtDT(m.created_at))}</span></div>
+    <div style="margin:3px 0 7px;white-space:pre-wrap;word-break:break-word">${esc(m.body)}</div>
+    <div class="row" style="gap:6px;flex-wrap:wrap"><button class="btn dg xs" data-cdel="${m.id}">Delete</button><button class="btn xs" data-cpin="${m.id}" data-on="${m.pinned ? 0 : 1}">${m.pinned ? "Unpin" : "Pin"}</button><span class="mute sm">Mute:</span><button class="btn xs" data-cmute="${m.tg_id}" data-h="1">1 h</button><button class="btn xs" data-cmute="${m.tg_id}" data-h="24">1 day</button><button class="btn xs" data-cmute="${m.tg_id}" data-h="168">7 days</button><button class="btn dg xs" data-cmute="${m.tg_id}" data-h="87600">Forever</button></div></div>`).join("") || '<div class="mute">No messages yet.</div>';
+}
+$("t-chat").onclick = async e => {
+  const b = e.target.closest("button"); if (!b) return; let r;
+  if (b.dataset.cdel) r = await sb.from("chat_messages").update({ deleted: true }).eq("id", b.dataset.cdel);
+  else if (b.dataset.cpin) { if (b.dataset.on === "1") await sb.from("chat_messages").update({ pinned: false }).eq("pinned", true); r = await sb.from("chat_messages").update({ pinned: b.dataset.on === "1" }).eq("id", b.dataset.cpin); }
+  else if (b.dataset.cmute) r = await sb.from("chat_mutes").upsert({ tg_id: Number(b.dataset.cmute), until: new Date(Date.now() + Number(b.dataset.h) * 3600000).toISOString() });
+  else if (b.dataset.cunmute) r = await sb.from("chat_mutes").delete().eq("tg_id", b.dataset.cunmute);
+  else return;
+  if (r?.error) return toast(r.error.message); drawChatAdmin();
+};
+$("chClear").onclick = async () => { if (!confirm("Delete every message in the chat?")) return; const r = await sb.from("chat_messages").update({ deleted: true }).eq("deleted", false); r.error ? toast(r.error.message) : (toast("Chat cleared"), drawChatAdmin()); };
+
 /* ---------- maintenance mode ---------- */
 let mtOn = false;
 function drawMt() { $("mtSw").classList.toggle("on", mtOn); $("mtSt").textContent = mtOn ? "Maintenance is ON" : "Maintenance is OFF"; $("mtSub").textContent = mtOn ? "Members are locked out. Only the allowed list below can open the bot and web app." : "Everyone can use the bot and the web app."; }
@@ -1905,7 +1984,9 @@ async function loadFlow() {
   $("flMsg").textContent = "";
   const s = await getSettings(["flow_step", "flow_stagger", "flow_wave"]), n = (v, d) => (v === undefined || v === "" || isNaN(Number(v)) ? d : Number(v));
   setFlow(n(s.flow_step, 5), n(s.flow_stagger, 1), n(s.flow_wave, 10));
+  $("flVid").checked = (await getSettings(["flow_video"])).flow_video === "1";
 }
+$("flVid").onchange = async () => { const r = await setSetting("flow_video", $("flVid").checked ? "1" : "0"); toast(r.error ? "Error saving" : "Saved"); };
 ["flStep", "flGap", "flWave"].forEach(id => $(id).oninput = () => setFlow(+$("flStep").value, +$("flGap").value, +$("flWave").value));
 $("flReset").onclick = () => setFlow(5, 1, 10);
 $("flSave").onclick = async () => {

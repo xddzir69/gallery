@@ -430,6 +430,23 @@
   .chatbar .in { max-width: 700px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
   .chatbar textarea { flex: 1; min-width: 0; max-height: 120px; min-height: 44px; padding: 11px 14px; border-radius: 22px; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; outline: none; resize: none; }
   .chatbar .btn { width: 44px; height: 44px; padding: 0; border-radius: 50%; flex: none; }
+
+  /* ---------- community chat ---------- */
+  .chhd { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 2px 0 10px; } .chhd b { font-family: var(--serif); font-weight: 500; font-size: 22px; } .chhd span { font-size: 12px; color: var(--mute); display: flex; align-items: center; gap: 6px; } .chhd i { width: 7px; height: 7px; border-radius: 50%; background: #3DBE7A; box-shadow: 0 0 8px #3DBE7A; }
+  .chat.cm { gap: 3px; padding-bottom: 190px; }
+  .cmd { align-self: center; font-size: 11px; color: var(--mute); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 3px 10px; margin: 10px 0 4px; }
+  .cmw { display: flex; gap: 8px; align-items: flex-end; } .cmw.me { flex-direction: row-reverse; } .cmw.first { margin-top: 7px; }
+  .cmw .av { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #fff; background-size: cover; background-position: center; } .cmw .sp { width: 32px; flex: none; }
+  .cmb { max-width: 78%; min-width: 64px; padding: 7px 12px 6px; border-radius: 18px; border-bottom-left-radius: 6px; background: var(--card); border: 1px solid var(--line); font-size: 14.5px; line-height: 1.4; word-break: break-word; white-space: pre-wrap; -webkit-user-select: text; user-select: text; }
+  .cmw.me .cmb { background: var(--metal); color: var(--onmetal); border: 0; border-bottom-left-radius: 18px; border-bottom-right-radius: 6px; }
+  .cmb .nm { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cmb .rq { border-left: 3px solid var(--gold); background: rgba(128,128,128,.13); border-radius: 8px; padding: 4px 8px; margin: 2px 0 5px; font-size: 12.5px; white-space: normal; opacity: .95; } .cmb .rq b { display: block; font-size: 11.5px; }
+  .cmb small { float: right; margin: 7px 0 0 12px; font-size: 10.5px; opacity: .55; line-height: 1; }
+  .chatbar.tab { bottom: calc(86px + env(safe-area-inset-bottom)); padding-bottom: 8px; }
+  .chrep { max-width: 700px; margin: 0 auto 6px; display: flex; align-items: center; gap: 10px; padding: 6px 12px; border-left: 3px solid var(--gold); background: var(--card); border-radius: 12px; font-size: 12.5px; } .chrep div { flex: 1; min-width: 0; } .chrep b { display: block; font-size: 11.5px; } .chrep span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--mute); } .chrep button { color: var(--mute); font-size: 18px; padding: 0 4px; }
+  .chpin { display: flex; gap: 10px; align-items: center; padding: 8px 12px; margin-bottom: 8px; border: 1px solid var(--line2); border-radius: 14px; background: var(--card); font-size: 13px; } .chpin b { color: var(--gold); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; display: block; } .chpin span { display: block; }
+  .chmore { text-align: center; margin: 0 0 8px; }
+  .newpill { position: fixed; z-index: 61; left: 50%; transform: translateX(-50%); bottom: calc(150px + env(safe-area-inset-bottom)); padding: 8px 16px; border-radius: 20px; background: var(--metal); color: var(--onmetal); font-weight: 700; font-size: 12.5px; box-shadow: var(--shadow); }
   .chatclosed { position: fixed; left: 0; right: 0; bottom: 0; padding: 16px 14px calc(18px + env(safe-area-inset-bottom)); text-align: center; color: var(--mute); font-size: 13.5px; background: var(--glass); border-top: 1px solid var(--line); z-index: 60; }
 
   /* ---------- settings + notifications ---------- */
@@ -534,6 +551,7 @@
   <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l5 5L20 7"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M3 6a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H9l-4 3v-3a3 3 0 0 1-2-3z"/><path d="M19 9h0a2 2 0 0 1 2 2v6l-3-2h-5a2 2 0 0 1-2-1.5"/></symbol>
   <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7z"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
@@ -684,7 +702,7 @@ function toast(t) { const el = $("toast"); el.textContent = t; el.style.display 
 let me = null, cats = [], plans = [], settings = {}, unread = 0, favs = new Set(), HOME = null;
 const SRC = {};
 const stack = [{ r: "home", p: {} }];
-const TABS = ["home", "explore", "premium", "library", "profile"];
+const TABS = ["home", "explore", "chat", "premium", "library", "profile"];
 const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New message", settings: "Settings", notifs: "Notifications", album: "Folder", allfolders: "All Folders", space: "My uploads", topic: "Topic" };
 let timers = [], observers = [], viewIO = null;
 const viewed = new Set(); // files already counted as seen in this session
@@ -692,7 +710,7 @@ const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean
 const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
-const SCREEN_NAME = { home: "Home", explore: "Explore", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
+const SCREEN_NAME = { home: "Home", explore: "Explore", chat: "Community chat", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
 /* ---------- live mirror: a small snapshot of what this member is looking at, for the admin's Live screen ---------- */
 function liveState() {
   const t = stack[stack.length - 1]; if (!t) return null;
@@ -769,7 +787,7 @@ tg?.BackButton?.onClick(() => {
   if ($("popup").classList.contains("open")) return closePopup();
   back();
 });
-$("nav").innerHTML = [["home", "home", "Home"], ["explore", "search", "Explore"], ["premium", "crown", "Premium"], ["library", "folder", "Library"], ["profile", "user", "Profile"]]
+$("nav").innerHTML = [["home", "home", "Home"], ["explore", "search", "Explore"], ["chat", "chat", "Chat"], ["premium", "crown", "Premium"], ["library", "folder", "Library"], ["profile", "user", "Profile"]]
   .map(([r, i, l]) => `<button data-r="${r}" data-act="tab">${ic(i)}${l}</button>`).join("");
 
 /* ---------- sheets ---------- */
@@ -815,10 +833,10 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-let FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+let FLOW_VIDEO = false, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
 function applyFlow() {
   const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
-  FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+  FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
 }
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
@@ -899,9 +917,19 @@ function slidesHTML(list, locked) {
     const pv = pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const key = k ? "data-src" : "src";
-    if (t.type === "video") return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
-    return `<img class="sl${on}" draggable="false" alt="" style="${pv}" ${key}="${esc(t.url)}">`;
+    if (t.type === "video") {
+      if (t.thumb && FLOW_VIDEO) return `<video class="sl${on}" data-v="1" muted loop playsinline preload="none" poster="${esc(t.thumb)}" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
+      if (t.thumb) return `<img class="sl${on}" data-v="1" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+      return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
+    }
+    if (t.thumb) return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+    return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
+}
+/* a card thumbnail that is missing (older files) falls back to the original file */
+function thumbFail(i) {
+  const f = i.dataset.full; if (!f) return; i.removeAttribute("onerror"); i.removeAttribute("data-full");
+  if (i.dataset.v) { const v = document.createElement("video"); v.className = i.className; v.dataset.v = "1"; v.muted = true; v.loop = true; v.playsInline = true; v.preload = "metadata"; v.setAttribute("style", i.getAttribute("style") || ""); v.src = f + "#t=0.001"; i.replaceWith(v); } else i.src = f;
 }
 const lockHTML = `<div class="lk"><span class="lkc">${ic("lock")}</span></div>`;
 const playHTML = `<span class="pl">${ic("play")}</span>`;
@@ -1470,6 +1498,94 @@ ACT.tkreply = async () => {
   el.disabled = false; el.focus();
 };
 
+
+/* ---------- community chat: one group for every member (V17) ---------- */
+const CH = { msgs: [], users: new Map(), reply: null, muted: 0, more: false, pinned: null, off: false, busy: false };
+const chHue = u => { let h = 7; for (const c of String(u)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
+const chTime = s => new Date(s).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+const chDay = s => { const d = new Date(s), t = new Date(), y = new Date(Date.now() - 864e5); return d.toDateString() === t.toDateString() ? "Today" : d.toDateString() === y.toDateString() ? "Yesterday" : d.toLocaleDateString([], { day: "numeric", month: "short", year: d.getFullYear() === t.getFullYear() ? undefined : "numeric" }); };
+function chRow(m, prev) {
+  const sameDay = prev && new Date(prev.at).toDateString() === new Date(m.at).toDateString();
+  const cont = prev && sameDay && prev.u === m.u;
+  const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
+  const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${esc(m.text)}<small>${chTime(m.at)}</small></div></div>`;
+}
+function chDraw(scroll) {
+  const box = $("chat"); if (!box) return;
+  const atEnd = innerHeight + scrollY >= document.body.scrollHeight - 160;
+  box.innerHTML = CH.msgs.map((m, i) => chRow(m, CH.msgs[i - 1])).join("") || `<div class="msg" style="padding:40px 0"><b>No messages yet</b>Say hello to everyone.</div>`;
+  $("chMore").hidden = !CH.more;
+  $("chPin").innerHTML = CH.pinned ? `<div class="chpin">${ic("notice")}<div><b>Pinned</b><span>${esc(CH.pinned.text)}</span></div></div>` : "";
+  if (scroll || atEnd) { window.scrollTo(0, document.body.scrollHeight); $("chNew").hidden = true; } else if (CH.fresh) $("chNew").hidden = false;
+  CH.fresh = false;
+}
+function chBar() {
+  const m = CH.muted && new Date(CH.muted) > new Date(), ta = $("chT"); if (!ta) return;
+  ta.disabled = !!m || CH.off; ta.placeholder = CH.off ? "Chat is paused" : m ? "You are muted until " + new Date(CH.muted).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Message everyone…";
+  $("chSend").disabled = !!m || CH.off;
+  const r = CH.reply; $("chRep").innerHTML = r ? `<div class="chrep"><div><b>Reply to ${esc(r.name)}</b><span>${esc(r.text)}</span></div><button data-act="chunreply" aria-label="Cancel">✕</button></div>` : "";
+}
+function chMerge(list) {
+  let added = false; const have = new Set(CH.msgs.map(m => m.id));
+  for (const m of list) if (!have.has(m.id)) { CH.msgs.push(m); added = true; }
+  CH.msgs.sort((a, b) => a.id - b.id); if (CH.msgs.length > 400) CH.msgs = CH.msgs.slice(-400);
+  return added;
+}
+async function chPoll(first) {
+  if (CH.busy) return; CH.busy = true;
+  try {
+    const last = CH.msgs.length ? CH.msgs[CH.msgs.length - 1].id : 0;
+    const r = await api("chat_list", first ? { min: 0 } : { after: last, min: CH.msgs[0]?.id || 0 });
+    CH.off = !!r.off; CH.muted = r.muted_until || 0;
+    if (r.off) { $("chat").innerHTML = `<div class="msg" style="padding:40px 0"><b>Chat is paused</b>The team has turned the chat off for now.</div>`; chBar(); return; }
+    if (first) { CH.msgs = []; CH.more = !!r.more; CH.pinned = r.pinned || null; if (r.members != null) CH.members = r.members; }
+    const added = chMerge(r.messages || []), gone = new Set(r.gone || []);
+    const before = CH.msgs.length; if (gone.size) CH.msgs = CH.msgs.filter(m => !gone.has(m.id));
+    if (!first && r.messages?.some(m => !m.mine)) CH.fresh = true;
+    $("chOn").innerHTML = `<i></i>${r.online} online${CH.members ? " · " + CH.members + " members" : ""}`;
+    chBar(); if (first || added || before !== CH.msgs.length) chDraw(first);
+  } catch (e) { if (first) throw e; } finally { CH.busy = false; }
+}
+PAGES.chat = async function () {
+  CH.msgs = []; CH.reply = null; CH.pinned = null;
+  app.innerHTML = `<div class="pad"><div class="chhd"><b>Community chat</b><span id="chOn"></span></div><div id="chPin"></div><div class="chmore" id="chMore" hidden><button class="btn gh" data-act="chmore">Earlier messages</button></div><div class="chat cm" id="chat"><div class="msg" style="padding:40px 0">Loading…</div></div></div>
+    <button class="newpill" id="chNew" data-act="chdown" hidden>New messages ↓</button>
+    <div class="chatbar tab"><div id="chRep"></div><div class="in"><textarea id="chT" rows="1" maxlength="500" placeholder="Message everyone…"></textarea><button class="btn" id="chSend" data-act="chsend" aria-label="Send">${ic("send")}</button></div></div>`;
+  const ta = $("chT");
+  ta.oninput = () => { ta.style.height = "auto"; ta.style.height = Math.min(120, ta.scrollHeight) + "px"; };
+  ta.onkeydown = e => { if (e.key === "Enter" && !e.shiftKey && !/Android|iPhone|iPad/i.test(navigator.userAgent)) { e.preventDefault(); ACT.chsend(); } };
+  window.addEventListener("scroll", chScrollHide, { passive: true });
+  await chPoll(true); chBar();
+  timers.push(setInterval(() => { if (!document.hidden && stack[stack.length - 1].r === "chat") chPoll(false); }, 3000));
+};
+function chScrollHide() { if (innerHeight + scrollY >= document.body.scrollHeight - 160) $("chNew") && ($("chNew").hidden = true); }
+ACT.chdown = () => { window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); };
+ACT.chunreply = () => { CH.reply = null; chBar(); };
+ACT.chmore = async () => {
+  const first = CH.msgs[0]; if (!first) return; const h0 = document.body.scrollHeight;
+  try { const r = await api("chat_list", { before: first.id }); CH.more = !!r.more; chMerge(r.messages || []); chDraw(false); window.scrollTo(0, scrollY + document.body.scrollHeight - h0); } catch (e) { toast(e.message); }
+};
+ACT.chsend = async () => {
+  const ta = $("chT"), text = ta.value.trim(); if (!text || ta.disabled) return; $("chSend").disabled = true;
+  try { const r = await api("chat_send", { text, reply_to: CH.reply?.id || null }); ta.value = ""; ta.style.height = "auto"; CH.reply = null; haptic("light"); chMerge([r.message]); chDraw(true); }
+  catch (e) { toast(e.message); }
+  $("chSend").disabled = false; chBar(); if (!ta.disabled) ta.focus();
+};
+ACT.chmenu = d => {
+  const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return; haptic("light");
+  openSheet(`<div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80))}</small></div></div>
+    <button class="srow" data-act="chreply" data-id="${m.id}"><span>Reply</span>${ic("back")}</button>
+    <button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>
+    ${m.mine ? `<button class="srow" data-act="chdel" data-id="${m.id}"><span style="color:var(--bad,#E5484D)">Delete message</span>${ic("trash")}</button>` : ""}`);
+};
+ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; CH.reply = { id: m.id, name: m.name, text: m.text.slice(0, 90) }; chBar(); $("chT")?.focus(); };
+ACT.chcopy = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (m) copyText(m.text); };
+ACT.chdel = async d => {
+  closeSheet(); const id = Number(d.id);
+  try { await api("chat_delete", { id }); CH.msgs = CH.msgs.filter(x => x.id !== id); chDraw(false); } catch (e) { toast(e.message); }
+};
+
 /* ---------- settings ---------- */
 PAGES.settings = async function () {
   const seg = (a, items, cur) => `<div class="seg">${items.map(([v, l]) => `<button class="${cur === v ? "on" : ""}" data-act="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
@@ -1543,7 +1659,11 @@ function drawViewer() {
     $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline autoplay></video>`;
     const v = $("stage").firstElementChild; v.oncontextmenu = e => e.preventDefault();
     v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); v.play?.().catch(() => {});
-  } else $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.url)}" alt="">`;
+  } else {
+    $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.thumb || m.url)}" alt="">`; // the small picture shows at once, the full one replaces it when ready
+    if (m.thumb && m.url) { const f = new Image(); f.onload = () => { const el = $("vimg"); if (el && V.list[V.i] === m) el.src = m.url; }; f.src = m.url; }
+    const nx = V.list[V.i + 1]; if (nx && nx.type !== "video" && nx.url) new Image().src = nx.url; // next picture loads in the background
+  }
   $("vcnt").textContent = `${V.i + 1} / ${V.list.length}`;
   $("vt").textContent = vName(m); $("vm").textContent = (m.created_at ? fmtDate(m.created_at) : "") + (m.kind === "media" ? `  ·  ${short(m.views)} views` : m.kind === "comm" && m.by ? `  ·  by ${m.by}` : "");
   $("vheart").classList.toggle("on", favs.has(m.id));
