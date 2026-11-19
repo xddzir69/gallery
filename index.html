@@ -447,6 +447,10 @@
   .cmb .nm { display: block; font-size: 12.5px; font-weight: 700; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .cmb .rq { border-left: 3px solid var(--gold); background: rgba(128,128,128,.13); border-radius: 8px; padding: 4px 8px; margin: 2px 0 5px; font-size: 12.5px; white-space: normal; opacity: .95; } .cmb .rq b { display: block; font-size: 11.5px; }
   .cmb small { float: right; margin: 7px 0 0 12px; font-size: 10.5px; opacity: .55; line-height: 1; }
+  .cmw .cmb { touch-action: pan-y; position: relative; will-change: transform; } .cmw .cmb.rel { transition: transform .22s cubic-bezier(.2,.9,.3,1); }
+  .cmw .sw { position: absolute; left: 10px; top: 50%; width: 30px; height: 30px; margin-top: -15px; border-radius: 50%; display: grid; place-items: center; background: var(--card2); color: var(--gold); opacity: 0; transform: scale(.4); pointer-events: none; z-index: 0; } .cmw .sw.on { opacity: 1; transform: scale(1); } .cmw .sw svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+  .cmw { position: relative; } .cmw.hl .cmb { animation: hlb 1.2s ease; } @keyframes hlb { 0%,60% { box-shadow: 0 0 0 3px var(--gold); } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .cmb .rq { cursor: pointer; }
   .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
   .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
   .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
@@ -1519,7 +1523,7 @@ function chRow(m, prev) {
   const cont = prev && sameDay && prev.u === m.u;
   const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small></div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1536,7 +1540,7 @@ function chBar() {
   ta.disabled = !!m || CH.off; ta.placeholder = CH.off ? "Chat is paused" : m ? "You are muted until " + new Date(CH.muted).toLocaleString([], { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "Message everyone…";
   $("chSend").disabled = !!m || CH.off;
   const r = CH.reply, ph = CH.photo;
-  $("chRep").innerHTML = (ph ? `<div class="chrep"><img src="${CH.photoUrl}" alt=""><div><b>Photo</b><span>${esc(ph.name)} · ${fmtMB(ph.size)}</span></div><button data-act="chnophoto" aria-label="Remove">✕</button></div>` : "") + (r ? `<div class="chrep"><div><b>Reply to ${esc(r.name)}</b><span>${esc(r.text)}</span></div><button data-act="chunreply" aria-label="Cancel">✕</button></div>` : "");
+  $("chRep").innerHTML = (ph ? `<div class="chrep"><img src="${CH.photoUrl}" alt=""><div><b>Photo</b><span>${esc(ph.name)} · ${fmtMB(ph.size)}</span></div><button data-act="chnophoto" aria-label="Remove">✕</button></div>` : "") + (r ? `<div class="chrep">${r.img ? `<img src="${esc(r.img)}" alt="">` : ""}<div><b>Reply to ${esc(r.name)}</b><span>${esc(r.text)}</span></div><button data-act="chunreply" aria-label="Cancel">✕</button></div>` : "");
   $("chAtt").hidden = !!m || CH.off;
 }
 function chMerge(list) {
@@ -1624,7 +1628,40 @@ ACT.chmenu = d => {
     ${m.text ? `<button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>` : ""}
     ${m.mine ? `<button class="srow" data-act="chdel" data-id="${m.id}"><span style="color:var(--bad,#E5484D)">Delete message</span>${ic("trash")}</button>` : ""}`);
 };
-ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; CH.reply = { id: m.id, name: m.name, text: m.text.slice(0, 90) || "Photo" }; chBar(); $("chT")?.focus(); };
+function chStartReply(m) { CH.reply = { id: m.id, name: m.name, text: m.text.slice(0, 90) || "Photo", img: m.image ? (m.thumb || m.image) : "" }; chBar(); $("chT")?.focus(); }
+/* Messenger style: drag a message to the right, let go, and it becomes the reply. Works with a finger or a mouse. */
+(function () {
+  let g = null; const MAX = 90, TRIG = 56;
+  const arrow = '<svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 6 6v3"/></svg>';
+  function start(e, x, y) {
+    const b = e.target.closest && e.target.closest(".cmw .cmb"); if (!b || e.target.closest("a,button,textarea")) return;
+    g = { b, x, y, dx: 0, lock: 0, fired: false, id: Number(b.dataset.id) }; b.classList.remove("rel");
+  }
+  function move(e, x, y) {
+    if (!g) return; const dx = x - g.x, dy = y - g.y;
+    if (!g.lock) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; g.lock = Math.abs(dx) > Math.abs(dy) * 1.4 && dx > 0 ? 1 : -1; if (g.lock === 1) { window.getSelection?.().removeAllRanges(); const w = g.b.parentElement; if (!w.querySelector(".sw")) w.insertAdjacentHTML("afterbegin", `<span class="sw">${arrow}</span>`); g.sw = w.querySelector(".sw"); } }
+    if (g.lock !== 1) { if (g.lock === -1) g = null; return; }
+    if (e.cancelable) e.preventDefault();
+    g.dx = Math.min(MAX, dx * .75); g.b.style.transform = `translateX(${g.dx}px)`;
+    const hit = g.dx >= TRIG; g.sw.classList.toggle("on", g.dx > 20);
+    if (hit && !g.fired) { g.fired = true; haptic("light"); } else if (!hit) g.fired = false;
+  }
+  function end() {
+    if (!g) return; const o = g; g = null; o.b.classList.add("rel"); o.b.style.transform = "";
+    if (o.sw) o.sw.classList.remove("on");
+    if (o.lock === 1) { window.__chSwiped = Date.now(); if (o.dx >= TRIG) { const m = CH.msgs.find(x => x.id === o.id); if (m) chStartReply(m); } }
+  }
+  document.addEventListener("touchstart", e => { if (e.touches.length === 1 && $("chat")) start(e, e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+  document.addEventListener("touchmove", e => { if (g && e.touches.length === 1) move(e, e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+  document.addEventListener("touchend", end, { passive: true }); document.addEventListener("touchcancel", end, { passive: true });
+  document.addEventListener("mousedown", e => { if (e.button === 0 && $("chat")) start(e, e.clientX, e.clientY); });
+  document.addEventListener("mousemove", e => { if (g) move(e, e.clientX, e.clientY); }); document.addEventListener("mouseup", end);
+  /* a swipe must not also open the tap menu or the photo */
+  document.addEventListener("click", e => { if (Date.now() - (window.__chSwiped || 0) < 350 && e.target.closest(".cmb")) { e.stopPropagation(); e.preventDefault(); } }, true);
+})();
+/* tap the quoted part of a reply: jump to the original message (if it is loaded) */
+ACT.chquote = d => { const el = document.querySelector(`.cmw[data-id="${d.id}"]`); if (!el) return toast("That message is older. Tap Earlier messages."); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl"); };
+ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; chStartReply(m); };
 ACT.chcopy = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (m) copyText(m.text); };
 ACT.chdel = async d => {
   closeSheet(); const id = Number(d.id);
