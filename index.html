@@ -467,6 +467,13 @@
   .rxa button { padding: 9px 16px; border-radius: 20px; border: 1px solid var(--line); background: var(--card); color: inherit; font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.35); } .rxa button.bad { color: var(--bad, #E5484D); }
   .rxrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; padding: 4px 0 10px; }
   .rxfly { position: fixed; z-index: 410; font-size: 34px; pointer-events: none; animation: rxfly .9s ease-out forwards; } @keyframes rxfly { 0% { transform: translateY(0) scale(.5); opacity: 0; } 20% { opacity: 1; transform: translateY(-14px) scale(1.4); } 100% { transform: translateY(-90px) scale(1); opacity: 0; } }
+  .cmw.last { margin-bottom: 15px; }
+  .rxadd { position: absolute; bottom: -14px; left: 10px; width: 30px; height: 26px; display: inline-grid; place-items: center; border-radius: 14px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,.25); color: var(--mute, #888); cursor: pointer; z-index: 1; }
+  .cmw:not(.me) .rxadd { left: auto; right: 10px; } .rxadd svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; } .rxadd:active { scale: 1.2; }
+  .cmw .av[data-act], .cmw .nm[data-act] { cursor: pointer; }
+  .cpf { text-align: center; padding: 0 0 6px; } .cpf .cv { height: 130px; margin: -4px -4px 0; border-radius: 16px; background: var(--card2) center/cover; position: relative; } .cpf .cv.empty { background: radial-gradient(400px 160px at 50% 0%, var(--glow), transparent 70%), linear-gradient(135deg, var(--card2), var(--bg2)); }
+  .cpf .ring { width: 92px; height: 92px; margin: -46px auto 10px; } .cpf .nm2 { font-size: 20px; font-weight: 700; } .cpf .bio { margin: 10px 8px 0; font-size: 14px; opacity: .85; white-space: pre-wrap; } .cpf .since { margin-top: 10px; font-size: 12.5px; opacity: .6; }
+  .cmw.last .rxs { }
   .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
   .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
   .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
@@ -1537,10 +1544,12 @@ const chTime = s => new Date(s).toLocaleTimeString([], { hour: "2-digit", minute
 const chDay = s => { const d = new Date(s), t = new Date(), y = new Date(Date.now() - 864e5); return d.toDateString() === t.toDateString() ? "Today" : d.toDateString() === y.toDateString() ? "Yesterday" : d.toLocaleDateString([], { day: "numeric", month: "short", year: d.getFullYear() === t.getFullYear() ? undefined : "numeric" }); };
 function chRow(m, prev) {
   const sameDay = prev && new Date(prev.at).toDateString() === new Date(m.at).toDateString();
-  const cont = prev && sameDay && prev.u === m.u;
-  const sep = sameDay ? "" : `<div class="cmd">${chDay(m.at)}</div>`;
-  const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${rxHTML(m)}</div></div>`;
+  const gap = !prev || !sameDay || (new Date(m.at) - new Date(prev.at) >= 600000); // new day, or 10+ minutes of silence: show the time above
+  const cont = prev && !gap && prev.u === m.u;
+  const sep = gap ? `<div class="cmd">${chStamp(m.at)}</div>` : "";
+  const isLast = CH.msgs.length && CH.msgs[CH.msgs.length - 1].id === m.id;
+  const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" data-act="chprof" data-id="${m.id}" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""} ${isLast ? "last" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" data-act="chprof" data-id="${m.id}" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${rxHTML(m)}${isLast ? `<span class="rxadd" data-act="chreact" data-id="${m.id}" aria-label="React">${RXADD}</span>` : ""}</div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1732,6 +1741,24 @@ ACT.chrx = d => { closeSheet(); chReactSet(d.id, d.e); };
 addEventListener("keydown", e => { if (e.key === "Escape") rxClose(); });
 addEventListener("scroll", () => { if (document.getElementById("rxo") && Date.now() - (window.__chSwiped || 0) > 600) rxClose(); }, { passive: true });
 document.addEventListener("contextmenu", e => { const b = e.target.closest && e.target.closest(".cmw .cmb"); if (b) { e.preventDefault(); if (!document.getElementById("rxo")) chPicker(b.dataset.id); } });
+
+/* ---------- V20 chat: time labels, react button on the newest message, tap a member to see the profile ---------- */
+const chStamp = s => { const d = new Date(s), t = new Date(), y = new Date(Date.now() - 864e5), tm = chTime(s); if (d.toDateString() === t.toDateString()) return tm; return (d.toDateString() === y.toDateString() ? "Yesterday" : d.toLocaleDateString([], { day: "numeric", month: "short", year: d.getFullYear() === t.getFullYear() ? undefined : "numeric" })) + " · " + tm; };
+const RXADD = '<svg viewBox="0 0 24 24"><circle cx="11" cy="13" r="8"/><path d="M8 14.5c.9 1.3 2.1 2 3.5 2s2.6-.7 3.5-2"/><path d="M8.7 10.6h.01M13.3 10.6h.01"/><path d="M19 3v5M16.5 5.5h5"/></svg>';
+ACT.chprof = async d => {
+  const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return;
+  if (m.mine) return nav("profile");
+  openSheet(`<div class="cpf"><div class="cv empty"></div><div class="ring"><div class="avt">${esc(initial(m.name))}</div></div><div class="nm2">${esc(m.name)}</div><div class="since">Loading…</div></div>`);
+  try {
+    const p = await api("chat_profile", { id: m.id });
+    const av = p.avatar ? `<img src="${esc(p.avatar)}" alt="">` : esc(initial(p.name));
+    const since = p.since ? new Date(p.since).toLocaleDateString([], { month: "long", year: "numeric" }) : "";
+    openSheet(`<div class="cpf"><div class="cv ${p.cover ? "" : "empty"}" ${p.cover ? `style="background-image:url('${esc(p.cover)}')"` : ""}></div>
+      <div class="ring"><div class="avt">${av}</div></div><div class="nm2">${esc(p.name)}</div>
+      ${p.tier && p.tier !== "none" ? `<div style="margin-top:8px"><span class="pill g">${ic("crown")}${TIER[p.tier].full}</span></div>` : ""}
+      ${p.bio ? `<div class="bio">${esc(p.bio)}</div>` : ""}${since ? `<div class="since">Member since ${esc(since)}</div>` : ""}</div>`);
+  } catch (e) { closeSheet(); toast(e.message || "Could not open the profile"); }
+};
 ACT.chquote = d => { const el = document.querySelector(`.cmw[data-id="${d.id}"]`); if (!el) return toast("That message is older. Tap Earlier messages."); el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl"); };
 ACT.chreply = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (!m) return; chStartReply(m); };
 ACT.chcopy = d => { const m = CH.msgs.find(x => x.id === Number(d.id)); closeSheet(); if (m) copyText(m.text); };
