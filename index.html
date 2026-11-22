@@ -161,6 +161,8 @@
   .th .pl .i { width: 11px; height: 11px; fill: currentColor; stroke: none; margin-left: 1px; }
   .th .abg { position: absolute; z-index: 2; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,6,8,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F6F2E9; font-size: 11px; font-weight: 700; }
   .th .abg .i { width: 12px; height: 12px; stroke-width: 2; }
+  .th .eye { position: absolute; z-index: 2; left: 8px; top: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,6,8,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; font-size: 11px; font-weight: 700; line-height: 1.2; pointer-events: none; }
+  .th .eye .i { width: 12px; height: 12px; stroke-width: 2; }
   .dots3 { position: absolute; z-index: 4; right: 7px; top: 7px; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(6,6,8,.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #F6F2E9; }
   .dots3 .i { width: 17px; height: 17px; }
   .dots3.on { color: #FF7C9C; }
@@ -265,6 +267,41 @@
   .cdr .tm b { display: block; font-family: var(--serif); font-size: 22px; font-weight: 500; color: #F6EBCB; line-height: 1.1; font-variant-numeric: tabular-nums; }
   .cdr .tm span { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: rgba(243,231,196,.55); }
   .cdr .en { font-size: 11.5px; color: rgba(243,231,196,.7); }
+  /* V21: premium page ads, Mastercard-style member card, task card, profile dashboard */
+  .adbn { position: relative; display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 15px 16px; border-radius: 20px; margin: 0 0 12px; overflow: hidden; color: #F3E7C4; border: 1px solid var(--line2); transition: transform .15s ease;
+    background: radial-gradient(circle at 96% -30%, rgba(240,221,166,.38), transparent 55%), repeating-radial-gradient(circle at 6% 140%, transparent 0 14px, rgba(212,175,95,.08) 14px 15px), linear-gradient(135deg, #1D1B16, #0A0A0C 64%); box-shadow: 0 22px 46px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.08); }
+  .adbn:active { transform: scale(.985); }
+  .adbn .ai { flex: none; width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--metal); color: var(--onmetal); box-shadow: 0 8px 20px -10px rgba(212,175,95,.8); } .adbn .ai .i { width: 22px; height: 22px; }
+  .adbn .at { flex: 1; min-width: 0; } .adbn small { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .22em; color: var(--hi); text-transform: uppercase; }
+  .adbn b { display: block; font-family: var(--serif); font-weight: 500; font-size: 19px; line-height: 1.15; color: #F6EBCB; margin: 2px 0; } .adbn span.s { display: block; font-size: 12px; color: rgba(243,231,196,.72); }
+  .adbn .ag { flex: none; color: var(--hi); } .adbn .ag .i { width: 18px; height: 18px; }
+  .adbn.plb { padding: 11px 14px; border-color: rgba(229,138,152,.4); background: radial-gradient(circle at 0% -40%, rgba(243,185,194,.34), transparent 52%), radial-gradient(circle at 100% -40%, rgba(240,221,166,.38), transparent 52%), linear-gradient(135deg, #241518, #0A0A0C 50%, #1D1B16); }
+  .adbn.plb .chips { display: flex; gap: 6px; flex: none; } .adbn.plb .chips i { font-style: normal; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; padding: 5px 10px; border-radius: 999px; }
+  .adbn.plb .chips .r { background: linear-gradient(135deg, #F3B9C2, #E58A98); color: #3A1620; } .adbn.plb .chips .g { background: var(--metal); color: var(--onmetal); }
+  .adbn.plb b { font-size: 17px; }
+  .mcc { position: relative; overflow: hidden; width: min(290px, 82%); aspect-ratio: 1.586; margin: 2px auto 14px; padding: 14px 16px 12px; border-radius: 16px; color: #F3E7C4; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--line2);
+    background: radial-gradient(circle at 92% -10%, rgba(240,221,166,.34), transparent 52%), repeating-radial-gradient(circle at 12% 120%, transparent 0 14px, rgba(212,175,95,.07) 14px 15px), linear-gradient(135deg, #1D1B16, #0A0A0C 62%); box-shadow: 0 24px 44px -22px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.1); }
+  .mcc.t-lite { background: radial-gradient(circle at 92% -10%, rgba(243,185,194,.34), transparent 52%), repeating-radial-gradient(circle at 12% 120%, transparent 0 14px, rgba(229,138,152,.08) 14px 15px), linear-gradient(135deg, #241518, #0A0A0C 62%); border-color: rgba(229,138,152,.45); }
+  .mcc.free { filter: saturate(.6) brightness(.95); }
+  .mcc::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 38%, rgba(255,240,200,.14) 50%, transparent 62%); transform: translateX(-120%); animation: shine 6s ease-in-out infinite; pointer-events: none; }
+  .mcc .mt { display: flex; justify-content: space-between; align-items: center; } .mcc .mb2 { font-size: 9.5px; font-weight: 800; letter-spacing: .28em; color: var(--hi); }
+  .mcc .nfc { width: 20px; height: 20px; stroke: var(--hi); fill: none; stroke-width: 1.8; stroke-linecap: round; }
+  .mcc .chip { width: 38px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, #F0DDA6, #B8923F); position: relative; box-shadow: inset 0 0 0 1px rgba(0,0,0,.25); }
+  .mcc .chip::before { content: ""; position: absolute; inset: 5px 9px; border: 1px solid rgba(0,0,0,.3); border-radius: 3px; } .mcc.t-lite .chip { background: linear-gradient(135deg, #F3C9D0, #C9788A); }
+  .mcc .num { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 14.5px; letter-spacing: .14em; color: #F6EBCB; text-shadow: 0 1px 0 rgba(0,0,0,.5); }
+  .mcc .mf { display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; } .mcc .mf small { display: block; font-size: 7.5px; letter-spacing: .16em; color: var(--hi); opacity: .85; }
+  .mcc .mf b { display: block; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #F6EBCB; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mcc .circ { position: relative; width: 44px; height: 28px; flex: none; } .mcc .circ i { position: absolute; top: 0; width: 28px; height: 28px; border-radius: 50%; }
+  .mcc .circ i:first-child { left: 0; background: #D4AF5F; } .mcc .circ i:last-child { right: 0; background: rgba(240,221,166,.78); mix-blend-mode: screen; } .mcc.t-lite .circ i:first-child { background: #E58A98; } .mcc.t-lite .circ i:last-child { background: rgba(243,185,194,.8); } .mcc.free .circ i:first-child { background: #8C8878; } .mcc.free .circ i:last-child { background: rgba(200,196,180,.7); }
+  .mcc-tier { text-align: center; font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--hi); margin: -4px 0 6px; }
+  .taskc { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 13px 14px; border-radius: 18px; margin: 0 0 14px; background: var(--card); border: 1px dashed var(--line2); }
+  .taskc .ti { flex: none; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--metal); color: var(--onmetal); } .taskc .ti .i { width: 19px; height: 19px; }
+  .taskc .tb { flex: 1; min-width: 0; } .taskc small { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; } .taskc b { display: block; font-size: 13.5px; font-weight: 600; line-height: 1.3; margin: 2px 0 7px; }
+  .taskc .tbar { height: 6px; border-radius: 4px; background: var(--line); overflow: hidden; } .taskc .tbar i { display: block; height: 100%; background: var(--metal); border-radius: 4px; } .taskc .tp { display: block; font-size: 11.5px; color: var(--mute); margin-top: 5px; }
+  .pst { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 10px; } .pst > div { text-align: center; padding: 11px 6px; border-radius: 14px; background: var(--card); border: 1px solid var(--line); } .pst b { display: block; font-family: var(--serif); font-weight: 500; font-size: 22px; } .pst span { font-size: 11px; color: var(--mute); }
+  .prow { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; padding: 11px 13px; border-radius: 14px; margin-bottom: 7px; background: var(--card); border: 1px solid var(--line); }
+  .prow .pn { min-width: 0; display: flex; flex-direction: column; gap: 4px; } .prow .pn b { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .prow .pn .pill { align-self: flex-start; }
+  .prow .pm { display: flex; gap: 12px; flex: none; font-size: 12px; font-weight: 700; color: var(--mute); } .prow .pm span { display: inline-flex; align-items: center; gap: 4px; } .prow .pm .i { width: 14px; height: 14px; }
   .minibtns { display: flex; gap: 8px; justify-content: center; margin: 2px 0 20px; }
   .minibtns .btn { padding: 9px 16px; font-size: 13px; border-radius: 12px; }
 
@@ -439,6 +476,11 @@
   /* ---------- community chat ---------- */
   .chhd { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 2px 0 10px; } .chhd b { font-family: var(--serif); font-weight: 500; font-size: 22px; } .chhd span { font-size: 12px; color: var(--mute); display: flex; align-items: center; gap: 6px; } .chhd i { width: 7px; height: 7px; border-radius: 50%; background: #3DBE7A; box-shadow: 0 0 8px #3DBE7A; }
   .chat.cm { gap: 3px; padding-bottom: 190px; }
+  /* V21: the title row (Community chat / N online / M members) stays fixed under the app header while the messages scroll */
+  .chhd { position: sticky; top: var(--hh, 56px); z-index: 39; margin: 0 -18px 10px; padding: 10px 18px 9px; background: var(--glass); backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); border-bottom: 1px solid var(--line); }
+  .cmd.unr { background: var(--metal); color: var(--onmetal); border: 0; font-weight: 700; }
+  .chdn { position: fixed; z-index: 61; left: 50%; transform: translateX(-50%); bottom: calc(142px + env(safe-area-inset-bottom)); width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--card2); color: var(--text); border: 1px solid var(--line2); box-shadow: var(--shadow); }
+  .chdn[hidden] { display: none; } .chdn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; } .chdn:active { scale: .92; }
   .cmd { align-self: center; font-size: 11px; color: var(--mute); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 3px 10px; margin: 10px 0 4px; }
   .cmw { display: flex; gap: 8px; align-items: flex-end; } .cmw.me { flex-direction: row-reverse; } .cmw.first { margin-top: 7px; }
   .cmw .av { width: 32px; height: 32px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #fff; background-size: cover; background-position: center; } .cmw .sp { width: 32px; flex: none; }
@@ -474,7 +516,7 @@
   .cpf { text-align: center; padding: 0 0 6px; } .cpf .cv { height: 130px; margin: -4px -4px 0; border-radius: 16px; background: var(--card2) center/cover; position: relative; } .cpf .cv.empty { background: radial-gradient(400px 160px at 50% 0%, var(--glow), transparent 70%), linear-gradient(135deg, var(--card2), var(--bg2)); }
   .cpf .ring { width: 92px; height: 92px; margin: -46px auto 10px; } .cpf .nm2 { font-size: 20px; font-weight: 700; } .cpf .bio { margin: 10px 8px 0; font-size: 14px; opacity: .85; white-space: pre-wrap; } .cpf .since { margin-top: 10px; font-size: 12.5px; opacity: .6; }
   .cmw.last .rxs { }
-  .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
+  .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; object-position: 50% 0; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
   .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
   .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
   .chlb { position: fixed; inset: 0; z-index: 130; background: rgba(0,0,0,.94); display: grid; place-items: center; } .chlb img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -876,59 +918,61 @@ function flowLoad(ss, from, count) { // load the next pictures early so a slide 
   const sl = ss.children, n = sl.length;
   for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
 }
-function flowPlay(el, on) { // a video slide plays (muted) from its start while it is the current one
+function flowPlay(el, on) { // V21: videos never start by themselves; they only play when the member taps them (in the viewer)
   if (!el || el.tagName !== "VIDEO") return;
-  try { el.currentTime = 0; } catch { /* not ready yet */ }
-  if (on) { el._pt = performance.now(); const p = el.play(); if (p && p.catch) p.catch(() => {}); } else el.pause();
+  try { el.pause(); } catch { /* ignore */ }
 }
 function flowClip(el) { // keep the preview inside the first 5 seconds (loops back to the start)
   if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_STEP / 1000) { try { el.currentTime = 0; } catch { /* ignore */ } }
 }
+/* V21: the flow runs only for cards that are on the screen. The first visible card changes after FLOW_FIRST, the next one 1 s later,
+   the next 1 s after that ... (FLOW_STAGGER, wraps after FLOW_WAVE cards). Scroll away and it rests; scroll back and it starts again.
+   Every picture that shows on a visible card counts one view (batched), also when the same picture comes round again. */
+function showEye(ss, el) { const b = ss.parentElement && ss.parentElement.querySelector(".eye b"); if (b && el && el.dataset.views) b.textContent = short(+el.dataset.views); }
+function hitSlide(ss, el) { if (!el || !el.dataset.mid) return; hit(el.dataset.mid, !!el.dataset.file); if (el.dataset.views) { el.dataset.views = (+el.dataset.views || 0) + 1; showEye(ss, el); } }
 setInterval(() => {
   if (document.hidden) return;
-  const now = performance.now();
-  document.querySelectorAll(".ss").forEach((ss, k) => {
+  const now = performance.now(), vOpen = $("viewer").classList.contains("open"); let rank = 0;
+  document.querySelectorAll(".ss").forEach(ss => {
     const n = ss.children.length, r = ss.getBoundingClientRect(), i = +ss.dataset.i;
     const off = r.bottom < -50 || r.top > innerHeight + 50;
-    if (n < 2) { // a single video (folder with one video, or a video file card) plays its first 5 seconds on a loop while on screen
-      const v = ss.children[0]; if (!v || v.tagName !== "VIDEO") return;
-      if (off) { if (!v.paused) flowPlay(v, false); } else if (v.paused) { if (now - (v._pt || 0) > 2000) flowPlay(v, true); } else flowClip(v);
-      return;
+    if (off) { ss._t0 = undefined; ss._vs = undefined; ss._cnt = false; return; } // off screen: rest, start from the 1st file when back
+    const vis = !vOpen && r.height > 0 && Math.min(r.bottom, innerHeight) - Math.max(r.top, 0) >= r.height * .5;
+    const fresh = ss._t0 === undefined; let cur = i, moved = false;
+    if (fresh) { ss._t0 = now; ss._cnt = false; ss._so = (rank % FLOW_WAVE) * FLOW_STAGGER; if (n > 1) flowLoad(ss, 1, 2); }
+    if (n > 1) {
+      rank++;
+      const L = FLOW_FIRST + (n - 1) * FLOW_STEP, t = Math.max(0, now - ss._t0 - ss._so) % L; // 1st picture FLOW_FIRST, every other one FLOW_STEP, then loop
+      const j = t < FLOW_FIRST ? 0 : 1 + Math.floor((t - FLOW_FIRST) / FLOW_STEP);
+      if (j !== i) {
+        flowLoad(ss, j, 3);
+        ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j; cur = j; moved = true;
+        if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
+      }
     }
-    if (off) { if (ss._t0 !== undefined) { flowPlay(ss.children[i], false); ss._t0 = undefined; } return; } // off screen: rest, start from the 1st file when back
-    const fresh = ss._t0 === undefined;
-    if (fresh) { ss._t0 = now; flowLoad(ss, 1, 2); }
-    const e = now - ss._t0, so = (k % FLOW_WAVE) * FLOW_STAGGER;
-    const L = FLOW_FIRST + (n - 1) * FLOW_STEP, t = Math.max(0, e - so) % L; // 1st picture FLOW_FIRST (7 s), every other one FLOW_STEP (5 s), then loop
-    const j = t < FLOW_FIRST ? 0 : 1 + Math.floor((t - FLOW_FIRST) / FLOW_STEP);
-    if (j !== i) {
-      flowPlay(ss.children[i], false); flowLoad(ss, j, 3);
-      ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j;
-      if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
-    }
-    if (fresh || j !== i) flowPlay(ss.children[j], true); else flowClip(ss.children[j]);
+    const el = ss.children[cur];
+    if (moved || fresh) showEye(ss, el);
+    if (!vis) { ss._vs = undefined; return; }
+    if (ss._vs === undefined) ss._vs = now;
+    if (!ss._cnt) { if (now - ss._vs >= 700) { ss._cnt = true; hitSlide(ss, el); } } // on the screen for about a second = 1 view
+    else if (moved) hitSlide(ss, el);
   });
 }, 250);
 
-/* ---------- views: a file counts as seen when it shows on the screen (no tap needed) ---------- */
-function countView(id, opened) {
-  if (!id || viewed.has(id)) return; viewed.add(id);
-  api("view", { media_id: id, opened: !!opened }).catch(() => viewed.delete(id));
+/* V21 view hits: collected and sent in one request every few seconds */
+const hitQ = { m: [], f: [], t: 0 };
+function hitFlush() {
+  clearTimeout(hitQ.t); hitQ.t = 0; if (!hitQ.m.length && !hitQ.f.length) return;
+  api("views", { ids: hitQ.m.splice(0, 60), files: hitQ.f.splice(0, 60) }).catch(() => {});
+  if (hitQ.m.length || hitQ.f.length) hitQ.t = setTimeout(hitFlush, 1500);
 }
-function watchViews() { // call after file cards are added to the page
-  if (!window.IntersectionObserver) return;
-  if (!viewIO) {
-    viewIO = new IntersectionObserver(en => en.forEach(e => {
-      const el = e.target;
-      if (e.isIntersecting) {
-        if (el._vt) return;
-        el._vt = setTimeout(() => { el._vt = 0; if (document.hidden) return; viewIO && viewIO.unobserve(el); countView(el.dataset.mid); }, 800); timers.push(el._vt); // on screen for about a second
-      } else if (el._vt) { clearTimeout(el._vt); el._vt = 0; }
-    }), { threshold: .6 });
-    observers.push(viewIO);
-  }
-  document.querySelectorAll(".tile[data-mid]:not([data-w])").forEach(el => { el.dataset.w = "1"; if (!viewed.has(el.dataset.mid)) viewIO.observe(el); });
-}
+function hit(id, file) { if (!id) return; (file ? hitQ.f : hitQ.m).push(String(id)); if (hitQ.m.length + hitQ.f.length >= 40) hitFlush(); else if (!hitQ.t) hitQ.t = setTimeout(hitFlush, 6000); }
+document.addEventListener("visibilitychange", () => { if (document.hidden) hitFlush(); });
+window.addEventListener("pagehide", hitFlush);
+
+/* ---------- views (V21): see the flow timer above; opening a file in the viewer counts too ---------- */
+function countView(id) { hit(id, false); } // opening a file in the viewer counts one view every time
+function watchViews() { /* V21: cards are counted by the flow timer (every showing counts), nothing to observe */ }
 
 /* ---------- click delegation ---------- */
 const ACT = {};
@@ -951,24 +995,26 @@ const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? picsOnly(m.thum
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
-    const pv = pvCss(t.preview);
+    const fy = t.fy != null ? `object-position:50% ${+t.fy}%;` : "", pv = fy + pvCss(t.preview);
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
+    const mid = t.mid || t.id || "", md = mid ? ` data-mid="${esc(mid)}"${t.file ? ' data-file="1"' : ""}${t.views != null ? ` data-views="${+t.views || 0}"` : ""}` : "";
     const key = k ? "data-src" : "src";
     if (t.type === "video") {
-      if (t.thumb && FLOW_VIDEO) return `<video class="sl${on}" data-v="1" muted loop playsinline preload="none" poster="${esc(t.thumb)}" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
-      if (t.thumb) return `<img class="sl${on}" data-v="1" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
-      return `<video class="sl${on}" data-v="1" muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
+      // V21: a video never plays by itself. A cover/thumbnail shows when there is one, otherwise the first frame; it plays when opened.
+      if (t.thumb) return `<img class="sl${on}" data-v="1"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+      return `<video class="sl${on}" data-v="1"${md} muted playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
     }
-    if (t.thumb) return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
-    return `<img class="sl${on}" draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
+    if (t.thumb) return `<img class="sl${on}"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+    return `<img class="sl${on}"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
 document.addEventListener("load", e => { const t = e.target; if (t && t.tagName === "IMG" && (t.classList.contains("sl") || t.classList.contains("cmi"))) { t.classList.add("ld"); t.classList.remove("sk"); } }, true);
 /* a card thumbnail that is missing (older files) falls back to the original file */
 function thumbFail(i) {
   const f = i.dataset.full; if (!f) return; i.removeAttribute("onerror"); i.removeAttribute("data-full");
-  if (i.dataset.v) { const v = document.createElement("video"); v.className = i.className; v.dataset.v = "1"; v.muted = true; v.loop = true; v.playsInline = true; v.preload = "metadata"; v.setAttribute("style", i.getAttribute("style") || ""); v.src = f + "#t=0.001"; i.replaceWith(v); } else i.src = f;
+  if (i.dataset.v) { const v = document.createElement("video"); v.className = i.className; v.dataset.v = "1"; if (i.dataset.mid) { v.dataset.mid = i.dataset.mid; if (i.dataset.views) v.dataset.views = i.dataset.views; if (i.dataset.file) v.dataset.file = "1"; } v.muted = true; v.playsInline = true; v.preload = "metadata"; v.setAttribute("style", i.getAttribute("style") || ""); v.src = f + "#t=0.001"; i.replaceWith(v); } else i.src = f;
 }
+const eyeHTML = (th, locked) => { const t = th[0]; return !locked && t && !t.locked && t.views != null && (t.mid || t.id) ? `<span class="eye">${ic("eye")}<b>${short(t.views)}</b></span>` : ""; };
 const lockHTML = `<div class="lk"><span class="lkc">${ic("lock")}</span></div>`;
 const playHTML = `<span class="pl">${ic("play")}</span>`;
 const vidAttr = list => list[0]?.type === "video" ? "1" : "";
@@ -977,27 +1023,26 @@ const countMeta = m => plural(m.count || 0, "item") + (m.folders ? " · " + plur
 function folderHTML(m, i, src) {
   const th = thumbsOf(m);
   return `<div class="it fcard ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}">
-    <div class="th ${m.locked ? "locked" : ""}" data-vid="${vidAttr(th)}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${playHTML}<span class="abg">${ic("folder")}${m.count || 0}</span>
+    <div class="th ${m.locked ? "locked" : ""}" data-vid="${vidAttr(th)}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${playHTML}<span class="abg">${ic("folder")}${m.count || 0}</span>
       ${!m.locked || src === "saved" ? `<button class="dots3 ${favs.has(m.id) ? "on" : ""}" data-act="menu" data-src="${src}" data-i="${i}" data-id="${m.id}" aria-label="More">${ic("dots")}</button>` : ""}</div>
     <div class="cap"><b>${esc(m.title || "Folder")}</b><span>${countMeta(m)}</span></div></div>`;
 }
 function tileHTML(m, i, src) {
-  const th = [{ type: m.type, url: m.url, preview: m.preview, locked: m.locked }];
+  const th = [{ type: m.type, url: m.url, thumb: m.thumb, preview: m.preview, locked: m.locked, mid: m.id, views: m.views, fy: m.fy }];
   return `<div class="it tile ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}"${m.locked ? "" : ` data-mid="${m.id}"`}>
-    <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${playHTML}
+    <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${playHTML}
       ${!m.locked || src === "saved" ? `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="media" aria-label="Save">${ic("heart")}</button>` : ""}</div>
     ${m.label ? `<div class="cap"><b>${esc(m.label)}</b></div>` : ""}</div>`;
 }
 function actsHTML(m, i, src) {
   return `<button class="act ${m.my === 1 ? "on" : ""}" data-act="react" data-v="1" data-src="${src}" data-i="${i}">${ic("like")}${short(m.likes)}</button>
     <button class="act ${m.my === -1 ? "on" : ""}" data-act="react" data-v="-1" data-src="${src}" data-i="${i}">${ic("like", "flip")}${short(m.dislikes)}</button>
-    <button class="act heart ${favs.has(m.id) ? "on" : ""}" data-act="csave" data-id="${m.id}" data-src="${src}" data-i="${i}" aria-label="Save">${ic("heart")}</button>
-    <span class="act v">${ic("eye")}${short(m.views)}</span>`;
+    <button class="act heart ${favs.has(m.id) ? "on" : ""}" data-act="csave" data-id="${m.id}" data-src="${src}" data-i="${i}" aria-label="Save">${ic("heart")}</button>`;
 }
 function commHTML(m, i, src) {
   const th = thumbsOf(m), by = m.by || {};
   return `<div class="cc" data-src="${src}" data-i="${i}"><div class="cch"><span class="av">${by.avatar_url ? `<img src="${esc(by.avatar_url)}" alt="">` : esc(initial(by.name))}</span><b>${esc(by.name || "Member")}</b><small>${ago(m.created_at)}</small></div>
-    <div class="th" data-act="open" data-src="${src}" data-i="${i}" data-vid="${vidAttr(th)}">${slidesHTML(th, false)}${playHTML}${m.count > 1 ? `<span class="abg">${ic("folder")}${m.count}</span>` : ""}</div>
+    <div class="th" data-act="open" data-src="${src}" data-i="${i}" data-vid="${vidAttr(th)}">${slidesHTML(th, false)}${eyeHTML(th, false)}${playHTML}${m.count > 1 ? `<span class="abg">${ic("folder")}${m.count}</span>` : ""}</div>
     <div class="ccf">${m.title ? `<b class="ct">${esc(m.title)}</b>` : ""}<div class="acts">${actsHTML(m, i, src)}</div></div></div>`;
 }
 const MPS = { pending: ["Pending review", "warn"], approved: ["Approved", "ok"], rejected: ["Declined", "bad"], private: ["Private", ""] };
@@ -1190,16 +1235,28 @@ function cdHTML() {
   });
   return rows.length ? rows.join("") : `<div class="cdr"><small><span>Membership</span><span>Free</span></small><div class="en" style="margin-top:6px">No active Premium. Pick a plan or redeem a code to unlock locked folders.</div></div>`;
 }
-function memberCard() {
-  const t = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none";
-  return `<div class="mcard ${t === "none" ? "free" : TIER[t].cls}"><div class="mc-top"><span class="mc-brand">${esc(String(C.APP_TITLE).toUpperCase())}</span>${ic(t === "expensive" ? "gem" : "crown")}</div>
-    <div class="mc-name">${esc(nameOf(me))}</div><div class="mc-tier">${t === "none" ? "Free member" : TIER[t].full}</div><div class="cdrows" id="cdrows">${cdHTML()}</div></div>`;
+function memberCard() { // V21: card look (chip, number, two circles), smaller, shown at the top of the Plans page
+  const t = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none", u = t === "none" ? null : activeUntil(t);
+  const last4 = String(me.tg_id || "0").slice(-4).padStart(4, "0"), d = u ? new Date(u) : null;
+  const exp = d && !isNaN(d) ? String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getFullYear()).slice(-2) : "--/--";
+  return `<div class="mcc ${t === "none" ? "free" : TIER[t].cls}"><div class="mt"><span class="mb2">${esc(String(C.APP_TITLE).toUpperCase())}</span><svg class="nfc" viewBox="0 0 24 24"><path d="M8 7a7 7 0 0 1 0 10M12 4a11 11 0 0 1 0 16M16 9.5a3.5 3.5 0 0 1 0 5"/></svg></div>
+    <div class="chip"></div><div class="num">•••• •••• •••• ${last4}</div>
+    <div class="mf"><div><small>MEMBER</small><b>${esc(nameOf(me))}</b></div><div><small>VALID THRU</small><b>${exp}</b></div><span class="circ"><i></i><i></i></span></div></div>
+  <div class="mcc-tier">${t === "none" ? "Free member" : TIER[t].full}</div><div class="cdrows" id="cdrows">${cdHTML()}</div>`;
 }
+/* V21: the task card (admin turns it on): post N community posts, get Rose when they are approved */
+function taskHTML(t) {
+  const pct = Math.min(100, Math.round(t.approved / Math.max(1, t.need) * 100));
+  return `<button class="taskc" data-act="go" data-r="space"><span class="ti">${ic("gift")}</span><div class="tb"><small>${esc(t.title || "Task")}</small><b>${esc(t.text || "")}</b><div class="tbar"><i style="width:${pct}%"></i></div><span class="tp">${t.approved} of ${t.need} approved${t.pending ? ` · ${t.pending} waiting for review` : ""}</span></div>${ic("next", "mute")}</button>`;
+}
+async function taskInto(id) { try { const t = await api("task_info"), el = $(id); if (el && t.on) el.innerHTML = taskHTML(t); } catch { /* task not set up yet */ } }
 PAGES.premium = async function () {
-  app.innerHTML = `<div class="pad">${memberCard()}
-    <div class="minibtns"><button class="btn sm" data-act="go" data-r="plans">${ic("crown")}View plans</button><button class="btn gh sm" data-act="go" data-r="plans" data-p='{"code":1}'>${ic("key")}I have a code</button></div>
+  const ads = settings.premium_ads_on !== "0", tn = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none";
+  app.innerHTML = `<div class="pad">${ads ? `<button class="adbn" data-act="go" data-r="referral"><span class="ai">${ic("gift")}</span><div class="at"><small>Invite &amp; earn</small><b>Invite friends, get Premium</b><span class="s">${me.ref_count || 0} joined · every few friends unlock Rose and Royal</span></div><span class="ag">${ic("next")}</span></button>
+    <button class="adbn plb" data-act="go" data-r="plans"><span class="chips"><i class="r">ROSE</i><i class="g">ROYAL</i></span><div class="at"><b>View plans</b><span class="s" id="plbs">${tn === "none" ? "See what Rose and Royal unlock" : TIER[tn].full + " is active"}</span></div><span class="ag">${ic("next")}</span></button>` : `<div class="minibtns"><button class="btn sm" data-act="go" data-r="plans">${ic("crown")}View plans</button><button class="btn gh sm" data-act="go" data-r="plans" data-p='{"code":1}'>${ic("key")}I have a code</button></div>`}
+    <div id="tkc"></div>
     <div class="sec">Premium folders</div><div id="pl"></div></div>`;
-  timers.push(setInterval(() => { const el = $("cdrows"); if (el) el.innerHTML = cdHTML(); }, 1000));
+  taskInto("tkc");
   mountList($("pl"), { src: "prem", grid: "g2", fetch: (p, s) => api("list", { tier: "locked", sort: "new", page: p, size: s }), empty: "<b>No premium folders yet</b>New collections will appear here soon." }); // sub folders and single premium files, no main folders
 };
 
@@ -1293,17 +1350,20 @@ PAGES.referral = async function () {
 /* ---------- premium plans + code ---------- */
 const DEF_PERKS = { lite: ["Every Rose folder in full quality", "No blur on photos and videos", "Save Rose folders to your library"], expensive: ["Everything in Rose", "Every Royal folder, the golden collection", "First access to new Royal drops"] };
 PAGES.plans = async function (p) {
-  app.innerHTML = `<div class="pad">${["lite", "expensive"].map(k => {
+  app.innerHTML = `<div class="pad">${memberCard()}${["lite", "expensive"].map(k => {
     const ps = plans.filter(x => x.tier === k), perks = [...new Set(ps.flatMap(x => String(x.perks || "").split("\n").map(s => s.trim()).filter(Boolean)))], days = [...new Set(ps.map(x => x.days))].sort((a, b) => a - b), bd = ps.find(x => x.badge)?.badge;
     return `<div class="tcard ${TIER[k].cls}">${bd ? `<span class="pill g badge">${esc(bd)}</span>` : ""}<div class="ts">${k === "lite" ? "Lite" : "Expensive"}</div><div class="tn">${TIER[k].name}</div><p class="mute" style="font-size:13.5px;margin-top:4px">${TIER[k].sub}</p>
       <ul>${(perks.length ? perks : DEF_PERKS[k]).map(x => `<li>${ic("check")}${esc(x)}</li>`).join("")}</ul>${days.length ? `<div class="tdur">${days.map(d => `<span>${plural(d, "day")}</span>`).join("")}</div>` : ""}</div>`;
   }).join("")}
     <button class="inv-mini" data-act="go" data-r="referral"><span class="ui">${ic("gift")}</span><div class="t"><b>Invite and earn</b><span class="s">${me.ref_count || 0} friends joined. Keep inviting: every few friends unlocks free Premium.</span></div>${ic("next", "mute")}</button>
+    <div id="tkp"></div>
     <div class="sec" id="codeAnchor">Premium unlock code</div>
     <div class="box"><p class="mute" style="font-size:14px;margin-bottom:12px">Have a code from a referral reward or from us? Paste it here. A Rose code opens Rose, a Royal code opens Royal.</p>
       <div class="code"><input id="cd" placeholder="XXXX-XXXX-XXXX" maxlength="40" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" value="${esc(fmtCode(p?.prefill || ""))}"><button class="btn${p?.prefill ? " pulse" : ""}" data-act="redeem">Unlock</button></div><div id="rpk"></div><div id="rdet"></div></div>
     <div class="sec" style="margin-top:22px">Unlock history</div><div class="box" id="rhist"><div class="skel" style="aspect-ratio:5/1"></div></div></div>`;
+  timers.push(setInterval(() => { const el = $("cdrows"); if (el) el.innerHTML = cdHTML(); }, 1000));
   if (p?.code) setTimeout(() => { $("codeAnchor")?.scrollIntoView({ behavior: "smooth", block: "center" }); if (!p.prefill) $("cd")?.focus(); }, 250);
+  taskInto("tkp");
   const cd = $("cd"); let pkT = 0, pkSeq = 0;
   const peek = async () => { // which plan does this code open? (nothing is used up)
     const v = fmtCode(cd.value), box = $("rpk"); if (!box) return; const seq = ++pkSeq;
@@ -1424,7 +1484,15 @@ PAGES.profile = async function () {
   app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
     <div class="pcard"><div class="ring"><div class="avt">${avatarHTML()}</div>${crownBadge()}</div><div class="pname">${esc(nameOf(me))}</div>
       ${me.tier !== "none" ? `<div style="margin-top:8px"><span class="pill g">${ic("crown")}${TIER[me.tier].full}</span></div>` : ""}</div>
+    <div id="ptk" style="margin-top:14px"></div><div id="pdash"></div>
     <div class="menu mt">${mi("edit", "Edit profile", "", "edit")}${mi("ticket", "Support", "chat with us", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
+  taskInto("ptk");
+  try { // V21: my posts like a small dashboard: each post by its name with views, likes and saves
+    const r = await api("my_list", { page: 1, size: 30 }), el = $("pdash"); if (!el || !r.items.length) return;
+    const sum = k => r.items.reduce((a, m) => a + (+m[k] || 0), 0);
+    el.innerHTML = `<div class="sec nl" style="margin-top:6px">My posts</div><div class="pst"><div><b>${r.total}</b><span>Posts</span></div><div><b>${short(sum("views"))}</b><span>Views</span></div><div><b>${short(sum("likes"))}</b><span>Likes</span></div></div>
+      ${r.items.map(m => { const st = MPS[m.status] || ["", ""]; return `<button class="prow" data-act="go" data-r="space"><div class="pn"><b>${esc(m.title || "Untitled")}</b><span class="pill ${st[1]}">${st[0]}</span></div><div class="pm"><span>${ic("eye")}${short(m.views)}</span><span>${ic("like")}${short(m.likes)}</span><span>${ic("heart")}${short(m.saves)}</span></div></button>`; }).join("")}`;
+  } catch { /* the dashboard is optional */ }
 };
 PAGES.edit = async function () {
   app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}><button class="cam" data-act="pickimg" data-k="cover" aria-label="Change cover">${ic("cam")}</button></div>
@@ -1547,19 +1615,23 @@ function chRow(m, prev) {
   const gap = !prev || !sameDay || (new Date(m.at) - new Date(prev.at) >= 600000); // new day, or 10+ minutes of silence: show the time above
   const cont = prev && !gap && prev.u === m.u;
   const sep = gap ? `<div class="cmd">${chStamp(m.at)}</div>` : "";
-  const isLast = CH.msgs.length && CH.msgs[CH.msgs.length - 1].id === m.id;
+  const isLast = !!CH.lastOf && CH.lastOf.get(m.u) === m.id; // V21: the react button sits on the newest message of every member
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" data-act="chprof" data-id="${m.id}" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
   return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""} ${isLast ? "last" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" data-act="chprof" data-id="${m.id}" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${rxHTML(m)}${isLast ? `<span class="rxadd" data-act="chreact" data-id="${m.id}" aria-label="React">${RXADD}</span>` : ""}</div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
   const atEnd = innerHeight + scrollY >= document.body.scrollHeight - 160;
-  box.innerHTML = CH.msgs.map((m, i) => chRow(m, CH.msgs[i - 1])).join("") || `<div class="msg" style="padding:40px 0"><b>No messages yet</b>Say hello to everyone.</div>`;
+  CH.lastOf = new Map(); CH.msgs.forEach(m => CH.lastOf.set(m.u, m.id));
+  box.innerHTML = CH.msgs.map((m, i) => (CH.unr && m.id === CH.unr ? `<div class="cmd unr" id="chUnr">New messages</div>` : "") + chRow(m, CH.msgs[i - 1])).join("") || `<div class="msg" style="padding:40px 0"><b>No messages yet</b>Say hello to everyone.</div>`;
   $("chMore").hidden = !CH.more;
   $("chPin").innerHTML = CH.pinned ? `<div class="chpin">${ic("notice")}<div><b>Pinned</b><span>${esc(CH.pinned.text)}</span></div></div>` : "";
   CH.stick = scroll || atEnd;
-  if (scroll || atEnd) { window.scrollTo(0, document.body.scrollHeight); $("chNew").hidden = true; } else if (CH.fresh) $("chNew").hidden = false;
-  CH.fresh = false;
+  const unr = CH.jump && $("chUnr");
+  if (unr) { // V21: the chat opens where the member stopped reading, not at the bottom
+    CH.jump = false; CH.stick = false; unr.scrollIntoView({ block: "start" }); window.scrollBy(0, -((($("top")?.offsetHeight || 56) + 70))); $("chNew").hidden = true;
+  } else if (scroll || atEnd) { window.scrollTo(0, document.body.scrollHeight); $("chNew").hidden = true; } else if (CH.fresh) $("chNew").hidden = false;
+  CH.fresh = false; chScrollHide();
 }
 function chBar() {
   const m = CH.muted && new Date(CH.muted) > new Date(), ta = $("chT"); if (!ta) return;
@@ -1586,6 +1658,12 @@ async function chPoll(first) {
     let rxChanged = false;
     if (r.reacts) { const lo = CH.msgs[0]?.id || 0; for (const m of CH.msgs) if (m.id >= lo) { const n = r.reacts[m.id], rx = n ? n.rx : {}, my = n ? n.my : null; if (JSON.stringify(m.rx || {}) !== JSON.stringify(rx) || (m.my || null) !== my) { m.rx = rx; m.my = my; rxChanged = true; } } }
     const added = chMerge(r.messages || []), gone = new Set(r.gone || []);
+    if (first) { // V21: find the first message the member has not read yet (older pages are loaded if there are many)
+      CH.seen = r.seen || 0; CH.unr = 0; CH.jump = false; let tries = 0;
+      while (CH.seen && CH.more && CH.msgs[0] && CH.msgs[0].id > CH.seen && tries++ < 4) { try { const o = await api("chat_list", { before: CH.msgs[0].id }); CH.more = !!o.more; chMerge(o.messages || []); } catch { break; } }
+      const u = CH.seen ? CH.msgs.find(m => m.id > CH.seen && !m.mine) : null;
+      if (u && u !== CH.msgs[0]) { CH.unr = u.id; CH.jump = true; }
+    }
     const before = CH.msgs.length; if (gone.size) CH.msgs = CH.msgs.filter(m => !gone.has(m.id));
     if (!first && r.messages?.some(m => !m.mine)) CH.fresh = true;
     $("chOn").innerHTML = `<i></i>${r.online} online${CH.members ? " · " + CH.members + " members" : ""}`;
@@ -1593,9 +1671,11 @@ async function chPoll(first) {
   } catch (e) { if (first) throw e; } finally { CH.busy = false; }
 }
 PAGES.chat = async function () {
-  CH.msgs = []; CH.reply = null; CH.pinned = null;
+  CH.msgs = []; CH.reply = null; CH.pinned = null; CH.unr = 0; CH.jump = false; CH.seenSent = 0; CH.lastOf = null;
+  document.documentElement.style.setProperty("--hh", ($("top")?.offsetHeight || 56) + "px");
   app.innerHTML = `<div class="pad"><div class="chhd"><b>Community chat</b><span id="chOn"></span></div><div id="chPin"></div><div class="chmore" id="chMore" hidden><button class="btn gh" data-act="chmore">Earlier messages</button></div><div class="chat cm" id="chat"><div class="msg" style="padding:40px 0">Loading…</div></div></div>
     <button class="newpill" id="chNew" data-act="chdown" hidden>New messages ↓</button>
+    <button class="chdn" id="chDn" data-act="chdown" aria-label="Go to the latest message" hidden><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
     <div class="chatbar tab"><div id="chRep"></div><div class="in"><button class="att" id="chAtt" data-act="chpick" aria-label="Add photo">${ic("image")}</button><input type="file" id="chFile" accept="image/jpeg,image/png,image/webp,image/gif" hidden><textarea id="chT" rows="1" maxlength="500" placeholder="Message everyone…"></textarea><button class="btn" id="chSend" data-act="chsend" aria-label="Send">${ic("send")}</button></div></div>`;
   const ta = $("chT");
   ta.oninput = () => { ta.style.height = "auto"; ta.style.height = Math.min(120, ta.scrollHeight) + "px"; };
@@ -1605,7 +1685,19 @@ PAGES.chat = async function () {
   await chPoll(true); chBar();
   timers.push(setInterval(() => { if (!document.hidden && stack[stack.length - 1].r === "chat") chPoll(false); }, 3000));
 };
-function chScrollHide() { const near = innerHeight + scrollY >= document.body.scrollHeight - 160; CH.stick = near; if (near && $("chNew")) $("chNew").hidden = true; }
+function chScrollHide() {
+  const near = innerHeight + scrollY >= document.body.scrollHeight - 160; CH.stick = near; if (near && $("chNew")) $("chNew").hidden = true;
+  const dn = $("chDn"); if (dn) dn.hidden = (document.body.scrollHeight - (innerHeight + scrollY)) < 500 || !$("chNew").hidden; // small arrow in the middle: back to the newest message
+  chSeenSave();
+}
+function chSeenSave() { // remember the last message the member actually saw
+  clearTimeout(chSeenSave.t);
+  chSeenSave.t = setTimeout(() => {
+    if (stack[stack.length - 1].r !== "chat") return; let id = 0; const lim = innerHeight - 110;
+    document.querySelectorAll(".cmw[data-id]").forEach(el => { if (el.getBoundingClientRect().top < lim) id = Math.max(id, +el.dataset.id); });
+    if (id > (CH.seenSent || 0)) { CH.seenSent = id; api("chat_seen", { id }).catch(() => {}); }
+  }, 1200);
+}
 function chImgLoad() { if (CH.stick) window.scrollTo(0, document.body.scrollHeight); }
 function chPhoto(f) {
   if (/^video\//.test(f.type)) return toast("Videos are not allowed in the chat. Photos only.");
@@ -1794,7 +1886,8 @@ let nfItems = [];
 const nfThumb = n => `<span class="nth${n.thumb_locked ? " lk" : ""}">${n.thumb ? `<img src="${esc(n.thumb)}" alt="">` : ic(KIND[n.kind]?.[0] || "bell")}</span>`;
 const nfCls = n => "k-" + (KIND[n.kind] ? n.kind : "custom") + (n.kind === "premium" && n.code_tier === "lite" ? " rose" : "");
 PAGES.notifs = async function () {
-  app.innerHTML = `<div class="pad"><div id="nfl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
+  app.innerHTML = `<div class="pad"><div id="tkn"></div><div id="nfl"><div class="skel" style="aspect-ratio:4/1"></div></div></div>`;
+  taskInto("tkn");
   const r = await api("notif_list"); nfItems = r.items;
   $("nfl").innerHTML = r.items.length ? r.items.map(n => `<div class="nf ${nfCls(n)} ${n.unread ? "un" : ""}" data-act="nfopen" data-id="${n.id}">${nfThumb(n)}<div class="nb"><div class="nt"><b>${esc(n.title)}</b><small>${ago(n.created_at)}</small></div>${n.body ? `<p>${esc(n.body)}</p>` : ""}${codeRow(n.code, n.code_state, n.code_tier)}</div></div>`).join("")
     : `<div class="msg"><b>No notifications</b>New posts and rewards will show up here.</div>`;
@@ -1837,9 +1930,9 @@ function drawViewer() {
   $("vheart").hidden = m.kind !== "media";
   $("stage").style.touchAction = vid ? "auto" : "none";
   if (vid) {
-    $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline autoplay></video>`;
+    $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline preload="metadata"${m.thumb ? ` poster="${esc(m.thumb)}"` : ""}></video>`;
     const v = $("stage").firstElementChild; v.oncontextmenu = e => e.preventDefault();
-    v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); v.play?.().catch(() => {});
+    v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); // V21: no autoplay, the member taps play
   } else {
     const pv = pvCss(m.preview); // 1) tiny blurred preview (instant) 2) small thumbnail 3) full photo swaps in without a flash
     $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.thumb || m.url)}" alt="" style="${pv ? pv + ";background-size:contain;background-position:center;background-repeat:no-repeat" : ""}">`;
@@ -1850,7 +1943,7 @@ function drawViewer() {
   $("vt").textContent = vName(m); $("vm").textContent = (m.created_at ? fmtDate(m.created_at) : "") + (m.kind === "media" ? `  ·  ${short(m.views)} views` : m.kind === "comm" && m.by ? `  ·  by ${m.by}` : "");
   $("vheart").classList.toggle("on", favs.has(m.id));
   $("vp").hidden = V.i === 0; $("vn").hidden = V.i === V.list.length - 1;
-  if (m.kind === "media") countView(m.id, true);
+  if (m.kind === "media") countView(m.id); else if (m.kind === "comm" && m.id) hit(m.id, true);
   if ($("vsheet").classList.contains("on")) drawInfo();
 }
 function drawInfo() {

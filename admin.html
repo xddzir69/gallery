@@ -239,6 +239,9 @@
   .pchip { display: inline-flex; align-items: center; gap: 8px; padding: 6px 8px 6px 10px; border-radius: 999px; border: 1px solid var(--line2); background: var(--card2); font-size: 13px; }
   .pchip button { border: 0; background: none; cursor: pointer; color: inherit; padding: 0 3px; opacity: .7; } .pchip button:hover { opacity: 1; color: var(--gold); }
   .mdl { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 18px; background: rgba(5,4,2,.66); backdrop-filter: blur(6px); }
+  .lkw { display: flex; justify-content: center; margin: 4px 0 10px; } .lkf { position: relative; width: min(230px, 70%); aspect-ratio: 3/4; border-radius: 14px; overflow: hidden; background: var(--card2); border: 1px solid var(--line2); touch-action: none; cursor: ns-resize; }
+  .lkf img, .lkf video { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; } .lkf.v { cursor: default; touch-action: auto; }
+  .fi { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 12.5px; } .fi .mute { white-space: nowrap; }
   .mdl .box { width: min(560px, 100%); max-height: 84vh; display: flex; flex-direction: column; border-radius: 20px; border: 1px solid var(--line2); background: var(--card); box-shadow: 0 30px 80px -20px rgba(0,0,0,.8); padding: 18px; }
   .mdl .lst { overflow: auto; margin: 12px 0; flex: 1; border: 1px solid var(--line); border-radius: 12px; }
   .mdl .it { display: flex; align-items: center; gap: 8px; padding: 9px 12px; cursor: pointer; border-bottom: 1px solid var(--line); } .mdl .it:hover { background: rgba(232,197,107,.1); } .mdl .it.off { opacity: .35; pointer-events: none; }
@@ -440,6 +443,7 @@
       <div class="card attn" id="dAttn" hidden></div>
       <div class="kts" id="dStats"></div>
       <div class="two"><div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
+      <div class="card"><h3>Top inviters</h3><p class="sm mute" style="margin-bottom:8px">Members who brought friends in (even one invite counts).</p><div id="dRef"></div></div>
     </section>
 
     <!-- UPLOAD -->
@@ -457,6 +461,7 @@
       <div class="card"><div class="step"><i>3</i><h3>Access and notification</h3></div>
         <div class="cols"><label class="f"><span>Access for these files</span><select id="upAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label></div>
         <div class="row" style="margin:6px 0 16px"><label class="ck"><input type="checkbox" id="upNotif" checked> Send an in-app notification</label><label class="ck"><input type="checkbox" id="upPush"> Also push to Telegram</label></div>
+        <div class="row" style="margin:-6px 0 16px;gap:10px"><label class="btn gh xs" style="cursor:pointer">Choose my own HD picture for Telegram<input type="file" accept="image/*" id="upHd" hidden></label><img id="upHdPrev" alt="" hidden style="height:54px;border-radius:8px"><button class="btn gh xs" id="upHdClr" hidden>Remove</button><span class="sm mute" id="upHdInfo">Optional. Without it the folder's small thumbnail is sent (blurred for Rose/Royal). A picture you choose here is sent as you made it, not blurred.</span></div>
         <button class="btn bigap" id="upBtn">Upload</button>
         <div class="prog"><i id="upProg"></i></div><div id="log"></div></div>
     </section>
@@ -545,16 +550,6 @@
     </section>
 
         <!-- PAYMENTS -->
-    <section id="t-payments" hidden><div class="hero"><div class="eb">Premium</div><h2>Payments</h2><p>Every Stars and USDT payment, with its transaction reference.</p><span class="orn"></span></div>
-      <div class="stats" id="pyStats"></div>
-      <div class="card"><div class="row"><select id="pyM" style="width:auto"><option value="">All methods</option><option value="stars">Stars</option><option value="usdt">USDT</option><option value="manual">Manual</option></select>
-        <select id="pyS" style="width:auto"><option value="">All status</option><option value="approved">Paid</option><option value="pending">Pending</option><option value="rejected">Rejected</option><option value="expired">Expired</option></select>
-        <input type="search" id="pyQ" placeholder="Telegram ID or tx" style="flex:1;min-width:160px"><button class="btn" id="pyGo">Filter</button><button class="btn gh" id="pyCsv">Export CSV</button></div><div id="pyList" style="margin-top:8px"></div><button class="btn gh" id="pyMore" hidden style="margin-top:10px">Load more</button></div>
-      <div class="card"><h3>Add a manual sale</h3><p class="sm mute" style="margin-bottom:10px">For cash or any payment outside the app. It records the sale and activates Premium right away.</p>
-        <div class="cols"><label class="f"><span>Telegram ID</span><input type="text" id="mpTg"></label><label class="f"><span>Plan</span><select id="mpPlan"></select></label><label class="f"><span>Amount (USD, optional)</span><input type="number" id="mpAmt" step="0.01"></label><label class="f"><span>Note</span><input type="text" id="mpNote"></label></div>
-        <button class="btn" id="mpGo">Record and activate</button></div>
-    </section>
-
     <!-- PREMIUM -->
     <section id="t-premium" hidden><div class="hero"><div class="eb">Premium</div><h2>Plans and codes</h2><p>Rose (lite) and Royal (expensive). Members see the details and the time, never a price.</p><span class="orn"></span></div>
       <div class="stats" id="pStats"></div>
@@ -565,11 +560,6 @@
         <button class="btn" id="cgGo">Generate codes</button>
         <div class="chips" style="margin:16px 0 8px" id="cFilter"><button data-v="unused" class="on">Unused</button><button data-v="used">Used</button><button data-v="all">All</button></div>
         <button class="btn gh xs" id="cCopy" style="margin-bottom:6px">Copy all unused</button><div id="cList"></div></div>
-      <div class="card" id="prCard" hidden><h3>Promo codes (payments module)</h3><p class="sm mute" style="margin-bottom:10px">Only used when payments are switched on in Settings.</p>
-        <div class="cols"><label class="f"><span>Code (blank = random)</span><input type="text" id="prCode" style="text-transform:uppercase"></label><label class="f"><span>Discount %</span><input type="number" id="prPct" min="0" max="100" value="20"></label>
-          <label class="f"><span>Bonus days</span><input type="number" id="prBonus" min="0" value="0"></label><label class="f"><span>Only for plan</span><select id="prPlan"></select></label>
-          <label class="f"><span>Max uses</span><input type="number" id="prMax" min="1" value="100"></label><label class="f"><span>Expires (optional)</span><input type="date" id="prExp"></label><label class="f"><span>Note</span><input type="text" id="prNote"></label></div>
-        <button class="btn" id="prGo">Create promo</button><div id="prList" style="margin-top:12px"></div></div>
       <div class="card"><h3>Premium page text</h3>
         <label class="f"><span>Intro (top of the Premium page)</span><input type="text" id="sIntro"></label>
         <input type="hidden" id="sHow">
@@ -608,7 +598,7 @@
         <div class="row" style="margin-top:10px"><span class="sm">Slow mode</span><select id="chSlowS" style="width:auto"><option value="0">Off</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option></select><span class="mute sm" id="chSetMsg"></span></div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Latest messages</h3><span class="row"><button class="btn gh xs" id="chRef">Refresh</button><button class="btn dg xs" id="chClear">Delete all</button></span></div><div id="chList" style="margin-top:10px"></div></div></section>
-    <section id="t-flow" hidden><div class="hero"><div class="eb">Content</div><h2>Preview flow</h2><p>How fast the pictures and videos change inside every folder card on Home, Premium and the folder pages.</p><span class="orn"></span></div>
+    <section id="t-flow" hidden><div class="hero"><div class="eb">Content</div><h2>Preview flow</h2><p>How fast the pictures change inside the folder cards. It runs only for the cards that are on the member's screen (usually about 6), starting with the first one at the top; scroll away and it rests. Every picture that shows counts one view. Videos never play by themselves.</p><span class="orn"></span></div>
       <div class="card"><h3>Preview for all folders</h3>
         <label class="ck"><input type="checkbox" id="flOnAll"> Preview flow is on</label>
         <p class="hint" style="margin:8px 0 0">One switch for everything. <b>On</b>: folder cards play their pictures (videos skipped), except the folders you switched off below. <b>Off</b>: every card shows one still picture only: the folder's cover if you set one, otherwise its first picture. Saves at once.</p></div>
@@ -617,22 +607,19 @@
         <div class="row" style="margin-bottom:10px"><input type="search" id="flQ" placeholder="Find a folder or F-number" style="flex:1;min-width:160px"><select id="flMode" style="width:auto"><option value="">All folders</option><option value="on">Preview on</option><option value="off">Preview off</option></select></div>
         <div class="row between" style="margin-bottom:10px"><span class="sm mute" id="flSum"></span><span class="row"><button class="btn gh xs" id="flAllOn">All shown: on</button><button class="btn gh xs" id="flAllOff">All shown: off</button></span></div>
         <div id="flFolders"></div></div>
-      <div class="card" style="display:none"><h3>Videos on cards</h3>
-        <label class="ck"><input type="checkbox" id="flVid"> Play videos inside the cards</label>
-        <p class="hint" style="margin-top:10px">Off (recommended): a video card shows its picture and a play icon, and the video only loads when a member opens it. The app stays fast. On: the first seconds of each video play inside the card, but every card downloads video data.</p></div>
       <div class="card"><h3>First picture time</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="flFirst" min="2" max="30" step="1" style="flex:1;min-width:0"><b class="stat" id="flFirstV" style="min-width:68px;text-align:right;font-size:26px">7 s</b></div>
-        <p class="hint" style="margin-top:10px">The first picture of every folder card stays this long, so it gets noticed. The preview flow shows pictures only: videos are skipped. Default 7 seconds.</p></div>
+        <p class="hint" style="margin-top:10px">The first picture of every folder card stays this long, so it gets noticed. The preview flow shows pictures only: videos are skipped. Default 7 seconds. Use 5 if you want the first visible card to change after 5 seconds.</p></div>
       <div class="card"><h3>Slide time</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="flStep" min="2" max="20" step="1" style="flex:1;min-width:0"><b class="stat" id="flStepV" style="min-width:68px;text-align:right;font-size:26px">5 s</b></div>
         <p class="hint" style="margin-top:10px">How long each picture after the first one stays on a card. Default 5 seconds.</p></div>
       <div class="card"><h3>Delay between cards</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="flGap" min="0" max="3" step="0.5" style="flex:1;min-width:0"><b class="stat" id="flGapV" style="min-width:68px;text-align:right;font-size:26px">1 s</b></div>
-        <p class="hint" style="margin-top:10px">Each card in a row starts a little after the one before it, so everything does not change at once. 0 = all together. Default 1 second.</p>
+        <p class="hint" style="margin-top:10px">The first card on the screen changes first, the next one this many seconds later, then the next, and so on, so everything does not change at once. 0 = all together. Default 1 second.</p>
         <div class="row" style="gap:16px;flex-wrap:nowrap;margin-top:14px"><input type="range" id="flWave" min="1" max="20" step="1" style="flex:1;min-width:0"><b class="stat" id="flWaveV" style="min-width:68px;text-align:right;font-size:26px">10</b></div>
-        <p class="hint" style="margin-top:10px">After this many cards the delay starts again from zero. Default 10.</p></div>
+        <p class="hint" style="margin-top:10px">After this many cards on the screen the delay starts again from zero. Default 10.</p></div>
       <div class="card"><h3>Preview</h3><div id="flDemo" style="display:flex;gap:8px"></div><p class="hint" style="margin-top:10px">Four cards, each changing file with the timing above.</p>
-        <div class="row" style="margin-top:12px"><button class="btn" id="flSave">Save</button><button class="btn gh" id="flReset">Reset to default</button><span class="sm mute" id="flMsg"></span></div></div></section>
+        <div class="row" style="margin-top:12px"><button class="btn" id="flSave">Save</button><button class="btn gh" id="flRec">5 s first, 1 s apart</button><button class="btn gh" id="flReset">Reset to default</button><span class="sm mute" id="flMsg"></span></div></div></section>
     <section id="t-blur" hidden><div class="hero"><div class="eb">Premium</div><h2>Premium blur</h2><p>Choose how strongly locked photos and videos are blurred for members who do not have access yet.</p><span class="orn"></span></div>
       <div class="card"><h3>Blur strength</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="blRange" min="0" max="100" step="5" style="flex:1;min-width:0"><b class="stat" id="blVal" style="min-width:68px;text-align:right;font-size:26px">50%</b></div>
@@ -660,14 +647,14 @@
           <label class="f"><span>Big reward every how many friends</span><input type="number" id="rfBig" min="5" max="1000"></label><label class="f"><span>Rose + Royal days for a big reward</span><input type="number" id="rfBigD" min="1" max="365"></label></div>
         <p class="hint">Example: step 5 / 3 days, big every 50 / 14 days gives Rose 3 days at 55, 60, 65 ... and Rose + Royal 14 days at 100, 150, 200 ... (the big reward must be a multiple of the step). A big reward is one Royal code, and Royal always includes Rose.</p>
         <div class="row"><button class="btn" id="rfSave">Save</button></div></div>
-      <div class="card"><h3>General</h3>
-        <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="setPayOn"> Show the payments module (hidden and off by default)</label><br>
-        <button class="btn" id="refSave">Save</button></div>
-      <div class="card" id="payCard" hidden><h3>Payments</h3>
-        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="setStars"> Accept Telegram Stars</label><label class="ck"><input type="checkbox" id="setUsdt"> Accept USDT (BEP20)</label></div>
-        <label class="f"><span>Your USDT wallet address (BNB Smart Chain, starts with 0x)</span><input type="text" id="setAddr" placeholder="0x..."></label>
-        <div class="cols"><label class="f"><span>Confirmations needed</span><input type="number" id="setConf" min="1" max="30"></label><label class="f"><span>Custom RPC URL (optional)</span><input type="text" id="setRpc" placeholder="https://..."></label></div>
-        <div class="row"><button class="btn" id="setPaySave">Save</button><button class="btn gh" id="rpcTest">Test network</button><span class="sm mute" id="rpcMsg"></span></div></div>
+      <div class="card"><h3>Free Rose task and popup message</h3>
+        <p class="sm mute" style="margin-bottom:10px">When ON, members see this message on the Premium page (under Invite and View plans), in Notifications and on their profile. A member who gets the set number of posts approved in Community receives Rose for the set hours. Their pending posts show on their profile.</p>
+        <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="tkOn"> Task is ON</label>
+        <div class="cols"><label class="f"><span>Posts needed (approved)</span><input type="number" id="tkN" min="1" max="100"></label><label class="f"><span>Rose hours</span><input type="number" id="tkH" min="1" max="720"></label></div>
+        <label class="f"><span>Message title</span><input type="text" id="tkTitle" maxlength="60"></label>
+        <label class="f"><span>Message text</span><textarea id="tkText" rows="3" maxlength="240"></textarea></label>
+        <label class="ck" style="margin:6px 0 12px"><input type="checkbox" id="tkAds"> Show the Invite and View plans ads on the Premium page</label><br>
+        <button class="btn" id="tkSave">Save</button></div>
       <div class="card"><h3>File storage (Cloudflare R2)</h3><p class="sm mute" id="stInfo" style="margin-bottom:12px"></p>
         <div id="stUse" style="margin-bottom:14px"></div>
         <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn gh" id="stUseBtn">Refresh usage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
@@ -703,7 +690,7 @@ $("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session; $("panel").hidden = !session;
-  if (session) { await loadPayFlag(); await Promise.all([loadPlansCache(), loadAlbumsCache(), detectR2()]); await loadCats(); show("dash"); badges(); }
+  if (session) { await Promise.all([loadPlansCache(), loadAlbumsCache(), detectR2()]); await loadCats(); show("dash"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
@@ -714,14 +701,12 @@ $("pass").addEventListener("keydown", e => { if (e.key === "Enter") $("loginBtn"
 $("logoutBtn").onclick = async () => { await sb.auth.signOut(); refreshUI(); };
 
 /* tabs */
-const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["payments", "coin", "Payments"], ["notify", "bell", "Announce"], ["flow", "sliders", "Preview flow"], ["chat", "chat", "Community chat"], ["blur", "sliders", "Premium blur"], ["settings", "sliders", "Settings"]];
-let PAY_ON = false;
+const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["structure", "tree", "Structure"], ["media", "img", "Data"], ["cats", "grid", "Category"], ["trash", "trash", "Recycle bin"], ["schedule", "cal", "Schedule"], ["live", "live", "Live screen"], ["maintenance", "wrench", "Maintenance"], ["history", "undo", "History and undo"], ["users", "user", "Users"], ["tickets", "ticket", "Support chats"], ["uploads", "folder", "Member posts"], ["premium", "crown", "Plans and codes"], ["notify", "bell", "Announce"], ["flow", "sliders", "Preview flow"], ["chat", "chat", "Community chat"], ["blur", "sliders", "Premium blur"], ["settings", "sliders", "Settings"]];
 function buildTabs() {
-  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "flow", "trash"]], ["People", ["live", "users", "chat", "tickets", "uploads"]], ["Premium", PAY_ON ? ["premium", "blur", "payments"] : ["premium", "blur"]], ["System", ["maintenance", "history", "notify", "settings"]]];
+  const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "flow", "trash"]], ["People", ["live", "users", "chat", "tickets", "uploads"]], ["Premium", ["premium", "blur"]], ["System", ["maintenance", "history", "notify", "settings"]]];
   const cur = document.querySelector(".tab.on")?.dataset.t;
-  $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "payments" ? '<span class="bd" id="pyBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
+  $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
-async function loadPayFlag() { const s = await getSettings(["payments_on"]); PAY_ON = s.payments_on === "1"; buildTabs(); }
 document.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) show(g.dataset.go); });
 let tkTimer;
 const closeMenu = () => $("panel").classList.remove("menu-open");
@@ -733,12 +718,12 @@ function show(t) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.t === t));
   document.querySelectorAll("main > section").forEach(s => s.hidden = s.id !== "t-" + t);
   clearInterval(tkTimer);
-  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, payments: () => { loadPayStats(); loadPays(true); fillPlanSel("mpPlan"); }, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), blur: loadBlur, flow: loadFlow, chat: () => { loadChatAdmin(); tkTimer = setInterval(drawChatAdmin, 6000); }, settings: loadSettings }[t] || (() => {}))();
+  ({ dash: loadDash, media: () => loadMedia(true), cats: loadCats, structure: loadStructure, trash: loadTrash, schedule: loadSchedule, live: () => { loadLive(); tkTimer = setInterval(loadLive, 4000); }, maintenance: loadMaint, history: () => loadHistory(true), users: loadUsers, premium: loadPremium, notify: loadNotify, tickets: () => { emptyThread(); loadTickets(); tkTimer = setInterval(() => { loadTickets(); if (tkOpen && !($("tkR") && $("tkR").value)) openTicket(tkOpen, true); }, 8000); }, uploads: () => loadUU(true), blur: loadBlur, flow: loadFlow, chat: () => { loadChatAdmin(); tkTimer = setInterval(drawChatAdmin, 6000); }, settings: loadSettings }[t] || (() => {}))();
   scrollTo(0, 0);
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
 async function badges() {
-  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), PAY_ON ? sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").eq("method", "usdt").gt("expires_at", new Date().toISOString()) : Promise.resolve({ count: 0 }), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
+  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), Promise.resolve({ count: 0 }), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
   const uu = $("uuBd"); if (uu) { uu.hidden = !u.count; uu.textContent = u.count || ""; }
   const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; } const q = $("pyBd"); if (q) { q.hidden = !p.count; q.textContent = p.count || ""; }
 }
@@ -854,15 +839,18 @@ async function loadDash() {
     cnt("albums", q => q.eq("access", "lite")), cnt("albums", q => q.eq("access", "expensive")), cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)), cnt("categories"),
     cnt("user_posts"), cnt("user_posts", q => q.eq("status", "pending")), cnt("user_posts", q => q.eq("status", "approved")), cnt("user_posts", q => q.eq("status", "rejected")),
     cnt("tickets", q => q.eq("status", "open")), cnt("tickets", q => q.eq("status", "answered")), cnt("tickets", q => q.eq("status", "closed")), cnt("trash"),
-    PAY_ON ? cnt("payments", q => q.eq("status", "pending").gt("expires_at", iso)) : Promise.resolve({ count: 0 }),
+    Promise.resolve({ count: 0 }),
     sb.from("media").select("title,label,views,type,kind_no,preview,path,albums(title)").order("views", { ascending: false }).limit(5),
     sb.from("profiles").select("tg_id,first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(6),
   ]);
   let views = 0; try { const { data } = await sb.rpc("album_tree"); (data || []).forEach(f => views += Number(f.views) || 0); } catch {}
   const mset = await getSettings(["maintenance", "maintenance_on"]), mOn = mset.maintenance_on === "1" || !!mset.maintenance;
-  const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"], [pend.count, "payment", "waiting for confirmation", "payments"]].filter(x => x[0]).concat(mOn ? [["", "", "Maintenance mode is ON, members are locked out", "maintenance"]] : []);
+  const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"]].filter(x => x[0]).concat(mOn ? [["", "", "Maintenance mode is ON, members are locked out", "maintenance"]] : []);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
+  let dau = {}, refs = []; try { const [a, b] = await Promise.all([sb.rpc("admin_dau"), sb.rpc("admin_top_referrers", { p_n: 10 })]); dau = a.data || {}; refs = b.data || []; } catch { /* run supabase_v20.sql */ }
+  $("dRef").innerHTML = refs.length ? refs.map((r, i) => `<div class="row between line"><span><b>${i + 1}.</b> <a href="#" data-user="${r.tg_id}" style="color:inherit">${esc(r.name || "Member")}</a> <span class="mute sm">${r.username ? "@" + esc(r.username) : ""}</span></span><span class="pill">${r.invited} invited</span></div>`).join("") : '<p class="mute sm">No invites yet (or run supabase_v20.sql).</p>';
   $("dStats").innerHTML = [
+    kt("rose", "Active members", dau.d1 ?? "-", [["today", dau.today ?? "-"], ["last 24 hours", dau.d1 ?? "-"], ["last 7 days", dau.d7 ?? "-"]], "live"),
     kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count], ["banned", banned.count]], "users"),
     kt("roy", "Premium now", prem.count, [["Rose", rose.count], ["Royal", roy.count], ["ending in 7 days", exp7.count]], "crown"),
     kt("", "Files", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count], ["pinned", pinM.count]], "img"),
@@ -884,7 +872,7 @@ const accPill = a => a === "lite" ? '<span class="pill rose">Rose</span>' : a ==
 const accSel = (v, cls = "ac") => `<select class="${cls}"><option value="public" ${v === "public" ? "selected" : ""}>Public</option><option value="lite" ${v === "lite" ? "selected" : ""}>Rose (Lite)</option><option value="expensive" ${v === "expensive" ? "selected" : ""}>Royal (Expensive)</option></select>`;
 async function loadTree() { const { data, error } = await sb.rpc("album_tree"); if (error) { toast(error.message + " (run supabase_v6.sql and supabase_v7.sql)"); return; } tree = data || []; }
 const byId = id => tree.find(f => f.id === id);
-const kids = id => tree.filter(f => (f.parent_id || null) === (id || null)).sort((a, b) => (a.sort_order - b.sort_order) || (new Date(a.created_at) - new Date(b.created_at)));
+const kids = id => tree.filter(f => (f.parent_id || null) === (id || null)).sort((a, b) => (a.sort_order - b.sort_order) || ((b.serial_no || 0) - (a.serial_no || 0)) || (new Date(b.created_at) - new Date(a.created_at))); // V21: latest serial (F number) first
 function descIds(id) { const out = [id]; for (let i = 0; i < out.length; i++) tree.forEach(f => { if (f.parent_id === out[i] && !out.includes(f.id)) out.push(f.id); }); return out; }
 function totals(id) { const ids = descIds(id), fs = tree.filter(f => ids.includes(f.id)); return { files: fs.reduce((n, f) => n + Number(f.media_count), 0), views: fs.reduce((n, f) => n + Number(f.views), 0), folders: ids.length - 1 }; }
 function folderPath(id) { const out = []; let c = byId(id), n = 0; while (c && n++ < 30) { out.unshift(c.title); c = byId(c.parent_id); } return out.join(" › "); }
@@ -974,7 +962,7 @@ $("addCat").onclick = async () => { const name = $("newCat").value.trim(); if (!
 $("catList").onclick = e => { const b = e.target.closest("[data-cedit]"); if (!b) return; catEdit = catEdit === b.dataset.cedit ? null : b.dataset.cedit; loadCats(); };
 async function drawCatPanel(cid) {
   const c = cats.find(x => x.id === cid), card = document.querySelector(`#catList [data-cid="${cid}"]`); if (!c || !card) return;
-  const [fo, fi] = await Promise.all([sb.from("albums").select("id,title,serial_no").eq("category_id", cid).order("serial_no"), sb.from("media").select("id,title,label,type,kind_no,preview").eq("category_id", cid).order("created_at", { ascending: false }).limit(100)]);
+  const [fo, fi] = await Promise.all([sb.from("albums").select("id,title,serial_no").eq("category_id", cid).order("serial_no", { ascending: false }), sb.from("media").select("id,title,label,type,kind_no,preview").eq("category_id", cid).order("created_at", { ascending: false }).limit(100)]);
   const inCat = new Set((fo.data || []).map(a => a.id)), free = tree.filter(f => !inCat.has(f.id));
   const p = document.createElement("div"); p.className = "fc wide"; p.innerHTML = `<div class="pn">
     <div class="row" style="margin-bottom:14px"><input type="text" class="cn" value="${esc(c.name)}" style="flex:1;min-width:180px"><button class="btn xs csv">Rename</button><button class="btn dg xs cdl">Delete category</button></div>
@@ -1042,6 +1030,41 @@ $("upSubs").onclick = async e => {
 };
 $("upCatAdd").onclick = async () => { const name = $("upCatNew").value.trim(); if (!name) return toast("Type a category name"); const { data, error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 }).select("id").single(); if (error) return toast(error.message); $("upCatNew").value = ""; upCatSel = data.id; await loadCats(); toast("Category created"); };
 $("upFoldAdd").onclick = async () => { const t = $("upFoldNew").value.trim(); if (!t) return toast("Type a folder name"); const { data, error } = await sb.from("albums").insert({ title: t, access: $("upAccess").value, category_id: upCatSel || null, parent_id: null }).select("id").single(); if (error) return toast(error.message); $("upFoldNew").value = ""; upPath = [data.id]; await loadAlbumsCache(); toast("Folder created"); };
+/* V21: optional HD picture for the Telegram push (the admin chooses it, drags it up/down and picks the shape) */
+let hdThumb = null;
+function hdPicker(file) {
+  return new Promise(async res => {
+    let bm; try { bm = await createImageBitmap(file); } catch { toast("That picture could not be read"); return res(null); }
+    let fy = 50; const url = URL.createObjectURL(file), d = document.createElement("div"); d.className = "mdl";
+    d.innerHTML = `<div class="box"><h3 style="margin:0 0 4px">HD picture for Telegram</h3><p class="sm mute" style="margin:0 0 8px">Drag the picture up or down to choose the part Telegram shows.</p>
+      <div class="row" style="margin-bottom:8px"><select class="hr" style="width:auto"><option value="0.8">4:5 portrait</option><option value="1">Square</option><option value="0">Original (no crop)</option></select></div>
+      <div class="lkw"><div class="lkf" style="width:min(260px,80%)"><img src="${url}" draggable="false" alt=""></div></div><input type="range" class="lky" min="0" max="100" value="50" style="width:100%">
+      <div class="row" style="margin-top:12px"><button class="btn hok">Use this picture</button><button class="btn gh hx">Cancel</button></div></div>`;
+    const q = x => d.querySelector(x), fr = q(".lkf"), im = q("img"), ratio = () => +q(".hr").value || bm.width / bm.height;
+    const paint = () => { fr.style.aspectRatio = String(ratio()); im.style.objectPosition = `50% ${fy}%`; q(".lky").value = fy; q(".lky").hidden = !+q(".hr").value; };
+    q(".hr").onchange = paint; q(".lky").oninput = e => { fy = +e.target.value; paint(); }; paint();
+    let y0 = null, f0 = 0; fr.onpointerdown = e => { y0 = e.clientY; f0 = fy; fr.setPointerCapture(e.pointerId); };
+    fr.onpointermove = e => { if (y0 !== null && +q(".hr").value) { fy = Math.round(Math.min(100, Math.max(0, f0 - (e.clientY - y0) / fr.clientHeight * 130))); paint(); } };
+    fr.onpointerup = fr.onpointercancel = () => { y0 = null; };
+    const done = v => { URL.revokeObjectURL(url); d.remove(); res(v); };
+    q(".hx").onclick = () => done(null); d.onclick = e => { if (e.target === d) done(null); };
+    q(".hok").onclick = () => {
+      const r = ratio(); let cw = bm.width, ch = bm.height, cx = 0, cy = 0;
+      if (bm.width / bm.height > r) { cw = bm.height * r; cx = (bm.width - cw) / 2; } else { ch = bm.width / r; cy = (bm.height - ch) * fy / 100; }
+      const k = Math.min(1, 1280 / Math.max(cw, ch)), c = document.createElement("canvas"); c.width = Math.round(cw * k); c.height = Math.round(ch * k);
+      c.getContext("2d").drawImage(bm, cx, cy, cw, ch, 0, 0, c.width, c.height);
+      let out = c.toDataURL("image/jpeg", .86); if (out.length > 1400000) out = c.toDataURL("image/jpeg", .7);
+      done(out.length < 1450000 ? out : null);
+    };
+    document.body.appendChild(d);
+  });
+}
+$("upHd").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const out = await hdPicker(f); if (!out) return toast("No picture chosen");
+  hdThumb = out; $("upHdPrev").src = out; $("upHdPrev").hidden = false; $("upHdClr").hidden = false; $("upPush").checked = true;
+};
+$("upHdClr").onclick = () => { hdThumb = null; $("upHdPrev").hidden = true; $("upHdClr").hidden = true; };
 $("upBtn").onclick = async () => {
   const tgt = upPath[upPath.length - 1]; if (!tgt) return toast("Choose or create a folder first"); if (!picked.length) return toast("Choose files first");
   const album = byId(tgt), root = byId(upPath[0]);
@@ -1062,10 +1085,10 @@ $("upBtn").onclick = async () => {
     const nrow = { kind: "post", title: "New post added", body, media_id: r.firstId, popup: true };
     let ne = (await sb.from("notifications").insert({ ...nrow, album_id: tgt, thumb: r.thumb || null })).error;
     if (ne) await sb.from("notifications").insert(nrow); // before supabase_v13.sql: no folder link or thumbnail
-    const premium = have > 0 || (AR[want] ?? 0) > 0, tgThumb = r.thumb ? (premium ? await makeThumb(r.thumb, true) : r.thumb) : null;
+    const premium = have > 0 || (AR[want] ?? 0) > 0, tgThumb = hdThumb || (r.thumb ? (premium ? await makeThumb(r.thumb, true) : r.thumb) : null);
     if ($("upPush").checked) { try { const x = await pushTG("New post added", body, undefined, false, tgt, tgThumb); $("log").textContent += `\nTelegram push: ${x.sent ?? 0} sent, ${x.failed ?? 0} failed${x.error ? " (" + x.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
   }
-  picked = []; drawPicked(); $("upBtn").disabled = false; await loadAlbumsCache(); if (r.ok) toast(`${r.ok} uploaded`);
+  picked = []; drawPicked(); hdThumb = null; $("upHdPrev").hidden = true; $("upHdClr").hidden = true; $("upBtn").disabled = false; await loadAlbumsCache(); if (r.ok) toast(`${r.ok} uploaded`);
 };
 
 /* ---------- structure: folder tree with Track / Modify / Edit ---------- */
@@ -1247,7 +1270,7 @@ async function loadMedia(reset = true) {
     $("mFolders").innerHTML = fs.map(f => folderCard(f, pv.get(f.id))).join("") || (s || dCur ? "" : '<p class="mute">No folders yet. Create one from Upload.</p>');
   }
   if (!s && !dCur) { $("mFH").hidden = true; $("mMore").hidden = true; return; }
-  let q = sb.from("media").select("*", { count: "exact" }).order("album_order").order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
+  let q = sb.from("media").select("*", { count: "exact" }).order("serial_no", { ascending: false }).order("created_at", { ascending: false }).range(mPage * MP, mPage * MP + MP - 1);
   if (s) { const m = /^([pv])(\d+)$/i.exec(s); if (m) q = q.eq("type", m[1].toLowerCase() === "v" ? "video" : "image").eq("kind_no", +m[2]); else if (/^f\d+$/i.test(s)) q = q.eq("id", "00000000-0000-0000-0000-000000000000"); else { const t = s.replace(/[%\\,()]/g, ""); q = q.or(`title.ilike.%${t}%,label.ilike.%${t}%`); } } else q = q.eq("album_id", dCur);
   const { data, count, error } = await q; if (error) return toast(error.message);
   const urls = await sign((data || []).filter(m => m.type === "image" || !m.preview).map(m => m.path), 1800);
@@ -1290,7 +1313,7 @@ function filePanel(id) {
   const p = openPanel(card, id, `<div class="cols"><label class="f"><span>Title (members see this)</span><input type="text" class="lb" value="${esc(m.label || "")}" placeholder="Write a title"></label><label class="f"><span>File name (only you see it)</span><input type="text" class="n" value="${esc(m.title || "")}"></label>
     <label class="f"><span>Category</span><select class="ct">${catOpts(m.category_id)}</select></label><label class="f"><span>Premium access</span>${accSel(m.access)}</label><label class="f"><span>Time shown to members</span><input type="datetime-local" step="1" class="ta" value="${lcl(m.created_at)}"></label></div>
     <div class="row" style="margin-bottom:12px"><span class="mute sm">In:</span><b>${esc(folderPath(m.album_id) || "No folder")}</b><button class="btn gh xs mv">Move…</button><label class="ck"><input type="checkbox" class="pin" ${m.pinned ? "checked" : ""}> Pin to Spotlight</label></div>
-    <div class="row"><button class="btn xs sv">Save</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
+    <div class="row"><button class="btn xs sv">Save</button><button class="btn gh xs lk">Card look…</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>`); if (!p) return;
   const q = s => p.querySelector(s);
   q(".sv").onclick = async () => {
     const { error } = await sb.from("media").update({ title: q(".n").value.trim() || m.title, label: q(".lb").value.trim() || null, category_id: q(".ct").value || null, access: q(".ac").value, ...(toIso(q(".ta").value) ? { created_at: toIso(q(".ta").value) } : {}) }).eq("id", id); if (error) return toast(error.message);
@@ -1298,6 +1321,7 @@ function filePanel(id) {
     toast("Saved"); loadMedia(true);
   };
   q(".mv").onclick = () => moveFiles([id]);
+  q(".lk").onclick = async () => { if (await lookEditor({ kind: "file", id, path: m.path, type: m.type, focus: m.focus_y, cover: null })) loadMedia(true); };
   q(".dl").onclick = async () => { if (!confirm("Move this file to the recycle bin?")) return; if (await trashMedia([id])) await refreshContent(); };
 }
 
@@ -1771,62 +1795,20 @@ async function openUser(tg) {
   $("uPosts")?.addEventListener("click", () => { $("uuQ").value = String(tg); $("uuS").value = ""; show("uploads"); });
 }
 
-/* ---------- payments ---------- */
-let pyPage = 0; const PP = 30;
-async function loadPayStats() {
-  const { data } = await sb.from("payments").select("method,currency,amount,status,created_at").eq("status", "approved").limit(10000);
-  const t0 = dayKey(new Date()), a = { usdt: 0, stars: 0, today: 0, n: 0 };
-  (data || []).forEach(p => { a.n++; if (p.method === "usdt") a.usdt += num(p.amount); if (p.method === "stars") a.stars += num(p.amount); if (dayKey(p.created_at) === t0 && p.method === "usdt") a.today += num(p.amount); });
-  const { count } = await sb.from("payments").select("id", { count: "exact", head: true }).eq("status", "pending").gt("expires_at", new Date().toISOString());
-  $("pyStats").innerHTML = [[a.usdt.toFixed(2), "USDT received"], ["★ " + a.stars, "Stars received"], [a.today.toFixed(2), "USDT today"], [a.n, "Paid orders"], [count ?? 0, "Waiting now"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
-}
-function payQuery() {
-  let q = sb.from("payments").select("*, profiles(first_name,last_name,display_name,username)", { count: "exact" }).order("created_at", { ascending: false });
-  if ($("pyM").value) q = q.eq("method", $("pyM").value); if ($("pyS").value) q = q.eq("status", $("pyS").value);
-  const s = $("pyQ").value.trim().replace(/[%\\,()]/g, ""); if (s) q = /^\d+$/.test(s) ? q.eq("tg_id", Number(s)) : q.ilike("tx_ref", `%${s}%`);
-  return q;
-}
-$("pyGo").onclick = () => loadPays(true); $("pyMore").onclick = () => loadPays(false);
-$("pyCsv").onclick = async () => { const { data, error } = await payQuery().limit(5000); if (error) return toast(error.message); csv("payments.csv", [["date", "tg_id", "name", "plan", "days", "bonus_days", "method", "currency", "amount", "promo", "status", "tx_ref"], ...data.map(p => [p.created_at, p.tg_id, nm(p.profiles), p.plan_name, p.days, p.bonus_days, p.method, p.currency, p.amount, p.promo_code, p.status, p.tx_ref])]); };
-async function loadPays(reset) {
-  if (reset) { pyPage = 0; $("pyList").innerHTML = ""; }
-  const { data, count, error } = await payQuery().range(pyPage * PP, pyPage * PP + PP - 1); if (error) return toast(error.message);
-  const ST = { approved: ["Paid", "ok"], pending: ["Pending", "warn"], rejected: ["Rejected", "r"], expired: ["Expired", ""] };
-  (data || []).forEach(p => {
-    const d = document.createElement("div"); d.className = "line";
-    const tx = p.tx_ref ? (p.method === "usdt" ? `<a class="lk" target="_blank" rel="noopener" href="https://bscscan.com/tx/${esc(p.tx_ref)}">${esc(p.tx_ref.slice(0, 10))}…</a>` : esc(p.tx_ref.slice(0, 18))) : "";
-    d.innerHTML = `<div class="row between"><div><b>${esc(nm(p.profiles))}</b> <span class="mute sm">${p.profiles?.username ? "@" + esc(p.profiles.username) + " · " : ""}ID ${p.tg_id}</span><div class="sm">${esc(p.plan_name)} · ${p.days}${p.bonus_days ? "+" + p.bonus_days : ""}d · <b>${fmtAmt(p)}</b>${p.promo_code ? ` · promo ${esc(p.promo_code)}` : ""}</div><div class="mute sm">${ftime(p.created_at)} · ${p.method}${tx ? " · " + tx : ""}${p.note ? " · " + esc(p.note) : ""}</div></div>
-      <span class="row"><span class="pill ${ST[p.status][1]}">${ST[p.status][0]}</span>${p.status === "pending" || p.status === "expired" ? '<button class="btn xs ap">Approve</button>' : ""}${p.status === "pending" ? '<button class="btn dg xs rj">Reject</button>' : ""}</span></div>`;
-    d.querySelector(".ap")?.addEventListener("click", async () => { if (!confirm(`Activate Premium for ID ${p.tg_id}? Only do this after checking the payment yourself.`)) return; const { data: r, error } = await sb.rpc("admin_approve_payment", { p_id: p.id, p_note: "Approved by admin" }); error || !r?.ok ? toast(error?.message || "Failed") : (toast("Approved"), loadPays(true), loadPayStats(), badges()); });
-    d.querySelector(".rj")?.addEventListener("click", async () => { await sb.from("payments").update({ status: "rejected", reviewed_at: new Date().toISOString() }).eq("id", p.id); loadPays(true); badges(); });
-    $("pyList").appendChild(d);
-  });
-  if (!$("pyList").children.length) $("pyList").innerHTML = '<p class="mute" style="padding:10px 0">No payments yet.</p>';
-  pyPage++; $("pyMore").hidden = pyPage * PP >= (count ?? 0);
-}
-$("mpGo").onclick = async () => {
-  const tg = $("mpTg").value.trim(), plan = plansCache.find(p => p.id === $("mpPlan").value); if (!/^\d+$/.test(tg) || !plan) return toast("Enter a Telegram ID and choose a plan");
-  const { data: pr } = await sb.from("profiles").select("tg_id").eq("tg_id", Number(tg)).maybeSingle(); if (!pr) return toast("That user hasn't opened the app yet");
-  const { data: row, error } = await sb.from("payments").insert({ tg_id: Number(tg), plan_id: plan.id, plan_name: plan.name, days: plan.days, tier: plan.tier || "lite", method: "manual", currency: "USD", amount: num($("mpAmt").value), base_amount: num($("mpAmt").value), note: $("mpNote").value.trim() || "Manual sale" }).select("id").single();
-  if (error) return toast(error.message);
-  const { data: r, error: e2 } = await sb.rpc("admin_approve_payment", { p_id: row.id, p_note: null }); if (e2 || !r?.ok) return toast(e2?.message || "Failed");
-  toast("Recorded. Premium activated."); $("mpTg").value = ""; $("mpAmt").value = ""; $("mpNote").value = ""; loadPays(true); loadPayStats();
-};
-
-/* ---------- plans, codes, promos ---------- */
+/* ---------- plans and codes ---------- */
 async function loadPremium() {
   const iso = new Date().toISOString();
-  const [lk, rose, roy, cu, pl, st, pc] = await Promise.all([
+  const [lk, rose, roy, cu, pl, st] = await Promise.all([
     sb.from("albums").select("id", { count: "exact", head: true }).neq("access", "public"),
     sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("lite_until", iso),
     sb.from("profiles").select("tg_id", { count: "exact", head: true }).gt("expensive_until", iso),
     sb.from("codes").select("used_count,max_uses"), sb.from("plans").select("*").order("sort_order"),
-    getSettings(["premium_intro", "contact_link"]), PAY_ON ? sb.from("promos").select("*").order("created_at", { ascending: false }).limit(100) : Promise.resolve({ data: [] }),
+    getSettings(["premium_intro", "contact_link"]),
   ]);
   const codes = cu.data || [], used = codes.reduce((a, c) => a + (c.used_count || 0), 0);
   $("pStats").innerHTML = [[lk.count ?? 0, "Locked folders"], [rose.count ?? 0, "Rose members"], [roy.count ?? 0, "Royal members"], [codes.length, "Codes made"], [used, "Codes used"]].map(([n, l]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
-  $("sIntro").value = st.premium_intro || ""; $("sContact").value = st.contact_link || ""; $("prCard").hidden = !PAY_ON;
-  plansCache = pl.data || []; drawPlans(plansCache); fillPlanSel("prPlan", true); drawPromos(pc.data || []); loadCodes();
+  $("sIntro").value = st.premium_intro || ""; $("sContact").value = st.contact_link || "";
+  plansCache = pl.data || []; drawPlans(plansCache); loadCodes();
 }
 function drawPlans(list) {
   $("plList").innerHTML = list.map(p => `<div class="line" data-id="${p.id}"><div class="cols">
@@ -1846,24 +1828,6 @@ $("sSave").onclick = async () => { const r = await Promise.all([setSetting("prem
 
 const ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 function genCode() { const b = crypto.getRandomValues(new Uint8Array(12)); const s = [...b].map(x => ALPHA[x % ALPHA.length]).join(""); return `${s.slice(0, 4)}-${s.slice(4, 8)}-${s.slice(8)}`; }
-function genPromo() { const b = crypto.getRandomValues(new Uint8Array(6)); return [...b].map(x => ALPHA[x % ALPHA.length]).join(""); }
-$("prGo").onclick = async () => {
-  const pct = Math.min(100, Math.max(0, Math.round(num($("prPct").value)))), bonus = Math.max(0, Math.round(num($("prBonus").value)));
-  if (!pct && !bonus) return toast("Add a discount % or bonus days");
-  const code = ($("prCode").value.trim() || genPromo()).toUpperCase().replace(/\s+/g, "");
-  const { error } = await sb.from("promos").insert({ code, percent: pct, bonus_days: bonus, plan_id: $("prPlan").value || null, max_uses: Math.max(1, num($("prMax").value) || 100), expires_at: $("prExp").value ? new Date($("prExp").value + "T23:59:59").toISOString() : null, note: $("prNote").value.trim() || null });
-  if (error) return toast(error.message.includes("duplicate") ? "That code already exists" : error.message);
-  $("prCode").value = ""; toast("Promo " + code + " created"); loadPremium();
-};
-function drawPromos(list) {
-  $("prList").innerHTML = list.map(p => `<div class="row between line" data-c="${p.code}"><div><code class="cd">${esc(p.code)}</code> ${p.percent ? `<span class="pill g">${p.percent}% off</span>` : ""} ${p.bonus_days ? `<span class="pill g">+${p.bonus_days}d</span>` : ""} <span class="pill">${p.used_count}/${p.max_uses}</span></div>
-    <span class="row"><label class="ck"><input type="checkbox" class="ac" ${p.active ? "checked" : ""}> Active</label><button class="btn gh xs cp">Copy</button><button class="btn dg xs dl">Delete</button></span></div>`).join("") || '<p class="mute">No promo codes yet.</p>';
-  $("prList").querySelectorAll("[data-c]").forEach(r => {
-    r.querySelector(".cp").onclick = () => navigator.clipboard.writeText(r.dataset.c).then(() => toast("Copied"));
-    r.querySelector(".ac").onchange = async e => { await sb.from("promos").update({ active: e.target.checked }).eq("code", r.dataset.c); };
-    r.querySelector(".dl").onclick = async () => { if (!confirm("Delete this promo?")) return; await sb.from("promos").delete().eq("code", r.dataset.c); loadPremium(); };
-  });
-}
 $("cgGo").onclick = async () => {
   const n = Math.min(100, Math.max(1, num($("cgN").value) || 1)), days = num($("cgD").value), uses = num($("cgU").value) || 1; if (!days) return toast("Enter the days");
   const exp = $("cgE").value ? new Date($("cgE").value + "T23:59:59").toISOString() : null, note = $("cgNote").value.trim() || null, tier = $("cgT").value;
@@ -1953,9 +1917,51 @@ $("uuBC").onclick = () => { uuSel.clear(); document.querySelectorAll("#uuList .u
 const bulkReview = async st => { const note = st === "rejected" ? (prompt("Reason (optional, the member will see it):") || null) : null; for (const id of [...uuSel]) await sb.rpc("admin_review_post", { p_id: id, p_status: st, p_note: note, p_title: null }); uuSel.clear(); drawUUSel(); loadUU(true); badges(); toast("Done"); };
 $("uuBA").onclick = () => bulkReview("approved"); $("uuBR").onclick = () => bulkReview("rejected");
 const REASONS = ["Not allowed content", "Low quality", "Duplicate", "Please upload again"];
+/* V21: how a file looks on the member cards. Drag the picture up or down to choose the part that shows (the head/body no longer gets cut).
+   For a video: pick a frame (pause, then "Use this frame") or upload a cover picture. kind: "post" = community file, "file" = folder file. */
+async function lookEditor({ kind, id, path, type, focus, cover }) {
+  const u = (await sign([path]))[path]; if (!u) return toast("Could not open that file");
+  return new Promise(res => {
+    let fy = focus == null ? 50 : focus, blob = null, clear = false;
+    const d = document.createElement("div"), isV = type === "video"; d.className = "mdl";
+    d.innerHTML = `<div class="box"><h3 style="margin:0 0 4px">Card look</h3><p class="sm mute" style="margin:0 0 8px">${isV ? "Use the slider to choose the part that shows on the card." : "Drag the picture up or down to choose the part that shows on the card."}</p>
+      <div class="lkw"><div class="lkf ${isV ? "v" : ""}">${isV ? `<video src="${esc(u)}#t=0.5" crossorigin="anonymous" muted playsinline preload="metadata" controls style="object-position:50% ${fy}%"></video>` : `<img src="${esc(u)}" draggable="false" alt="" style="object-position:50% ${fy}%">`}</div></div>
+      <input type="range" class="lky" min="0" max="100" value="${fy}" style="width:100%">
+      ${isV ? `<div class="row" style="margin:10px 0 4px"><button class="btn gh xs lkcap">Use this frame as cover</button><label class="btn gh xs" style="cursor:pointer">Upload a cover picture<input type="file" accept="image/*" hidden class="lkup"></label>${cover ? '<button class="btn gh xs lkclr">Remove cover</button>' : ""}</div><div class="sm mute lkmsg">${cover ? "This video has a cover." : "No cover yet: the first frame shows."}</div>` : ""}
+      <div class="row" style="margin-top:12px"><button class="btn lksv">Save</button><button class="btn gh lkx">Cancel</button></div></div>`;
+    const q = s => d.querySelector(s), media = q(".lkf img, .lkf video"), done = v => { d.remove(); res(v); };
+    const setY = v => { fy = Math.round(Math.min(100, Math.max(0, v))); media.style.objectPosition = `50% ${fy}%`; q(".lky").value = fy; };
+    q(".lky").oninput = e => setY(+e.target.value);
+    if (!isV) { // drag up/down
+      const fr = q(".lkf"); let y0 = null, f0 = 0;
+      fr.onpointerdown = e => { y0 = e.clientY; f0 = fy; fr.setPointerCapture(e.pointerId); };
+      fr.onpointermove = e => { if (y0 !== null) setY(f0 - (e.clientY - y0) / fr.clientHeight * 130); };
+      fr.onpointerup = fr.onpointercancel = () => { y0 = null; };
+    }
+    const toBlob = (src, w, h) => new Promise((ok, no) => { const c = document.createElement("canvas"), k = Math.min(1, 720 / w); c.width = Math.round(w * k); c.height = Math.round(h * k); c.getContext("2d").drawImage(src, 0, 0, c.width, c.height); c.toBlob(b => b ? ok(b) : no(new Error("blocked")), "image/jpeg", .85); });
+    const msg = t => { const m = q(".lkmsg"); if (m) m.textContent = t; };
+    q(".lkcap")?.addEventListener("click", async () => { try { const v = media; blob = await toBlob(v, v.videoWidth, v.videoHeight); clear = false; msg("Frame picked. Press Save."); } catch { msg("The browser blocked reading this frame. Use “Upload a cover picture” instead."); } });
+    q(".lkup")?.addEventListener("change", async e => { const f = e.target.files[0]; if (!f) return; try { const bm = await createImageBitmap(f); blob = await toBlob(bm, bm.width, bm.height); clear = false; msg("Picture picked. Press Save."); } catch { msg("That picture could not be read."); } });
+    q(".lkclr")?.addEventListener("click", () => { blob = null; clear = true; msg("The cover will be removed. Press Save."); });
+    q(".lkx").onclick = () => done(false); d.onclick = e => { if (e.target === d) done(false); };
+    q(".lksv").onclick = async () => {
+      const b = q(".lksv"); b.disabled = true; let cp = null;
+      try {
+        if (blob) {
+          const f = new File([blob], "c.jpg", { type: "image/jpeg" });
+          if (kind === "post") { cp = `${path}.c${Date.now()}.jpg`; const r = await putFile(cp, f); if (r.error) throw r.error; if (cover) await rmFiles([cover]); }
+          else { await rmFiles([path + ".t.jpg"]); const r = await putFile(path + ".t.jpg", f); if (r.error) throw r.error; cp = "thumb"; }
+        } else if (clear && kind === "post") { cp = ""; if (cover) await rmFiles([cover]); }
+        const { error } = await sb.rpc("admin_set_file_look", { p_kind: kind, p_id: id, p_focus: fy, p_cover: cp });
+        if (error) throw error; toast("Saved"); done(true);
+      } catch (e) { toast(String(e.message || e) + (String(e.message || e).includes("function") ? " (run supabase_v20.sql)" : "")); b.disabled = false; }
+    };
+    document.body.appendChild(d);
+  });
+}
 async function loadUU(reset) {
   if (reset) { uuPage = 0; $("uuList").innerHTML = ""; }
-  let q = sb.from("user_posts").select("*, profiles(tg_id,first_name,last_name,display_name,username), user_media(id,path,type,size_bytes,preview)", { count: "exact" }).order("created_at", { ascending: false }).range(uuPage * UP, uuPage * UP + UP - 1);
+  let q = sb.from("user_posts").select("*, profiles(tg_id,first_name,last_name,display_name,username), user_media(id,path,type,size_bytes,preview,views,focus_y,cover_path)", { count: "exact" }).order("created_at", { ascending: false }).range(uuPage * UP, uuPage * UP + UP - 1);
   const s = $("uuQ").value.trim(); if (/^\d+$/.test(s)) q = q.eq("tg_id", Number(s)); if ($("uuS").value) q = q.eq("status", $("uuS").value);
   const { data, count, error } = await q; if (error) return toast(error.message);
   $("uuInfo").textContent = `${count ?? 0} post${count === 1 ? "" : "s"}`; const urls = await sign((data || []).flatMap(p => (p.user_media || []).slice(0, 8).map(m => m.path)));
@@ -1963,9 +1969,11 @@ async function loadUU(reset) {
     const fl = p.user_media || [], bytes = fl.reduce((n, m) => n + (m.size_bytes || 0), 0), d = document.createElement("div"); d.className = "pcard " + (p.status === "pending" ? "pend" : "");
     d.innerHTML = `<div class="row between" style="margin-bottom:10px"><div class="row"><input type="checkbox" class="usk" ${uuSel.has(p.id) ? "checked" : ""}><a href="#" data-user="${p.tg_id}" style="color:inherit"><b>${esc(nm(p.profiles))}</b></a><span class="mute sm">${p.profiles?.username ? "@" + esc(p.profiles.username) + " · " : ""}ID ${p.tg_id}</span></div><span class="pill ${p.status === "approved" ? "g" : p.status === "rejected" ? "r" : ""}">${UU_ST[p.status] || p.status}</span></div>
       <div class="pgrid">${fl.slice(0, 8).map(m => `<div class="t">${urls[m.path] ? (m.type === "video" ? `<video muted preload="metadata" src="${esc(urls[m.path])}#t=0.5" controls></video>` : `<a href="${esc(urls[m.path])}" target="_blank" rel="noopener"><img loading="lazy" src="${esc(urls[m.path])}"></a>`) : (m.preview ? `<img src="${esc(m.preview)}">` : "")}</div>`).join("")}</div>
+      <div class="fis" style="margin-bottom:8px">${fl.map((m, i) => `<div class="fi"><span>${i + 1}. ${m.type === "video" ? "Video" : "Photo"} <b>${fmtKB(m.size_bytes)}</b> <span class="mute">· ${m.views || 0} views${m.cover_path ? " · cover" : ""}</span></span><button class="btn gh xs lk" data-i="${i}">Card look</button></div>`).join("")}</div>
       <input type="text" class="t" value="${esc(p.title || "")}" placeholder="Title" style="margin-bottom:6px"><div class="mute sm" style="margin-bottom:10px">${fl.length} file${fl.length === 1 ? "" : "s"} · ${(bytes / 1048576).toFixed(1)} MB · ${fdate(p.created_at)} · 👍 ${p.likes} 👎 ${p.dislikes} · ${p.views} views${p.note ? " · note: " + esc(p.note) : ""}</div>
       <div class="row">${p.status !== "approved" ? '<button class="btn bigap ap">✓ Approve</button>' : ""}${p.status !== "rejected" ? '<button class="btn dg xs rj">Decline</button>' : ""}<button class="btn gh xs sv">Save title</button><button class="btn dg xs dl">Delete</button></div>
       <div class="dc" hidden><div class="reasons">${REASONS.map(r => `<button>${esc(r)}</button>`).join("")}</div><div class="row" style="margin-top:8px"><input type="text" class="nt" placeholder="Reason for the member (optional)" style="flex:1;min-width:180px"><button class="btn dg xs dcf">Confirm decline</button></div></div>`;
+    d.querySelectorAll(".lk").forEach(b => b.onclick = async () => { const m = fl[+b.dataset.i]; if (await lookEditor({ kind: "post", id: m.id, path: m.path, type: m.type, focus: m.focus_y, cover: m.cover_path })) loadUU(true); });
     d.querySelector(".usk").onchange = e => { e.target.checked ? uuSel.add(p.id) : uuSel.delete(p.id); drawUUSel(); };
     const rev = async (st, note) => { const { error } = await sb.rpc("admin_review_post", { p_id: p.id, p_status: st, p_note: note || null, p_title: d.querySelector(".t").value.trim() || null }); error ? toast(error.message) : (toast(st === "approved" ? "Approved" : st === "rejected" ? "Declined" : "Saved"), loadUU(true), badges()); };
     d.querySelector(".ap")?.addEventListener("click", () => rev("approved"));
@@ -1981,6 +1989,7 @@ async function loadUU(reset) {
 }
 
 /* ---------- settings ---------- */
+const fmtKB = b => !b ? "?" : b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.round(b / 1024) + " KB";
 const msRow = (m = { n: 5, tier: "lite", days: 3 }) => `<div class="mrow"><input type="number" class="mn" min="1" value="${m.n}" title="Invites"><select class="mt"><option value="lite" ${m.tier !== "expensive" ? "selected" : ""}>Rose (Lite)</option><option value="expensive" ${m.tier === "expensive" ? "selected" : ""}>Royal (includes Rose)</option></select><input type="number" class="md" min="1" value="${m.days}" title="Days"><button class="btn dg xs mx">Remove</button></div>`;
 const msBind = () => $("msRows").querySelectorAll(".mx").forEach(b => b.onclick = () => b.parentElement.remove());
 function setBlur(v) {
@@ -2079,11 +2088,10 @@ async function loadFlow() {
   const s = await getSettings(["flow_on", "flow_step", "flow_first", "flow_stagger", "flow_wave"]), n = (v, d) => (v === undefined || v === "" || isNaN(Number(v)) ? d : Number(v));
   setFlow(n(s.flow_step, 5), n(s.flow_stagger, 1), n(s.flow_wave, 10), n(s.flow_first, 7));
   $("flOnAll").checked = s.flow_on !== "0";
-  $("flVid").checked = (await getSettings(["flow_video"])).flow_video === "1";
 }
-$("flVid").onchange = async () => { const r = await setSetting("flow_video", $("flVid").checked ? "1" : "0"); toast(r.error ? "Error saving" : "Saved"); };
 ["flFirst", "flStep", "flGap", "flWave"].forEach(id => $(id).oninput = () => setFlow(+$("flStep").value, +$("flGap").value, +$("flWave").value, +$("flFirst").value));
 $("flReset").onclick = () => setFlow(5, 1, 10, 7);
+$("flRec").onclick = () => setFlow(5, 1, 10, 5);
 $("flSave").onclick = async () => {
   const rs = await Promise.all([setSetting("flow_step", $("flStep").value), setSetting("flow_first", $("flFirst").value), setSetting("flow_stagger", $("flGap").value), setSetting("flow_wave", $("flWave").value)]);
   const er = rs.find(r => r.error)?.error; $("flMsg").textContent = er ? "Failed: " + er.message : "Saved. Members get it the next time they open the app.";
@@ -2103,13 +2111,13 @@ $("blSave").onclick = async () => {
 };
 async function loadSettings() {
   loadStorageInfo();
-  const s = await getSettings(["maintenance", "pay_usdt_on", "pay_stars_on", "usdt_address", "usdt_min_conf", "bsc_rpc", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "payments_on", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
+  const s = await getSettings(["maintenance", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "task_on", "task_posts", "task_hours", "task_title", "task_text", "premium_ads_on", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
   $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
   $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
   $("setUp").checked = s.user_upload_on !== "0"; $("setUpPrem").value = ["lite", "expensive"].includes(s.user_upload_premium_only) ? s.user_upload_premium_only : "none";
   $("setFileMb").value = s.user_file_max_mb || "20"; $("setFolderMb").value = s.user_folder_max_mb || "50"; $("setPop").value = s.popup_seconds || "5";
-  $("setPayOn").checked = s.payments_on === "1"; $("payCard").hidden = s.payments_on !== "1";
-  $("setUsdt").checked = s.pay_usdt_on !== "0"; $("setStars").checked = s.pay_stars_on !== "0"; $("setAddr").value = s.usdt_address || ""; $("setConf").value = s.usdt_min_conf || "3"; $("setRpc").value = s.bsc_rpc || "";
+  $("tkOn").checked = s.task_on === "1"; $("tkN").value = s.task_posts || "5"; $("tkH").value = s.task_hours || "24"; $("tkTitle").value = s.task_title || "Free Rose task";
+  $("tkText").value = s.task_text || "Share 5 posts in Community. When 5 are approved you get Rose for 24 hours."; $("tkAds").checked = s.premium_ads_on !== "0";
   let ms = []; try { ms = JSON.parse(s.ref_milestones || "[]"); } catch {} if (!ms.length) ms = [{ n: 5, tier: "lite", days: 3 }, { n: 10, tier: "lite", days: 7 }, { n: 20, tier: "lite", days: 10 }, { n: 50, tier: "expensive", days: 7 }];
   $("msRows").innerHTML = ms.map(msRow).join(""); msBind();
   $("rfStep").value = s.ref_step || "5"; $("rfStepD").value = s.ref_step_days || "3"; $("rfBig").value = s.ref_big_every || "50"; $("rfBigD").value = s.ref_big_days || "14";
@@ -2126,17 +2134,12 @@ $("msSave").onclick = async () => {
   const list = [...$("msRows").querySelectorAll(".mrow")].map(r => ({ n: Math.max(1, Math.round(num(r.querySelector(".mn").value))), tier: r.querySelector(".mt").value, days: Math.max(1, Math.round(num(r.querySelector(".md").value))) })).sort((a, b) => a.n - b.n);
   const { error } = await setSetting("ref_milestones", JSON.stringify(list)); toast(error ? error.message : "Saved. New rewards apply to future invites.");
 };
-$("setPaySave").onclick = async () => {
-  const a = $("setAddr").value.trim(); if (a && !/^0x[a-fA-F0-9]{40}$/.test(a)) return toast("That doesn't look like a valid wallet address");
-  const r = await Promise.all([setSetting("pay_usdt_on", $("setUsdt").checked ? "1" : "0"), setSetting("pay_stars_on", $("setStars").checked ? "1" : "0"), setSetting("usdt_address", a), setSetting("usdt_min_conf", Math.min(30, Math.max(1, num($("setConf").value) || 3))), setSetting("bsc_rpc", $("setRpc").value.trim())]);
+$("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_premium_only", $("setUpPrem").value), setSetting("user_file_max_mb", Math.min(100, Math.max(1, num($("setFileMb").value) || 20))), setSetting("user_folder_max_mb", Math.min(500, Math.max(1, num($("setFolderMb").value) || 50))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 5)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("tkSave").onclick = async () => {
+  const r = await Promise.all([setSetting("task_on", $("tkOn").checked ? "1" : "0"), setSetting("task_posts", Math.min(100, Math.max(1, Math.round(num($("tkN").value)) || 5))), setSetting("task_hours", Math.min(720, Math.max(1, Math.round(num($("tkH").value)) || 24))),
+    setSetting("task_title", $("tkTitle").value.trim().slice(0, 60)), setSetting("task_text", $("tkText").value.trim().slice(0, 240)), setSetting("premium_ads_on", $("tkAds").checked ? "1" : "0")]);
   toast(r.some(x => x.error) ? "Error saving" : "Saved");
 };
-$("rpcTest").onclick = async () => {
-  $("rpcMsg").textContent = "Checking..."; const url = $("setRpc").value.trim() || "https://bsc-dataseed.binance.org";
-  try { const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_blockNumber", params: [] }) }); const j = await r.json(); $("rpcMsg").textContent = j.result ? `OK. Latest block ${parseInt(j.result, 16)}` : "Network answered with an error"; } catch (e) { $("rpcMsg").textContent = "Could not reach it from the browser (the server may still reach it): " + e.message; }
-};
-$("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_premium_only", $("setUpPrem").value), setSetting("user_file_max_mb", Math.min(100, Math.max(1, num($("setFileMb").value) || 20))), setSetting("user_folder_max_mb", Math.min(500, Math.max(1, num($("setFolderMb").value) || 50))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 5)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
-$("refSave").onclick = async () => { const r = await Promise.all([setSetting("payments_on", $("setPayOn").checked ? "1" : "0")]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); await loadPayFlag(); $("payCard").hidden = !PAY_ON; };
 $("chkBtn").onclick = async () => { $("chkMsg").textContent = "..."; try { const r = await pushTG("", "", null, true); $("chkMsg").textContent = r.error ? "Failed: " + r.error : `OK. ${r.total} users have notifications on, BOT_TOKEN ${r.token ? "is set" : "is MISSING"}`; } catch (e) { $("chkMsg").textContent = "Function not found: " + e.message; } };
 
 
