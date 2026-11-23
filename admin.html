@@ -723,9 +723,9 @@ function show(t) {
 }
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
 async function badges() {
-  const [t, p, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), Promise.resolve({ count: 0 }), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
+  const [t, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
   const uu = $("uuBd"); if (uu) { uu.hidden = !u.count; uu.textContent = u.count || ""; }
-  const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; } const q = $("pyBd"); if (q) { q.hidden = !p.count; q.textContent = p.count || ""; }
+  const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; }
 }
 
 /* helpers */
