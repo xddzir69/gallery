@@ -690,7 +690,7 @@ $("bt").textContent = (C.APP_TITLE || "Gallery") + " admin";
 async function refreshUI() {
   const { data: { session } } = await sb.auth.getSession();
   $("loginBox").hidden = !!session; $("panel").hidden = !session;
-  if (session) { await Promise.all([loadPlansCache(), loadAlbumsCache(), detectR2()]); await loadCats(); show("dash"); badges(); }
+  if (session) { buildTabs(); await Promise.all([loadPlansCache(), loadAlbumsCache(), detectR2()]); await loadCats(); show("dash"); badges(); }
 }
 $("loginBtn").onclick = async () => {
   $("loginErr").textContent = "";
