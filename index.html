@@ -158,6 +158,10 @@
   .th::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.45), transparent 38%); pointer-events: none; z-index: 1; }
   .th .pl { position: absolute; z-index: 2; left: 8px; bottom: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(6,6,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; display: none; align-items: center; justify-content: center; }
   .th[data-vid="1"] .pl { display: flex; }
+  .th .pl { left: 50%; top: 50%; bottom: auto; width: 46px; height: 46px; transform: translate(-50%, -50%); background: rgba(8,8,10,.5); border: 1.5px solid rgba(255,255,255,.6); box-shadow: 0 10px 24px -6px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.25); }
+  .th .pl .i { width: 20px; height: 20px; margin-left: 2px; fill: currentColor; stroke: none; } .th.locked .pl { display: none !important; }
+  .g3 .th .pl { width: 36px; height: 36px; } .g3 .th .pl .i { width: 16px; height: 16px; } .mp .th .pl { width: 32px; height: 32px; } .mp .th .pl .i { width: 14px; height: 14px; }
+  .cap b.dual { display: flex; align-items: center; gap: 5px; min-width: 0; } .cap b.dual .rt { flex: 0 1 auto; max-width: 52%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--mute); font-weight: 600; } .cap b.dual .ar { flex: none; font-style: normal; color: var(--gold); font-weight: 800; } .cap b.dual .sb { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .th .pl .i { width: 11px; height: 11px; fill: currentColor; stroke: none; margin-left: 1px; }
   .th .abg { position: absolute; z-index: 2; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,6,8,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F6F2E9; font-size: 11px; font-weight: 700; }
   .th .abg .i { width: 12px; height: 12px; stroke-width: 2; }
@@ -537,7 +541,8 @@
 
   /* ---------- viewer ---------- */
   #viewer { position: fixed; inset: 0; z-index: 100; background: #030504; display: none; } #viewer.open { display: block; }
-  .vtop { position: absolute; z-index: 5; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(14px + env(safe-area-inset-top)) 16px 28px; background: linear-gradient(rgba(3,5,4,.85), transparent); color: #F4F0E4; }
+  .vtop { position: absolute; z-index: 5; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(max(env(safe-area-inset-top), var(--tg-safe-area-inset-top, 0px)) + var(--tg-content-safe-area-inset-top, 0px) + 12px) 14px 30px; background: linear-gradient(rgba(3,5,4,.92), rgba(3,5,4,.5) 60%, transparent); color: #F4F0E4; }
+  .vb.vback { width: auto; padding: 0 16px 0 11px; gap: 4px; font-size: 14px; font-weight: 700; letter-spacing: .02em; background: rgba(10,10,14,.72); border-color: rgba(255,255,255,.22); box-shadow: 0 8px 20px -8px rgba(0,0,0,.8); } .vb.vback .i { width: 20px; height: 20px; stroke-width: 2.4; } .vb.vback:active { transform: scale(.95); }
   .vtop .cnt { font-size: 14px; font-weight: 600; opacity: .85; } .vtop .acts { display: flex; gap: 10px; }
   .vb { width: 42px; height: 42px; border-radius: 50%; background: rgba(10,10,14,.55); border: 1px solid rgba(255,255,255,.1); color: #F4F0E4; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); } .vb .i { width: 19px; height: 19px; stroke-width: 2; } .vb.on { color: #FF7C9C; } .vb.on .i { fill: currentColor; }
   #stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
@@ -634,6 +639,25 @@
   .mi:active { background: color-mix(in srgb, var(--mid) 7%, transparent); }
   .taskc .ti { box-shadow: 0 8px 16px -8px rgba(212,175,95,.9), inset 0 1px 0 rgba(255,255,255,.5); }
   .mcc .chip { box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.5); }
+
+  /* V21: tier tag on premium cards, daily reward, premium profile */
+  .th .tier { position: absolute; z-index: 2; left: 8px; top: 34px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px 3px 6px; border-radius: 999px; font-size: 9.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; pointer-events: none; box-shadow: 0 6px 14px -6px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.5); }
+  .th.locked .tier { top: 8px; } .th .tier .i { width: 11px; height: 11px; stroke-width: 2; }
+  .th .tier.r { color: #3A1220; background: linear-gradient(135deg, #FFE0E6, #E98FA0 55%, #C4677A); } .th .tier.g { color: #2A1D05; background: linear-gradient(135deg, #FFF3C8, #E1BD58 55%, #B08A35); }
+  .daily { position: relative; overflow: hidden; margin: 0 0 14px; padding: 14px; border-radius: 20px; border: 1px solid var(--line2); background: radial-gradient(120% 160% at 100% -30%, color-mix(in srgb, var(--hi) 22%, transparent), transparent 55%), linear-gradient(165deg, var(--card2), var(--card)); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 34px -24px rgba(0,0,0,.8); }
+  .daily .dh { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; } .daily .ti { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--metal); color: var(--onmetal); box-shadow: 0 8px 16px -8px rgba(212,175,95,.9), inset 0 1px 0 rgba(255,255,255,.5); } .daily .ti .i { width: 20px; height: 20px; }
+  .daily .tb { flex: 1; min-width: 0; } .daily small { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; } .daily .tb b { display: block; font-family: var(--serif); font-weight: 500; font-size: 17px; margin-top: 1px; }
+  .daily .dok { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: var(--gold); } .daily .dok .i { width: 15px; height: 15px; stroke-width: 2.4; }
+  .daily .dseg { display: flex; gap: 5px; } .daily .dseg i { flex: 1; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--line); border: 1px solid var(--line); } .daily .dseg i.on { background: var(--metal); border-color: transparent; box-shadow: 0 6px 12px -8px rgba(212,175,95,.9); }
+  .daily .dseg i.end { color: var(--mute); } .daily .dseg i.end.on { color: var(--onmetal); } .daily .dseg i .i { width: 14px; height: 14px; }
+  .daily .tbar { height: 8px; border-radius: 5px; background: var(--line); overflow: hidden; } .daily .tbar i { display: block; height: 100%; background: var(--metal); border-radius: 5px; }
+  .daily .tp { display: block; font-size: 11.5px; color: var(--mute); margin-top: 9px; line-height: 1.4; }
+  .ring.t-lite { background: linear-gradient(145deg, #FFE0E6, #E58A98 50%, #B04E62); box-shadow: 0 0 0 1px rgba(229,138,152,.5), 0 12px 34px -8px rgba(229,138,152,.7); }
+  .ring.t-expensive { background: conic-gradient(from 210deg, #FFF3C8, #D4AF5F, #8F6D2A, #F0DDA6, #FFF3C8); box-shadow: 0 0 0 1px rgba(212,175,95,.6), 0 0 30px rgba(212,175,95,.45), 0 12px 34px -8px rgba(212,175,95,.7); animation: glow 3.6s ease-in-out infinite; }
+  .mstrip { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 7px 14px 7px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: .06em; color: #2A1D05; background: linear-gradient(180deg, rgba(255,255,255,.3), transparent 55%), var(--metal); box-shadow: 0 10px 20px -10px rgba(212,175,95,.9), inset 0 1px 0 rgba(255,255,255,.55); }
+  .mstrip .i { width: 15px; height: 15px; stroke-width: 2; } .mstrip em { font-style: normal; font-weight: 600; letter-spacing: 0; opacity: .75; }
+  .mstrip.t-lite { color: #3A1220; background: linear-gradient(180deg, rgba(255,255,255,.35), transparent 55%), linear-gradient(135deg, #F8C5CF, #E58A98); box-shadow: 0 10px 20px -10px rgba(229,138,152,.95), inset 0 1px 0 rgba(255,255,255,.6); }
+  .mstrip.free { color: var(--text); background: var(--card); border: 1px solid var(--line2); box-shadow: none; } .mstrip.free em { color: var(--gold); opacity: 1; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -717,11 +741,11 @@
 
 <div id="viewer">
   <div class="vtop">
+    <button class="vb vback" id="vclose" aria-label="Back"><svg class="i"><use href="#i-back"/></svg><span>Back</span></button>
     <span class="cnt" id="vcnt"></span>
     <div class="acts">
       <button class="vb" id="vinfo" aria-label="Info"><svg class="i"><use href="#i-info"/></svg></button>
       <button class="vb" id="vheart" aria-label="Save"><svg class="i"><use href="#i-heart"/></svg></button>
-      <button class="vb" id="vclose" aria-label="Close"><svg class="i"><use href="#i-close"/></svg></button>
     </div>
   </div>
   <button class="vnav" id="vp" aria-label="Previous"><svg class="i"><use href="#i-back"/></svg></button>
@@ -1067,14 +1091,14 @@ const countMeta = m => plural(m.count || 0, "item") + (m.folders ? " · " + plur
 function folderHTML(m, i, src) {
   const th = thumbsOf(m);
   return `<div class="it fcard ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}">
-    <div class="th ${m.locked ? "locked" : ""}" data-vid="${vidAttr(th)}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${playHTML}<span class="abg">${ic("folder")}${m.count || 0}</span>
+    <div class="th ${m.locked ? "locked" : ""}" data-vid="${vidAttr(th)}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${tierTag(m)}${playHTML}<span class="abg">${ic("folder")}${m.count || 0}</span>
       ${!m.locked || src === "saved" ? `<button class="dots3 ${favs.has(m.id) ? "on" : ""}" data-act="menu" data-src="${src}" data-i="${i}" data-id="${m.id}" aria-label="More">${ic("dots")}</button>` : ""}</div>
-    <div class="cap"><b>${esc(m.title || "Folder")}</b><span>${countMeta(m)}</span></div></div>`;
+    <div class="cap">${m.root ? `<b class="dual"><span class="rt">${esc(m.root)}</span><i class="ar">›</i><span class="sb">${esc(m.title || "Folder")}</span></b>` : `<b>${esc(m.title || "Folder")}</b>`}<span>${countMeta(m)}</span></div></div>`;
 }
 function tileHTML(m, i, src) {
   const th = [{ type: m.type, url: m.url, thumb: m.thumb, preview: m.preview, locked: m.locked, mid: m.id, views: m.views, fy: m.fy }];
   return `<div class="it tile ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}"${m.locked ? "" : ` data-mid="${m.id}"`}>
-    <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${playHTML}
+    <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${tierTag(m)}${playHTML}
       ${!m.locked || src === "saved" ? `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="media" aria-label="Save">${ic("heart")}</button>` : ""}</div>
     ${m.label ? `<div class="cap"><b>${esc(m.label)}</b></div>` : ""}</div>`;
 }
@@ -1293,14 +1317,35 @@ function taskHTML(t) {
   const pct = Math.min(100, Math.round(t.approved / Math.max(1, t.need) * 100));
   return `<button class="taskc" data-act="go" data-r="space"><span class="ti">${ic("gift")}</span><div class="tb"><small>${esc(t.title || "Task")}</small><b>${esc(t.text || "")}</b><div class="tbar"><i style="width:${pct}%"></i></div><span class="tp">${t.approved} of ${t.need} approved${t.pending ? ` · ${t.pending} waiting for review` : ""}</span></div>${ic("next", "mute")}</button>`;
 }
+/* V21 daily reward: claim once a day; N days in a row = Rose (Admin > Settings turns it on) */
+function dailyHTML(d) {
+  const n = d.need, done = Math.min(d.streak, n), seg = n <= 14
+    ? `<div class="dseg">${Array.from({ length: n }, (_, k) => `<i class="${k < done ? "on" : ""}${k === n - 1 ? " end" : ""}">${k === n - 1 ? ic("gem") : ""}</i>`).join("")}</div>`
+    : `<div class="tbar"><i style="width:${Math.round(done / n * 100)}%"></i></div>`;
+  return `<div class="daily ${d.claimed ? "got" : ""}"><div class="dh"><span class="ti">${ic("spark")}</span><div class="tb"><small>Daily reward</small><b>${d.claimed ? "Come back tomorrow" : "Your reward is ready"}</b></div>
+    ${d.claimed ? `<span class="dok">${ic("check")}Claimed</span>` : `<button class="btn sm" data-act="claim">Claim</button>`}</div>${seg}
+    <span class="tp">Day ${done} of ${n} in a row · Rose for ${d.hours} hours on day ${n}. Miss a day and it starts again.</span></div>`;
+}
+async function dailyInto(id) { try { const d = await api("daily_info"), el = $(id); if (el && d.on) el.innerHTML = dailyHTML(d); } catch { /* not set up yet */ } }
+ACT.claim = async d => {
+  const b = d.el || document.querySelector("[data-act=claim]"); if (b) b.disabled = true;
+  try {
+    const r = await api("daily_claim"); if (!r.on) return;
+    if (r.me) me = r.me; haptic(r.reward ? "heavy" : "medium");
+    toast(r.reward ? "Rose unlocked for " + r.hours + " hours" : "Day " + r.streak + " of " + r.need + " claimed");
+    document.querySelectorAll(".daily").forEach(el => { el.outerHTML = dailyHTML(r); });
+    if (r.reward) { if (stack[stack.length - 1].r === "premium" || stack[stack.length - 1].r === "profile") PAGES[stack[stack.length - 1].r](); }
+  } catch (e) { toast(e.message); if (b) b.disabled = false; }
+};
+const tierTag = m => m.access === "lite" ? `<span class="tier r">${ic("gem")}Rose</span>` : m.access === "expensive" ? `<span class="tier g">${ic("crown")}Royal</span>` : "";
 async function taskInto(id) { try { const t = await api("task_info"), el = $(id); if (el && t.on) el.innerHTML = taskHTML(t); } catch { /* task not set up yet */ } }
 PAGES.premium = async function () {
   const ads = settings.premium_ads_on !== "0", tn = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none";
   app.innerHTML = `<div class="pad">${ads ? `<button class="adbn" data-act="go" data-r="referral"><svg class="i art"><use href="#i-gift"/></svg><span class="ai">${ic("gift")}</span><div class="at"><small>Invite &amp; earn</small><b>Invite friends,<br>get Premium</b><span class="s">${me.ref_count || 0} joined · more friends, more free days</span></div><span class="go">Invite${ic("next")}</span></button>
     <button class="adbn plb" data-act="go" data-r="plans"><span class="bdg r"><span class="gm">${ic("gem")}</span><em>Rose</em></span><div class="at"><small>Premium plans</small><b>View plans</b><span class="s" id="plbs">${tn === "none" ? "See what Rose and Royal unlock" : TIER[tn].full + " is active"}</span></div><span class="bdg g"><span class="gm">${ic("crown")}</span><em>Royal</em></span></button>` : `<div class="minibtns"><button class="btn sm" data-act="go" data-r="plans">${ic("crown")}View plans</button><button class="btn gh sm" data-act="go" data-r="plans" data-p='{"code":1}'>${ic("key")}I have a code</button></div>`}
-    <div id="tkc"></div>
+    <div id="tkc"></div><div id="dyc"></div>
     <div class="sec">Premium folders</div><div id="pl"></div></div>`;
-  taskInto("tkc");
+  taskInto("tkc"); dailyInto("dyc");
   mountList($("pl"), { src: "prem", grid: "g2", fetch: (p, s) => api("list", { tier: "locked", sort: "new", page: p, size: s }), empty: "<b>No premium folders yet</b>New collections will appear here soon." }); // sub folders and single premium files, no main folders
 };
 
@@ -1478,6 +1523,17 @@ function makeThumb(f) {
     else { const im = new Image(); im.onload = () => draw(im, im.naturalWidth, im.naturalHeight); im.onerror = () => { URL.revokeObjectURL(url); done(""); }; im.src = url; }
   });
 }
+function cardThumb(f) { // V21: a 480 px JPEG for community cards (photo: scaled down, video: one frame), so cards never load the big original
+  return new Promise(res => {
+    const url = URL.createObjectURL(f); let tm = 0;
+    const fin = b => { clearTimeout(tm); URL.revokeObjectURL(url); res(b); };
+    tm = setTimeout(() => fin(null), 9000);
+    const draw = (src, w, h) => { try { const k = Math.min(1, 480 / Math.max(w, h)), c = document.createElement("canvas"); c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k)); c.getContext("2d").drawImage(src, 0, 0, c.width, c.height);
+      c.toBlob(b => { if (b && b.size > 190 * 1024) c.toBlob(b2 => fin(b2 && b2.size < 195 * 1024 ? b2 : null), "image/jpeg", .5); else fin(b); }, "image/jpeg", .74); } catch { fin(null); } };
+    if (f.type.startsWith("video")) { const v = document.createElement("video"); v.muted = true; v.preload = "auto"; v.playsInline = true; v.onloadeddata = () => { v.currentTime = Math.min(.5, (v.duration || 1) / 2); }; v.onseeked = () => draw(v, v.videoWidth, v.videoHeight); v.onerror = () => fin(null); v.src = url; }
+    else { const im = new Image(); im.onload = () => draw(im, im.naturalWidth, im.naturalHeight); im.onerror = () => fin(null); im.src = url; }
+  });
+}
 function composeUpload(files) {
   if (!files.length || !UL) return;
   const fmax = UL.file_mb * 1048576, gmax = UL.folder_mb * 1048576, ok = [], rows = [];
@@ -1501,6 +1557,7 @@ function composeUpload(files) {
         btn.textContent = `Uploading ${n + 1} of ${ok.length}...`; bar.style.width = Math.round(n / ok.length * 100) + "%";
         const preview = await makeThumb(f), ext = (f.name.split(".").pop() || "").toLowerCase();
         const u = await api("my_upload_url", { size: f.size, mime: f.type, ext }); await uploadSigned(u, f, f.type);
+        if (u.thumb) { try { const tb = await cardThumb(f); if (tb) await uploadSigned(u.thumb, tb, "image/jpeg"); } catch { /* the file works without a thumbnail */ } }
         out.push({ path: u.path, type: f.type.startsWith("video") ? "video" : "image", size: f.size, preview, label: names[n] || "" });
       }
       bar.style.width = "100%";
@@ -1525,12 +1582,14 @@ async function uploadSigned(u, blob, type) {
 const avatarHTML = () => { const av = me.avatar_url || me.photo_url, nm = nameOf(me); return av ? `<img src="${esc(av)}" alt="">` : esc(initial(nm)); };
 const crownBadge = () => me.tier === "none" ? "" : `<div class="cr ${me.tier === "lite" ? "rose" : ""}">${ic(me.tier === "expensive" ? "gem" : "crown")}</div>`;
 PAGES.profile = async function () {
+  const tr = me.tier !== "none" ? TIER[me.tier].cls : "", until = me.tier !== "none" ? activeUntil(me.tier) : null;
   app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
-    <div class="pcard"><div class="ring"><div class="avt">${avatarHTML()}</div>${crownBadge()}</div><div class="pname">${esc(nameOf(me))}</div>
-      ${me.tier !== "none" ? `<div style="margin-top:8px"><span class="pill g">${ic("crown")}${TIER[me.tier].full}</span></div>` : ""}</div>
+    <div class="pcard"><div class="ring ${tr}"><div class="avt">${avatarHTML()}</div>${crownBadge()}</div><div class="pname">${esc(nameOf(me))}</div>
+      ${me.tier !== "none" ? `<div class="mstrip ${tr}">${ic(me.tier === "lite" ? "gem" : "crown")}<span>${TIER[me.tier].full}</span>${until ? `<em>until ${new Date(until).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</em>` : ""}</div>` : `<button class="mstrip free" data-act="go" data-r="plans">${ic("crown")}<span>Free member</span><em>Get Premium</em></button>`}</div>
+    <div id="dyp" style="margin-top:14px"></div>
     <div id="ptk" style="margin-top:14px"></div><div id="pdash"></div>
     <div class="menu mt">${mi("edit", "Edit profile", "", "edit")}${mi("ticket", "Support", "chat with us", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
-  taskInto("ptk");
+  taskInto("ptk"); dailyInto("dyp");
   try { // V21: my posts like a small dashboard: each post by its name with views, likes and saves
     const r = await api("my_list", { page: 1, size: 30 }), el = $("pdash"); if (!el || !r.items.length) return;
     const sum = k => r.items.reduce((a, m) => a + (+m[k] || 0), 0);
@@ -1949,8 +2008,8 @@ ACT.nfopen = d => { const n = nfItems.find(x => x.id === d.id); if (!n) return; 
 /* ---------- viewer (pinch zoom, swipe, no download) ---------- */
 const V = { list: [], i: 0, fs: false, z: 1, x: 0, y: 0 };
 const vpt = new Map(); let vg = null, lastTap = 0, tapT = 0;
-function tryFS(v) {
-  try { const f = v.requestFullscreen || v.webkitRequestFullscreen || v.webkitEnterFullscreen; const r = f?.call(v); r?.catch?.(() => {}); } catch {}
+function tryFS() { // V21: the whole viewer goes full screen (not only the video), so the Back button always stays visible
+  try { const el = $("viewer"), f = el.requestFullscreen || el.webkitRequestFullscreen; const r = f?.call(el); r?.catch?.(() => {}); } catch {}
   if (!V.fs) { try { tg?.requestFullscreen?.(); V.fs = true; } catch {} }
 }
 function openViewer(list, idx) {
@@ -1958,7 +2017,7 @@ function openViewer(list, idx) {
   V.list = list.filter(x => !x.locked && x.url);
   V.i = Math.max(0, V.list.findIndex(x => x.id === id));
   if (!V.list.length) return;
-  $("viewer").classList.add("open"); $("viewer").classList.remove("bare"); $("vsheet").classList.remove("on"); syncBack(); drawViewer(); pingScreen(false); mirrorTick();
+  $("viewer").classList.add("open"); $("viewer").classList.remove("bare"); $("vsheet").classList.remove("on"); syncBack(); drawViewer(); tryFS(); pingScreen(false); mirrorTick();
 }
 function setT(anim) { const im = $("vimg"); if (!im) return; im.style.transition = anim ? "transform .25s ease" : "none"; im.style.transform = `translate(${V.x}px,${V.y}px) scale(${V.z})`; }
 function clampPan() {
@@ -1974,9 +2033,9 @@ function drawViewer() {
   $("vheart").hidden = m.kind !== "media";
   $("stage").style.touchAction = vid ? "auto" : "none";
   if (vid) {
-    $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline preload="metadata"${m.thumb ? ` poster="${esc(m.thumb)}"` : ""}></video>`;
+    $("stage").innerHTML = `<video src="${esc(m.url)}" controls controlslist="nodownload noremoteplayback" disablepictureinpicture disableremoteplayback playsinline autoplay preload="auto"${m.thumb ? ` poster="${esc(m.thumb)}"` : ""}></video>`;
     const v = $("stage").firstElementChild; v.oncontextmenu = e => e.preventDefault();
-    v.addEventListener("loadedmetadata", () => tryFS(v), { once: true }); tryFS(v); // V21: no autoplay, the member taps play
+    v.play?.().catch(() => { v.muted = true; v.play?.().catch(() => {}); }); // V21: a video starts when the member opens it (cards never autoplay); if sound is blocked it starts muted
   } else {
     const pv = pvCss(m.preview); // 1) tiny blurred preview (instant) 2) small thumbnail 3) full photo swaps in without a flash
     $("stage").innerHTML = `<img id="vimg" draggable="false" src="${esc(m.thumb || m.url)}" alt="" style="${pv ? pv + ";background-size:contain;background-position:center;background-repeat:no-repeat" : ""}">`;

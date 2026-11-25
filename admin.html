@@ -382,6 +382,18 @@
   .blprev .bt { width: 150px; text-align: center; font-size: 12.5px; color: var(--mute); } .blprev .bt span { display: block; margin-top: 8px; }
   .blprev .bw { width: 150px; height: 190px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line2); background: #222; }
   .blprev .bi { width: 100%; height: 100%; background: radial-gradient(circle at 50% 34%, #f3c9a4 0 15%, transparent 16%), radial-gradient(ellipse at 50% 78%, #b3262e 0 34%, transparent 35%), repeating-linear-gradient(90deg, #2b2030 0 14px, #3d2d44 14px 28px); transition: filter .12s, transform .12s; }
+
+  /* V21 admin: quick actions, quick jump, premium polish */
+  .qa { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin: 0 0 16px; }
+  .qa button { position: relative; display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 16px; text-align: left; font-weight: 700; font-size: 13.5px; color: var(--text); background: linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 26px -22px rgba(0,0,0,.7); transition: transform .15s ease, border-color .15s ease; }
+  .qa button:hover { border-color: var(--line2); transform: translateY(-1px); } .qa button:active { transform: scale(.98); }
+  .qa .i { flex: none; width: 20px; height: 20px; color: var(--gold); } .qa kbd { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--mute); border: 1px solid var(--line2); border-radius: 6px; padding: 1px 6px; font-family: inherit; }
+  .qa .bd { position: static; margin-left: auto; }
+  .qj { align-items: flex-start; padding-top: 12vh; } .qjq { width: 100%; font-size: 15px; padding: 12px 14px; } .qjl { margin-top: 8px; max-height: 50vh; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
+  .qji { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px; font-weight: 600; text-align: left; color: var(--text); } .qji .i { width: 18px; height: 18px; color: var(--gold); } .qji.on, .qji:hover { background: var(--card2); box-shadow: inset 0 0 0 1px var(--line2); }
+  .tab { transition: background .15s ease, color .15s ease; } .tab:hover { color: var(--text); background: color-mix(in srgb, var(--card2) 60%, transparent); }
+  .tab.on { background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 16%, var(--card2)), var(--card2)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 35%, var(--line)), 0 10px 22px -16px color-mix(in srgb, var(--gold) 70%, transparent); }
+  .card { box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 16px 30px -24px rgba(0,0,0,.7); }
 </style>
 </head>
 <body>
@@ -440,6 +452,14 @@
   <main>
     <!-- DASHBOARD -->
     <section id="t-dash"><div class="hero"><div class="eb">Overview</div><h2>Dashboard</h2><p>A calm overview of your gallery, members and Premium.</p><span class="orn"></span></div>
+      <div class="qa" id="dQA">
+        <button data-go="upload"><svg class="i"><use href="#i-up"/></svg><span>Upload</span></button>
+        <button data-go="uploads"><svg class="i"><use href="#i-folder"/></svg><span>Member posts</span><b class="bd" id="qaUu" hidden></b></button>
+        <button data-go="tickets"><svg class="i"><use href="#i-ticket"/></svg><span>Support</span><b class="bd" id="qaTk" hidden></b></button>
+        <button data-go="notify"><svg class="i"><use href="#i-bell"/></svg><span>Announce</span></button>
+        <button data-go="premium"><svg class="i"><use href="#i-crown"/></svg><span>Codes</span></button>
+        <button id="qaJump"><svg class="i"><use href="#i-search"/></svg><span>Jump to...</span><kbd>Ctrl K</kbd></button>
+      </div>
       <div class="card attn" id="dAttn" hidden></div>
       <div class="kts" id="dStats"></div>
       <div class="two"><div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
@@ -655,6 +675,11 @@
         <label class="f"><span>Message text</span><textarea id="tkText" rows="3" maxlength="240"></textarea></label>
         <label class="ck" style="margin:6px 0 12px"><input type="checkbox" id="tkAds"> Show the Invite and View plans ads on the Premium page</label><br>
         <button class="btn" id="tkSave">Save</button></div>
+      <div class="card"><h3>Daily reward</h3>
+        <p class="sm mute" style="margin-bottom:10px">Members press Claim once a day (day changes at 00:00 UTC). After the set number of days in a row they get Rose. Missing a day starts again. Needs supabase_v21.sql.</p>
+        <label class="ck" style="margin-bottom:12px"><input type="checkbox" id="dyOn"> Daily reward is ON</label>
+        <div class="cols"><label class="f"><span>Days in a row</span><input type="number" id="dyN" min="2" max="60"></label><label class="f"><span>Rose hours</span><input type="number" id="dyH" min="1" max="720"></label></div>
+        <button class="btn" id="dySave">Save</button></div>
       <div class="card"><h3>File storage (Cloudflare R2)</h3><p class="sm mute" id="stInfo" style="margin-bottom:12px"></p>
         <div id="stUse" style="margin-bottom:14px"></div>
         <div class="row"><button class="btn gh" id="stTest">Test storage</button><button class="btn gh" id="stUseBtn">Refresh usage</button><button class="btn" id="stMove">Move old files to R2</button><button class="btn gh" id="stStop" hidden>Stop</button></div>
@@ -708,6 +733,23 @@ function buildTabs() {
   $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
 document.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) show(g.dataset.go); });
+/* V21 quick jump: Ctrl+K (or the Jump button) opens a search over every page of the panel */
+function quickJump() {
+  if (document.querySelector(".qj")) return;
+  const d = document.createElement("div"); d.className = "mdl qj";
+  d.innerHTML = `<div class="box" style="max-width:420px"><input type="search" class="qjq" placeholder="Go to a page..." autocomplete="off"><div class="qjl"></div></div>`;
+  const q = d.querySelector(".qjq"), l = d.querySelector(".qjl"); let sel = 0, list = [];
+  const draw = () => { const w = q.value.trim().toLowerCase(); list = TABS.filter(t => !w || t[2].toLowerCase().includes(w) || t[0].includes(w)); sel = Math.min(sel, Math.max(0, list.length - 1));
+    l.innerHTML = list.map((t, i) => `<button class="qji ${i === sel ? "on" : ""}" data-t="${t[0]}"><svg class="i"><use href="#i-${t[1]}"/></svg><span>${t[2]}</span></button>`).join("") || '<p class="mute sm" style="padding:10px">No page found</p>'; };
+  const go = t => { d.remove(); if (t) show(t); };
+  q.oninput = () => { sel = 0; draw(); };
+  q.onkeydown = e => { if (e.key === "ArrowDown") { sel = Math.min(list.length - 1, sel + 1); draw(); e.preventDefault(); } else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); draw(); e.preventDefault(); } else if (e.key === "Enter") go(list[sel]?.[0]); else if (e.key === "Escape") go(null); };
+  l.onclick = e => { const b = e.target.closest(".qji"); if (b) go(b.dataset.t); };
+  d.onclick = e => { if (e.target === d) go(null); };
+  document.body.appendChild(d); draw(); q.focus();
+}
+document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && !$("panel").hidden) { e.preventDefault(); quickJump(); } });
+document.addEventListener("click", e => { if (e.target.closest("#qaJump")) quickJump(); });
 let tkTimer;
 const closeMenu = () => $("panel").classList.remove("menu-open");
 $("menuBtn").onclick = () => $("panel").classList.toggle("menu-open");
@@ -724,6 +766,7 @@ function show(t) {
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
 async function badges() {
   const [t, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
+  const qa1 = $("qaUu"); if (qa1) { qa1.hidden = !u.count; qa1.textContent = u.count || ""; } const qa2 = $("qaTk"); if (qa2) { qa2.hidden = !t.count; qa2.textContent = t.count || ""; }
   const uu = $("uuBd"); if (uu) { uu.hidden = !u.count; uu.textContent = u.count || ""; }
   const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; }
 }
@@ -2111,13 +2154,14 @@ $("blSave").onclick = async () => {
 };
 async function loadSettings() {
   loadStorageInfo();
-  const s = await getSettings(["maintenance", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "task_on", "task_posts", "task_hours", "task_title", "task_text", "premium_ads_on", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
+  const s = await getSettings(["maintenance", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "task_on", "task_posts", "task_hours", "task_title", "task_text", "premium_ads_on", "streak_on", "streak_days", "streak_hours", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
   $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
   $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
   $("setUp").checked = s.user_upload_on !== "0"; $("setUpPrem").value = ["lite", "expensive"].includes(s.user_upload_premium_only) ? s.user_upload_premium_only : "none";
   $("setFileMb").value = s.user_file_max_mb || "20"; $("setFolderMb").value = s.user_folder_max_mb || "50"; $("setPop").value = s.popup_seconds || "5";
   $("tkOn").checked = s.task_on === "1"; $("tkN").value = s.task_posts || "5"; $("tkH").value = s.task_hours || "24"; $("tkTitle").value = s.task_title || "Free Rose task";
   $("tkText").value = s.task_text || "Share 5 posts in Community. When 5 are approved you get Rose for 24 hours."; $("tkAds").checked = s.premium_ads_on !== "0";
+  $("dyOn").checked = s.streak_on === "1"; $("dyN").value = s.streak_days || "7"; $("dyH").value = s.streak_hours || "24";
   let ms = []; try { ms = JSON.parse(s.ref_milestones || "[]"); } catch {} if (!ms.length) ms = [{ n: 5, tier: "lite", days: 3 }, { n: 10, tier: "lite", days: 7 }, { n: 20, tier: "lite", days: 10 }, { n: 50, tier: "expensive", days: 7 }];
   $("msRows").innerHTML = ms.map(msRow).join(""); msBind();
   $("rfStep").value = s.ref_step || "5"; $("rfStepD").value = s.ref_step_days || "3"; $("rfBig").value = s.ref_big_every || "50"; $("rfBigD").value = s.ref_big_days || "14";
@@ -2135,6 +2179,10 @@ $("msSave").onclick = async () => {
   const { error } = await setSetting("ref_milestones", JSON.stringify(list)); toast(error ? error.message : "Saved. New rewards apply to future invites.");
 };
 $("setUpSave").onclick = async () => { const r = await Promise.all([setSetting("user_upload_on", $("setUp").checked ? "1" : "0"), setSetting("community_on", $("setComm").checked ? "1" : "0"), setSetting("community_auto", $("setCommAuto").checked ? "1" : "0"), setSetting("user_upload_premium_only", $("setUpPrem").value), setSetting("user_file_max_mb", Math.min(100, Math.max(1, num($("setFileMb").value) || 20))), setSetting("user_folder_max_mb", Math.min(500, Math.max(1, num($("setFolderMb").value) || 50))), setSetting("popup_seconds", Math.min(10, Math.max(2, num($("setPop").value) || 5)))]); toast(r.some(x => x.error) ? "Error saving" : "Saved"); };
+$("dySave").onclick = async () => {
+  const r = await Promise.all([setSetting("streak_on", $("dyOn").checked ? "1" : "0"), setSetting("streak_days", Math.min(60, Math.max(2, Math.round(num($("dyN").value)) || 7))), setSetting("streak_hours", Math.min(720, Math.max(1, Math.round(num($("dyH").value)) || 24)))]);
+  toast(r.some(x => x.error) ? "Error saving" : "Saved");
+};
 $("tkSave").onclick = async () => {
   const r = await Promise.all([setSetting("task_on", $("tkOn").checked ? "1" : "0"), setSetting("task_posts", Math.min(100, Math.max(1, Math.round(num($("tkN").value)) || 5))), setSetting("task_hours", Math.min(720, Math.max(1, Math.round(num($("tkH").value)) || 24))),
     setSetting("task_title", $("tkTitle").value.trim().slice(0, 60)), setSetting("task_text", $("tkText").value.trim().slice(0, 240)), setSetting("premium_ads_on", $("tkAds").checked ? "1" : "0")]);
