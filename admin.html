@@ -614,6 +614,7 @@
       <div class="card"><h3>Chat settings</h3>
         <label class="ck"><input type="checkbox" id="chOnS"> Chat is on</label>
         <label class="ck" style="margin-top:8px"><input type="checkbox" id="chPhotosS"> Members can send photos (up to 10 MB, never video)</label>
+        <label class="ck" style="margin-top:8px"><input type="checkbox" id="chNotS"> Tell a member in Telegram when someone reacts to or replies to their message</label>
         <label class="ck" style="margin-top:8px"><input type="checkbox" id="chLinksS"> Allow links in messages (off blocks links and spam ads)</label>
         <div class="row" style="margin-top:10px"><span class="sm">Slow mode</span><select id="chSlowS" style="width:auto"><option value="0">Off</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option></select><span class="mute sm" id="chSetMsg"></span></div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
@@ -1124,12 +1125,16 @@ $("upBtn").onclick = async () => {
   const r = await doUpload([...picked], album, $("upAccess").value, $("log"), $("upProg"));
   $("log").textContent += `\nDone: ${r.ok}/${picked.length} in “${album.title}”`;
   if (r.ok && $("upNotif").checked) {
-    const body = `${album.title} (${r.ok} ${r.ok > 1 ? "files" : "file"})`;
+    // V22: the main folder's name is written first ("Main folder › sub folder"), then what was added (photos / videos)
+    const where = root && root.id !== album.id ? `${root.title} › ${album.title}` : album.title, nVid = picked.filter(f => String(f.type || "").startsWith("video")).length, nPic = picked.length - nVid;
+    const what = r.ok === picked.length && picked.length ? [nPic ? `${nPic} ${nPic > 1 ? "photos" : "photo"}` : "", nVid ? `${nVid} ${nVid > 1 ? "videos" : "video"}` : ""].filter(Boolean).join(" · ") : `${r.ok} ${r.ok > 1 ? "files" : "file"}`;
+    const tierName = want !== "public" ? NM[want] : (have > 0 ? NM[Object.keys(AR).find(k => AR[k] === have)] : "");
+    const body = `${where} · ${what}`, pushText = `📁 ${where}\n🖼 ${what}${tierName ? "\n💎 " + tierName : ""}`;
     const nrow = { kind: "post", title: "New post added", body, media_id: r.firstId, popup: true };
     let ne = (await sb.from("notifications").insert({ ...nrow, album_id: tgt, thumb: r.thumb || null })).error;
     if (ne) await sb.from("notifications").insert(nrow); // before supabase_v13.sql: no folder link or thumbnail
     const premium = have > 0 || (AR[want] ?? 0) > 0, tgThumb = hdThumb || (r.thumb ? (premium ? await makeThumb(r.thumb, true) : r.thumb) : null);
-    if ($("upPush").checked) { try { const x = await pushTG("New post added", body, undefined, false, tgt, tgThumb); $("log").textContent += `\nTelegram push: ${x.sent ?? 0} sent, ${x.failed ?? 0} failed${x.error ? " (" + x.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
+    if ($("upPush").checked) { try { const x = await pushTG("New post added", pushText, undefined, false, tgt, tgThumb); $("log").textContent += `\nTelegram push: ${x.sent ?? 0} sent, ${x.failed ?? 0} failed${x.error ? " (" + x.error + ")" : ""}`; } catch (e) { $("log").textContent += "\nPush failed: " + e.message; } }
   }
   picked = []; drawPicked(); hdThumb = null; $("upHdPrev").hidden = true; $("upHdClr").hidden = true; $("upBtn").disabled = false; await loadAlbumsCache(); if (r.ok) toast(`${r.ok} uploaded`);
 };
@@ -1658,13 +1663,13 @@ $("thGo").onclick = async () => {
 
 /* ---------- V17 community chat moderation ---------- */
 async function loadChatAdmin() {
-  const s = await getSettings(["chat_on", "chat_slow", "chat_links", "chat_photos"]);
-  $("chPhotosS").checked = s.chat_photos !== "0";
+  const s = await getSettings(["chat_on", "chat_slow", "chat_links", "chat_photos", "chat_notify"]);
+  $("chNotS").checked = s.chat_notify !== "0"; $("chPhotosS").checked = s.chat_photos !== "0";
   $("chOnS").checked = s.chat_on !== "0"; $("chLinksS").checked = s.chat_links === "1"; $("chSlowS").value = ["0", "2", "5", "10", "30", "60"].includes(s.chat_slow) ? s.chat_slow : "2";
   drawChatAdmin();
 }
 const chSave = async (k, v) => { const r = await setSetting(k, v); $("chSetMsg").textContent = r.error ? "Could not save" : "Saved"; setTimeout(() => $("chSetMsg").textContent = "", 1500); };
-$("chOnS").onchange = () => chSave("chat_on", $("chOnS").checked ? "1" : "0"); $("chLinksS").onchange = () => chSave("chat_links", $("chLinksS").checked ? "1" : "0"); $("chPhotosS").onchange = () => chSave("chat_photos", $("chPhotosS").checked ? "1" : "0"); $("chSlowS").onchange = () => chSave("chat_slow", $("chSlowS").value);
+$("chNotS").onchange = () => chSave("chat_notify", $("chNotS").checked ? "1" : "0"); $("chOnS").onchange = () => chSave("chat_on", $("chOnS").checked ? "1" : "0"); $("chLinksS").onchange = () => chSave("chat_links", $("chLinksS").checked ? "1" : "0"); $("chPhotosS").onchange = () => chSave("chat_photos", $("chPhotosS").checked ? "1" : "0"); $("chSlowS").onchange = () => chSave("chat_slow", $("chSlowS").value);
 $("chRef").onclick = drawChatAdmin;
 async function drawChatAdmin() {
   const [{ data: ms, error }, { data: mu }] = await Promise.all([sb.from("chat_messages").select("*").eq("deleted", false).order("id", { ascending: false }).limit(100), sb.from("chat_mutes").select("*").gt("until", new Date().toISOString())]);

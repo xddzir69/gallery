@@ -159,9 +159,10 @@
   .th .pl { position: absolute; z-index: 2; left: 8px; bottom: 8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(6,6,8,.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #fff; display: none; align-items: center; justify-content: center; }
   .th[data-vid="1"] .pl { display: flex; }
   .th .pl { left: 50%; top: 50%; bottom: auto; width: 46px; height: 46px; transform: translate(-50%, -50%); background: rgba(8,8,10,.5); border: 1.5px solid rgba(255,255,255,.6); box-shadow: 0 10px 24px -6px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.25); }
+  .th.vplay .pl { opacity: 0; transition: opacity .25s; } .th .pl { transition: opacity .25s; }
   .th .pl .i { width: 20px; height: 20px; margin-left: 2px; fill: currentColor; stroke: none; } .th.locked .pl { display: none !important; }
   .g3 .th .pl { width: 36px; height: 36px; } .g3 .th .pl .i { width: 16px; height: 16px; } .mp .th .pl { width: 32px; height: 32px; } .mp .th .pl .i { width: 14px; height: 14px; }
-  .cap b.dual { display: flex; align-items: center; gap: 5px; min-width: 0; } .cap b.dual .rt { flex: 0 1 auto; max-width: 52%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--mute); font-weight: 600; } .cap b.dual .ar { flex: none; font-style: normal; color: var(--gold); font-weight: 800; } .cap b.dual .sb { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cap b.dual { display: flex; align-items: center; gap: 4px; min-width: 0; } .cap b.dual .rt { flex: 0 1 auto; max-width: 56%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cap b.dual .ar { flex: none; font-style: normal; color: var(--gold); font-weight: 800; } .cap b.dual .sb { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .th .pl .i { width: 11px; height: 11px; fill: currentColor; stroke: none; margin-left: 1px; }
   .th .abg { position: absolute; z-index: 2; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,6,8,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F6F2E9; font-size: 11px; font-weight: 700; }
   .th .abg .i { width: 12px; height: 12px; stroke-width: 2; }
@@ -488,8 +489,10 @@
   .cmb .rq { cursor: pointer; }
   .cmw .cmb { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
   .cmw.hasrx { margin-bottom: 15px; }
+  .rxbar { position: absolute; bottom: -14px; right: 10px; z-index: 1; display: flex; align-items: center; gap: 6px; }
+  .rxbar .rxs, .rxbar .rxadd { position: static; }
   .rxs { position: absolute; bottom: -14px; right: 10px; display: inline-flex; align-items: center; gap: 1px; padding: 1px 7px 1px 6px; border-radius: 13px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,.25); font-size: 14px; line-height: 1.45; white-space: nowrap; color: var(--ink, inherit); cursor: pointer; z-index: 1; animation: rxin .25s cubic-bezier(.3,1.6,.5,1); }
-  .cmw:not(.me) .rxs { right: auto; left: 10px; } .rxs.mine { border-color: var(--gold); } .rxs i { font-style: normal; font-size: 11px; margin-left: 3px; opacity: .75; }
+  .rxs.mine { border-color: var(--gold); } .rxs i { font-style: normal; font-size: 11px; margin-left: 3px; opacity: .75; }
   @keyframes rxin { from { transform: scale(.3); opacity: 0; } }
   .rxo { position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,.4); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); animation: rxfade .16s ease; } @keyframes rxfade { from { opacity: 0; } }
   .rxbox { position: absolute; width: min(340px, calc(100vw - 16px)); }
@@ -504,12 +507,12 @@
   .rxfly { position: fixed; z-index: 410; font-size: 34px; pointer-events: none; animation: rxfly .9s ease-out forwards; } @keyframes rxfly { 0% { transform: translateY(0) scale(.5); opacity: 0; } 20% { opacity: 1; transform: translateY(-14px) scale(1.4); } 100% { transform: translateY(-90px) scale(1); opacity: 0; } }
   .cmw.last { margin-bottom: 15px; }
   .rxadd { position: absolute; bottom: -14px; left: 10px; width: 30px; height: 26px; display: inline-grid; place-items: center; border-radius: 14px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 2px 8px rgba(0,0,0,.25); color: var(--mute, #888); cursor: pointer; z-index: 1; }
-  .cmw:not(.me) .rxadd { left: auto; right: 10px; } .rxadd svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; } .rxadd:active { scale: 1.2; }
+  .rxadd svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; } .rxadd:active { scale: 1.2; }
   .cmw .av[data-act], .cmw .nm[data-act] { cursor: pointer; }
   .cpf { text-align: center; padding: 0 0 6px; } .cpf .cv { height: 130px; margin: -4px -4px 0; border-radius: 16px; background: var(--card2) center/cover; position: relative; } .cpf .cv.empty { background: radial-gradient(400px 160px at 50% 0%, var(--glow), transparent 70%), linear-gradient(135deg, var(--card2), var(--bg2)); }
   .cpf .ring { width: 92px; height: 92px; margin: -46px auto 10px; } .cpf .nm2 { font-size: 20px; font-weight: 700; } .cpf .bio { margin: 10px 8px 0; font-size: 14px; opacity: .85; white-space: pre-wrap; } .cpf .since { margin-top: 10px; font-size: 12.5px; opacity: .6; }
   .cmw.last .rxs { }
-  .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; object-position: 50% 0; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
+  .cmb.hasimg { padding: 4px 4px 6px; } .cmb .cmi { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; -webkit-user-drag: none; display: block; width: min(250px, 64vw); min-height: 90px; max-height: 320px; object-fit: cover; object-position: 50% 0; border-radius: 14px; background: var(--card2); cursor: zoom-in; } .cmb.hasimg .tx { display: block; padding: 5px 8px 0; } .cmb.hasimg small { margin-right: 8px; }
   .chrep img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; flex: none; }
   .chatbar .att { width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center; color: var(--mute); border: 1px solid var(--line); background: var(--card); } .chatbar .att .i { width: 21px; height: 21px; }
   .chlb { position: fixed; inset: 0; z-index: 130; background: rgba(0,0,0,.94); display: grid; place-items: center; } .chlb img { max-width: 100%; max-height: 100%; object-fit: contain; }
@@ -658,6 +661,29 @@
   .mstrip .i { width: 15px; height: 15px; stroke-width: 2; } .mstrip em { font-style: normal; font-weight: 600; letter-spacing: 0; opacity: .75; }
   .mstrip.t-lite { color: #3A1220; background: linear-gradient(180deg, rgba(255,255,255,.35), transparent 55%), linear-gradient(135deg, #F8C5CF, #E58A98); box-shadow: 0 10px 20px -10px rgba(229,138,152,.95), inset 0 1px 0 rgba(255,255,255,.6); }
   .mstrip.free { color: var(--text); background: var(--card); border: 1px solid var(--line2); box-shadow: none; } .mstrip.free em { color: var(--gold); opacity: 1; font-weight: 700; }
+
+  /* V22: big profile cover, dashboard card and stats */
+  .pcv.big { height: 262px; } .pcv.big::after { background: linear-gradient(transparent 38%, color-mix(in srgb, var(--bg) 70%, transparent) 72%, var(--bg)); } .pcv.big + .pcard { margin-top: -64px; }
+  .dashc { display: block; width: 100%; text-align: left; padding: 14px; border-radius: 22px; margin: 0 0 14px; background: radial-gradient(120% 150% at 100% -30%, color-mix(in srgb, var(--hi) 18%, transparent), transparent 55%), linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line2); box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 18px 34px -24px rgba(0,0,0,.8); }
+  .dashc .dh { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; } .dashc .dti { flex: none; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; background: var(--metal); color: var(--onmetal); box-shadow: 0 8px 16px -8px rgba(212,175,95,.9), inset 0 1px 0 rgba(255,255,255,.5); } .dashc .dti .i { width: 20px; height: 20px; }
+  .dashc .tb { flex: 1; min-width: 0; } .dashc small { display: block; font-size: 9.5px; font-weight: 800; letter-spacing: .2em; color: var(--gold); text-transform: uppercase; } .dashc .tb b { display: block; font-family: var(--serif); font-weight: 500; font-size: 17px; margin-top: 1px; }
+  .dst { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; } .dst > div { text-align: center; padding: 9px 4px; border-radius: 13px; background: var(--card); border: 1px solid var(--line); } .dst b { display: block; font-family: var(--serif); font-weight: 500; font-size: 19px; } .dst span { font-size: 10.5px; color: var(--mute); }
+  .dst.big { margin: 0 0 14px; } .dst.big > div { padding: 13px 4px; border-radius: 16px; } .dst.big b { font-size: 24px; }
+
+  /* V22: membership card on the Plans page (always dark, so it reads well in light mode too) */
+  .mcc2 { position: relative; overflow: hidden; margin: 0 0 16px; padding: 16px 16px 14px; border-radius: 22px; color: #F3E7C4; border: 1px solid rgba(212,175,95,.35);
+    background: radial-gradient(120% 150% at 100% -25%, rgba(240,221,166,.36), transparent 52%), radial-gradient(90% 120% at -5% 125%, rgba(212,175,95,.18), transparent 55%), repeating-linear-gradient(60deg, rgba(212,175,95,.06) 0 1px, transparent 1px 11px), repeating-linear-gradient(-60deg, rgba(212,175,95,.06) 0 1px, transparent 1px 11px), linear-gradient(135deg, #2A2417, #0B0A08 64%);
+    box-shadow: 0 26px 48px -26px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,244,210,.16); }
+  .mcc2.t-lite { border-color: rgba(229,138,152,.5); background: radial-gradient(120% 150% at 100% -25%, rgba(243,185,194,.34), transparent 52%), radial-gradient(90% 120% at -5% 125%, rgba(229,138,152,.18), transparent 55%), repeating-linear-gradient(60deg, rgba(229,138,152,.06) 0 1px, transparent 1px 11px), repeating-linear-gradient(-60deg, rgba(229,138,152,.06) 0 1px, transparent 1px 11px), linear-gradient(135deg, #2D161D, #0B0A08 64%); }
+  .mcc2.free { filter: saturate(.7); }
+  .mcc2::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(112deg, transparent 38%, rgba(255,244,210,.13) 50%, transparent 62%); transform: translateX(-120%); animation: shine 7s ease-in-out infinite; }
+  .mcc2 .m2t { display: flex; justify-content: space-between; align-items: center; } .mcc2 .mb2 { font-size: 10px; font-weight: 800; letter-spacing: .28em; color: var(--hi); }
+  .mcc2 .m2b { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px 4px 8px; border-radius: 999px; font-size: 10.5px; font-weight: 800; letter-spacing: .16em; color: #2A1D05; background: var(--metal); box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 8px 16px -8px rgba(212,175,95,.9); } .mcc2 .m2b .i { width: 13px; height: 13px; stroke-width: 2.2; }
+  .mcc2.t-lite .m2b { color: #3A1220; background: linear-gradient(135deg, #FFE0E6, #E98FA0); box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 16px -8px rgba(229,138,152,.9); }
+  .mcc2 .m2n { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.1; margin-top: 14px; color: #F6EBCB; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .mcc2 .m2l { font-size: 12px; letter-spacing: .06em; color: rgba(243,231,196,.7); margin-top: 3px; }
+  .mcc2 .m2s { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; } .mcc2 .m2s > div { padding: 9px 6px 8px; border-radius: 13px; text-align: center; background: rgba(0,0,0,.32); border: 1px solid rgba(240,221,166,.14); }
+  .mcc2 .m2s b { display: block; font-family: var(--serif); font-weight: 500; font-size: 22px; color: #F6EBCB; font-variant-numeric: tabular-nums; } .mcc2 .m2s span { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: rgba(243,231,196,.6); }
+  .mcc2 .cdrows { margin-top: 12px; }
 </style>
 </head>
 <body>
@@ -809,9 +835,9 @@ function cdParts(until) {
 const activeUntil = k => { const u = me?.[k + "_until"]; return u && new Date(u).getTime() > nowMs() ? u : null; };
 
 /* ---------- theme / prefs (Auto, Ivory, Dark) ---------- */
-const prefs = { mode: LS.get("gv_mode", "auto"), haptics: LS.get("gv_haptics", true) };
+const prefs = { mode: LS.get("gv_mode", "auto") };
 if (!["auto", "light", "dark"].includes(prefs.mode)) prefs.mode = "auto";
-const savePrefs = () => { LS.set("gv_mode", prefs.mode); LS.set("gv_haptics", prefs.haptics); };
+const savePrefs = () => { LS.set("gv_mode", prefs.mode); };
 function resolvedMode() {
   if (prefs.mode !== "auto") return prefs.mode;
   if (tg?.colorScheme) return tg.colorScheme === "light" ? "light" : "dark";
@@ -822,7 +848,7 @@ function applyTheme() {
   try { const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(); tg?.setHeaderColor?.(bg); tg?.setBackgroundColor?.(bg); tg?.setBottomBarColor?.(bg); } catch {}
   if ($("themeBtn")) $("themeBtn").innerHTML = ic(resolvedMode() === "dark" ? "sun" : "moon");
 }
-const haptic = k => { if (prefs.haptics) try { tg?.HapticFeedback?.impactOccurred(k || "light"); } catch {} };
+
 matchMedia("(prefers-color-scheme: light)").addEventListener?.("change", () => prefs.mode === "auto" && applyTheme());
 applyTheme();
 $("sn").textContent = C.APP_TITLE; document.title = C.APP_TITLE;
@@ -830,12 +856,21 @@ $("sn").textContent = C.APP_TITLE; document.title = C.APP_TITLE;
 /* ---------- api ---------- */
 const refParam = new URLSearchParams(location.search).get("ref");
 let webAuth = inTg ? null : LS.get("gv_web", null);
+/* V22: a rough idea of the member's connection. Video previews (8 s, muted) only start on a good one; otherwise cards stay pictures only. */
+const NET = { ms: null };
+const goodNet = () => {
+  const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (c) { if (c.saveData) return false; if (c.effectiveType && c.effectiveType !== "4g") return false; if (c.downlink && c.downlink < 3) return false; if (c.rtt && c.rtt > 400) return false; return true; }
+  return NET.ms !== null && NET.ms < 800; // no Network API (iPhone): judge by how fast the app's own requests were
+};
 async function api(action, data = {}) {
+  const t0 = performance.now();
   const r = await fetch(`${C.SUPABASE_URL}/functions/v1/api`, {
     method: "POST", headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ initData: tg?.initData || "", webAuth, start: refParam ? "ref_" + refParam : "", action, ...data }),
   });
   const j = await r.json().catch(() => ({ error: "Could not read the server response" }));
+  { const dt = performance.now() - t0; NET.ms = NET.ms === null ? dt : NET.ms * .7 + dt * .3; }
   if (r.status === 401 && !inTg) { LS.del("gv_web"); webAuth = null; }
   if (!r.ok) throw new Error(j.error || ("Error " + r.status));
   return j;
@@ -847,15 +882,15 @@ function toast(t) { const el = $("toast"); el.textContent = t; el.style.display 
 let me = null, cats = [], plans = [], settings = {}, unread = 0, favs = new Set(), HOME = null;
 const SRC = {};
 const stack = [{ r: "home", p: {} }];
-const TABS = ["home", "explore", "chat", "premium", "library", "profile"];
-const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New message", settings: "Settings", notifs: "Notifications", album: "Folder", allfolders: "All Folders", space: "My uploads", topic: "Topic" };
+const TABS = ["home", "explore", "chat", "premium", "profile"];
+const TITLES = { edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New message", settings: "Settings", notifs: "Notifications", album: "Folder", allfolders: "All Folders", space: "Dashboard", topic: "Topic" };
 let timers = [], observers = [], viewIO = null;
 const viewed = new Set(); // files already counted as seen in this session
 const nameOf = p => p.display_name || [p.first_name, p.last_name].filter(Boolean).join(" ") || "User";
 const initial = s => (String(s || "U").trim()[0] || "U").toUpperCase();
 
 /* ---------- live screen (lets the admin see which page a member is on) ---------- */
-const SCREEN_NAME = { home: "Home", explore: "Explore", chat: "Community chat", premium: "Premium", library: "Library", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "My uploads", topic: "Topic" };
+const SCREEN_NAME = { home: "Home", explore: "Explore", chat: "Community chat", premium: "Premium", profile: "Profile", edit: "Edit profile", saved: "Saved", plans: "Premium plans", referral: "Invite and earn", tickets: "Support", ticket: "Support chat", ticketnew: "New support message", settings: "Settings", notifs: "Notifications", space: "Dashboard", topic: "Topic" };
 /* ---------- live mirror: a small snapshot of what this member is looking at, for the admin's Live screen ---------- */
 function liveState() {
   const t = stack[stack.length - 1]; if (!t) return null;
@@ -896,7 +931,7 @@ let mirrorHb = 0; // while the viewer is open, send the live mirror snapshot mor
 function mirrorTick() { clearInterval(mirrorHb); if ($("viewer").classList.contains("open")) mirrorHb = setInterval(() => { if (!document.hidden) pingScreen(false); }, 4000); }
 
 /* ---------- router ---------- */
-function nav(r, p = {}) { haptic("light"); if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
+function nav(r, p = {}) { if (TABS.includes(r)) stack.length = 0; stack.push({ r, p }); render(); }
 function back() { if (stack.length > 1) { stack.pop(); render(); } }
 function render() {
   timers.forEach(t => { clearInterval(t); clearTimeout(t); }); timers = [];
@@ -931,7 +966,7 @@ tg?.BackButton?.onClick(() => {
   if ($("popup").classList.contains("open")) return closePopup();
   back();
 });
-$("nav").innerHTML = [["home", "home", "Home"], ["explore", "search", "Explore"], ["chat", "chat", "Chat"], ["premium", "crown", "Premium"], ["library", "folder", "Library"], ["profile", "user", "Profile"]]
+$("nav").innerHTML = [["home", "home", "Home"], ["explore", "search", "Explore"], ["chat", "chat", "Chat"], ["premium", "crown", "Premium"], ["profile", "user", "Profile"]]
   .map(([r, i, l]) => `<button data-r="${r}" data-act="tab">${ic(i)}${l}</button>`).join("");
 
 /* ---------- sheets ---------- */
@@ -960,7 +995,7 @@ function menuSheet(title, opts) {
 }
 
 function copyText(t) {
-  const ok = () => { toast("Copied"); haptic("medium"); };
+  const ok = () => { toast("Copied"); };
   const fb = () => { const ta = document.createElement("textarea"); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); ok(); } catch { toast("Copy failed"); } ta.remove(); };
   navigator.clipboard?.writeText ? navigator.clipboard.writeText(t).then(ok).catch(fb) : fb();
 }
@@ -986,13 +1021,12 @@ function flowLoad(ss, from, count) { // load the next pictures early so a slide 
   const sl = ss.children, n = sl.length;
   for (let k = 0; k < count; k++) { const x = sl[(from + k) % n]; if (x && x.dataset.src) { x.src = x.dataset.src; x.removeAttribute("data-src"); } }
 }
-function flowPlay(el, on) { // V21: videos never start by themselves; they only play when the member taps them (in the viewer)
+const FLOW_VIDEO_MS = 8000; // a video preview shows for 8 seconds
+function flowPlay(el, on) { // start / stop a muted video preview
   if (!el || el.tagName !== "VIDEO") return;
-  try { el.pause(); } catch { /* ignore */ }
+  try { if (on) { el.muted = true; const p = el.play(); p?.catch?.(() => {}); } else if (!el.paused) { el.pause(); el.currentTime = 0; } } catch { /* ignore */ }
 }
-function flowClip(el) { // keep the preview inside the first 5 seconds (loops back to the start)
-  if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_STEP / 1000) { try { el.currentTime = 0; } catch { /* ignore */ } }
-}
+function flowClip(el) { if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_VIDEO_MS / 1000) { try { el.currentTime = 0; } catch { /* ignore */ } } }
 /* V21: the flow runs only for cards that are on the screen. The first visible card changes after FLOW_FIRST, the next one 1 s later,
    the next 1 s after that ... (FLOW_STAGGER, wraps after FLOW_WAVE cards). Scroll away and it rests; scroll back and it starts again.
    Every picture that shows on a visible card counts one view (batched), also when the same picture comes round again. */
@@ -1000,25 +1034,32 @@ function showEye(ss, el) { const b = ss.parentElement && ss.parentElement.queryS
 function hitSlide(ss, el) { if (!el || !el.dataset.mid) return; hit(el.dataset.mid, !!el.dataset.file); if (el.dataset.views) { el.dataset.views = (+el.dataset.views || 0) + 1; showEye(ss, el); } }
 setInterval(() => {
   if (document.hidden) return;
-  const now = performance.now(), vOpen = $("viewer").classList.contains("open"); let rank = 0;
+  const now = performance.now(), vOpen = $("viewer").classList.contains("open"), good = goodNet(); let rank = 0, vbudget = 3; // at most 3 video previews play at the same time
   document.querySelectorAll(".ss").forEach(ss => {
     const n = ss.children.length, r = ss.getBoundingClientRect(), i = +ss.dataset.i;
     const off = r.bottom < -50 || r.top > innerHeight + 50;
-    if (off) { ss._t0 = undefined; ss._vs = undefined; ss._cnt = false; return; } // off screen: rest, start from the 1st file when back
+    if (off) { const c0 = ss.children[i]; if (c0 && c0.dataset.vp) flowPlay(c0, false); ss._t0 = undefined; ss._vs = undefined; ss._cnt = false; ss.parentElement?.classList.remove("vplay"); return; } // off screen: rest, start from the 1st file when back
     const vis = !vOpen && r.height > 0 && Math.min(r.bottom, innerHeight) - Math.max(r.top, 0) >= r.height * .5;
     const fresh = ss._t0 === undefined; let cur = i, moved = false;
     if (fresh) { ss._t0 = now; ss._cnt = false; ss._so = (rank % FLOW_WAVE) * FLOW_STAGGER; if (n > 1) flowLoad(ss, 1, 2); }
+    const canVid = good && (FLOW_ON || !!ss.closest(".tile"));
     if (n > 1) {
       rank++;
-      const L = FLOW_FIRST + (n - 1) * FLOW_STEP, t = Math.max(0, now - ss._t0 - ss._so) % L; // 1st picture FLOW_FIRST, every other one FLOW_STEP, then loop
-      const j = t < FLOW_FIRST ? 0 : 1 + Math.floor((t - FLOW_FIRST) / FLOW_STEP);
+      // every picture shows FLOW_STEP (the first one FLOW_FIRST), a video preview 8 s; then the loop starts again
+      const du = [...ss.children].map((x, k) => (x.dataset.vp && canVid) ? FLOW_VIDEO_MS : (k === 0 ? FLOW_FIRST : FLOW_STEP)), L = du.reduce((p, q) => p + q, 0);
+      let t = Math.max(0, now - ss._t0 - ss._so) % L, j = 0; while (j < n - 1 && t >= du[j]) { t -= du[j]; j++; }
       if (j !== i) {
+        const prev = ss.children[i]; if (prev && prev.dataset.vp) flowPlay(prev, false);
         flowLoad(ss, j, 3);
-        ss.children[i]?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j; cur = j; moved = true;
+        prev?.classList.remove("on"); ss.children[j].classList.add("on"); ss.dataset.i = j; cur = j; moved = true;
         if (ss.parentElement) ss.parentElement.dataset.vid = ss.children[j].dataset.v ? "1" : "";
       }
     }
     const el = ss.children[cur];
+    if (el && el.dataset.vp) { // a video preview: plays while the card is visible, only on a good connection
+      if (vis && canVid && vbudget > 0) { vbudget--; if (el.paused) { flowLoad(ss, cur, 1); flowPlay(el, true); } flowClip(el); ss.parentElement?.classList.add("vplay"); }
+      else { flowPlay(el, false); ss.parentElement?.classList.remove("vplay"); }
+    } else ss.parentElement?.classList.remove("vplay");
     if (moved || fresh) showEye(ss, el);
     if (!vis) { ss._vs = undefined; return; }
     if (ss._vs === undefined) ss._vs = now;
@@ -1048,18 +1089,19 @@ document.addEventListener("click", e => {
   const el = e.target.closest("[data-act]"); if (!el) return;
   ACT[el.dataset.act]?.(el.dataset, el, e);
 });
-$("themeBtn").onclick = () => { haptic("light"); prefs.mode = resolvedMode() === "dark" ? "light" : "dark"; savePrefs(); applyTheme(); if (stack[stack.length - 1].r === "settings") PAGES.settings(); };
+$("themeBtn").onclick = () => { prefs.mode = resolvedMode() === "dark" ? "light" : "dark"; savePrefs(); applyTheme(); if (stack[stack.length - 1].r === "settings") PAGES.settings(); };
 $("bellBtn").onclick = () => nav("notifs");
 $("modal").onclick = e => { if (e.target.id === "modal") closeSheet(); };
 window.addEventListener("scroll", () => $("fab").classList.toggle("show", scrollY > 700), { passive: true });
 $("fab").onclick = () => scrollTo({ top: 0, behavior: "smooth" });
-document.addEventListener("contextmenu", e => { if (e.target.closest("#viewer, .th, .spc, .pop")) e.preventDefault(); });
+document.addEventListener("contextmenu", e => { if (e.target.closest("#viewer, .th, .spc, .pop, .cmw")) e.preventDefault(); });
 document.addEventListener("dragstart", e => e.preventDefault());
 
 /* ---------- cards: folder / file / community / my post ---------- */
 /* the preview flow is pictures only: videos are skipped (a folder that has only videos shows one still) */
 const picsOnly = l => { const p = l.filter(t => t.type !== "video"); return p.length ? p : l.slice(0, 1); };
-const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? picsOnly(m.thumbs) : picsOnly(m.thumbs).slice(0, 1)) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
+const flowItems = l => goodNet() ? l.filter(t => t.type !== "video" || (t.url && !t.locked) || t.locked) : picsOnly(l);
+const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? flowItems(m.thumbs) : picsOnly(m.thumbs).slice(0, 1)) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
@@ -1067,6 +1109,9 @@ function slidesHTML(list, locked) {
     if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
     const mid = t.mid || t.id || "", md = mid ? ` data-mid="${esc(mid)}"${t.file ? ' data-file="1"' : ""}${t.views != null ? ` data-views="${+t.views || 0}"` : ""}` : "";
     const key = k ? "data-src" : "src";
+    if (t.type === "video" && goodNet()) { // V22: a short muted preview (8 s) on a good connection; the flow timer starts and stops it
+      return `<video class="sl${on}" data-v="1" data-vp="1"${md} muted loop playsinline preload="${t.thumb ? "none" : "metadata"}"${t.thumb ? ` poster="${esc(t.thumb)}"` : ""} style="${pv}" ${key}="${esc(t.url)}${t.thumb ? "" : "#t=0.001"}"></video>`;
+    }
     if (t.type === "video") {
       // V21: a video never plays by itself. A cover/thumbnail shows when there is one, otherwise the first frame; it plays when opened.
       if (t.thumb) return `<img class="sl${on}" data-v="1"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
@@ -1086,18 +1131,22 @@ const eyeHTML = (th, locked) => { const t = th[0]; return !locked && t && !t.loc
 const lockHTML = `<div class="lk"><span class="lkc">${ic("lock")}</span></div>`;
 const playHTML = `<span class="pl">${ic("play")}</span>`;
 const vidAttr = list => list[0]?.type === "video" ? "1" : "";
-const countMeta = m => plural(m.count || 0, "item") + (m.folders ? " · " + plural(m.folders, "folder") : "");
+const countMeta = m => { // V22: folders first, then photos and videos (the word "items" is gone)
+  const p = []; if (m.folders) p.push(plural(m.folders, "folder"));
+  if (m.photos != null) { if (m.photos) p.push(plural(m.photos, "photo")); if (m.videos) p.push(plural(m.videos, "video")); } else if (m.count) p.push(plural(m.count, "item")); // before supabase_v22.sql: only the total
+  return p.join(" · ") || "Empty";
+};
 
 function folderHTML(m, i, src) {
   const th = thumbsOf(m);
-  return `<div class="it fcard ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}">
+  return `<div class="it fcard ${tierCls(tierOfM(m))}" data-act="open" data-src="${src}" data-i="${i}">
     <div class="th ${m.locked ? "locked" : ""}" data-vid="${vidAttr(th)}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${tierTag(m)}${playHTML}<span class="abg">${ic("folder")}${m.count || 0}</span>
       ${!m.locked || src === "saved" ? `<button class="dots3 ${favs.has(m.id) ? "on" : ""}" data-act="menu" data-src="${src}" data-i="${i}" data-id="${m.id}" aria-label="More">${ic("dots")}</button>` : ""}</div>
     <div class="cap">${m.root ? `<b class="dual"><span class="rt">${esc(m.root)}</span><i class="ar">›</i><span class="sb">${esc(m.title || "Folder")}</span></b>` : `<b>${esc(m.title || "Folder")}</b>`}<span>${countMeta(m)}</span></div></div>`;
 }
 function tileHTML(m, i, src) {
   const th = [{ type: m.type, url: m.url, thumb: m.thumb, preview: m.preview, locked: m.locked, mid: m.id, views: m.views, fy: m.fy }];
-  return `<div class="it tile ${tierCls(m.access)}" data-act="open" data-src="${src}" data-i="${i}"${m.locked ? "" : ` data-mid="${m.id}"`}>
+  return `<div class="it tile ${tierCls(tierOfM(m))}" data-act="open" data-src="${src}" data-i="${i}"${m.locked ? "" : ` data-mid="${m.id}"`}>
     <div class="th ${m.locked ? "locked" : ""}" data-vid="${m.type === "video" ? "1" : ""}">${slidesHTML(th, m.locked)}${m.locked ? lockHTML : ""}${eyeHTML(th, m.locked)}${tierTag(m)}${playHTML}
       ${!m.locked || src === "saved" ? `<button class="hb ${favs.has(m.id) ? "on" : ""}" data-act="heart" data-id="${m.id}" data-kind="media" aria-label="Save">${ic("heart")}</button>` : ""}</div>
     ${m.label ? `<div class="cap"><b>${esc(m.label)}</b></div>` : ""}</div>`;
@@ -1173,7 +1222,7 @@ ACT.topic = d => nav("topic", { id: d.id, title: d.name });
 ACT.crumb = d => nav("album", { id: d.id });
 ACT.copy = d => copyText(d.t);
 ACT.open = d => {
-  const m = SRC[d.src]?.[+d.i]; if (!m) return; haptic("light");
+  const m = SRC[d.src]?.[+d.i]; if (!m) return; 
   if (m.kind === "album") return nav("album", { id: m.id, title: m.title });
   if (m.kind === "post") return openPost(m.id);
   if (m.kind === "mypost") return openMyPost(m.id);
@@ -1184,7 +1233,7 @@ ACT.open = d => {
 ACT.heart = d => toggleFav(d.id, d.kind || "media");
 ACT.csave = d => toggleFav(d.id, "post");
 ACT.react = async d => {
-  const m = SRC[d.src]?.[+d.i]; if (!m) return; const v = +d.v; haptic("light");
+  const m = SRC[d.src]?.[+d.i]; if (!m) return; const v = +d.v; 
   try {
     const r = await api("comm_react", { id: m.id, value: m.my === v ? 0 : v });
     Object.assign(m, { likes: r.likes, dislikes: r.dislikes, my: r.my }); refreshActs(d.src, +d.i);
@@ -1192,7 +1241,7 @@ ACT.react = async d => {
 };
 function refreshActs(src, i) { const m = SRC[src]?.[i]; document.querySelectorAll(`.cc[data-src="${src}"][data-i="${i}"] .acts`).forEach(a => a.innerHTML = actsHTML(m, i, src)); }
 ACT.menu = d => {
-  const m = SRC[d.src]?.[+d.i]; if (!m) return; haptic("light");
+  const m = SRC[d.src]?.[+d.i]; if (!m) return; 
   if (m.kind === "mypost") return menuSheet(m.title || "Upload", [
     { icon: "edit", label: "Edit title", run: async () => { const v = await inputBox("Edit title", m.title || ""); if (v === null) return; try { await api("my_post_edit", { id: m.id, title: v }); toast("Saved"); SPL?.reload(); } catch (e) { toast(e.message); } } },
     { icon: "trash", label: "Delete", danger: true, run: async () => { if (!await confirmBox("Delete this upload?", "It will be removed for good.", "Delete", true)) return; try { await api("my_post_delete", { ids: [m.id] }); toast("Deleted"); SPL?.reload(); } catch (e) { toast(e.message); } } },
@@ -1202,7 +1251,7 @@ ACT.menu = d => {
   menuSheet(m.title || "Folder", opts);
 };
 async function toggleFav(id, kind) {
-  const was = favs.has(id); was ? favs.delete(id) : favs.add(id); syncHearts(id); haptic("medium");
+  const was = favs.has(id); was ? favs.delete(id) : favs.add(id); syncHearts(id); 
   try {
     const r = await api("fav_toggle", { id, kind }); r.on ? favs.add(id) : favs.delete(id); toast(r.on ? "Saved" : "Removed from Saved");
     if (!r.on && stack[stack.length - 1].r === "saved") document.querySelectorAll(`[data-id="${id}"]`).forEach(el => el.closest(".it, .cc")?.remove());
@@ -1232,7 +1281,7 @@ function autoSlide(tr, per) {
 }
 function spcHTML(m, i, on) {
   const tag = m.pin ? `<span class="stag">FEATURED</span>` : m.tag === "new" ? `<span class="stag">NEW</span>` : "";
-  return `<div class="spc ${tierCls(m.access)} ${m.locked ? "hasunl" : ""} ${on ? "on" : ""}" data-act="open" data-src="spot" data-i="${i}">
+  return `<div class="spc ${tierCls(tierOfM(m))} ${m.locked ? "hasunl" : ""} ${on ? "on" : ""}" data-act="open" data-src="spot" data-i="${i}">
     <div class="th ${m.locked ? "locked" : ""}" data-vid="">${slidesHTML(thumbsOf(m), m.locked)}${m.locked ? lockHTML : ""}</div><div class="shade"></div>${tag}
     <div class="smeta"><b>${esc(m.title || "Folder")}</b><span>${countMeta(m)}</span></div>
     ${m.locked ? `<button class="unl" data-act="go" data-r="plans">${ic("crown")}Unlock Premium</button>` : ""}</div>`;
@@ -1303,14 +1352,12 @@ function cdHTML() {
   });
   return rows.length ? rows.join("") : `<div class="cdr"><small><span>Membership</span><span>Free</span></small><div class="en" style="margin-top:6px">No active Premium. Pick a plan or redeem a code to unlock locked folders.</div></div>`;
 }
-function memberCard() { // V21: card look (chip, number, two circles), smaller, shown at the top of the Plans page
-  const t = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none", u = t === "none" ? null : activeUntil(t);
-  const last4 = String(me.tg_id || "0").slice(-4).padStart(4, "0"), d = u ? new Date(u) : null;
-  const exp = d && !isNaN(d) ? String(d.getMonth() + 1).padStart(2, "0") + "/" + String(d.getFullYear()).slice(-2) : "--/--";
-  return `<div class="mcc ${t === "none" ? "free" : TIER[t].cls}"><div class="mt"><span class="mb2">${esc(String(C.APP_TITLE).toUpperCase())}</span><svg class="nfc" viewBox="0 0 24 24"><path d="M8 7a7 7 0 0 1 0 10M12 4a11 11 0 0 1 0 16M16 9.5a3.5 3.5 0 0 1 0 5"/></svg></div>
-    <div class="chip"></div><div class="num">•••• •••• •••• ${last4}</div>
-    <div class="mf"><div><small>MEMBER</small><b>${esc(nameOf(me))}</b></div><div><small>VALID THRU</small><b>${exp}</b></div><span class="circ"><i></i><i></i></span></div></div>
-  <div class="mcc-tier">${t === "none" ? "Free member" : TIER[t].full}</div><div class="cdrows" id="cdrows">${cdHTML()}</div>`;
+function memberCard() { // V22: one membership card: tier, invited friends, how many more for the next reward, and the live time left of every active plan
+  const act = ["expensive", "lite"].filter(k => activeUntil(k)), top = act[0] || "none", cls = top === "none" ? "free" : TIER[top].cls;
+  return `<div class="mcc2 ${cls}"><div class="m2t"><span class="mb2">${esc(String(C.APP_TITLE).toUpperCase())}</span><span class="m2b">${top === "none" ? ic("user") + "FREE" : top === "lite" ? ic("gem") + "ROSE" : ic("crown") + "ROYAL"}</span></div>
+    <div class="m2n">${esc(nameOf(me))}</div><div class="m2l">${top === "none" ? "No active plan" : TIER[top].full + (act.length > 1 ? " + Rose" : "")}</div>
+    <div class="m2s"><div><b id="m2i">${me.ref_count || 0}</b><span>Friends invited</span></div><div><b id="m2x">-</b><span>To next reward</span></div><div><b>${act.length}</b><span>Active plan${act.length === 1 ? "" : "s"}</span></div></div>
+    <div class="cdrows" id="cdrows">${cdHTML()}</div></div>`;
 }
 /* V21: the task card (admin turns it on): post N community posts, get Rose when they are approved */
 function taskHTML(t) {
@@ -1331,13 +1378,14 @@ ACT.claim = async d => {
   const b = d.el || document.querySelector("[data-act=claim]"); if (b) b.disabled = true;
   try {
     const r = await api("daily_claim"); if (!r.on) return;
-    if (r.me) me = r.me; haptic(r.reward ? "heavy" : "medium");
+    if (r.me) me = r.me; 
     toast(r.reward ? "Rose unlocked for " + r.hours + " hours" : "Day " + r.streak + " of " + r.need + " claimed");
     document.querySelectorAll(".daily").forEach(el => { el.outerHTML = dailyHTML(r); });
     if (r.reward) { if (stack[stack.length - 1].r === "premium" || stack[stack.length - 1].r === "profile") PAGES[stack[stack.length - 1].r](); }
   } catch (e) { toast(e.message); if (b) b.disabled = false; }
 };
-const tierTag = m => m.access === "lite" ? `<span class="tier r">${ic("gem")}Rose</span>` : m.access === "expensive" ? `<span class="tier g">${ic("crown")}Royal</span>` : "";
+const tierOfM = m => m.tier || (m.access === "lite" || m.access === "expensive" ? m.access : null); // the tier a folder/file really needs (a sub folder of a Rose folder is Rose)
+const tierTag = m => { const t = tierOfM(m); return t === "lite" ? `<span class="tier r">${ic("gem")}Rose</span>` : t === "expensive" ? `<span class="tier g">${ic("crown")}Royal</span>` : ""; };
 async function taskInto(id) { try { const t = await api("task_info"), el = $(id); if (el && t.on) el.innerHTML = taskHTML(t); } catch { /* task not set up yet */ } }
 PAGES.premium = async function () {
   const ads = settings.premium_ads_on !== "0", tn = activeUntil("expensive") ? "expensive" : activeUntil("lite") ? "lite" : "none";
@@ -1351,20 +1399,6 @@ PAGES.premium = async function () {
 
 /* ---------- library ---------- */
 const mi = (icon, t, em, r) => `<button class="mi" data-act="go" data-r="${r}"><span class="ic">${ic(icon)}</span><b>${t}</b><em>${em}</em>${ic("next", "ch")}</button>`;
-PAGES.library = async function () {
-  app.innerHTML = `<div class="pad"><div class="sec nl">Library</div>
-    <button class="invcard" data-act="go" data-r="referral"><small>INVITE &amp; EARN</small><h3>Invite friends,<br>unlock Premium</h3><p>Reach 5, 10, 20 and 50 friends to earn Rose and Royal access.</p><span class="big">${me.ref_count || 0}</span><span class="go">${ic("next")}</span></button>
-    <button class="savedbox" data-act="go" data-r="saved"><div class="sh"><b>Saved</b><em id="svc">${favs.size ? plural(favs.size, "item") : ""}</em></div><div class="pv4" id="pv4">${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}</div></button>
-    <div class="menu">${mi("cloud", "My uploads", "your photos and videos", "space")}${mi("crown", "Premium plans", "Rose and Royal", "plans")}</div></div>`;
-  try {
-    const r = await api("fav_preview"); if (!$("pv4")) return;
-    const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
-    const s = (r.items || []).slice(0, 4), cells = [];
-    for (let i = 0; i < 4; i++) { const t = s[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? (FLOW_ON ? picsOnly(t.thumbs) : picsOnly(t.thumbs).slice(0, 1)) : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
-    $("pv4").innerHTML = cells.join("");
-  } catch {}
-};
-
 /* ---------- saved (free / premium sections) ---------- */
 let svTab = "free";
 PAGES.saved = async function () {
@@ -1372,7 +1406,7 @@ PAGES.saved = async function () {
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span class="mute" style="font-size:12.5px">${svTab === "premium" ? "Premium saves blur if your plan ends." : "Tap the dots on a folder to save it."}</span><button class="btn gh xs dgt" data-act="clearfav">Clear all</button></div><div id="sv"></div></div>`;
   mountList($("sv"), { src: "saved", grid: "g2", fetch: (p, s) => api("fav_list", { section: svTab, page: p, size: s }), empty: svTab === "premium" ? "<b>No premium saves</b>Save Rose or Royal folders while your plan is active." : "<b>Nothing saved yet</b>Save folders and files to find them here." });
 };
-ACT.svtab = d => { svTab = d.v; haptic("light"); PAGES.saved(); };
+ACT.svtab = d => { svTab = d.v; PAGES.saved(); };
 ACT.clearfav = async () => {
   if (!favs.size) return toast("Nothing to clear");
   if (!await confirmBox("Clear all saved items?", "Your saved list will be emptied. The originals stay in the gallery.", "Clear all", true)) return;
@@ -1386,11 +1420,11 @@ PAGES.album = async function (p) {
   SRC.alf = r.folders || []; SRC.alm = r.items || [];
   app.innerHTML = `<div class="pad">${crumbs.length ? `<div class="chipline" style="margin-bottom:10px">${crumbs.map(c => `<button data-act="crumb" data-id="${c.id}">${esc(c.title)}</button>`).join("")}</div>` : ""}
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:16px"><div style="min-width:0"><div class="disp" style="font-size:30px;line-height:1.1;word-break:break-word">${esc(a.title)}</div>
-      <div class="mute" style="margin-top:4px;font-size:13.5px">${plural((r.items || []).length, "file")}${(r.folders || []).length ? " · " + plural(r.folders.length, "folder") : ""}</div></div>
+      <div class="mute" style="margin-top:4px;font-size:13.5px">${(() => { const it = r.items || [], v = it.filter(x => x.type === "video").length, ph = it.length - v, fo = (r.folders || []).length; return [fo ? plural(fo, "folder") : "", ph ? plural(ph, "photo") : "", v ? plural(v, "video") : ""].filter(Boolean).join(" · ") || "Empty"; })()}</div></div>
       ${a.locked ? "" : `<div style="display:flex;gap:8px"><button class="hbtn" data-act="sharealb" data-id="${a.id}" data-t="${esc(a.title)}" aria-label="Share">${ic("share")}</button><button class="hbtn ${favs.has(a.id) ? "on" : ""}" id="alheart" data-act="heart" data-id="${a.id}" data-kind="album" aria-label="Save">${ic("heart")}</button></div>`}</div>
     ${a.locked ? `<button class="btn block" data-act="go" data-r="plans" style="margin-bottom:16px">${ic("crown")}Unlock Premium</button>` : ""}
-    ${SRC.alf.length ? gridHTML(SRC.alf, "alf", "g2") : ""}
-    ${SRC.alm.length ? `<div style="height:14px"></div>${gridHTML(SRC.alm, "alm", "g2")}` : ""}
+    ${SRC.alm.length ? gridHTML(SRC.alm, "alm", "g2") : ""}
+    ${SRC.alf.length ? `<div class="sec" style="margin-top:${SRC.alm.length ? 22 : 0}px">Folders</div>${gridHTML(SRC.alf, "alf", "g2")}` : ""}
     ${!SRC.alf.length && !SRC.alm.length ? `<div class="msg"><b>Empty folder</b>Nothing here yet.</div>` : ""}</div>`;
   watchViews();
 };
@@ -1403,7 +1437,7 @@ const INVITE_TEXT = "Come and see this gallery.";
 ACT.shareTg = () => tgShare(refLink(), INVITE_TEXT);
 ACT.shareWeb = () => { const u = webLink(); if (navigator.share) navigator.share({ title: C.APP_TITLE, text: INVITE_TEXT, url: u }).catch(() => {}); else tgShare(u, INVITE_TEXT + " Open in your browser and log in with Telegram."); };
 ACT.shareBoth = () => tgShare(refLink(), INVITE_TEXT + "\nIf it doesn't open the app, use the browser link: " + webLink());
-ACT.usecode = d => { if ($("popup").classList.contains("open")) closePopup(); haptic("light"); nav("plans", { code: 1, prefill: d.code }); };
+ACT.usecode = d => { if ($("popup").classList.contains("open")) closePopup(); nav("plans", { code: 1, prefill: d.code }); };
 const rewardLabel = m => (m.big ? "Premium Rose + Royal" : m.tier === "expensive" ? "Premium Royal" : "Premium Rose") + " · " + plural(m.days, "day");
 /* a reward code row: Copy + Use while it is ready, "Used" once it has been unlocked (the code expires after one use) */
 function codeRow(code, state, tier, cls) {
@@ -1437,8 +1471,9 @@ PAGES.referral = async function () {
 };
 
 /* ---------- premium plans + code ---------- */
-const DEF_PERKS = { lite: ["Every Rose folder in full quality", "No blur on photos and videos", "Save Rose folders to your library"], expensive: ["Everything in Rose", "Every Royal folder, the golden collection", "First access to new Royal drops"] };
+const DEF_PERKS = { lite: ["Every Rose folder in full quality", "No blur on photos and videos", "Save Rose folders to your Saved list"], expensive: ["Everything in Rose", "Every Royal folder, the golden collection", "First access to new Royal drops"] };
 PAGES.plans = async function (p) {
+  api("referrals").then(r => { if ($("m2i")) { $("m2i").textContent = r.count ?? me.ref_count ?? 0; $("m2x").textContent = r.next ? r.next.left : "Max"; } }).catch(() => {});
   app.innerHTML = `<div class="pad">${memberCard()}${["lite", "expensive"].map(k => {
     const ps = plans.filter(x => x.tier === k), perks = [...new Set(ps.flatMap(x => String(x.perks || "").split("\n").map(s => s.trim()).filter(Boolean)))], days = [...new Set(ps.map(x => x.days))].sort((a, b) => a - b), bd = ps.find(x => x.badge)?.badge;
     return `<div class="tcard ${TIER[k].cls}">${bd ? `<span class="pill g badge">${esc(bd)}</span>` : ""}<div class="ts">${k === "lite" ? "Lite" : "Expensive"}</div><div class="tn">${TIER[k].name}</div><p class="mute" style="font-size:13.5px;margin-top:4px">${TIER[k].sub}</p>
@@ -1478,10 +1513,10 @@ ACT.redeem = async () => {
   const code = fmtCode($("cd").value.trim()); if (!code) return toast("Enter your code");
   const btn = document.querySelector("[data-act=redeem]"); btn.disabled = true;
   try {
-    const r = await api("redeem", { code }); me = r.me; haptic("heavy"); $("cd").value = ""; if ($("rpk")) $("rpk").innerHTML = "";
+    const r = await api("redeem", { code }); me = r.me; $("cd").value = ""; if ($("rpk")) $("rpk").innerHTML = "";
     $("rdet").innerHTML = `<div class="rdet ${TIER[r.tier]?.cls || ""}"><b>${TIER[r.tier]?.full || "Premium"} unlocked</b><div class="rw"><span>Plan</span><span>${esc(r.plan || TIER[r.tier]?.name || "")}</span></div><div class="rw"><span>Time added</span><span>${plural(r.days, "day")}</span></div><div class="rw"><span>Starts</span><span>${r.from ? fmtFull(r.from) : "Now"}</span></div><div class="rw"><span>Valid until</span><span>${r.until ? fmtFull(r.until) : ""}</span></div></div>`;
     toast("Premium unlocked"); loadRHist();
-  } catch (e) { toast(e.message); haptic("heavy"); }
+  } catch (e) { toast(e.message); }
   btn.disabled = false;
 };
 
@@ -1498,14 +1533,16 @@ function noticeBar() {
   const g = UPLOAD_RULES.map(t => `<span>${esc(t)}</span>`).join("");
   return `<div class="nbar" role="note" aria-label="Upload rules"><span class="ni">${ic("notice")}</span><div class="nview"><div class="ntk">${g}${g}</div></div></div>`;
 }
-PAGES.space = async function () {
-  app.innerHTML = `<div class="pad">${noticeBar()}<div id="uph"><div class="skel" style="aspect-ratio:2/1"></div></div><div id="upl"></div></div>`;
+PAGES.space = async function () { // V22: Dashboard = my posts (name, views, likes, status), the post button, the task and the totals in one place
+  app.innerHTML = `<div class="pad">${noticeBar()}<div class="dst big" id="dst"><div><b>-</b><span>Posts</span></div><div><b>-</b><span>Views</span></div><div><b>-</b><span>Likes</span></div><div><b>-</b><span>Pending</span></div></div>
+    <div id="tkd"></div><div id="uph"><div class="skel" style="aspect-ratio:2/1"></div></div><div class="sec nl" style="margin-top:6px">Your posts</div><div id="upl"></div></div>`;
+  taskInto("tkd");
   UL = await api("my_limits");
   const can = UL.enabled && UL.allowed;
   $("uph").innerHTML = `<div class="uphero"><div class="ui">${ic("cloud")}</div><h3>Share your moments</h3>
     <p>${UL.enabled ? (UL.allowed ? `Photos and videos up to ${UL.file_mb} MB each. A folder can hold up to ${UL.folder_mb} MB in total. Every post is reviewed before it appears in Community.` : esc(UL.reason || "Uploads need Premium.")) : "Uploads are paused right now."}</p>
     ${can ? `<button class="btn block" data-act="upload">${ic("plus")}Upload photos or videos</button>` : UL.enabled && UL.premium_only !== "none" ? `<button class="btn block" data-act="go" data-r="plans">${ic("crown")}Unlock Premium</button>` : ""}</div>`;
-  SPL = mountList($("upl"), { src: "mine", grid: "list", fetch: (p, s) => api("my_list", { page: p, size: s }), empty: "<b>No uploads yet</b>Your posts and their status will show up here." });
+  SPL = mountList($("upl"), { src: "mine", grid: "list", fetch: async (p, s) => { const r = await api("my_list", { page: p, size: s }); const t = r.totals, d = $("dst"); if (t && d) d.innerHTML = [[t.posts, "Posts"], [short(t.views), "Views"], [short(t.likes), "Likes"], [t.pending, "Pending"]].map(([n, l]) => `<div><b>${n}</b><span>${l}</span></div>`).join(""); return r; }, empty: "<b>No posts yet</b>Your posts and their status will show up here." });
 };
 ACT.upload = () => { const i = document.createElement("input"); i.type = "file"; i.accept = "image/*,video/*"; i.multiple = true; i.onchange = () => composeUpload([...i.files]); i.click(); };
 async function openMyPost(id) {
@@ -1562,7 +1599,7 @@ function composeUpload(files) {
       }
       bar.style.width = "100%";
       const r = await api("my_post_create", { title: $("utitle").value.trim() || (ok[0].name.replace(/\.[^.]+$/, "") || "My upload"), files: out });
-      sheetCancel = null; closeSheet(); haptic("medium"); toast(r.status === "approved" ? "Published to Community" : "Sent for review"); SPL?.reload();
+      sheetCancel = null; closeSheet(); toast(r.status === "approved" ? "Published to Community" : "Sent for review"); SPL?.reload();
     } catch (e) { toast(e.message); btn.disabled = false; btn.textContent = "Submit for review"; $("ub0").disabled = false; }
   };
 }
@@ -1583,19 +1620,24 @@ const avatarHTML = () => { const av = me.avatar_url || me.photo_url, nm = nameOf
 const crownBadge = () => me.tier === "none" ? "" : `<div class="cr ${me.tier === "lite" ? "rose" : ""}">${ic(me.tier === "expensive" ? "gem" : "crown")}</div>`;
 PAGES.profile = async function () {
   const tr = me.tier !== "none" ? TIER[me.tier].cls : "", until = me.tier !== "none" ? activeUntil(me.tier) : null;
-  app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
+  app.innerHTML = `<div class="pad"><div class="pcv big ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}></div>
     <div class="pcard"><div class="ring ${tr}"><div class="avt">${avatarHTML()}</div>${crownBadge()}</div><div class="pname">${esc(nameOf(me))}</div>
       ${me.tier !== "none" ? `<div class="mstrip ${tr}">${ic(me.tier === "lite" ? "gem" : "crown")}<span>${TIER[me.tier].full}</span>${until ? `<em>until ${new Date(until).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</em>` : ""}</div>` : `<button class="mstrip free" data-act="go" data-r="plans">${ic("crown")}<span>Free member</span><em>Get Premium</em></button>`}</div>
-    <div id="dyp" style="margin-top:14px"></div>
-    <div id="ptk" style="margin-top:14px"></div><div id="pdash"></div>
-    <div class="menu mt">${mi("edit", "Edit profile", "", "edit")}${mi("ticket", "Support", "chat with us", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
+    <div id="dyp" style="margin-top:16px"></div><div id="ptk"></div>
+    <button class="dashc" data-act="go" data-r="space"><div class="dh"><span class="dti">${ic("grid")}</span><div class="tb"><small>Dashboard</small><b>Your posts and uploads</b></div>${ic("next", "mute")}</div>
+      <div class="dst"><div><b id="dp1">-</b><span>Posts</span></div><div><b id="dp2">-</b><span>Views</span></div><div><b id="dp3">-</b><span>Likes</span></div><div><b id="dp4">-</b><span>Pending</span></div></div></button>
+    <button class="invcard" data-act="go" data-r="referral"><small>INVITE &amp; EARN</small><h3>Invite friends,<br>unlock Premium</h3><p>Reach 5, 10, 20 and 50 friends to earn Rose and Royal access.</p><span class="big">${me.ref_count || 0}</span><span class="go">${ic("next")}</span></button>
+    <button class="savedbox" data-act="go" data-r="saved"><div class="sh"><b>Saved</b><em id="svc">${favs.size ? plural(favs.size, "item") : ""}</em></div><div class="pv4" id="pv4">${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}${'<div class="s empty">' + ic("heart") + "</div>"}</div></button>
+    <div class="menu">${mi("edit", "Edit profile", "", "edit")}${mi("ticket", "Support", "chat with us", "tickets")}${mi("sliders", "Settings", "", "settings")}</div></div>`;
   taskInto("ptk"); dailyInto("dyp");
-  try { // V21: my posts like a small dashboard: each post by its name with views, likes and saves
-    const r = await api("my_list", { page: 1, size: 30 }), el = $("pdash"); if (!el || !r.items.length) return;
-    const sum = k => r.items.reduce((a, m) => a + (+m[k] || 0), 0);
-    el.innerHTML = `<div class="sec nl" style="margin-top:6px">My posts</div><div class="pst"><div><b>${r.total}</b><span>Posts</span></div><div><b>${short(sum("views"))}</b><span>Views</span></div><div><b>${short(sum("likes"))}</b><span>Likes</span></div></div>
-      ${r.items.map(m => { const st = MPS[m.status] || ["", ""]; return `<button class="prow" data-act="go" data-r="space"><div class="pn"><b>${esc(m.title || "Untitled")}</b><span class="pill ${st[1]}">${st[0]}</span></div><div class="pm"><span>${ic("eye")}${short(m.views)}</span><span>${ic("like")}${short(m.likes)}</span><span>${ic("heart")}${short(m.saves)}</span></div></button>`; }).join("")}`;
-  } catch { /* the dashboard is optional */ }
+  api("my_list", { page: 1, size: 1 }).then(r => { const t = r.totals; if (!t || !$("dp1")) return; $("dp1").textContent = t.posts; $("dp2").textContent = short(t.views); $("dp3").textContent = short(t.likes); $("dp4").textContent = t.pending; }).catch(() => {});
+  try {
+    const r = await api("fav_preview"); if (!$("pv4")) return;
+    const c = r.counts || {}, tot = (c.free || 0) + (c.premium || 0); $("svc").textContent = tot ? plural(tot, "item") : "";
+    const sv = (r.items || []).slice(0, 4), cells = [];
+    for (let i = 0; i < 4; i++) { const t = sv[i]; cells.push(t ? `<div class="s ${t.locked ? "locked" : ""}">${slidesHTML(t.thumbs && t.thumbs.length ? (FLOW_ON ? flowItems(t.thumbs) : picsOnly(t.thumbs).slice(0, 1)) : [t], t.locked)}</div>` : `<div class="s empty">${ic("heart")}</div>`); }
+    $("pv4").innerHTML = cells.join("");
+  } catch { /* the saved preview is optional */ }
 };
 PAGES.edit = async function () {
   app.innerHTML = `<div class="pad"><div class="pcv ${me.cover_url ? "" : "empty"}" ${me.cover_url ? `style="background-image:url('${esc(me.cover_url)}')"` : ""}><button class="cam" data-act="pickimg" data-k="cover" aria-label="Change cover">${ic("cam")}</button></div>
@@ -1604,7 +1646,7 @@ PAGES.edit = async function () {
     <label class="field"><span>Display name</span><input id="dn" maxlength="40" value="${esc(me.display_name || "")}" placeholder="${esc([me.first_name, me.last_name].filter(Boolean).join(" ") || "Your name")}"></label>
     <button class="btn block" data-act="saveprofile">Save</button></div>`;
 };
-ACT.saveprofile = async () => { try { const r = await api("profile_update", { display_name: $("dn").value }); me = r.me; toast("Saved"); haptic("medium"); back(); } catch (e) { toast(e.message); } };
+ACT.saveprofile = async () => { try { const r = await api("profile_update", { display_name: $("dn").value }); me = r.me; toast("Saved"); back(); } catch (e) { toast(e.message); } };
 ACT.pickimg = d => { const i = document.createElement("input"); i.type = "file"; i.accept = "image/*"; i.onchange = () => { const f = i.files[0]; if (f) openCrop(f, d.k); }; i.click(); };
 ACT.rmimg = async d => {
   if (!await confirmBox(d.k === "avatar" ? "Use your Telegram photo?" : "Remove cover?", d.k === "avatar" ? "Your custom photo will be removed." : "Your cover picture will be removed.", "Confirm", true)) return;
@@ -1661,7 +1703,7 @@ function closeCrop() { $("cropwrap").classList.remove("open"); if (CR.url) URL.r
       cv.getContext("2d").drawImage(CR.img, (CR.fx - CR.ix) / CR.s, (CR.fy - CR.iy) / CR.s, CR.fw / CR.s, CR.fh / CR.s, 0, 0, W, H);
       const blob = await new Promise(r => cv.toBlob(r, "image/jpeg", .88));
       const u = await api("pm_upload_url", { kind: CR.kind, size: blob.size }); await uploadSigned(u, blob, "image/jpeg");
-      const r = await api("pm_set", { kind: CR.kind, path: u.path }); me = r.me; closeCrop(); toast("Saved"); haptic("medium");
+      const r = await api("pm_set", { kind: CR.kind, path: u.path }); me = r.me; closeCrop(); toast("Saved"); 
       if (stack[stack.length - 1].r === "edit") PAGES.edit();
     } catch (e) { toast(e.message); }
     btn.disabled = false; btn.textContent = "Save";
@@ -1687,7 +1729,7 @@ PAGES.ticketnew = async function (p) {
 };
 ACT.tkcat = (d, el) => { document.querySelectorAll("[data-act=tkcat]").forEach(b => b.classList.toggle("on", b === el)); tkCat = d.v; };
 ACT.tkcreate = async () => {
-  try { const r = await api("ticket_create", { subject: $("ts").value, body: $("tb").value, category: tkCat }); haptic("medium"); stack.pop(); stack.push({ r: "tickets", p: {} }); nav("ticket", { id: r.id }); }
+  try { const r = await api("ticket_create", { subject: $("ts").value, body: $("tb").value, category: tkCat }); stack.pop(); stack.push({ r: "tickets", p: {} }); nav("ticket", { id: r.id }); }
   catch (e) { toast(e.message); }
 };
 PAGES.ticket = async function (p) {
@@ -1703,7 +1745,7 @@ PAGES.ticket = async function (p) {
 };
 ACT.tkreply = async () => {
   const el = $("rt"), v = el.value.trim(); if (!v) return; const id = stack[stack.length - 1].p.id; el.disabled = true;
-  try { await api("ticket_reply", { id, body: v }); el.value = ""; haptic("light"); const r = await api("ticket_get", { id }); ACT._tkdraw?.(r, true); } catch (e) { toast(e.message); }
+  try { await api("ticket_reply", { id, body: v }); el.value = ""; const r = await api("ticket_get", { id }); ACT._tkdraw?.(r, true); } catch (e) { toast(e.message); }
   el.disabled = false; el.focus();
 };
 
@@ -1720,7 +1762,7 @@ function chRow(m, prev) {
   const sep = gap ? `<div class="cmd">${chStamp(m.at)}</div>` : "";
   const isLast = !!CH.lastOf && CH.lastOf.get(m.u) === m.id; // V21: the react button sits on the newest message of every member
   const av = m.mine ? "" : cont ? '<span class="sp"></span>' : `<span class="av" data-act="chprof" data-id="${m.id}" style="${m.avatar ? `background-image:url('${esc(m.avatar)}')` : `background:hsl(${chHue(m.u)} 45% 42%)`}">${m.avatar ? "" : esc(initial(m.name))}</span>`;
-  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""} ${isLast ? "last" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" data-act="chprof" data-id="${m.id}" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${rxHTML(m)}${isLast ? `<span class="rxadd" data-act="chreact" data-id="${m.id}" aria-label="React">${RXADD}</span>` : ""}</div></div>`;
+  return `${sep}<div class="cmw ${m.mine ? "me" : ""} ${cont ? "" : "first"} ${Object.keys(m.rx || {}).length ? "hasrx" : ""} ${isLast ? "last" : ""}" data-id="${m.id}">${av}<div class="cmb ${m.image ? "hasimg" : ""}" data-act="chmenu" data-id="${m.id}">${!m.mine && !cont ? `<span class="nm" data-act="chprof" data-id="${m.id}" style="color:hsl(${chHue(m.u)} 55% 42%)">${esc(m.name)}</span>` : ""}${m.reply ? `<div class="rq" data-act="chquote" data-id="${m.reply.id}"><b>${esc(m.reply.name)}</b>${esc(m.reply.text)}</div>` : ""}${m.image ? `<img class="cmi sk" draggable="false" src="${esc(m.thumb || m.image)}" alt="Photo" loading="lazy" decoding="async" data-act="chimg" data-src="${esc(m.image)}" data-th="${esc(m.thumb || "")}" ${m.thumb ? `data-full="${esc(m.image)}" onerror="thumbFail(this)"` : ""} onload="chImgLoad()">` : ""}${m.text ? (m.image ? `<span class="tx">${esc(m.text)}</span>` : esc(m.text)) : ""}<small>${chTime(m.at)}</small>${(Object.keys(m.rx || {}).length || isLast) ? `<div class="rxbar">${rxHTML(m)}${isLast ? `<span class="rxadd" data-act="chreact" data-id="${m.id}" aria-label="React">${RXADD}</span>` : ""}</div>` : ""}</div></div>`;
 }
 function chDraw(scroll) {
   const box = $("chat"); if (!box) return;
@@ -1840,12 +1882,12 @@ ACT.chsend = async () => {
     let image = null;
     if (CH.photo) { toast("Sending photo…"); const f = await chShrink(CH.photo), u = await api("chat_upload_url", { size: f.size, mime: f.type || CH.photo.type }); const tb = u.thumb ? await chThumb(f) : null; await Promise.all([uploadSigned(u, f, f.type || CH.photo.type), tb ? uploadSigned(u.thumb, tb, "image/jpeg").catch(() => {}) : null]); image = { path: u.path }; }
     const r = await api("chat_send", { text, image, reply_to: CH.reply?.id || null });
-    ta.value = ""; ta.style.height = "auto"; CH.reply = null; if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; haptic("light"); chMerge([r.message]); chDraw(true);
+    ta.value = ""; ta.style.height = "auto"; CH.reply = null; if (CH.photoUrl) URL.revokeObjectURL(CH.photoUrl); CH.photo = null; CH.photoUrl = ""; chMerge([r.message]); chDraw(true);
   } catch (e) { toast(e.message); }
   $("chSend").disabled = false; $("chAtt").disabled = false; chBar(); if (!ta.disabled) ta.focus();
 };
 ACT.chmenu = d => {
-  const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return; haptic("light");
+  const m = CH.msgs.find(x => x.id === Number(d.id)); if (!m) return; 
   openSheet(`<div class="rxrow">${RX.map(e => `<button class="${m.my === e ? "on" : ""}" data-act="chrx" data-id="${m.id}" data-e="${e}">${e}</button>`).join("")}</div><div class="srow" style="border:0"><div><b>${esc(m.name)}</b><small>${esc(m.text.slice(0, 80) || "Photo")}</small></div></div>
     <button class="srow" data-act="chreply" data-id="${m.id}"><span>Reply</span>${ic("back")}</button>
     ${m.text ? `<button class="srow" data-act="chcopy" data-id="${m.id}"><span>Copy text</span>${ic("copy")}</button>` : ""}
@@ -1869,7 +1911,7 @@ function chStartReply(m) { CH.reply = { id: m.id, name: m.name, text: m.text.sli
     if (e.cancelable) e.preventDefault();
     g.dx = Math.min(MAX, dx * .75); g.b.style.transform = `translateX(${g.dx}px)`;
     const hit = g.dx >= TRIG; g.sw.classList.toggle("on", g.dx > 20);
-    if (hit && !g.fired) { g.fired = true; haptic("light"); } else if (!hit) g.fired = false;
+    if (hit && !g.fired) { g.fired = true; } else if (!hit) g.fired = false;
   }
   function end() {
     if (!g) return; const o = g; g = null; clearTimeout(o.tm); if (o.long) { window.__chSwiped = Date.now(); return; } o.b.classList.add("rel"); o.b.style.transform = "";
@@ -1907,13 +1949,13 @@ function rxFly(e, id) {
 async function chReactSet(id, e) {
   const m = CH.msgs.find(x => x.id === Number(id)); if (!m) return;
   const next = m.my === e ? "" : e; // same emoji again takes it back
-  rxApply(m, next); chDraw(false); if (next) { haptic("light"); rxFly(next, m.id); }
+  rxApply(m, next); chDraw(false); if (next) { rxFly(next, m.id); }
   try { await api("chat_react", { id: m.id, emoji: next }); } catch (er) { toast(er.message || "Could not react"); chPoll(false); }
 }
 function rxClose() { document.getElementById("rxo")?.remove(); }
 function chPicker(id) {
   const m = CH.msgs.find(x => x.id === Number(id)), el = document.querySelector(`.cmw[data-id="${id}"] .cmb`); if (!m || !el) return;
-  rxClose(); haptic("medium");
+  rxClose(); 
   const o = document.createElement("div"); o.id = "rxo"; o.className = "rxo"; const t0 = Date.now();
   o.innerHTML = `<div class="rxbox"><div class="rxp">${RX.map((e, i) => `<button style="--i:${i}" class="${m.my === e ? "on" : ""}" data-e="${e}" aria-label="React ${e}">${e}</button>`).join("")}</div>
     <div class="rxa"><button data-do="reply">Reply</button>${m.text ? '<button data-do="copy">Copy</button>' : ""}${m.mine ? '<button class="bad" data-do="del">Delete</button>' : ""}</div></div>`;
@@ -1967,19 +2009,17 @@ PAGES.settings = async function () {
   const seg = (a, items, cur) => `<div class="seg">${items.map(([v, l]) => `<button class="${cur === v ? "on" : ""}" data-act="${a}" data-v="${v}">${l}</button>`).join("")}</div>`;
   app.innerHTML = `<div class="pad"><div class="box" style="padding:6px 20px">
     <div class="srow"><div>Theme<small>Auto follows your phone</small></div>${seg("setmode", [["auto", "Auto"], ["light", "Ivory"], ["dark", "Dark"]], prefs.mode)}</div>
-    <div class="srow"><div>Haptic feedback<small>A light tap on touch</small></div><button class="switch ${prefs.haptics ? "on" : ""}" data-act="haptics" aria-label="Haptics"></button></div>
     <div class="srow"><div>Notifications<small>New posts and rewards</small></div><button class="switch ${me.notify ? "on" : ""}" data-act="notify" aria-label="Notifications"></button></div></div>
     ${inTg ? "" : `<div class="box" style="padding:6px 20px"><button class="srow" data-act="logout"><span>Log out</span>${ic("out")}</button></div>`}
     <p class="mute" style="text-align:center;font-size:12.5px;margin-top:18px">${esc(C.APP_TITLE)}</p></div>`;
 };
 ACT.setmode = d => { prefs.mode = d.v; savePrefs(); applyTheme(); PAGES.settings(); };
-ACT.haptics = () => { prefs.haptics = !prefs.haptics; savePrefs(); haptic("light"); PAGES.settings(); };
 ACT.logout = () => { LS.del("gv_web"); location.reload(); };
 ACT.notify = async () => {
   const want = !me.notify;
   try {
     if (want && tg?.requestWriteAccess) await new Promise(res => { try { tg.requestWriteAccess(() => res()); } catch { res(); } });
-    const r = await api("profile_update", { notify: want }); me = r.me; haptic("light"); toast(want ? "Notifications on" : "Notifications off"); PAGES.settings();
+    const r = await api("profile_update", { notify: want }); me = r.me; toast(want ? "Notifications on" : "Notifications off"); PAGES.settings();
   } catch (e) { toast(e.message); }
 };
 
@@ -2003,7 +2043,7 @@ function nfGo(n) {
   if (n.album_id) return nav("album", { id: n.album_id, title: n.album_title });
   return n.kind === "post" ? nav("home") : null;
 }
-ACT.nfopen = d => { const n = nfItems.find(x => x.id === d.id); if (!n) return; haptic("light"); nfGo(n); };
+ACT.nfopen = d => { const n = nfItems.find(x => x.id === d.id); if (!n) return; nfGo(n); };
 
 /* ---------- viewer (pinch zoom, swipe, no download) ---------- */
 const V = { list: [], i: 0, fs: false, z: 1, x: 0, y: 0 };
@@ -2054,7 +2094,7 @@ function drawInfo() {
   const row = (a, b) => `<div class="ir"><span>${a}</span><span>${b}</span></div>`;
   $("vsheet").innerHTML = `${vName(m) ? `<h3>${esc(vName(m))}</h3>` : `<h3>Details</h3>`}${row("Type", m.type === "video" ? "Video" : "Photo")}${m.created_at ? row("Added", fmtDate(m.created_at)) : ""}${m.kind === "media" ? row("Views", short(m.views)) : ""}`;
 }
-function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; haptic("light"); drawViewer(); pingScreen(false); }
+function step(d) { const n = V.i + d; if (n < 0 || n >= V.list.length) return; V.i = n; drawViewer(); pingScreen(false); }
 function closeViewer() {
   $("viewer").classList.remove("open"); $("stage").innerHTML = ""; $("vsheet").classList.remove("on");
   try { if (document.fullscreenElement) document.exitFullscreen(); } catch {}
@@ -2108,7 +2148,7 @@ function showPopup(n) {
   const cta = n.kind === "ticket" ? "Open chat" : n.kind === "post" && n.album_id ? "View post" : n.kind === "premium" ? "See plans" : "Open";
   box.innerHTML = `${nfThumb(n)}<div class="pb2"><div class="kd">${k[1]}</div><h3>${esc(n.title)}</h3>${n.body ? `<p>${esc(n.body)}</p>` : ""}${n.code ? codeRow(n.code, n.code_state, n.code_tier) : `<span class="go">${cta}${ic("next")}</span>`}</div>
     <button class="x" data-act="popclose" aria-label="Close">${ic("close")}</button><i class="bar"></i>`;
-  $("popup").classList.add("open"); haptic("medium"); clearTimeout(popT); popT = setTimeout(closePopup, sec * 1000);
+  $("popup").classList.add("open"); clearTimeout(popT); popT = setTimeout(closePopup, sec * 1000);
 }
 function closePopup() {
   clearTimeout(popT); $("popup").classList.remove("open");
@@ -2131,7 +2171,7 @@ function ageCheck() {
   return new Promise(res => {
     if (LS.get("gv_age", "") === "1") return res();
     $("agegate").classList.add("on");
-    $("ageYes").onclick = () => { LS.set("gv_age", "1"); $("agegate").classList.remove("on"); haptic("medium"); res(); };
+    $("ageYes").onclick = () => { LS.set("gv_age", "1"); $("agegate").classList.remove("on"); res(); };
     $("ageNo").onclick = () => { try { if (tg?.close) return tg.close(); } catch {} $("agegate").querySelector("h1").textContent = "Come back when you're 18"; $("agegate").querySelector("p").textContent = "You can close this window now."; $("ageYes").hidden = true; $("ageNo").hidden = true; };
   });
 }
