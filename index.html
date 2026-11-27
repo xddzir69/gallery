@@ -1012,10 +1012,10 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-let FLOW_ON = true, FLOW_VIDEO = false, FLOW_FIRST = 7000, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+let FLOW_ON = true, FLOW_VIDEO = false, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
 function applyFlow() {
   const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
-  FLOW_ON = settings.flow_on !== "0"; FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_FIRST = n("flow_first", 7, 2, 30) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+  FLOW_ON = settings.flow_on !== "0"; FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
 }
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
@@ -1027,7 +1027,7 @@ function flowPlay(el, on) { // start / stop a muted video preview
   try { if (on) { el.muted = true; const p = el.play(); p?.catch?.(() => {}); } else if (!el.paused) { el.pause(); el.currentTime = 0; } } catch { /* ignore */ }
 }
 function flowClip(el) { if (el && el.tagName === "VIDEO" && !el.paused && el.currentTime >= FLOW_VIDEO_MS / 1000) { try { el.currentTime = 0; } catch { /* ignore */ } } }
-/* V21: the flow runs only for cards that are on the screen. The first visible card changes after FLOW_FIRST, the next one 1 s later,
+/* V21: the flow runs only for cards that are on the screen. The first visible card changes after FLOW_STEP, the next one 1 s later,
    the next 1 s after that ... (FLOW_STAGGER, wraps after FLOW_WAVE cards). Scroll away and it rests; scroll back and it starts again.
    Every picture that shows on a visible card counts one view (batched), also when the same picture comes round again. */
 function showEye(ss, el) { const b = ss.parentElement && ss.parentElement.querySelector(".eye b"); if (b && el && el.dataset.views) b.textContent = short(+el.dataset.views); }
@@ -1045,9 +1045,9 @@ setInterval(() => {
     const canVid = good && (FLOW_ON || !!ss.closest(".tile"));
     if (n > 1) {
       rank++;
-      // every picture shows FLOW_STEP (the first one FLOW_FIRST), a video preview 8 s; then the loop starts again
-      const du = [...ss.children].map((x, k) => (x.dataset.vp && canVid) ? FLOW_VIDEO_MS : (k === 0 ? FLOW_FIRST : FLOW_STEP)), L = du.reduce((p, q) => p + q, 0);
-      let t = Math.max(0, now - ss._t0 - ss._so) % L, j = 0; while (j < n - 1 && t >= du[j]) { t -= du[j]; j++; }
+      // every picture shows FLOW_STEP (5 s), a video preview 8 s; then the loop starts again
+      let du = [...ss.children].map(x => flowDur(x, canVid)); if (!du.some(x => x > 0)) du = du.map(() => FLOW_STEP); const L = du.reduce((p, q) => p + q, 0); // nothing but videos on a poor connection: they just rest
+      const j = flowPick(du, Math.max(0, now - ss._t0 - ss._so) % L);
       if (j !== i) {
         const prev = ss.children[i]; if (prev && prev.dataset.vp) flowPlay(prev, false);
         flowLoad(ss, j, 3);
@@ -1100,15 +1100,18 @@ document.addEventListener("dragstart", e => e.preventDefault());
 /* ---------- cards: folder / file / community / my post ---------- */
 /* the preview flow is pictures only: videos are skipped (a folder that has only videos shows one still) */
 const picsOnly = l => { const p = l.filter(t => t.type !== "video"); return p.length ? p : l.slice(0, 1); };
-const flowItems = l => { // pictures only on a poor connection; on a good one the real video is part of the flow
+const flowItems = l => {
+  /* Preview flow order of one folder card.
+     Poor connection: pictures only (no video, and no video thumbnail either). A folder with only videos shows one still.
+     Good connection: picture 1, picture 2, then the FIRST video (3rd), then the other pictures (4th ...), and any other videos at the very end.
+     A video that is first in the folder never shows first. A locked (blurred) file is treated as a picture. */
   if (!goodNet()) return picsOnly(l);
-  const f = l.slice(), v = f[0];
-  if (v && v.type === "video" && v.url && !v.locked) { // a video first: show up to 2 pictures that follow it, then the video (8 s), then the rest
-    const pics = f.slice(1).filter(t => t.type !== "video").slice(0, 2);
-    return [...pics, v, ...f.slice(1).filter(t => !pics.includes(t))];
-  }
-  return f;
+  const playable = t => t.type === "video" && !t.locked && !!t.url, pics = l.filter(t => !playable(t)), vids = l.filter(playable);
+  return [...pics.slice(0, 2), ...vids.slice(0, 1), ...pics.slice(2), ...vids.slice(1)];
 };
+const flowDur = (x, canVid) => x.dataset.vp ? (canVid ? FLOW_VIDEO_MS : 0) : FLOW_STEP; // every picture = FLOW_STEP (5 s), a video = 8 s, a video while the connection is poor = skipped (0 s)
+const flowPick = (du, t) => { let j = 0; while (j < du.length - 1 && t >= du[j]) { t -= du[j]; j++; } return j; }; // which slide is showing at time t of the loop
+
 const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? flowItems(m.thumbs) : picsOnly(m.thumbs).slice(0, 1)) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
