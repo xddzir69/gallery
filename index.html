@@ -1290,7 +1290,7 @@ function autoSlide(tr, per) {
     if (Date.now() < pause || document.hidden) return;
     const step = cards[0].offsetWidth + 12;
     if (tr.scrollLeft + tr.clientWidth >= tr.scrollWidth - 4) tr.scrollTo({ left: 0 }); else tr.scrollBy({ left: step });
-  }, 4200));
+  }, 4000));
 }
 function spcHTML(m, i, on) {
   const tag = m.pin ? `<span class="stag">FEATURED</span>` : m.tag === "new" ? `<span class="stag">NEW</span>` : "";
@@ -1308,7 +1308,7 @@ function drawSpot(sp) {
   const left = P ? `<div class="pinslot ${items.length ? "" : "full"}" id="pinslot">${pins.map((m, i) => spcHTML(m, i, i === 0)).join("")}</div>` : "";
   const right = items.length ? `<div class="strk ${P ? "" : "two"}" id="strk">${items.map((m, i) => spcHTML(m, P + i, false)).join("")}</div>` : "";
   box.innerHTML = `<div class="spot"><div class="sph"><b>Spotlight</b><span>Top picks</span></div><div class="spwrap">${left}${right}</div></div>`;
-  if (P > 1) { let n = 0; const cs = [...$("pinslot").children]; timers.push(setInterval(() => { if (document.hidden) return; cs[n].classList.remove("on"); n = (n + 1) % cs.length; cs[n].classList.add("on"); }, 3000)); }
+  if (P > 1) { let n = 0; const cs = [...$("pinslot").children]; timers.push(setInterval(() => { if (document.hidden) return; cs[n].classList.remove("on"); n = (n + 1) % cs.length; cs[n].classList.add("on"); }, 4000)); }
   if (items.length) autoSlide($("strk"), P ? 1 : 2);
 }
 PAGES.home = async function () {

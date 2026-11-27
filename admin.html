@@ -208,6 +208,25 @@
   .top5 .r img, .top5 .r .ph { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; background: var(--bg2); border: 1px solid var(--line2); }
   .sn { display: inline-block; font-size: 10.5px; letter-spacing: .06em; font-weight: 700; padding: 2px 7px; border-radius: 6px; color: var(--gold); background: rgba(232,197,107,.12); box-shadow: inset 0 0 0 1px rgba(232,197,107,.28); }
   .sn.p { color: #8FC7FF; background: rgba(120,180,255,.12); box-shadow: inset 0 0 0 1px rgba(120,180,255,.3); } .sn.v { color: #C9A6FF; background: rgba(180,140,255,.12); box-shadow: inset 0 0 0 1px rgba(180,140,255,.3); }
+  .cmpc { padding: 14px !important; } .cmpc .dest { gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); } .cmpc .dcol { padding: 10px; }
+  .cmpc .dcol input, .cmpc .dcol select { font-size: 13px; } .cmpc .dz { padding: 12px; font-size: 13px; margin-bottom: 8px; }
+  .cmpc .pk { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; margin: 8px 0; } .cmpc .bigap { padding: 11px 16px; }
+  .sdg { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+  .sdc { border-radius: 18px; overflow: hidden; border: 1px solid var(--line2); background: linear-gradient(165deg, var(--card2), var(--card)); display: flex; flex-direction: column; box-shadow: 0 14px 28px -22px rgba(0,0,0,.8); }
+  .sdc .im { position: relative; aspect-ratio: 16/10; background: var(--bg2); overflow: hidden; } .sdc .im img, .sdc .im video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .sdc .im .lo { filter: blur(6px); transform: scale(1.08); } .sdc .im .hi { opacity: 0; transition: opacity .35s ease; } .sdc .im .hi.ok { opacity: 1; }
+  .sdc .im::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.55), transparent 55%); }
+  .sdc .cd2 { position: absolute; left: 10px; top: 10px; z-index: 2; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; color: #1b1406; background: linear-gradient(135deg, #F3D98B, #B8893A); }
+  .sdc .dt { position: absolute; right: 10px; top: 10px; z-index: 2; text-align: center; padding: 5px 10px; border-radius: 12px; background: rgba(0,0,0,.62); color: #fff; line-height: 1.1; } .sdc .dt b { display: block; font-size: 20px; font-family: Georgia, serif; } .sdc .dt span { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+  .sdc .bd2 { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; } .sdc .tt { font-size: 15.5px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sdc .live { font-size: 12.5px; color: var(--gold); font-weight: 600; } .sdc .mt2 { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; color: var(--mute); }
+  .mvg { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .mv .mvi { position: relative; aspect-ratio: 3/4; border-radius: 14px; overflow: hidden; background: var(--bg2); border: 1px solid var(--line2); }
+  .mv .mvi img, .mv .mvi video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .mv .mvi .lo { filter: blur(6px); transform: scale(1.08); } .mv .mvi .hi { opacity: 0; transition: opacity .35s ease; } .mv .mvi .hi.ok { opacity: 1; }
+  .mv .rk { position: absolute; left: 8px; top: 8px; z-index: 2; min-width: 26px; height: 26px; padding: 0 7px; border-radius: 13px; display: grid; place-items: center; font-weight: 700; font-size: 13px; color: #1b1406; background: linear-gradient(135deg, #F3D98B, #B8893A); }
+  .mv .vw { position: absolute; right: 8px; bottom: 8px; z-index: 2; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: rgba(0,0,0,.62); color: #fff; }
+  .mv .mvt { margin-top: 8px; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .mv .mvs { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .step { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; } .step i { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-weight: 700; color: #1b1406; background: linear-gradient(135deg, #F3D98B, #B8893A); } .step h3 { margin: 0 !important; }
   .dest { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
   .dcol { padding: 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg2); }
@@ -450,23 +469,22 @@
     <section id="t-dash"><div class="hero"><h2>Dashboard</h2><span class="orn"></span></div>
       <div class="card attn" id="dAttn" hidden></div>
       <div class="kts" id="dStats"></div>
-      <div class="two"><div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
-      <div class="card"><h3>Top inviters</h3><p class="sm mute" style="margin-bottom:8px">Members who brought friends in (even one invite counts).</p><div id="dRef"></div></div>
+      <div class="card"><h3>Most viewed</h3><div class="mvg" id="dTop"></div></div>
     </section>
 
     <!-- UPLOAD -->
     <section id="t-upload" hidden><div class="hero"><h2>Upload</h2><span class="orn"></span></div>
-      <div class="card"><div class="step"><i>1</i><h3>Where should it go?</h3></div>
+      <div class="card"><div class="step"><h3>Create / select folder</h3></div>
         <div class="dest">
           <div class="dcol"><label>Category</label><div class="inl"><input type="text" id="upCatNew" placeholder="New category title"><button class="btn xs" id="upCatAdd">Create</button></div><select id="upCat"></select></div>
           <div class="dcol"><label>Folder</label><div class="inl"><input type="text" id="upFoldNew" placeholder="New folder title"><button class="btn xs" id="upFoldAdd">Create</button></div><select id="upFold"></select></div>
           <div id="upSubs" style="display:contents"></div>
         </div>
         <div class="where" id="upWhere"></div></div>
-      <div class="card"><div class="step"><i>2</i><h3>Choose files</h3></div>
+      <div class="card"><div class="step"><h3>Choose files</h3></div>
         <div class="dz" id="dz">Drop files here or click to choose<input type="file" id="files" accept="image/*,video/*" multiple hidden></div>
         <div class="tg" id="upPrev"></div></div>
-      <div class="card"><div class="step"><i>3</i><h3>Access and notification</h3></div>
+      <div class="card"><div class="step"><h3>Access and notification</h3></div>
         <div class="cols"><label class="f"><span>Access for these files</span><select id="upAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label></div>
         <div class="row" style="margin:6px 0 16px"><label class="ck"><input type="checkbox" id="upNotif" checked> Send an in-app notification</label><label class="ck"><input type="checkbox" id="upPush"> Also push to Telegram</label></div>
         <div class="row" style="margin:-6px 0 16px;gap:10px"><label class="btn gh xs" style="cursor:pointer">Choose my own HD picture for Telegram<input type="file" accept="image/*" id="upHd" hidden></label><img id="upHdPrev" alt="" hidden style="height:54px;border-radius:8px"><button class="btn gh xs" id="upHdClr" hidden>Remove</button><span class="sm mute" id="upHdInfo">Optional. Without it the folder's small thumbnail is sent (blurred for Rose/Royal). A picture you choose here is sent as you made it, not blurred.</span></div>
@@ -507,12 +525,14 @@
     <section id="t-schedule" hidden><div class="hero"><h2>Schedule</h2><span class="orn"></span></div>
       <div class="card"><div class="calhd"><button class="btn gh xs" id="calPrev">←</button><h3 id="calTitle"></h3><button class="btn gh xs" id="calNext">→</button><button class="btn xs" id="calToday">Today</button></div>
         <div class="cal" id="calGrid"></div><p class="sm mute" style="margin-top:10px">Gold = waiting to go live. Green = already live. Tap a day to schedule something on it, or tap a folder to preview it.</p></div>
-      <div class="card" id="scFormCard"><div class="step"><i>+</i><h3>New scheduled folder</h3></div>
-        <div class="cols"><label class="f"><span>Folder name</span><input type="text" id="scTitle" placeholder="Folder title, e.g. Weekend special"></label><label class="f"><span>Goes live on</span><input type="datetime-local" id="scWhen"></label>
-          <label class="f"><span>Category</span><select id="scCat"></select></label><label class="f"><span>Inside folder (optional)</span><select id="scParent"></select></label>
-          <label class="f"><span>Access</span><select id="scAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></label></div>
-        <div class="dz" id="scDz">Drop files here or click to choose<input type="file" id="scFiles" accept="image/*,video/*" multiple hidden></div><div class="tg" id="scPrev"></div>
-        <div class="row" style="margin-bottom:14px"><label class="ck"><input type="checkbox" id="scNotif" checked> Send the in-app “new post” notification when it goes live</label></div>
+      <div class="card cmpc" id="scFormCard"><div class="step"><h3>New scheduled folder</h3></div>
+        <div class="dest">
+          <div class="dcol"><label>Folder name</label><input type="text" id="scTitle" placeholder="Folder title, e.g. Weekend special"><label style="margin-top:10px">Live on</label><div class="inl" style="margin:0"><input type="date" id="scDate" aria-label="Date"><input type="time" id="scTime" aria-label="Time"></div></div>
+          <div class="dcol"><label>Category</label><div class="inl"><input type="text" id="scCatNew" placeholder="New category title"><button class="btn xs" id="scCatAdd">Create</button></div><select id="scCat"></select></div>
+          <div class="dcol"><label>Inside folder (optional)</label><select id="scParent"></select><label style="margin-top:10px">Access</label><select id="scAccess"><option value="public">Public</option><option value="lite">Rose (Lite)</option><option value="expensive">Royal (Expensive)</option></select></div>
+        </div>
+        <div class="dz" id="scDz" style="margin-top:12px">Drop files here or click to choose<input type="file" id="scFiles" accept="image/*,video/*" multiple hidden></div><div class="tg" id="scPrev"></div>
+        <div class="row" style="margin-bottom:12px"><label class="ck"><input type="checkbox" id="scNotif" checked> Send the in-app “new post” notification when it goes live</label></div>
         <button class="btn bigap" id="scGo">Upload and schedule</button><div class="prog"><i id="scProg"></i></div><div id="scLog" style="white-space:pre-line;margin-top:10px" class="sm mute"></div></div>
       <div class="card"><h3>Coming up</h3><div id="scUp"></div></div>
     </section>
@@ -642,7 +662,7 @@
         <div class="thbar"><i id="thBar" style="width:0%"></i></div><div class="sm mute" id="thPct"></div>
         <div class="thn" id="thNums"></div>
         <div class="row"><button class="btn" id="thGo">Convert waiting files</button><button class="btn gh" id="thRe">Check again</button><span class="mute sm" id="thSt"></span></div></div>
-      <div class="card"><h3>Spotlight rules</h3><p class="sm mute" style="margin-bottom:10px">Pinning is done in Data (the star on any folder or file). These rules decide what else appears in the Home slider.</p>
+      <div class="card"><h3>Spotlight rules</h3><p class="sm mute" style="margin-bottom:10px">Pinning is done in Data (the star on any folder or file). These rules decide what else appears in the Home slider. The slider moves one slide at a time, every 4 seconds.</p>
         <div class="cols"><label class="f"><span>A new folder counts as "new" for (days)</span><input type="number" id="spDays" min="1"></label><label class="f"><span>Each member sees it in their first (app opens)</span><input type="number" id="spOpens" min="1"></label>
           <label class="f"><span>Max new folders</span><input type="number" id="spMax" min="0"></label><label class="f"><span>Popular folders (top N, all time)</span><input type="number" id="spPop" min="0" max="20"></label></div><button class="btn" id="spSave">Save rules</button></div>
       
@@ -849,35 +869,32 @@ async function loadDash() {
   const now = new Date(), iso = now.toISOString(), d7 = new Date(now - 7 * 864e5).toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString();
   const t0 = new Date(now); t0.setHours(0, 0, 0, 0);
   const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
-  const [users, new7, newToday, photos, videos, folders, topF, pinA, pinM, catN, posts, postP, postA, postR, tkO, tkA, tkC, trashN, top, recent] = await Promise.all([
+  const [users, new7, newToday, photos, videos, folders, topF, pinA, pinM, catN, posts, postP, postA, postR, tkO, tkA, tkC, trashN, top] = await Promise.all([
     cnt("profiles"), cnt("profiles", q => q.gt("created_at", d7)), cnt("profiles", q => q.gt("created_at", t0.toISOString())),
     cnt("media", q => q.eq("type", "image")), cnt("media", q => q.eq("type", "video")), cnt("albums"), cnt("albums", q => q.is("parent_id", null)),
     cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)), cnt("categories"),
     cnt("user_posts"), cnt("user_posts", q => q.eq("status", "pending")), cnt("user_posts", q => q.eq("status", "approved")), cnt("user_posts", q => q.eq("status", "rejected")),
     cnt("tickets", q => q.eq("status", "open")), cnt("tickets", q => q.eq("status", "answered")), cnt("tickets", q => q.eq("status", "closed")), cnt("trash"),
-    sb.from("media").select("title,label,views,type,kind_no,preview,path,albums(title)").order("views", { ascending: false }).limit(5),
-    sb.from("profiles").select("tg_id,first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(6),
+    sb.from("media").select("title,label,views,type,kind_no,preview,path,thumb_ok,albums(title)").order("views", { ascending: false }).limit(10),
   ]);
   let views = 0; try { const { data } = await sb.rpc("album_tree"); (data || []).forEach(f => views += Number(f.views) || 0); } catch {}
   const mset = await getSettings(["maintenance", "maintenance_on"]), mOn = mset.maintenance_on === "1" || !!mset.maintenance;
   const at = [[postP.count, "member post", "waiting for your review", "uploads"], [tkO.count, "support chat", "waiting for your reply", "tickets"]].filter(x => x[0]).concat(mOn ? [["", "", "Maintenance mode is ON, members are locked out", "maintenance"]] : []);
   $("dAttn").hidden = !at.length; $("dAttn").innerHTML = "<h3>Needs your attention</h3>" + at.map(x => `<div class="row between line"><span><b>${x[0]}</b> ${x[1]}${x[0] > 1 ? "s" : ""} ${x[2]}</span><button class="btn xs" data-go="${x[3]}">Open</button></div>`).join("");
-  let dau = {}, refs = []; try { const [a, b] = await Promise.all([sb.rpc("admin_dau"), sb.rpc("admin_top_referrers", { p_n: 10 })]); dau = a.data || {}; refs = b.data || []; } catch { /* run supabase_v20.sql */ }
-  $("dRef").innerHTML = refs.length ? refs.map((r, i) => `<div class="row between line"><span><b>${i + 1}.</b> <a href="#" data-user="${r.tg_id}" style="color:inherit">${esc(r.name || "Member")}</a> <span class="mute sm">${r.username ? "@" + esc(r.username) : ""}</span></span><span class="pill">${r.invited} invited</span></div>`).join("") : '<p class="mute sm">No invites yet (or run supabase_v20.sql).</p>';
+  let dau = {}; try { const a = await sb.rpc("admin_dau"); dau = a.data || {}; } catch { /* run supabase_v20.sql */ }
   $("dStats").innerHTML = [
     kt("rose", "Active members", dau.d1 ?? "-", [["today", dau.today ?? "-"], ["last 24 hours", dau.d1 ?? "-"]], "live"),
     kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count]], "users"),
     kt("rose", "Views", views.toLocaleString(), [["categories", catN.count], ["spotlight pins", (pinA.count || 0) + (pinM.count || 0)]], "chart"),
     kt("", "Files", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count]], "img"),
     kt("", "Folders", folders.count, [["main folders", topF.count], ["sub folders", (folders.count || 0) - (topF.count || 0)]], "folder"),
-    kt("", "Member posts", posts.count, [["waiting", postP.count], ["approved", postA.count], ["declined", postR.count]], "star"),
-    kt("", "Support chats", (tkO.count || 0) + (tkA.count || 0) + (tkC.count || 0), [["need reply", tkO.count], ["answered", tkA.count], ["closed", tkC.count]], "ticket"),
-    kt("", "Recycle bin", trashN.count, [["restore any time", "✓"]], "trash"),
   ].join("");
   storageStat();
-  const urls = await sign((top.data || []).filter(m => m.type === "image" && !m.preview).map(m => m.path), 1800);
-  $("dTop").innerHTML = (top.data || []).map((m, i) => { const u = m.preview || urls[m.path]; return `<div class="r"><span class="k">${i + 1}</span>${u ? `<img src="${esc(u)}" alt="">` : '<span class="ph"></span>'}<div style="min-width:0"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nChip(m)} ${esc(m.label || m.title || "File")}</div><div class="mute sm" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.albums?.title || "")}</div></div><span class="pill">${m.views} views</span></div>`; }).join("") || '<p class="mute">No files yet.</p>';
-  $("dPay").innerHTML = (recent.data || []).map(p => `<div class="row between line"><span><a href="#" data-user="${p.tg_id}" style="color:inherit">${esc(nm(p))}</a> <span class="mute sm">${p.username ? "@" + esc(p.username) : ""}</span></span><span class="pill ${active(p.expensive_until) ? "roy" : active(p.lite_until) ? "rose" : ""}">${active(p.expensive_until) ? "Royal" : active(p.lite_until) ? "Rose" : "Free"}</span></div>`).join("") || '<p class="mute">No members yet.</p>';
+  // Most viewed: the tiny blurred preview shows at once, then the small (~30 KB) thumbnail fades in over it
+  const tops = top.data || [], tp = m => m.thumb_ok ? m.path + ".t.jpg" : m.path;
+  const urls = await sign(tops.map(tp).filter(Boolean), 1800);
+  $("dTop").innerHTML = tops.map((m, i) => { const u = tp(m) && urls[tp(m)];
+    return `<div class="mv"><div class="mvi">${m.preview ? `<img class="lo" src="${esc(m.preview)}" alt="">` : ""}${u ? (m.type === "video" && !m.thumb_ok ? `<video class="hi ok" muted preload="metadata" src="${esc(u)}#t=0.5"></video>` : `<img class="hi" loading="lazy" src="${esc(u)}" alt="" onload="this.classList.add('ok')">`) : ""}<span class="rk">${i + 1}</span><span class="vw">${m.views} views</span></div><div class="mvt">${nChip(m)} ${esc(m.label || m.title || "File")}</div><div class="mute sm mvs">${esc(m.albums?.title || "")}</div></div>`; }).join("") || '<p class="mute">No files yet.</p>';
 }
 
 /* ---------- folder helpers (shared) ---------- */
@@ -1013,7 +1030,7 @@ function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach
 /* a grid of chosen files, each with its own title box (the title is what members see) */
 function pickGrid(el, arr, after, def) {
   el.className = "pk";
-  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)">${f.type.startsWith("video") ? `<label class="pkv ${f._thumb ? "on" : ""}"><input type="file" accept="image/*" class="pkx" data-i="${i}" hidden>${f._thumb ? "✓ " + esc(f._thumb.name.slice(0, 22)) : "+ Add video thumbnail (optional)"}</label>${f._thumb ? `<button type="button" class="pkvx" data-i="${i}">remove</button>` : ""}` : ""}</div>`).join("");
+  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)">${f.type.startsWith("video") ? `<label class="pkv ${f._thumb ? "on" : ""}"><input type="file" accept="image/*" class="pkx" data-i="${i}" hidden>${f._thumb ? "✓ " + esc(f._thumb.name.slice(0, 22)) : "+ Add video cover (optional)"}</label>${f._thumb ? `<button type="button" class="pkvx" data-i="${i}">remove</button>` : ""}` : ""}</div>`).join("");
   el.querySelectorAll(".pkc button").forEach(b => b.onclick = () => { arr.splice(+b.dataset.i, 1); pickGrid(el, arr, after, def); if (after) after(); });
   el.querySelectorAll(".pkx").forEach(i => i.onchange = () => { const f = i.files[0]; if (f && f.type.startsWith("image/")) { arr[+i.dataset.i]._thumb = f; pickGrid(el, arr, after, def); } });
   el.querySelectorAll(".pkvx").forEach(b => b.onclick = () => { delete arr[+b.dataset.i]._thumb; pickGrid(el, arr, after, def); });
@@ -1373,15 +1390,17 @@ let scY = new Date().getFullYear(), scM = new Date().getMonth(), scPicked = [];
 const pad2 = n => String(n).padStart(2, "0");
 const dayStr = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
 const futureAt = f => f.publish_at && new Date(f.publish_at).getTime() > Date.now();
-const schedPill = f => futureAt(f) ? `<span class="pill g" title="Goes live ${esc(fmtDT(f.publish_at))}">⏰ ${esc(fmtDT(f.publish_at))}</span>` : "";
+const schedPill = f => futureAt(f) ? `<span class="pill g" title="Live on ${esc(fmtDT(f.publish_at))}">⏰ ${esc(fmtDT(f.publish_at))}</span>` : "";
 const fmtDT = d => new Date(d).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
 const inLeft = d => { const ms = new Date(d) - Date.now(); if (ms <= 0) return "live"; const dd = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return `in ${dd ? dd + "d " : ""}${h}h ${m}m`; };
 async function loadSchedule() {
   try { await sb.rpc("release_due"); } catch {}
   await loadTree(); drawCal(); drawUp(); fillSchedForm();
 }
-function fillSchedForm() { $("scCat").innerHTML = catOpts(""); $("scParent").innerHTML = folderOpts("", true); if (!$("scWhen").value) setWhen(new Date(Date.now() + 864e5)); }
-function setWhen(d) { d = new Date(d); if (!$("scWhen").value || d.getHours() === 0) d.setHours(12, 0, 0, 0); $("scWhen").value = `${dayStr(d)}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
+function scWhenVal() { const d = $("scDate").value, t = $("scTime").value; return d && t ? `${d}T${t}` : ""; }
+function fillSchedForm() { $("scCat").innerHTML = catOpts($("scCat").value || ""); $("scParent").innerHTML = folderOpts("", true); if (!$("scDate").value) setWhen(new Date(Date.now() + 864e5)); }
+$("scCatAdd").onclick = async () => { const name = $("scCatNew").value.trim(); if (!name) return toast("Type a category name"); const { data, error } = await sb.from("categories").insert({ name, sort_order: cats.length + 1 }).select("id").single(); if (error) return toast(error.message); $("scCatNew").value = ""; await loadCats(); $("scCat").innerHTML = catOpts(data.id); toast("Category created"); };
+function setWhen(d) { d = new Date(d); if (!$("scDate").value || d.getHours() === 0) d.setHours(12, 0, 0, 0); $("scDate").value = dayStr(d); $("scTime").value = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`; }
 function drawCal() {
   const first = new Date(scY, scM, 1), lead = (first.getDay() + 6) % 7, days = new Date(scY, scM + 1, 0).getDate(), total = Math.ceil((lead + days) / 7) * 7, today = dayStr(new Date());
   const by = {}; tree.filter(f => f.publish_at).forEach(f => (by[dayStr(new Date(f.publish_at))] ||= []).push(f));
@@ -1393,9 +1412,19 @@ function drawCal() {
   }
   $("calGrid").innerHTML = h;
 }
-function drawUp() {
-  const l = tree.filter(futureAt).sort((a, b) => new Date(a.publish_at) - new Date(b.publish_at));
-  $("scUp").innerHTML = l.map(f => `<div class="upi"><div class="ph"></div><div><b>${fChip(f)} ${esc(f.title)}</b> ${accPill(f.access)}<div class="mute sm">${f.media_count} files · ${esc(fmtDT(f.publish_at))} · ${inLeft(f.publish_at)}${f.publish_notified ? "" : " · will notify"}</div></div><button class="btn xs" data-sf="${f.id}">Preview</button></div>`).join("") || '<p class="mute">Nothing is scheduled. Pick a day above to plan something.</p>';
+async function drawUp() {
+  const l = tree.filter(futureAt).sort((a, b) => new Date(a.publish_at) - new Date(b.publish_at)), box = $("scUp");
+  if (!l.length) { box.innerHTML = '<p class="mute">Nothing is scheduled. Pick a day above to plan something.</p>'; return; }
+  // one picture per folder: its cover if set, else its first file; tiny preview first, then the ~30 KB thumbnail
+  const { data: ms } = await sb.from("media").select("id,album_id,type,path,preview,thumb_ok,album_order").in("album_id", l.map(f => f.id)).order("album_order").limit(400);
+  const pick = {}; (ms || []).forEach(m => { const f = byId(m.album_id); if (!f) return; if (!pick[m.album_id] || m.id === f.cover_media_id) pick[m.album_id] = m; });
+  const tp = m => m && (m.thumb_ok ? m.path + ".t.jpg" : m.path), urls = await sign(Object.values(pick).map(tp).filter(Boolean), 1800);
+  const wd = d => new Date(d).toLocaleString("en-GB", { weekday: "short", day: "2-digit", month: "short" }), hm = d => new Date(d).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+  box.innerHTML = '<div class="sdg">' + l.map(f => { const m = pick[f.id], u = m && tp(m) && urls[tp(m)], at = new Date(f.publish_at);
+    return `<div class="sdc"><div class="im">${m?.preview ? `<img class="lo" src="${esc(m.preview)}" alt="">` : ""}${u ? (m.type === "video" && !m.thumb_ok ? `<video class="hi ok" muted preload="metadata" src="${esc(u)}#t=0.5"></video>` : `<img class="hi" loading="lazy" src="${esc(u)}" alt="" onload="this.classList.add('ok')">`) : ""}<span class="cd2">${inLeft(f.publish_at)}</span><span class="dt"><b>${at.getDate()}</b><span>${at.toLocaleString("en-GB", { month: "short" })}</span></span></div>
+      <div class="bd2"><div class="tt">${fChip(f)} ${esc(f.title)}</div><div class="live">⏰ Live on ${esc(wd(f.publish_at))} · ${esc(hm(f.publish_at))}</div>
+      <div class="mt2">${accPill(f.access)}<span>${f.media_count} file${Number(f.media_count) === 1 ? "" : "s"}</span>${f.publish_notified ? "" : '<span class="pill g">will notify</span>'}</div>
+      <button class="btn xs" data-sf="${f.id}" style="margin-top:auto">Preview</button></div></div>`; }).join("") + "</div>";
 }
 $("calPrev").onclick = () => { scM--; if (scM < 0) { scM = 11; scY--; } drawCal(); };
 $("calNext").onclick = () => { scM++; if (scM > 11) { scM = 0; scY++; } drawCal(); };
@@ -1404,16 +1433,16 @@ $("calGrid").onclick = e => {
   const c = e.target.closest("[data-sf]"); if (c) return previewSched(c.dataset.sf);
   const d = e.target.closest("[data-day]"); if (!d) return;
   const [y, m, dd] = d.dataset.day.split("-").map(Number), at = new Date(y, m - 1, dd, 12, 0); if (at < new Date(new Date().setHours(0, 0, 0, 0))) return toast("That day has already passed");
-  $("scWhen").value = ""; setWhen(at); $("scFormCard").scrollIntoView({ behavior: "smooth", block: "center" }); $("scTitle").focus();
+  $("scDate").value = ""; setWhen(at); $("scFormCard").scrollIntoView({ behavior: "smooth", block: "center" }); $("scTitle").focus();
 };
 $("scUp").onclick = e => { const b = e.target.closest("[data-sf]"); if (b) previewSched(b.dataset.sf); };
 const scDz = $("scDz"), scFi = $("scFiles");
 scDz.onclick = e => { if (e.target !== scFi) scFi.click(); }; scDz.ondragover = e => { e.preventDefault(); scDz.classList.add("on"); }; scDz.ondragleave = () => scDz.classList.remove("on");
 scDz.ondrop = e => { e.preventDefault(); scDz.classList.remove("on"); addSc([...e.dataTransfer.files]); }; scFi.onchange = () => { addSc([...scFi.files]); scFi.value = ""; };
 function addSc(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach(f => scPicked.push(f)); drawSc(); }
-function drawSc() { pickGrid($("scPrev"), scPicked, null, () => { const to = $("scWhen").value ? new Date($("scWhen").value) : new Date(); return [+to - 7 * 864e5, +to]; }); }
+function drawSc() { pickGrid($("scPrev"), scPicked, null, () => { const to = scWhenVal() ? new Date(scWhenVal()) : new Date(); return [+to - 7 * 864e5, +to]; }); }
 $("scGo").onclick = async () => {
-  const title = $("scTitle").value.trim(), when = $("scWhen").value; if (!title) return toast("Give the folder a name"); if (!when) return toast("Pick the date and time"); if (!scPicked.length) return toast("Choose the files first");
+  const title = $("scTitle").value.trim(), when = scWhenVal(); if (!title) return toast("Give the folder a name"); if (!when) return toast("Pick the live date and time"); if (!scPicked.length) return toast("Choose the files first");
   const at = new Date(when); if (at.getTime() < Date.now() + 60000) return toast("Pick a time in the future");
   $("scGo").disabled = true; $("scLog").textContent = ""; $("scProg").style.width = "0"; const iso = at.toISOString();
   const { data: a, error } = await sb.from("albums").insert({ title, access: $("scAccess").value, category_id: $("scCat").value || null, parent_id: $("scParent").value || null, publish_at: iso, created_at: iso, publish_notified: !$("scNotif").checked }).select("id,title").single();
@@ -1431,7 +1460,7 @@ async function previewSched(id) {
   const urls = await sign((ms || []).map(m => m.path), 3600), d = document.createElement("div"); d.className = "mdl";
   const cat = cats.find(c => c.id === f.category_id), isF = futureAt(f), loc = new Date(f.publish_at), val = `${dayStr(loc)}T${pad2(loc.getHours())}:${pad2(loc.getMinutes())}`;
   d.innerHTML = `<div class="box" style="width:min(860px,100%)"><div class="row between"><div><span class="sn">PREVIEW</span> ${fChip(f)} <b style="font-size:18px">${esc(f.title)}</b></div><button class="btn gh xs x">Close</button></div>
-    <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Goes live " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
+    <div class="row" style="margin:10px 0">${accPill(f.access)}<span class="pill">${cat ? esc(cat.name) : "No category"}</span><span class="pill ${isF ? "g" : ""}">${isF ? "Live on " + esc(fmtDT(f.publish_at)) + " (" + inLeft(f.publish_at) + ")" : "Already live since " + esc(fmtDT(f.publish_at))}</span><span class="mute sm">${(ms || []).length} files</span></div>
         <div class="lst" style="padding:10px"><div class="gr" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr))">${(ms || []).map(m => `<div class="fc"><div class="pvx" style="aspect-ratio:1">${m.type === "video" ? `<video controls preload="metadata" src="${esc(urls[m.path] || "")}#t=0.5"></video>` : `<img src="${esc(urls[m.path] || m.preview || "")}" alt="">`}<div class="tl">${nChip(m)}</div></div><div class="bd" style="padding:6px"><input type="datetime-local" step="1" class="ft" data-id="${m.id}" value="${lcl(m.created_at)}" style="font-size:12px;padding:6px 8px" title="Time shown to members"></div></div>`).join("") || '<p class="mute">No files.</p>'}</div></div>
     ${isF ? `<div class="row"><input type="datetime-local" class="w" value="${val}" style="max-width:240px"><button class="btn xs sv">Change time</button><button class="btn xs pn">Publish now</button><button class="btn dg xs dl">Delete (recycle bin)</button></div>` : `<div class="row"><button class="btn dg xs dl">Delete (recycle bin)</button></div>`}</div>`;
   const close = () => d.remove(); d.onclick = e => { if (e.target === d || e.target.closest(".x")) close(); };
