@@ -182,16 +182,16 @@
   .mrow { display: grid; grid-template-columns: 90px 1fr 90px auto; gap: 8px; align-items: center; margin-bottom: 8px; }
 
   /* ===== V7: premium look ===== */
-  .hero { position: relative; margin: 0 0 22px; padding: 26px 30px 22px; border-radius: 22px; overflow: hidden; border: 1px solid var(--line2);
+  .hero { position: relative; margin: 0 0 18px; padding: 16px 26px 12px; border-radius: 22px; overflow: hidden; border: 1px solid var(--line2);
     background: radial-gradient(120% 150% at 0% 0%, rgba(232,197,107,.20), transparent 55%), radial-gradient(90% 130% at 100% 100%, rgba(170,120,40,.16), transparent 60%), var(--card);
     box-shadow: 0 22px 54px -28px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.07); }
   .hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 38%, rgba(255,226,150,.10) 50%, transparent 62%); transform: translateX(-110%); animation: heroShine 9s ease-in-out infinite; }
   @keyframes heroShine { 0%, 55% { transform: translateX(-110%); } 100% { transform: translateX(110%); } }
   .hero .eb { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 10px; }
   .hero .eb::before { content: "✦"; font-size: 12px; }
-  .hero h2 { margin: 8px 0 6px !important; font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1; background: linear-gradient(90deg, var(--gold), #FFF2C6 48%, var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero h2 { margin: 0 0 4px !important; font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif; font-size: 36px; font-weight: 600; line-height: 1.1; background: linear-gradient(90deg, var(--gold), #FFF2C6 48%, var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .hero p { margin: 0 !important; max-width: 720px; color: var(--mute); }
-  .hero .orn { display: block; margin-top: 16px; height: 1px; background: linear-gradient(90deg, var(--gold), rgba(232,197,107,.15) 60%, transparent); }
+  .hero .orn { display: block; margin-top: 8px; height: 1px; background: linear-gradient(90deg, var(--gold), rgba(232,197,107,.15) 60%, transparent); }
   .kts { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; margin-bottom: 18px; }
   .kt { position: relative; padding: 18px 18px 16px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: linear-gradient(160deg, var(--card), var(--card2)); }
   .kt::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
@@ -383,17 +383,14 @@
   .blprev .bw { width: 150px; height: 190px; border-radius: 18px; overflow: hidden; border: 1px solid var(--line2); background: #222; }
   .blprev .bi { width: 100%; height: 100%; background: radial-gradient(circle at 50% 34%, #f3c9a4 0 15%, transparent 16%), radial-gradient(ellipse at 50% 78%, #b3262e 0 34%, transparent 35%), repeating-linear-gradient(90deg, #2b2030 0 14px, #3d2d44 14px 28px); transition: filter .12s, transform .12s; }
 
-  /* V21 admin: quick actions, quick jump, premium polish */
-  .qa { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin: 0 0 16px; }
-  .qa button { position: relative; display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 16px; text-align: left; font-weight: 700; font-size: 13.5px; color: var(--text); background: linear-gradient(165deg, var(--card2), var(--card)); border: 1px solid var(--line); box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 14px 26px -22px rgba(0,0,0,.7); transition: transform .15s ease, border-color .15s ease; }
-  .qa button:hover { border-color: var(--line2); transform: translateY(-1px); } .qa button:active { transform: scale(.98); }
-  .qa .i { flex: none; width: 20px; height: 20px; color: var(--gold); } .qa kbd { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--mute); border: 1px solid var(--line2); border-radius: 6px; padding: 1px 6px; font-family: inherit; }
-  .qa .bd { position: static; margin-left: auto; }
-  .qj { align-items: flex-start; padding-top: 12vh; } .qjq { width: 100%; font-size: 15px; padding: 12px 14px; } .qjl { margin-top: 8px; max-height: 50vh; overflow: auto; display: flex; flex-direction: column; gap: 2px; }
-  .qji { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: 12px; font-weight: 600; text-align: left; color: var(--text); } .qji .i { width: 18px; height: 18px; color: var(--gold); } .qji.on, .qji:hover { background: var(--card2); box-shadow: inset 0 0 0 1px var(--line2); }
+  /* V21 admin: premium polish */
   .tab { transition: background .15s ease, color .15s ease; } .tab:hover { color: var(--text); background: color-mix(in srgb, var(--card2) 60%, transparent); }
   .tab.on { background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 16%, var(--card2)), var(--card2)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 35%, var(--line)), 0 10px 22px -16px color-mix(in srgb, var(--gold) 70%, transparent); }
   .card { box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 16px 30px -24px rgba(0,0,0,.7); }
+  .pkv { display: block; margin-top: 6px; padding: 6px 9px; border-radius: 9px; border: 1px dashed var(--line2); font-size: 11.5px; font-weight: 600; text-align: center; color: var(--gold); cursor: pointer; } .pkv.on { border-style: solid; background: color-mix(in srgb, var(--gold) 12%, transparent); }
+  .pkvx { margin-top: 4px; font-size: 11px; color: var(--mute); text-decoration: underline; }
+  .thc .thbar { height: 8px; border-radius: 5px; background: var(--line); overflow: hidden; margin: 10px 0 4px; } .thc .thbar i { display: block; height: 100%; background: var(--metal); border-radius: 5px; transition: width .3s; }
+  .thc .thn { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin: 12px 0; } .thc .thn > div { padding: 10px 12px; border-radius: 12px; background: var(--card2); border: 1px solid var(--line); } .thc .thn b { display: block; font-size: 22px; font-family: "Cormorant Garamond", Georgia, serif; } .thc .thn span { font-size: 11.5px; color: var(--mute); } .thc .thn .warn { border-color: color-mix(in srgb, var(--gold) 60%, transparent); }
 </style>
 </head>
 <body>
@@ -444,22 +441,13 @@
   <div class="mback" id="mback"></div>
   <aside>
     <div class="brand"><svg><use href="#logo"/></svg><span id="bt">Admin</span></div>
-    <div class="qs"><svg class="i"><use href="#i-search"/></svg><input type="search" id="gq" placeholder="Find a member" autocomplete="off"></div>
     <nav id="tabs"></nav>
     <div class="sp"></div>
     <div class="side-foot"><button class="btn gh xs" id="themeBtn">Theme</button><button class="btn gh xs" id="logoutBtn">Log out</button></div>
   </aside>
   <main>
     <!-- DASHBOARD -->
-    <section id="t-dash"><div class="hero"><div class="eb">Overview</div><h2>Dashboard</h2><p>A calm overview of your gallery, members and Premium.</p><span class="orn"></span></div>
-      <div class="qa" id="dQA">
-        <button data-go="upload"><svg class="i"><use href="#i-up"/></svg><span>Upload</span></button>
-        <button data-go="uploads"><svg class="i"><use href="#i-folder"/></svg><span>Member posts</span><b class="bd" id="qaUu" hidden></b></button>
-        <button data-go="tickets"><svg class="i"><use href="#i-ticket"/></svg><span>Support</span><b class="bd" id="qaTk" hidden></b></button>
-        <button data-go="notify"><svg class="i"><use href="#i-bell"/></svg><span>Announce</span></button>
-        <button data-go="premium"><svg class="i"><use href="#i-crown"/></svg><span>Codes</span></button>
-        <button id="qaJump"><svg class="i"><use href="#i-search"/></svg><span>Jump to...</span><kbd>Ctrl K</kbd></button>
-      </div>
+    <section id="t-dash"><div class="hero"><h2>Dashboard</h2><span class="orn"></span></div>
       <div class="card attn" id="dAttn" hidden></div>
       <div class="kts" id="dStats"></div>
       <div class="two"><div class="card"><h3>Most viewed</h3><div class="top5" id="dTop"></div></div><div class="card"><h3>Recently active</h3><div id="dPay"></div></div></div>
@@ -467,7 +455,7 @@
     </section>
 
     <!-- UPLOAD -->
-    <section id="t-upload" hidden><div class="hero"><div class="eb">Content</div><h2>Upload</h2><p>Pick or create the category and folder first, then drop your photos and videos. Everything you create appears in Data straight away.</p><span class="orn"></span></div>
+    <section id="t-upload" hidden><div class="hero"><h2>Upload</h2><span class="orn"></span></div>
       <div class="card"><div class="step"><i>1</i><h3>Where should it go?</h3></div>
         <div class="dest">
           <div class="dcol"><label>Category</label><div class="inl"><input type="text" id="upCatNew" placeholder="New category title"><button class="btn xs" id="upCatAdd">Create</button></div><select id="upCat"></select></div>
@@ -487,14 +475,14 @@
     </section>
 
     <!-- STRUCTURE -->
-    <section id="t-structure" hidden><div class="hero"><div class="eb">Content</div><h2>Structure</h2><p>The whole library as a diagram. Drag a folder onto another to move it, or use Move. Every folder has Track (a line diagram of what is inside), Modify and Edit. Numbers like F3, P12 and V7 are for you only: F = folder, P = photo, V = video.</p><span class="orn"></span></div>
+    <section id="t-structure" hidden><div class="hero"><h2>Structure</h2><span class="orn"></span></div>
       <div class="card"><div class="row"><input type="search" id="stQ" placeholder="Find a folder or number (F3)" style="flex:1;min-width:180px"><button class="btn gh xs" id="stExp">Expand all</button><button class="btn gh xs" id="stCol">Collapse all</button><button class="btn xs" id="stNew">New top-level folder</button></div><div class="sm mute" id="stSum" style="margin-top:8px"></div></div>
       <div class="card"><div class="topdrop" id="stTop">Drop a folder or a file here to move it to the top level</div><div class="tree" id="stTree"></div></div>
       <div class="card" id="stOrphans" hidden></div>
     </section>
 
     <!-- DATA -->
-    <section id="t-media" hidden><div class="hero"><div class="eb">Content</div><h2>Data</h2><p>Your folders and files. Open a folder to see what is inside, and edit name, category, access (Rose / Royal) and the Spotlight pin.</p><span class="orn"></span></div>
+    <section id="t-media" hidden><div class="hero"><h2>Data</h2><span class="orn"></span></div>
       <div class="card" id="dPins" hidden></div>
       <div class="card"><div class="row"><input type="search" id="mQ" placeholder="Search a name or number (F3, P12, V7)" style="flex:1;min-width:200px"><button class="btn" id="mGo">Search</button><button class="btn gh" id="mClr">Clear</button></div><div class="crumbs" id="mCrumbs" style="margin:12px 0 0"></div></div>
       <div id="mBulk" class="bulk" hidden><b id="mSelN">0 selected</b><button class="btn xs" id="bMove">Move…</button>
@@ -504,19 +492,19 @@
     </section>
 
     <!-- CATEGORIES -->
-    <section id="t-cats" hidden><div class="hero"><div class="eb">Content</div><h2>Category</h2><p>Categories appear in the Category column on Explore. Create one, then add or remove folders in it.</p><span class="orn"></span></div>
+    <section id="t-cats" hidden><div class="hero"><h2>Category</h2><span class="orn"></span></div>
       <div class="card"><div class="row"><input type="text" id="newCat" placeholder="New category name" style="flex:1"><button class="btn" id="addCat">Create category</button></div></div>
       <div class="gr" id="catList"></div>
     </section>
 
     <!-- TRASH -->
-    <section id="t-trash" hidden><div class="hero"><div class="eb">Content</div><h2>Recycle bin</h2><p>Deleted folders and files wait here. Restore them any time. Files stay in storage until you delete them forever.</p><span class="orn"></span></div>
+    <section id="t-trash" hidden><div class="hero"><h2>Recycle bin</h2><span class="orn"></span></div>
       <div class="card"><div class="row between"><span class="mute" id="trInfo"></span><button class="btn dg xs" id="trEmpty">Empty recycle bin</button></div></div>
       <div id="trList"></div>
     </section>
 
         <!-- SCHEDULE -->
-    <section id="t-schedule" hidden><div class="hero"><div class="eb">Content</div><h2>Schedule</h2><p>Upload now, publish later. Pick a day on the calendar, add the files, and the folder goes live by itself at the time you choose. Until then members cannot see it, and you can preview it here.</p><span class="orn"></span></div>
+    <section id="t-schedule" hidden><div class="hero"><h2>Schedule</h2><span class="orn"></span></div>
       <div class="card"><div class="calhd"><button class="btn gh xs" id="calPrev">←</button><h3 id="calTitle"></h3><button class="btn gh xs" id="calNext">→</button><button class="btn xs" id="calToday">Today</button></div>
         <div class="cal" id="calGrid"></div><p class="sm mute" style="margin-top:10px">Gold = waiting to go live. Green = already live. Tap a day to schedule something on it, or tap a folder to preview it.</p></div>
       <div class="card" id="scFormCard"><div class="step"><i>+</i><h3>New scheduled folder</h3></div>
@@ -530,31 +518,29 @@
     </section>
 
     <!-- LIVE -->
-    <section id="t-live" hidden><div class="hero"><div class="eb">People</div><h2>Live screen</h2><p>Who is online right now, which page they are on, and what the bot is doing. Updates every few seconds.</p><span class="orn"></span></div>
+    <section id="t-live" hidden><div class="hero"><h2>Live screen</h2><span class="orn"></span></div>
       <div class="kts" id="lvStats"></div>
       <div class="lvg"><div class="card"><div class="row between"><h3 style="margin:0">Online now</h3><span class="row" style="gap:6px"><button class="btn livebtn xs" id="lvWall"><i class="livedot"></i>TV WALL</button><button class="btn gh xs" id="lvPause">Pause</button></span></div><div id="lvNow" style="margin-top:8px"></div></div>
         <div class="card"><h3>Activity feed</h3><div class="feed" id="lvFeed"></div></div></div>
     </section>
 
     <!-- MAINTENANCE -->
-    <section id="t-maintenance" hidden><div class="hero"><div class="eb">System</div><h2>Maintenance</h2><p>Close the bot and the web app while you work. Members on the allowed list can still get in, so you can test as a normal member.</p><span class="orn"></span></div>
+    <section id="t-maintenance" hidden><div class="hero"><h2>Maintenance</h2><span class="orn"></span></div>
       <div class="card"><div class="mbig"><div class="sw" id="mtSw" role="switch" tabindex="0"></div><div><div class="st" id="mtSt">…</div><div class="mute sm" id="mtSub"></div></div></div>
         <label class="f" style="margin-top:16px"><span>Message members will see</span><input type="text" id="mtMsg" placeholder="We are updating the gallery and will be right back."></label><button class="btn" id="mtSave">Save</button></div>
-      <div class="card"><h3>Fast thumbnails</h3><p class="sm mute" style="margin-bottom:12px">Makes a small picture (about 30 KB) of every photo and video so the app opens fast. New uploads get one automatically; press the button once for the files you already have. You can close this page and continue later, it picks up where it stopped.</p>
-        <div class="row"><button class="btn" id="thGo">Make thumbnails for old files</button><span class="mute sm" id="thSt"></span></div></div>
       <div class="card"><h3>Can still open it during maintenance</h3><p class="sm mute" style="margin-bottom:12px">Search a member by Telegram ID, name or @username and tap Allow. You can also type any Telegram ID and press Enter.</p>
         <div class="row"><input type="search" id="mtQ" placeholder="Telegram ID, name or @username" style="flex:1;min-width:200px"><button class="btn" id="mtGo">Search</button></div><div id="mtRes" style="margin:8px 0 14px"></div>
         <div id="mtList"></div></div>
     </section>
 
     <!-- HISTORY -->
-    <section id="t-history" hidden><div class="hero"><div class="eb">System</div><h2>History and undo</h2><p>Every change you make in the admin panel is listed here for 45 days. Tap Undo to put the old value back, or to bring back something you deleted by mistake. Deleted folders and files wait in the Recycle bin.</p><span class="orn"></span></div>
+    <section id="t-history" hidden><div class="hero"><h2>History and undo</h2><span class="orn"></span></div>
       <div class="card"><div class="row"><select id="hsF" style="width:auto"><option value="">All changes</option><option value="open">Can still be undone</option><option value="delete">Deleted things</option></select><select id="hsT" style="width:auto"><option value="">Everything</option><option value="albums">Folders</option><option value="media">Files</option><option value="categories">Categories</option><option value="plans">Plans</option><option value="banners">Banners</option><option value="promos">Promo codes</option><option value="profiles">Members</option><option value="user_posts">Member posts</option></select><button class="btn gh xs" data-go="trash">Open Recycle bin</button></div></div>
       <div class="card"><div id="hsList"></div><button class="btn gh" id="hsMore" hidden style="margin-top:12px">Load more</button></div>
     </section>
 
     <!-- BANNERS -->
-    <section id="t-banners" hidden><div class="hero"><div class="eb">Content</div><h2>Covers and banners</h2><p>Big slides at the top of the Home page. Wide images work best (21:9).</p><span class="orn"></span></div>
+    <section id="t-banners" hidden><div class="hero"><h2>Covers and banners</h2><span class="orn"></span></div>
       <div class="card"><div class="cols"><label class="f"><span>Image</span><input type="file" id="bnFile" accept="image/*"></label>
         <label class="f"><span>Title</span><input type="text" id="bnTitle" maxlength="60"></label><label class="f"><span>Subtitle</span><input type="text" id="bnSub" maxlength="90"></label>
         <label class="f"><span>Opens</span><select id="bnKind"><option value="none">Nothing</option><option value="plans">Premium plans</option><option value="category">A category</option><option value="album">An album</option></select></label>
@@ -562,7 +548,7 @@
       <div class="card"><div id="bnList"></div></div>
     </section>
 
-    <section id="t-users" hidden><div class="hero"><div class="eb">People</div><h2>Users</h2><p>Members, their Rose and Royal time, referrals and posts. Usernames and IDs are visible here only.</p><span class="orn"></span></div>
+    <section id="t-users" hidden><div class="hero"><h2>Users</h2><span class="orn"></span></div>
       <div id="uListWrap"><div class="card"><div class="row"><input type="search" id="uQ" placeholder="Name, @username or Telegram ID" style="flex:1;min-width:200px">
         <select id="uF" style="width:auto"><option value="">Everyone</option><option value="rose">Rose members</option><option value="royal">Royal members</option><option value="banned">Banned</option></select>
         <button class="btn" id="uGo">Search</button><button class="btn gh" id="uCsv">Export CSV</button></div><div id="uList" style="margin-top:6px"></div></div></div>
@@ -571,7 +557,8 @@
 
         <!-- PAYMENTS -->
     <!-- PREMIUM -->
-    <section id="t-premium" hidden><div class="hero"><div class="eb">Premium</div><h2>Plans and codes</h2><p>Rose (lite) and Royal (expensive). Members see the details and the time, never a price.</p><span class="orn"></span></div>
+    <section id="t-premium" hidden><div class="hero"><h2>Plans and codes</h2><span class="orn"></span></div>
+      <div class="kts" id="pNow" style="margin-bottom:16px"></div>
       <div class="stats" id="pStats"></div>
       <div class="card"><h3>Plans (shown on the Premium plans page)</h3><div id="plList"></div><button class="btn gh" id="plAdd" style="margin-top:10px">New plan</button></div>
       <div class="card"><h3>Unlock codes</h3><p class="sm mute" style="margin-bottom:10px">Free Premium time you give out by hand. Invite rewards create their own codes automatically.</p>
@@ -587,7 +574,7 @@
     </section>
 
     <!-- NOTIFY -->
-    <section id="t-notify" hidden><div class="hero"><div class="eb">System</div><h2>Notify</h2><p>In-app popup and Telegram message.</p><span class="orn"></span></div>
+    <section id="t-notify" hidden><div class="hero"><h2>Notify</h2><span class="orn"></span></div>
       <div class="card"><div class="chips" id="nTpl"><button data-t="offer">Premium offer</button><button data-t="drop">New collection</button><button data-t="maint">Maintenance</button></div>
         <div class="cols"><label class="f"><span>Type</span><select id="nKind"><option value="custom">Update</option><option value="premium">Premium</option><option value="notice">Notice</option></select></label><label class="f"><span>One user only (Telegram ID, blank = everyone)</span><input type="text" id="nTg"></label></div>
         <label class="f"><span>Title</span><input type="text" id="nTitle" maxlength="120"></label><label class="f"><span>Message</span><textarea id="nBody" maxlength="500"></textarea></label>
@@ -597,20 +584,20 @@
     </section>
 
     <!-- TICKETS -->
-    <section id="t-tickets" hidden><div class="hero"><div class="eb">People</div><h2>Support chats</h2><p>Members chat with you like in a messenger. They cannot delete or close a chat; only you can.</p><span class="orn"></span></div>
+    <section id="t-tickets" hidden><div class="hero"><h2>Support chats</h2><span class="orn"></span></div>
       <div class="tkw" id="tkWrap"><aside class="tkl"><div class="chips" id="tkF"><button data-v="open" class="on">Needs reply</button><button data-v="answered">Answered</button><button data-v="closed">Closed</button><button data-v="all">All</button></div><input type="search" id="tkQ" placeholder="Search name or subject" style="margin:10px 0"><div id="tkList"></div></aside>
         <div class="tkr" id="tkThread"><div class="empty"><div style="font-size:30px;color:var(--gold)">✦</div>Choose a chat on the left.</div></div></div>
     </section>
 
     <!-- USER UPLOADS -->
-    <section id="t-uploads" hidden><div class="hero"><div class="eb">People</div><h2>Member posts</h2><p>Everything members upload. One tap approves. Use the dropdown to see only Waiting, Approved or Declined posts.</p><span class="orn"></span></div>
+    <section id="t-uploads" hidden><div class="hero"><h2>Member posts</h2><span class="orn"></span></div>
       <div class="card"><div class="row"><select id="uuS" style="width:auto;min-width:190px"></select><input type="text" id="uuQ" placeholder="Telegram ID (optional)" style="flex:1;min-width:160px"><button class="btn" id="uuGo">Show</button></div><div class="mute sm" id="uuInfo" style="margin-top:8px"></div></div>
       <div id="uuBulk" class="bulk" hidden><b id="uuSelN">0 selected</b><button class="btn xs" id="uuBA">Approve</button><button class="btn dg xs" id="uuBR">Decline</button><button class="btn gh xs" id="uuBC">Clear</button></div>
       <div id="uuList"></div><button class="btn gh" id="uuMore" hidden style="margin-top:12px">Load more</button>
     </section>
 
         <!-- SETTINGS -->
-    <section id="t-chat" hidden><div class="hero"><div class="eb">People</div><h2>Community chat</h2><p>The group chat every member is in (Chat tab). Delete messages, pin one, mute people, or switch the chat off.</p><span class="orn"></span></div>
+    <section id="t-chat" hidden><div class="hero"><h2>Community chat</h2><span class="orn"></span></div>
       <div class="card"><h3>Chat settings</h3>
         <label class="ck"><input type="checkbox" id="chOnS"> Chat is on</label>
         <label class="ck" style="margin-top:8px"><input type="checkbox" id="chPhotosS"> Members can send photos (up to 10 MB, never video)</label>
@@ -619,7 +606,7 @@
         <div class="row" style="margin-top:10px"><span class="sm">Slow mode</span><select id="chSlowS" style="width:auto"><option value="0">Off</option><option value="2">2 s</option><option value="5">5 s</option><option value="10">10 s</option><option value="30">30 s</option><option value="60">60 s</option></select><span class="mute sm" id="chSetMsg"></span></div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Muted members</h3></div><div id="chMuted" class="sm mute" style="margin-top:8px">None</div></div>
       <div class="card"><div class="row between"><h3 style="margin:0">Latest messages</h3><span class="row"><button class="btn gh xs" id="chRef">Refresh</button><button class="btn dg xs" id="chClear">Delete all</button></span></div><div id="chList" style="margin-top:10px"></div></div></section>
-    <section id="t-flow" hidden><div class="hero"><div class="eb">Content</div><h2>Preview flow</h2><p>How fast the pictures change inside the folder cards. It runs only for the cards that are on the member's screen (usually about 6), starting with the first one at the top; scroll away and it rests. Every picture that shows counts one view. Videos never play by themselves.</p><span class="orn"></span></div>
+    <section id="t-flow" hidden><div class="hero"><h2>Preview flow</h2><span class="orn"></span></div>
       <div class="card"><h3>Preview for all folders</h3>
         <label class="ck"><input type="checkbox" id="flOnAll"> Preview flow is on</label>
         <p class="hint" style="margin:8px 0 0">One switch for everything. <b>On</b>: folder cards play their pictures (videos skipped), except the folders you switched off below. <b>Off</b>: every card shows one still picture only: the folder's cover if you set one, otherwise its first picture. Saves at once.</p></div>
@@ -641,7 +628,7 @@
         <p class="hint" style="margin-top:10px">After this many cards on the screen the delay starts again from zero. Default 10.</p></div>
       <div class="card"><h3>Preview</h3><div id="flDemo" style="display:flex;gap:8px"></div><p class="hint" style="margin-top:10px">Four cards, each changing file with the timing above.</p>
         <div class="row" style="margin-top:12px"><button class="btn" id="flSave">Save</button><button class="btn gh" id="flRec">5 s first, 1 s apart</button><button class="btn gh" id="flReset">Reset to default</button><span class="sm mute" id="flMsg"></span></div></div></section>
-    <section id="t-blur" hidden><div class="hero"><div class="eb">Premium</div><h2>Premium blur</h2><p>Choose how strongly locked photos and videos are blurred for members who do not have access yet.</p><span class="orn"></span></div>
+    <section id="t-blur" hidden><div class="hero"><h2>Premium blur</h2><span class="orn"></span></div>
       <div class="card"><h3>Blur strength</h3>
         <div class="row" style="gap:16px;flex-wrap:nowrap"><input type="range" id="blRange" min="0" max="100" step="5" style="flex:1;min-width:0"><b class="stat" id="blVal" style="min-width:68px;text-align:right;font-size:26px">50%</b></div>
         <p class="hint" style="margin-top:10px">0% shows the picture clearly, 100% is the strongest blur. The default is 50%.</p>
@@ -650,7 +637,11 @@
         <p class="hint" style="margin-top:12px">The new blur reaches members the next time they open the app.</p>
       </div>
     </section>
-    <section id="t-settings" hidden><div class="hero"><div class="eb">System</div><h2>Settings</h2><p>Member uploads, invite rewards, storage and general setup.</p><span class="orn"></span></div>
+    <section id="t-settings" hidden><div class="hero"><h2>Settings</h2><span class="orn"></span></div>
+      <div class="card thc"><h3>Thumbnail converter (about 30 KB each)</h3><p class="sm mute">A small picture of every photo and video so the app opens fast. New uploads get theirs automatically; files that missed it (new or old) wait here until you convert them. You can stop and continue later.</p>
+        <div class="thbar"><i id="thBar" style="width:0%"></i></div><div class="sm mute" id="thPct"></div>
+        <div class="thn" id="thNums"></div>
+        <div class="row"><button class="btn" id="thGo">Convert waiting files</button><button class="btn gh" id="thRe">Check again</button><span class="mute sm" id="thSt"></span></div></div>
       <div class="card"><h3>Spotlight rules</h3><p class="sm mute" style="margin-bottom:10px">Pinning is done in Data (the star on any folder or file). These rules decide what else appears in the Home slider.</p>
         <div class="cols"><label class="f"><span>A new folder counts as "new" for (days)</span><input type="number" id="spDays" min="1"></label><label class="f"><span>Each member sees it in their first (app opens)</span><input type="number" id="spOpens" min="1"></label>
           <label class="f"><span>Max new folders</span><input type="number" id="spMax" min="0"></label><label class="f"><span>Popular folders (top N, all time)</span><input type="number" id="spPop" min="0" max="20"></label></div><button class="btn" id="spSave">Save rules</button></div>
@@ -731,26 +722,9 @@ const TABS = [["dash", "chart", "Dashboard"], ["upload", "up", "Upload"], ["stru
 function buildTabs() {
   const GROUPS = [["Overview", ["dash"]], ["Content", ["upload", "schedule", "structure", "media", "cats", "flow", "trash"]], ["People", ["live", "users", "chat", "tickets", "uploads"]], ["Premium", ["premium", "blur"]], ["System", ["maintenance", "history", "notify", "settings"]]];
   const cur = document.querySelector(".tab.on")?.dataset.t;
-  $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}</button>`; }).join("")).join("");
+  $("tabs").innerHTML = GROUPS.map(([g, ks]) => `<div class="grp">${g}</div>` + ks.map(k => { const [, i, l] = TABS.find(t => t[0] === k); return `<button class="tab ${k === cur ? "on" : ""}" data-t="${k}">${ic(i)}<span class="lb">${l}</span>${k === "tickets" ? '<span class="bd" id="tkBd" hidden></span>' : ""}${k === "uploads" ? '<span class="bd" id="uuBd" hidden></span>' : ""}${k === "settings" ? '<span class="bd" id="stBd" hidden></span>' : ""}</button>`; }).join("")).join("");
 }
 document.addEventListener("click", e => { const g = e.target.closest("[data-go]"); if (g) show(g.dataset.go); });
-/* V21 quick jump: Ctrl+K (or the Jump button) opens a search over every page of the panel */
-function quickJump() {
-  if (document.querySelector(".qj")) return;
-  const d = document.createElement("div"); d.className = "mdl qj";
-  d.innerHTML = `<div class="box" style="max-width:420px"><input type="search" class="qjq" placeholder="Go to a page..." autocomplete="off"><div class="qjl"></div></div>`;
-  const q = d.querySelector(".qjq"), l = d.querySelector(".qjl"); let sel = 0, list = [];
-  const draw = () => { const w = q.value.trim().toLowerCase(); list = TABS.filter(t => !w || t[2].toLowerCase().includes(w) || t[0].includes(w)); sel = Math.min(sel, Math.max(0, list.length - 1));
-    l.innerHTML = list.map((t, i) => `<button class="qji ${i === sel ? "on" : ""}" data-t="${t[0]}"><svg class="i"><use href="#i-${t[1]}"/></svg><span>${t[2]}</span></button>`).join("") || '<p class="mute sm" style="padding:10px">No page found</p>'; };
-  const go = t => { d.remove(); if (t) show(t); };
-  q.oninput = () => { sel = 0; draw(); };
-  q.onkeydown = e => { if (e.key === "ArrowDown") { sel = Math.min(list.length - 1, sel + 1); draw(); e.preventDefault(); } else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); draw(); e.preventDefault(); } else if (e.key === "Enter") go(list[sel]?.[0]); else if (e.key === "Escape") go(null); };
-  l.onclick = e => { const b = e.target.closest(".qji"); if (b) go(b.dataset.t); };
-  d.onclick = e => { if (e.target === d) go(null); };
-  document.body.appendChild(d); draw(); q.focus();
-}
-document.addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && !$("panel").hidden) { e.preventDefault(); quickJump(); } });
-document.addEventListener("click", e => { if (e.target.closest("#qaJump")) quickJump(); });
 let tkTimer;
 const closeMenu = () => $("panel").classList.remove("menu-open");
 $("menuBtn").onclick = () => $("panel").classList.toggle("menu-open");
@@ -767,9 +741,9 @@ function show(t) {
 $("tabs").onclick = e => { const b = e.target.closest(".tab"); if (b) show(b.dataset.t); };
 async function badges() {
   const [t, u] = await Promise.all([sb.from("tickets").select("id", { count: "exact", head: true }).eq("status", "open"), sb.from("user_posts").select("id", { count: "exact", head: true }).eq("status", "pending")]);
-  const qa1 = $("qaUu"); if (qa1) { qa1.hidden = !u.count; qa1.textContent = u.count || ""; } const qa2 = $("qaTk"); if (qa2) { qa2.hidden = !t.count; qa2.textContent = t.count || ""; }
   const uu = $("uuBd"); if (uu) { uu.hidden = !u.count; uu.textContent = u.count || ""; }
   const b = $("tkBd"); if (b) { b.hidden = !t.count; b.textContent = t.count || ""; }
+  thCheck(); // files without a thumbnail show as a number on the Settings tab
 }
 
 /* helpers */
@@ -875,15 +849,12 @@ async function loadDash() {
   const now = new Date(), iso = now.toISOString(), d7 = new Date(now - 7 * 864e5).toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString();
   const t0 = new Date(now); t0.setHours(0, 0, 0, 0);
   const cnt = (t, f) => { let q = sb.from(t).select("*", { count: "exact", head: true }); return f ? f(q) : q; };
-  const [users, new7, newToday, banned, prem, rose, roy, exp7, photos, videos, folders, topF, roseF, royF, pinA, pinM, catN, posts, postP, postA, postR, tkO, tkA, tkC, trashN, pend, top, recent] = await Promise.all([
-    cnt("profiles"), cnt("profiles", q => q.gt("created_at", d7)), cnt("profiles", q => q.gt("created_at", t0.toISOString())), cnt("profiles", q => q.eq("is_banned", true)),
-    cnt("profiles", q => q.or(`lite_until.gt.${iso},expensive_until.gt.${iso}`)), cnt("profiles", q => q.gt("lite_until", iso)), cnt("profiles", q => q.gt("expensive_until", iso)),
-    cnt("profiles", q => q.or(`and(lite_until.gt.${iso},lite_until.lt.${in7}),and(expensive_until.gt.${iso},expensive_until.lt.${in7})`)),
+  const [users, new7, newToday, photos, videos, folders, topF, pinA, pinM, catN, posts, postP, postA, postR, tkO, tkA, tkC, trashN, top, recent] = await Promise.all([
+    cnt("profiles"), cnt("profiles", q => q.gt("created_at", d7)), cnt("profiles", q => q.gt("created_at", t0.toISOString())),
     cnt("media", q => q.eq("type", "image")), cnt("media", q => q.eq("type", "video")), cnt("albums"), cnt("albums", q => q.is("parent_id", null)),
-    cnt("albums", q => q.eq("access", "lite")), cnt("albums", q => q.eq("access", "expensive")), cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)), cnt("categories"),
+    cnt("albums", q => q.eq("pinned", true)), cnt("media", q => q.eq("pinned", true)), cnt("categories"),
     cnt("user_posts"), cnt("user_posts", q => q.eq("status", "pending")), cnt("user_posts", q => q.eq("status", "approved")), cnt("user_posts", q => q.eq("status", "rejected")),
     cnt("tickets", q => q.eq("status", "open")), cnt("tickets", q => q.eq("status", "answered")), cnt("tickets", q => q.eq("status", "closed")), cnt("trash"),
-    Promise.resolve({ count: 0 }),
     sb.from("media").select("title,label,views,type,kind_no,preview,path,albums(title)").order("views", { ascending: false }).limit(5),
     sb.from("profiles").select("tg_id,first_name,display_name,username,created_at,lite_until,expensive_until").order("last_seen", { ascending: false, nullsFirst: false }).limit(6),
   ]);
@@ -894,12 +865,11 @@ async function loadDash() {
   let dau = {}, refs = []; try { const [a, b] = await Promise.all([sb.rpc("admin_dau"), sb.rpc("admin_top_referrers", { p_n: 10 })]); dau = a.data || {}; refs = b.data || []; } catch { /* run supabase_v20.sql */ }
   $("dRef").innerHTML = refs.length ? refs.map((r, i) => `<div class="row between line"><span><b>${i + 1}.</b> <a href="#" data-user="${r.tg_id}" style="color:inherit">${esc(r.name || "Member")}</a> <span class="mute sm">${r.username ? "@" + esc(r.username) : ""}</span></span><span class="pill">${r.invited} invited</span></div>`).join("") : '<p class="mute sm">No invites yet (or run supabase_v20.sql).</p>';
   $("dStats").innerHTML = [
-    kt("rose", "Active members", dau.d1 ?? "-", [["today", dau.today ?? "-"], ["last 24 hours", dau.d1 ?? "-"], ["last 7 days", dau.d7 ?? "-"]], "live"),
-    kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count], ["banned", banned.count]], "users"),
-    kt("roy", "Premium now", prem.count, [["Rose", rose.count], ["Royal", roy.count], ["ending in 7 days", exp7.count]], "crown"),
-    kt("", "Files", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count], ["pinned", pinM.count]], "img"),
-    kt("", "Folders", folders.count, [["top level", topF.count], ["inside folders", (folders.count || 0) - (topF.count || 0)], ["Rose", roseF.count], ["Royal", royF.count]], "folder"),
+    kt("rose", "Active members", dau.d1 ?? "-", [["today", dau.today ?? "-"], ["last 24 hours", dau.d1 ?? "-"]], "live"),
+    kt("", "Members", users.count, [["new today", newToday.count], ["this week", new7.count]], "users"),
     kt("rose", "Views", views.toLocaleString(), [["categories", catN.count], ["spotlight pins", (pinA.count || 0) + (pinM.count || 0)]], "chart"),
+    kt("", "Files", (photos.count || 0) + (videos.count || 0), [["photos", photos.count], ["videos", videos.count]], "img"),
+    kt("", "Folders", folders.count, [["main folders", topF.count], ["sub folders", (folders.count || 0) - (topF.count || 0)]], "folder"),
     kt("", "Member posts", posts.count, [["waiting", postP.count], ["approved", postA.count], ["declined", postR.count]], "star"),
     kt("", "Support chats", (tkO.count || 0) + (tkA.count || 0) + (tkC.count || 0), [["need reply", tkO.count], ["answered", tkA.count], ["closed", tkC.count]], "ticket"),
     kt("", "Recycle bin", trashN.count, [["restore any time", "✓"]], "trash"),
@@ -977,7 +947,8 @@ async function doUpload(files, album, access, log, prog) {
     log.textContent += `(${i + 1}/${files.length}) ${f.name}\n`;
     const { error: ue } = await putFile(path, f);
     if (ue) { log.textContent += `  failed: ${ue.message}\n`; continue; }
-    const u = URL.createObjectURL(f); const preview = await makePreview(u, type); const tb = await makeCardThumb(u, type); URL.revokeObjectURL(u);
+    // a video can come with its own thumbnail picture chosen on the upload page (optional); otherwise the thumbnail is made from the video
+    const cu = f._thumb ? URL.createObjectURL(f._thumb) : null, u = cu || URL.createObjectURL(f), tt = cu ? "image" : type; const preview = await makePreview(u, tt); const tb = await makeCardThumb(u, tt); URL.revokeObjectURL(u);
     const thOk = tb ? !(await putThumb(path, tb)).error : false;
     serial++;
     const own = String(f._title || "").trim();
@@ -988,6 +959,7 @@ async function doUpload(files, album, access, log, prog) {
     log.textContent += `  saved as ${type === "video" ? "V" : "P"}${row.kind_no ?? "?"}\n`;
   }
   if (firstId && !album.cover_media_id) await sb.from("albums").update({ cover_media_id: firstId }).eq("id", album.id);
+  thCheck(); // detect files of this upload that still have no thumbnail
   const thumb = ok ? await folderThumb(album, okFiles) : null;
   return { ok, firstId, thumb };
 }
@@ -1041,8 +1013,10 @@ function addPicked(fs) { fs.filter(f => /^(image|video)\//.test(f.type)).forEach
 /* a grid of chosen files, each with its own title box (the title is what members see) */
 function pickGrid(el, arr, after, def) {
   el.className = "pk";
-  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)"></div>`).join("");
+  el.innerHTML = arr.map((f, i) => `<div class="pkc"><div class="th">${f.type.startsWith("video") ? `<video muted src="${URL.createObjectURL(f)}#t=0.5"></video>` : `<img src="${URL.createObjectURL(f)}">`}<button type="button" data-i="${i}" title="Remove">×</button><i>${(f.size / 1048576).toFixed(1)} MB</i></div><input type="text" class="pkt" data-i="${i}" value="${esc(f._title || "")}" placeholder="Title (optional)"><input type="datetime-local" step="1" class="pka" data-i="${i}" value="${esc(f._at || "")}" title="Time shown to members (empty = now)">${f.type.startsWith("video") ? `<label class="pkv ${f._thumb ? "on" : ""}"><input type="file" accept="image/*" class="pkx" data-i="${i}" hidden>${f._thumb ? "✓ " + esc(f._thumb.name.slice(0, 22)) : "+ Add video thumbnail (optional)"}</label>${f._thumb ? `<button type="button" class="pkvx" data-i="${i}">remove</button>` : ""}` : ""}</div>`).join("");
   el.querySelectorAll(".pkc button").forEach(b => b.onclick = () => { arr.splice(+b.dataset.i, 1); pickGrid(el, arr, after, def); if (after) after(); });
+  el.querySelectorAll(".pkx").forEach(i => i.onchange = () => { const f = i.files[0]; if (f && f.type.startsWith("image/")) { arr[+i.dataset.i]._thumb = f; pickGrid(el, arr, after, def); } });
+  el.querySelectorAll(".pkvx").forEach(b => b.onclick = () => { delete arr[+b.dataset.i]._thumb; pickGrid(el, arr, after, def); });
   el.querySelectorAll(".pkt").forEach(i => i.oninput = () => { arr[+i.dataset.i]._title = i.value; });
   el.querySelectorAll(".pka").forEach(i => i.oninput = () => { arr[+i.dataset.i]._at = i.value; });
 }
@@ -1637,8 +1611,23 @@ function wallDraw() {
   wallAges();
 }
 
-/* ---------- V16: thumbnails for files that were uploaded before this version ---------- */
+/* ---------- Thumbnail converter (Settings, top). V22: shows how many files are converted, how many are waiting (new / old) and detects new uploads ---------- */
 let thRun = false;
+async function thCheck() {
+  try {
+    const set = await getSettings(["thumb_last_run"]), since = set.thumb_last_run || new Date(Date.now() - 7 * 864e5).toISOString(), cn = f => f(sb.from("media").select("id", { count: "exact", head: true }));
+    const [tot, ok, nw] = await Promise.all([cn(q => q), cn(q => q.eq("thumb_ok", true)), cn(q => q.eq("thumb_ok", false).gt("created_at", since))]);
+    const total = tot.count || 0, done = ok.count || 0, wait = Math.max(0, total - done), fresh = Math.min(wait, nw.count || 0), old = wait - fresh;
+    if ($("thNums")) {
+      $("thBar").style.width = (total ? Math.round(done / total * 100) : 100) + "%"; $("thPct").textContent = total ? `${Math.round(done / total * 100)}% converted` : "No files yet";
+      $("thNums").innerHTML = `<div><b>${total}</b><span>All files</span></div><div><b>${done}</b><span>Converted</span></div><div class="${fresh ? "warn" : ""}"><b>${fresh}</b><span>New, not converted yet</span></div><div class="${old ? "warn" : ""}"><b>${old}</b><span>Old, not converted yet</span></div>`;
+      $("thGo").disabled = !wait && !thRun; if (!thRun) $("thGo").textContent = wait ? `Convert ${wait} waiting file${wait === 1 ? "" : "s"}` : "Everything is converted";
+    }
+    const bd = $("stBd"); if (bd) { bd.hidden = !wait; bd.textContent = wait || ""; } // a number on the Settings tab when files are waiting
+    return wait;
+  } catch { return 0; }
+}
+$("thRe").onclick = thCheck;
 $("thGo").onclick = async () => {
   if (thRun) { thRun = false; $("thGo").textContent = "Stopping…"; return; }
   thRun = true; $("thGo").textContent = "Stop"; const st = $("thSt"); let done = 0, bad = 0; const skip = [];
@@ -1648,7 +1637,7 @@ $("thGo").onclick = async () => {
       if (skip.length) q = q.not("id", "in", `(${skip.join(",")})`);
       const { data: rows, error } = await q;
       if (error) { toast(error.message + " (run supabase_v16.sql)"); break; }
-      if (!rows.length) { st.textContent = `Finished: ${done} made${bad ? `, ${bad} could not be made (check the storage CORS settings)` : ""}.`; break; }
+      if (!rows.length) { st.textContent = `Finished: ${done} made${bad ? `, ${bad} could not be made (check the storage CORS settings)` : ""}.`; if (!bad) await setSetting("thumb_last_run", new Date().toISOString()); break; }
       const urls = await sign(rows.map(r => r.path), 1800);
       await Promise.all(rows.map(async r => {
         const blob = urls[r.path] ? await makeCardThumb(urls[r.path], r.type) : null;
@@ -1656,10 +1645,10 @@ $("thGo").onclick = async () => {
         if (ok) { await sb.from("media").update({ thumb_ok: true }).eq("id", r.id); done++; } else { bad++; skip.push(r.id); }
         st.textContent = `Working… ${done} done${bad ? ", " + bad + " failed" : ""}`;
       }));
+      thCheck();
     }
-  } finally { thRun = false; $("thGo").textContent = "Make thumbnails for old files"; }
+  } finally { thRun = false; await thCheck(); }
 };
-
 
 /* ---------- V17 community chat moderation ---------- */
 async function loadChatAdmin() {
@@ -1845,6 +1834,11 @@ async function openUser(tg) {
 
 /* ---------- plans and codes ---------- */
 async function loadPremium() {
+  { // V22: "Premium now" moved here from the Dashboard
+    const now = new Date(), iso = now.toISOString(), in7 = new Date(+now + 7 * 864e5).toISOString(), c = f => f(sb.from("profiles").select("*", { count: "exact", head: true }));
+    Promise.all([c(q => q.or(`lite_until.gt.${iso},expensive_until.gt.${iso}`)), c(q => q.gt("lite_until", iso)), c(q => q.gt("expensive_until", iso)), c(q => q.or(`and(lite_until.gt.${iso},lite_until.lt.${in7}),and(expensive_until.gt.${iso},expensive_until.lt.${in7})`))])
+      .then(([a, b, d, e]) => { $("pNow").innerHTML = kt("roy", "Premium now", a.count, [["Rose", b.count], ["Royal", d.count], ["ending in 7 days", e.count]], "crown"); }).catch(() => {});
+  }
   const iso = new Date().toISOString();
   const [lk, rose, roy, cu, pl, st] = await Promise.all([
     sb.from("albums").select("id", { count: "exact", head: true }).neq("access", "public"),
@@ -2158,7 +2152,7 @@ $("blSave").onclick = async () => {
   if (!error) toast("Premium blur saved");
 };
 async function loadSettings() {
-  loadStorageInfo();
+  loadStorageInfo(); thCheck();
   const s = await getSettings(["maintenance", "user_upload_on", "user_file_max_mb", "user_folder_max_mb", "user_upload_premium_only", "popup_seconds", "community_on", "community_auto", "task_on", "task_posts", "task_hours", "task_title", "task_text", "premium_ads_on", "streak_on", "streak_days", "streak_hours", "ref_milestones", "ref_step", "ref_step_days", "ref_big_every", "ref_big_days", "spot_new_days", "spot_new_opens", "spot_new_max", "spot_pop_n"]);
   $("spDays").value = s.spot_new_days || 14; $("spOpens").value = s.spot_new_opens || 3; $("spMax").value = s.spot_new_max || 8; $("spPop").value = s.spot_pop_n || 5;
   $("setComm").checked = s.community_on !== "0"; $("setCommAuto").checked = s.community_auto === "1";
@@ -2261,7 +2255,6 @@ $("stMove").onclick = async () => {
   }
   $("stStop").hidden = true; $("stMsg").textContent += stStop ? "  |  stopped" : "  |  finished"; loadStorageInfo();
 };
-$("gq").addEventListener("keydown", e => { if (e.key !== "Enter") return; const v = e.target.value.trim(); if (!v) return; $("uQ").value = v; $("uF").value = ""; show("users"); e.target.value = ""; });
 /* ---------- a different time for every file (so members do not see them all added at once) ---------- */
 const lcl = d => { d = new Date(d); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}T${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}:${String(d.getSeconds()).padStart(2, "0")}`; };
 const toIso = v => { const d = new Date(v); return isNaN(d) ? null : d.toISOString(); };

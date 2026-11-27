@@ -162,7 +162,7 @@
   .th.vplay .pl { opacity: 0; transition: opacity .25s; } .th .pl { transition: opacity .25s; }
   .th .pl .i { width: 20px; height: 20px; margin-left: 2px; fill: currentColor; stroke: none; } .th.locked .pl { display: none !important; }
   .g3 .th .pl { width: 36px; height: 36px; } .g3 .th .pl .i { width: 16px; height: 16px; } .mp .th .pl { width: 32px; height: 32px; } .mp .th .pl .i { width: 14px; height: 14px; }
-  .cap b.dual { display: flex; align-items: center; gap: 4px; min-width: 0; } .cap b.dual .rt { flex: 0 1 auto; max-width: 56%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .cap b.dual .ar { flex: none; font-style: normal; color: var(--gold); font-weight: 800; } .cap b.dual .sb { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cap b.dual { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; overflow: hidden; line-height: 1.3; } .cap b.dual span, .cap b.dual i { display: inline; color: inherit; font-size: inherit; font-weight: inherit; font-style: normal; } .cap b.dual i.ar { color: var(--gold); font-weight: 800; margin: 0 3px; }
   .th .pl .i { width: 11px; height: 11px; fill: currentColor; stroke: none; margin-left: 1px; }
   .th .abg { position: absolute; z-index: 2; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px; padding: 3px 9px 3px 7px; border-radius: 999px; background: rgba(6,6,8,.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #F6F2E9; font-size: 11px; font-weight: 700; }
   .th .abg .i { width: 12px; height: 12px; stroke-width: 2; }
@@ -1100,7 +1100,15 @@ document.addEventListener("dragstart", e => e.preventDefault());
 /* ---------- cards: folder / file / community / my post ---------- */
 /* the preview flow is pictures only: videos are skipped (a folder that has only videos shows one still) */
 const picsOnly = l => { const p = l.filter(t => t.type !== "video"); return p.length ? p : l.slice(0, 1); };
-const flowItems = l => goodNet() ? l.filter(t => t.type !== "video" || (t.url && !t.locked) || t.locked) : picsOnly(l);
+const flowItems = l => { // pictures only on a poor connection; on a good one the real video is part of the flow
+  if (!goodNet()) return picsOnly(l);
+  const f = l.slice(), v = f[0];
+  if (v && v.type === "video" && v.url && !v.locked) { // a video first: show up to 2 pictures that follow it, then the video (8 s), then the rest
+    const pics = f.slice(1).filter(t => t.type !== "video").slice(0, 2);
+    return [...pics, v, ...f.slice(1).filter(t => !pics.includes(t))];
+  }
+  return f;
+};
 const thumbsOf = m => (m.thumbs && m.thumbs.length) ? (FLOW_ON ? flowItems(m.thumbs) : picsOnly(m.thumbs).slice(0, 1)) : [{ type: m.type || "image", url: null, preview: m.preview || null, locked: !!m.locked }];
 function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
@@ -1110,7 +1118,7 @@ function slidesHTML(list, locked) {
     const mid = t.mid || t.id || "", md = mid ? ` data-mid="${esc(mid)}"${t.file ? ' data-file="1"' : ""}${t.views != null ? ` data-views="${+t.views || 0}"` : ""}` : "";
     const key = k ? "data-src" : "src";
     if (t.type === "video" && goodNet()) { // V22: a short muted preview (8 s) on a good connection; the flow timer starts and stops it
-      return `<video class="sl${on}" data-v="1" data-vp="1"${md} muted loop playsinline preload="${t.thumb ? "none" : "metadata"}"${t.thumb ? ` poster="${esc(t.thumb)}"` : ""} style="${pv}" ${key}="${esc(t.url)}${t.thumb ? "" : "#t=0.001"}"></video>`;
+      return `<video class="sl${on}" data-v="1" data-vp="1"${md} muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`; // the video itself (first frame until it plays), never its thumbnail picture
     }
     if (t.type === "video") {
       // V21: a video never plays by itself. A cover/thumbnail shows when there is one, otherwise the first frame; it plays when opened.
@@ -1300,7 +1308,7 @@ function drawSpot(sp) {
 }
 PAGES.home = async function () {
   app.innerHTML = `<div class="pad"><div id="spot"></div>
-    <button class="allbtn" data-act="go" data-r="allfolders"><span class="ai">${ic("folder")}</span><span class="at"><b>All Folders</b><small>Browse every collection</small></span><span class="ag">${ic("next")}</span></button>
+    <button class="allbtn" data-act="go" data-r="allfolders"><span class="ai">${ic("folder")}</span><span class="at"><b>All Folders</b></span><span class="ag">${ic("next")}</span></button>
     <div class="sec">Latest</div><div id="hl2"></div></div>`;
   mountList($("hl2"), { src: "feed", grid: "g2", fetch: (p, s) => api("list", { sort: "new", deep: true, feed: "home", page: p, size: s }), empty: "<b>Nothing here yet</b>New folders will appear here." });
   try { if (!HOME) HOME = await api("home"); if (stack[stack.length - 1].r === "home") drawSpot(HOME.spot); } catch { HOME = null; }
@@ -1309,7 +1317,7 @@ PAGES.home = async function () {
 /* ---------- all folders: every main folder; its sub folders are inside it, in the order they were made ---------- */
 PAGES.allfolders = async function () {
   app.innerHTML = `<div class="pad"><div id="afl"></div></div>`;
-  mountList($("afl"), { src: "allf", grid: "g2", fetch: (p, s) => api("list", { sort: "new", page: p, size: s }), empty: "<b>No folders yet</b>New folders will appear here." });
+  mountList($("afl"), { src: "allf", grid: "g2", fetch: (p, s) => api("list", { sort: "new", deep: true, page: p, size: s }), empty: "<b>No folders yet</b>New folders will appear here." });
 };
 
 /* ---------- explore: search + category rail + community ---------- */
