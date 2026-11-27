@@ -1012,10 +1012,10 @@ function openDeepLink() {
 
 /* ---------- preview flow: every file (picture or video) shows 5s, then the next one, then it loops.
    Cards on a page start one after another: card 1 changes at 5s, card 2 at 6s, card 3 at 7s ... ---------- */
-let FLOW_ON = true, FLOW_VIDEO = false, FLOW_STEP = 5000, FLOW_STAGGER = 1000, FLOW_WAVE = 10; // set from Admin > Preview flow
+let FLOW_ON = true, FLOW_VIDEO = false, FLOW_STEP = 5000, FLOW_STAGGER = 0, FLOW_WAVE = 10; // set from Admin > Preview flow
 function applyFlow() {
   const n = (k, d, lo, hi) => { const v = Number(settings[k]); return isFinite(v) && settings[k] !== "" && settings[k] != null ? Math.min(hi, Math.max(lo, v)) : d; };
-  FLOW_ON = settings.flow_on !== "0"; FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_stagger", 1, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
+  FLOW_ON = settings.flow_on !== "0"; FLOW_VIDEO = settings.flow_video === "1"; FLOW_STEP = n("flow_step", 5, 2, 20) * 1000; FLOW_STAGGER = n("flow_gap", 0, 0, 3) * 1000; FLOW_WAVE = Math.round(n("flow_wave", 10, 1, 20));
 }
 function flowLoad(ss, from, count) { // load the next pictures early so a slide is never empty
   const sl = ss.children, n = sl.length;
@@ -1104,9 +1104,9 @@ const flowItems = l => {
   /* Preview flow order of one folder card.
      Poor connection: pictures only (no video, and no video thumbnail either). A folder with only videos shows one still.
      Good connection: picture 1, picture 2, then the FIRST video (3rd), then the other pictures (4th ...), and any other videos at the very end.
-     A video that is first in the folder never shows first. A locked (blurred) file is treated as a picture. */
+     A video that is first in the folder never shows first. A locked video plays too (blurred); a locked picture is a blurred still. */
   if (!goodNet()) return picsOnly(l);
-  const playable = t => t.type === "video" && !t.locked && !!t.url, pics = l.filter(t => !playable(t)), vids = l.filter(playable);
+  const playable = t => t.type === "video" && !!t.url, pics = l.filter(t => !playable(t)), vids = l.filter(playable);
   return [...pics.slice(0, 2), ...vids.slice(0, 1), ...pics.slice(2), ...vids.slice(1)];
 };
 const flowDur = (x, canVid) => x.dataset.vp ? (canVid ? FLOW_VIDEO_MS : 0) : FLOW_STEP; // every picture = FLOW_STEP (5 s), a video = 8 s, a video while the connection is poor = skipped (0 s)
@@ -1117,18 +1117,20 @@ function slidesHTML(list, locked) {
   return `<div class="ss" data-n="${list.length}" data-i="0">${list.map((t, k) => {
     const on = k === 0 ? " on" : "", v = t.type === "video" ? ' data-v="1"' : "";
     const fy = t.fy != null ? `object-position:50% ${+t.fy}%;` : "", pv = fy + pvCss(t.preview);
-    if (locked || t.locked || !t.url) return `<div class="sl${on}"${v} style="${pv}"></div>`;
-    const mid = t.mid || t.id || "", md = mid ? ` data-mid="${esc(mid)}"${t.file ? ' data-file="1"' : ""}${t.views != null ? ` data-views="${+t.views || 0}"` : ""}` : "";
+    // V23: a locked (premium) video still PLAYS in the flow, blurred by the card's lock style, but it never counts a view; a locked picture stays a blurred still
+    const lk = locked || t.locked, blurVid = lk && t.type === "video" && !!t.url && goodNet();
+    if ((lk && !blurVid) || (!t.url && !t.thumb)) return `<div class="sl${on}"${v} style="${pv}"></div>`;
+    const mid = lk ? "" : (t.mid || t.id || ""), md = mid ? ` data-mid="${esc(mid)}"${t.file ? ' data-file="1"' : ""}${t.views != null ? ` data-views="${+t.views || 0}"` : ""}` : "";
     const key = k ? "data-src" : "src";
     if (t.type === "video" && goodNet()) { // V22: a short muted preview (8 s) on a good connection; the flow timer starts and stops it
       return `<video class="sl${on}" data-v="1" data-vp="1"${md} muted loop playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`; // the video itself (first frame until it plays), never its thumbnail picture
     }
     if (t.type === "video") {
       // V21: a video never plays by itself. A cover/thumbnail shows when there is one, otherwise the first frame; it plays when opened.
-      if (t.thumb) return `<img class="sl${on}" data-v="1"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+      if (t.thumb) return `<img class="sl${on}" data-v="1"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}"${t.url ? ` data-full="${esc(t.url)}"` : ""} onerror="thumbFail(this)">`;
       return `<video class="sl${on}" data-v="1"${md} muted playsinline preload="metadata" style="${pv}" ${key}="${esc(t.url)}#t=0.001"></video>`;
     }
-    if (t.thumb) return `<img class="sl${on}"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}" data-full="${esc(t.url)}" onerror="thumbFail(this)">`;
+    if (t.thumb) return `<img class="sl${on}"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.thumb)}"${t.url ? ` data-full="${esc(t.url)}"` : ""} onerror="thumbFail(this)">`; // a picture with a small thumbnail is sent as the thumbnail only
     return `<img class="sl${on}"${md} draggable="false" alt="" decoding="async" style="${pv}" ${key}="${esc(t.url)}">`;
   }).join("")}</div>`;
 }
